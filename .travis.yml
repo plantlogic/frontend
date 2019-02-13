@@ -7,6 +7,11 @@ services:
   - docker
 env:
   - DOCKER_REPO_SLUG=plantlogic/frontend
+stages:
+  - compile
+  - test
+  - name: deploy
+    if: branch = master
 before_script:
   - npm install -g @angular/cli
 script:
@@ -14,7 +19,7 @@ script:
   - ng build --prod
   - docker build -t $DOCKER_REPO_SLUG:latest .
 after_success:
-  - if [[ "$TRAVIS_BRANCH" == "master" ]]; then
+  - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then
       docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD ;
       docker push $DOCKER_REPO_SLUG ;
     fi
