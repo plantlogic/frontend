@@ -6,15 +6,21 @@ import { Title } from '@angular/platform-browser';
 })
 export class TitleService {
   private siteTitle = 'PlantLogic';
+  private pageTitle: string;
 
   public constructor(private angTitle: Title) {}
 
   public setTitle(newTitle: string): void {
-    this.angTitle.setTitle(newTitle.concat(' | ', this.siteTitle));
+    this.pageTitle = newTitle;
+    this.angTitle.setTitle(this.pageTitle.concat(' | ', this.siteTitle));
   }
 
   public getTitle(): string {
     return this.angTitle.getTitle();
+  }
+
+  public getPageTitle(): string {
+    return this.pageTitle;
   }
 
   public getSiteTitle(): string {

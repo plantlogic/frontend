@@ -7,11 +7,8 @@ import { TitleService } from '../title.service';
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent implements OnInit {
-  siteTitle: string;
 
-  constructor(private titleService: TitleService) {
-    this.siteTitle = titleService.getSiteTitle();
-  }
+  constructor(public titleService: TitleService) {}
 
   ngOnInit() {
   }
