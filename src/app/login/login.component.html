@@ -1,26 +1,32 @@
-<div class="jumbotron">
-    <h1 class="display-4">Login</h1>
-    <div class="row">
-      <div class="col">
-        Logo
-      </div>
-      <div class="col">
-          <form>
-              <div class="form-group">
-                <label for="exampleInputEmail1">Username</label>
-                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter username">
-              </div>
-              <div class="form-group">
-                <label for="exampleInputPassword1">Password</label>
-                <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-              </div>
-              <div class="form-group form-check">
-                <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                <label class="form-check-label" for="exampleCheck1">Check me out</label>
-              </div>
+<div class="row">
+  <div class="col-md align-self-center text-center">
+    <h1>Logo</h1>
+  </div>
+  <div class="col-md">
+    <div class="jumbotron">
+      <form>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Username</label>
+          <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter username">
+        </div>
+        <div class="form-group">
+          <label for="exampleInputPassword1">Password</label>
+          <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-group form-check">
+              <input type="checkbox" class="form-check-input" id="exampleCheck1">
+              <label class="form-check-label" for="exampleCheck1">Stay logged in</label>
+            </div>
+          </div>
+          <div class="form-group col text-right">
+            <a routerLink="">Forgot password?</a>
+          </div>
+        </div>
 
-              <button type="button" class="btn btn-primary" (click)="exampleSuccess()">Login</button>
-            </form>
-      </div>
+        <button type="button" class="btn btn-primary" (click)="exampleSuccess()">Login</button>
+      </form>
     </div>
+  </div>
 </div>
