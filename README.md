@@ -1,1 +1,4 @@
-# frontend
+[![Build Status](https://travis-ci.org/plantlogic/frontend.svg?branch=master)](https://travis-ci.org/plantlogic/frontend) | [![Issues](https://img.shields.io/github/issues/plantlogic/frontend.svg?style=flat)](https://github.com/plantlogic/frontend/issues) | [![License](https://img.shields.io/github/license/plantlogic/frontend.svg?style=flat)](https://github.com/plantlogic/frontend/blob/master/LICENSE) | [![Docker Pulls](https://img.shields.io/docker/pulls/plantlogic/frontend.svg?style=flat)](https://hub.docker.com/r/plantlogic/frontend) | [![Demo](https://img.shields.io/badge/Demo-Live-success.svg)](https://demo.plantlogic.org)
+# 🌱 PlantLogic | Frontend
+
+Dockerized Angular 7 frontend for the Plant Logic application. Part of our CSUMB Spring 2019 capstone project developed in collaboration with Merrill Farms.
