@@ -7,11 +7,6 @@ services:
   - docker
 env:
   - DOCKER_REPO_SLUG=plantlogic/frontend
-stages:
-  - compile
-  - test
-  - name: deploy
-    if: branch = master
 before_script:
   - npm install -g @angular/cli
 script:
