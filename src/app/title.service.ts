@@ -1,3 +1,4 @@
+import { environment } from './../environments/environment';
 import { Injectable } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
@@ -5,7 +6,7 @@ import { Title } from '@angular/platform-browser';
   providedIn: 'root'
 })
 export class TitleService {
-  private siteTitle = 'PlantLogic';
+  private siteTitle = environment.AppName;
   private pageTitle: string;
 
   public constructor(private angTitle: Title) {}
