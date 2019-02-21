@@ -1,5 +1,5 @@
 {
-  "name": "PlantLogic (Local)",
-  "ApiUrl": "demo-api.plantlogic.org",
+  "AppName": "Default App Name",
+  "ApiUrl": "127.0.0.1:8080",
   "production": false
 }

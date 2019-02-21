@@ -1,5 +1,5 @@
 export const environment = {
-  AppName: 'PlantLogic',
-  ApiUrl: 'example.com',
+  AppName: 'AppName Not Set',
+  ApiUrl: '',
   production: false
 };
