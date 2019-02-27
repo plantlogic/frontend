@@ -1,0 +1,23 @@
+<form>
+  <div class="form-group">
+    <label for="ranchName"> Ranch Name</label>
+    <input ngModel name="ranchName" id="ranchName" type="text" size="4" class="form-control">
+  </div>
+  <div class="form-group">
+      <label for="commodityType">Commodity</label>
+      <input ngModel name="commodityType" id="commodityType" type="text" class="form-control">
+  </div>
+  <div class="form-group">
+      <label for="variety">Variety</label>
+      <input ngModel name="variety" id="variety" type="text" class="form-control">
+  </div>
+  <div class="form-group">
+      <label for="acreSize">Acres</label>
+      <input ngModel name="acreSize" id="acreSize" type="number" class="form-control">
+  </div>
+  <div class="form-group">
+      <label for="plotID">Plot Number</label>
+      <input ngModel name="plotID" id="plotID" type="number" class="form-control">
+  </div>
+  <button class="btn btn-primary" (click)="exampleInput()">Create</button>
+</form>
