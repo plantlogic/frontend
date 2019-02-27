@@ -11,6 +11,7 @@ import { AlertComponent } from './alert/alert.component';
 import { DataViewComponent } from './data-view/data-view.component';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { LoginComponent } from './login/login.component';
+import { CreateCardComponent } from './create-card/create-card.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { LoginComponent } from './login/login.component';
     DataViewComponent,
     UserManagementComponent,
     LoginComponent,
+    CreateCardComponent,
   ],
   imports: [
     BrowserModule,

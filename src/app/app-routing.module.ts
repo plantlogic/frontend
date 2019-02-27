@@ -1,3 +1,4 @@
+import { CreateCardComponent } from './create-card/create-card.component';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { DataViewComponent } from './data-view/data-view.component';
 import { LoginComponent } from './login/login.component';
@@ -26,6 +27,10 @@ const routes: Routes = [
   {
     path: 'userManagement',
     component: UserManagementComponent
+  },
+  {
+    path: 'createCard',
+    component: CreateCardComponent
   },
 ];
 
