@@ -15,6 +15,6 @@ export class CreateCardComponent implements OnInit {
   }
 
   public exampleInput() {
-    AlertService.newMessage("testing",false);
+    AlertService.newMessage('testing', false);
   }
 }
