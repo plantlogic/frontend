@@ -57,6 +57,14 @@
                   "maximumError": "5mb"
                 }
               ]
+            },
+            "disableAuth": {
+              "fileReplacements": [
+                {
+                  "replace": "src/assets/environments/environment.json",
+                  "with": "src/environments/disableAuth.json"
+                }
+              ]
             }
           }
         },
@@ -68,6 +76,9 @@
           "configurations": {
             "production": {
               "browserTarget": "plantLogic:build:production"
+            },
+            "disableAuth": {
+              "browserTarget": "plantLogic:build:disableAuth"
             }
           }
         },

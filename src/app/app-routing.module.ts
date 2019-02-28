@@ -6,38 +6,46 @@ import { LoginComponent } from './login/login.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './home/home.component';
+import { AuthGuard, NotAuthGuard } from './_auth/auth.guard';
+import { AuthRedirectComponent } from './auth-redirect/auth-redirect.component';
 
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: '/login',
-    pathMatch: 'full'
-  },
-  {
-    path: 'login',
-    component: LoginComponent
+    component: AuthRedirectComponent,
   },
   {
     path: 'home',
-    component: HomeComponent
+    component: HomeComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: 'dataView',
-    component: DataViewComponent
+    component: DataViewComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: 'userManagement',
-    component: UserManagementComponent
+    component: UserManagementComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: 'createCard',
-    component: CreateCardComponent
+    component: CreateCardComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: 'editUser',
-    component: EdituserComponent
+    component: EdituserComponent,
+    canActivate: [AuthGuard]
   },
+  {
+    path: 'login',
+    component: LoginComponent,
+    canActivate: [NotAuthGuard]
+  },
+  {path: '**', redirectTo: ''}
 ];
 
 @NgModule({
