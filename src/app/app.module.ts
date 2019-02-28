@@ -12,6 +12,7 @@ import { DataViewComponent } from './data-view/data-view.component';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { LoginComponent } from './login/login.component';
 import { CreateCardComponent } from './create-card/create-card.component';
+import { EdituserComponent } from './edituser/edituser.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { CreateCardComponent } from './create-card/create-card.component';
     UserManagementComponent,
     LoginComponent,
     CreateCardComponent,
+    EdituserComponent,
   ],
   imports: [
     BrowserModule,
