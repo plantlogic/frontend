@@ -13,11 +13,14 @@
         <li class="nav-item p-2" routerLinkActive="active" routerLink="/userManagement">
             <a class="nav-link waves-light" mdbWavesEffect>Users</a>
         </li>
+        <li class="nav-item p-2" routerLinkActive="active" routerLink="/createCard">
+          <a class="nav-link waves-light" mdbWavesEffect>Create New Card</a>
+        </li>
         <li class="nav-item dropdown p-2" dropdown>
           <a dropdownToggle mdbWavesEffect type="button" class="nav-link dropdown-toggle waves-light" mdbWavesEffect>
             <i class="fa fa-user-circle p-1"></i> Hi, Username<span class="caret"></span></a>
           <div *dropdownMenu class="dropdown-menu dropdown dropdown-primary" role="menu">
-              <a class="dropdown-item waves-light" mdbWavesEffect>My Account</a>
+              <a class="dropdown-item waves-light" mdbWavesEffect routerLink="/editUser">My Account</a>
               <div class="divider dropdown-divider"></div>
               <a class="dropdown-item waves-light" (click)="logout()" mdbWavesEffect>Logout</a>
           </div>

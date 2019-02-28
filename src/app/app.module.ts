@@ -14,6 +14,8 @@ import { UserManagementComponent } from './user-management/user-management.compo
 import { LoginComponent } from './login/login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthRedirectComponent } from './auth-redirect/auth-redirect.component';
+import { CreateCardComponent } from './create-card/create-card.component';
+import { EdituserComponent } from './edituser/edituser.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +27,8 @@ import { AuthRedirectComponent } from './auth-redirect/auth-redirect.component';
     UserManagementComponent,
     LoginComponent,
     AuthRedirectComponent,
+    CreateCardComponent,
+    EdituserComponent
   ],
   imports: [
     BrowserModule,

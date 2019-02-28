@@ -1,3 +1,5 @@
+import { EdituserComponent } from './edituser/edituser.component';
+import { CreateCardComponent } from './create-card/create-card.component';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { DataViewComponent } from './data-view/data-view.component';
 import { LoginComponent } from './login/login.component';
@@ -6,6 +8,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { AuthGuard, NotAuthGuard } from './_auth/auth.guard';
 import { AuthRedirectComponent } from './auth-redirect/auth-redirect.component';
+
 
 const routes: Routes = [
   {
@@ -25,6 +28,16 @@ const routes: Routes = [
   {
     path: 'userManagement',
     component: UserManagementComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'createCard',
+    component: CreateCardComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'editUser',
+    component: EdituserComponent,
     canActivate: [AuthGuard]
   },
   {
