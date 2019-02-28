@@ -2,3 +2,7 @@
 # 🌱 PlantLogic | Frontend
 
 Dockerized Angular 7 frontend for the Plant Logic application. Part of our CSUMB Spring 2019 capstone project developed in collaboration with Merrill Farms.
+
+## Development
+To disable authentication (so the frontend can be navigated freely), serve the application with the following configuration:
+`ng serve -c disableAuth`

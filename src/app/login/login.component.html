@@ -4,20 +4,20 @@
   </div>
   <div class="col-md">
     <div class="jumbotron">
-      <form>
+      <form [formGroup]="form">
         <div class="form-group">
-          <label for="exampleInputEmail1">Username</label>
-          <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter username">
+          <label for="usernameInput">Username</label>
+          <input type="username" name="username" formControlName="username" class="form-control" id="usernameInput" placeholder="Enter username">
         </div>
         <div class="form-group">
-          <label for="exampleInputPassword1">Password</label>
-          <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+          <label for="passwordInput">Password</label>
+          <input type="password" name="password" formControlName="password" class="form-control" id="passwordInput" placeholder="Enter password">
         </div>
         <div class="row">
           <div class="col">
             <div class="form-group form-check">
-              <input type="checkbox" class="form-check-input" id="exampleCheck1">
-              <label class="form-check-label" for="exampleCheck1">Stay logged in</label>
+              <input type="checkbox" class="form-check-input" id="rememberMe" name="rememberMe" formControlName="rememberMe">
+              <label class="form-check-label" for="rememberMe">Stay logged in</label>
             </div>
           </div>
           <div class="form-group col text-right">
@@ -25,7 +25,7 @@
           </div>
         </div>
 
-        <button type="button" class="btn btn-primary" (click)="exampleSuccess()">Login</button>
+        <button type="submit" class="btn btn-primary" (click)="login()">Login</button>
       </form>
     </div>
   </div>

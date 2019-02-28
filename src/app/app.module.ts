@@ -1,3 +1,4 @@
+import { HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 
@@ -11,6 +12,8 @@ import { AlertComponent } from './alert/alert.component';
 import { DataViewComponent } from './data-view/data-view.component';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { LoginComponent } from './login/login.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AuthRedirectComponent } from './auth-redirect/auth-redirect.component';
 
 @NgModule({
   declarations: [
@@ -21,10 +24,14 @@ import { LoginComponent } from './login/login.component';
     DataViewComponent,
     UserManagementComponent,
     LoginComponent,
+    AuthRedirectComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
+    FormsModule,
+    HttpClientModule,
+    ReactiveFormsModule,
     MDBBootstrapModule.forRoot()
   ],
   providers: [

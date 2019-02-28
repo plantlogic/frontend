@@ -1,5 +1,6 @@
 export const environment = {
   AppName: 'AppName Not Set',
   ApiUrl: '',
-  production: false
+  production: false,
+  disableAuth: false
 };

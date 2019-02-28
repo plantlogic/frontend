@@ -4,11 +4,13 @@ class EnvironmentClass {
   AppName = defaultEnvironment.AppName;
   ApiUrl = defaultEnvironment.ApiUrl;
   production = defaultEnvironment.production;
+  disableAuth = defaultEnvironment.disableAuth;
 
-  set(AppName: string, ApiUrl: string, production: boolean) {
+  set(AppName: string, ApiUrl: string, production: boolean, disableAuth: boolean) {
     this.AppName = AppName;
     this.ApiUrl = ApiUrl;
     this.production = production;
+    this.disableAuth = disableAuth;
   }
 }
 
