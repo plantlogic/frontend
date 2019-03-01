@@ -1,5 +1,5 @@
-export class BasicDTO {
+export class BasicDTO<E> {
   success: boolean;
-  data: string;
+  data: E;
   error: string;
 }
