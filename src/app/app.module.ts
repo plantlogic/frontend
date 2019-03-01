@@ -1,4 +1,5 @@
-import { HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
+import { AuthInjector } from './_auth/auth.injector';
+import { HttpClientModule, HttpClientXsrfModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 
@@ -39,7 +40,8 @@ import { EdituserComponent } from './edituser/edituser.component';
     MDBBootstrapModule.forRoot()
   ],
   providers: [
-    Title
+    Title,
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInjector, multi: true}
   ],
   bootstrap: [AppComponent],
   schemas: [ NO_ERRORS_SCHEMA ]

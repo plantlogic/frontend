@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
 export class LoginComponent implements OnInit {
   form: FormGroup;
 
-  constructor(private fb: FormBuilder, private titleService: TitleService, private authService: AuthService,
+  constructor(private fb: FormBuilder, private titleService: TitleService, private auth: AuthService,
               private router: Router) {
     this.form = this.fb.group({
       username: ['', Validators.required],
@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit {
         AlertService.newMessage('Password is required.', true);
     } else {
       const val = this.form.value;
-      this.authService.login(val.username, val.password, val.rememberMe);
+      this.auth.login(val.username, val.password, val.rememberMe);
     }
   }
 }

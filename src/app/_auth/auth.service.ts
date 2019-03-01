@@ -17,8 +17,8 @@ export class AuthService {
 
   private httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'})};
 
-  public login(username: string, password: string, rememberMe: boolean) {
-    return this.http.post<BasicDTO<AuthDTO>>('//' + environment.ApiUrl + '/user/auth/signin', {username, password}, this.httpOptions)
+  public login(username: string, password: string, rememberMe: boolean): void {
+    this.http.post<BasicDTO<AuthDTO>>('//' + environment.ApiUrl + '/user/auth/signin', {username, password}, this.httpOptions)
       .subscribe(
         data => {
           if (data.success) {
@@ -79,6 +79,21 @@ export class AuthService {
       return user.name;
     } else {
       return '<No_Name>';
+    }
+  }
+
+  public getToken(): string {
+    let user: AuthDTO;
+    if (localStorage.hasOwnProperty('user_token')) {
+      user = JSON.parse(localStorage.getItem('user_token'));
+    } else if (sessionStorage.hasOwnProperty('user_token')) {
+      user = JSON.parse(sessionStorage.getItem('user_token'));
+    }
+
+    if (user) {
+      return user.token;
+    } else {
+      return '';
     }
   }
 }
