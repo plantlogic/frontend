@@ -1,27 +1,29 @@
 <div class="container">
-  <div class="row">
-    <div class="col">
-      <button type="button" class="float-right" mdbBtn color="primary" mdbWavesEffect>Add New User</button>
-    </div>
-  </div>
   <div class="jumbotron">
+    <div class="row">
+      <div class="col">
+        <button type="button" class="float-right" color="primary"
+        mdbBtn floating="true" size="sm" mdbWavesEffect><i class="fa fa-plus" aria-hidden="true"></i></button>
+      </div>
+    </div>
     <div class="row">
       <div class="col">
         <table mdbTable>
           <thead>
             <tr>
-              <th scope="col">Username</th>
-              <th scope="col">Real Name</th>
-              <th scope="col">Email</th>
+              <th scope="col" *ngFor="let f of fields">{{f}}</th>
               <th scope="col">Options</th>
             </tr>
           </thead>
           <tbody>
-            <tr mdbTableCol *ngFor="let p of users">
+            <tr mdbTableCol *ngFor="let p of users" class="animated flipInX">
               <th scope="row">{{p.username}}</th>
               <td>{{p.realName}}</td>
               <td>{{p.email}}</td>
-              <td>Options and stuff</td>
+              <td>{{p.passwordUpdated | date:'longDate'}}</td>
+              <td>{{p.permissions}}</td>
+              <td><button type="button" class="warning-color" routerLink="/editUser/{{p.username}}" alt="Edit User"
+                mdbBtn floating="true" size="sm" mdbWavesEffect><i class="fa fa-edit" aria-hidden="true"></i></button></td>
             </tr>
           </tbody>
         </table>
