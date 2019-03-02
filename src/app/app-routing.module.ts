@@ -9,6 +9,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { AuthGuard, NotAuthGuard } from './_auth/auth.guard';
 import { AuthRedirectComponent } from './auth-redirect/auth-redirect.component';
+import { LoginRedirectComponent } from './login-redirect/login-redirect.component';
 
 
 const routes: Routes = [
@@ -20,6 +21,10 @@ const routes: Routes = [
     path: 'home',
     component: HomeComponent,
     canActivate: [AuthGuard]
+  },
+  {
+    path: 'loginRedirect',
+    component: LoginRedirectComponent
   },
   {
     path: 'dataView',

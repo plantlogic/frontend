@@ -18,6 +18,7 @@ import { AuthRedirectComponent } from './auth-redirect/auth-redirect.component';
 import { CreateCardComponent } from './create-card/create-card.component';
 import { EdituserComponent } from './edituser/edituser.component';
 import { AddUserComponent } from './add-user/add-user.component';
+import { LoginRedirectComponent } from './login-redirect/login-redirect.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { AddUserComponent } from './add-user/add-user.component';
     AuthRedirectComponent,
     CreateCardComponent,
     EdituserComponent,
-    AddUserComponent
+    AddUserComponent,
+    LoginRedirectComponent
   ],
   imports: [
     BrowserModule,

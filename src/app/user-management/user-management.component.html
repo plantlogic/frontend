@@ -15,7 +15,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr mdbTableCol *ngFor="let p of users" class="animated flipInX">
+          <tr mdbTableCol *ngFor="let p of users; let i = index" class="animated fadeIn" [ngStyle]="{'animation-delay': (50*i) + 'ms'}">
             <th scope="row">{{p.username}}</th>
             <td>{{p.realName}}</td>
             <td>{{p.email}}</td>
