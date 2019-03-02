@@ -10,8 +10,8 @@ env:
 before_script:
   - npm install -g @angular/cli
 script:
-  - npm lint
-  - npm build
+  - ng lint
+  - ng build --prod
   - docker build -t $DOCKER_REPO_SLUG:latest .
 after_success:
   - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then
