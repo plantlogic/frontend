@@ -1,3 +1,4 @@
+import { AddUserComponent } from './add-user/add-user.component';
 import { EdituserComponent } from './edituser/edituser.component';
 import { CreateCardComponent } from './create-card/create-card.component';
 import { UserManagementComponent } from './user-management/user-management.component';
@@ -28,6 +29,11 @@ const routes: Routes = [
   {
     path: 'userManagement',
     component: UserManagementComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'addUser',
+    component: AddUserComponent,
     canActivate: [AuthGuard]
   },
   {

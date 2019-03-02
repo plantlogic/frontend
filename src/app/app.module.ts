@@ -17,6 +17,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthRedirectComponent } from './auth-redirect/auth-redirect.component';
 import { CreateCardComponent } from './create-card/create-card.component';
 import { EdituserComponent } from './edituser/edituser.component';
+import { AddUserComponent } from './add-user/add-user.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { EdituserComponent } from './edituser/edituser.component';
     LoginComponent,
     AuthRedirectComponent,
     CreateCardComponent,
-    EdituserComponent
+    EdituserComponent,
+    AddUserComponent
   ],
   imports: [
     BrowserModule,

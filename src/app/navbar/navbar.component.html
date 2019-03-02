@@ -1,6 +1,9 @@
-<mdb-navbar SideClass="navbar navbar-expand-lg navbar-light yellow darken-3 mb-4">
+<mdb-navbar SideClass="navbar navbar-expand-lg navbar-light amber lighten-1 mb-4">
   <mdb-navbar-brand>
-      <a routerLink="/" class="navbar-brand"><b>{{titleService.getSiteTitle()}}</b> | {{titleService.getPageTitle()}}</a>
+      <a routerLink="/" class="navbar-brand">
+        <img *ngIf="isLoggedIn()" src="/assets/images/logo.svg" height="30" class="mr-3">
+        <b>{{titleService.getSiteTitle()}}</b> | {{titleService.getPageTitle()}}
+      </a>
   </mdb-navbar-brand>
   <links *ngIf="isLoggedIn()">
       <ul class="navbar-nav ml-auto">

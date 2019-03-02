@@ -16,4 +16,12 @@ export class UserService {
   public getUserList() {
     return this.http.get<BasicDTO<User[]>>('//' + environment.ApiUrl + '/user/management/userlist', this.httpOptions);
   }
+
+  public addUser(user: User) {
+    return this.http.post<BasicDTO<string>>('//' + environment.ApiUrl + '/user/management/addUser', user, this.httpOptions);
+  }
+
+  public deleteUser(user: User) {
+    return this.http.post<BasicDTO<null>>('//' + environment.ApiUrl + '/user/management/deleteUser', user, this.httpOptions);
+  }
 }

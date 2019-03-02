@@ -1,5 +1,7 @@
+import { User } from 'src/app/_auth/user';
+
 export class AuthDTO {
   expiration: string;
   token: string;
-  name: string;
+  user: User;
 }
