@@ -27,6 +27,7 @@ export class AuthService {
               } else {
                 sessionStorage.setItem('user_token', JSON.stringify(data.data));
               }
+              window.location.replace('/');
               this.router.navigate(['/']);
             } else if (!data.success) {
               AlertService.newMessage('Login failed: ' + data.error, true);
