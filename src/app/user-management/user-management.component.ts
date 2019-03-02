@@ -38,7 +38,9 @@ export class UserManagementComponent implements OnInit {
   }
 
   public deleteUser(username: string) {
-    if (username !== this.auth.getUsername()) {
+    if (username === this.auth.getUsername()) {
+      this.throwError('You are attempting to delete the user that is currently logged in.');
+    } else if (confirm('Are you sure you want to delete user ' + username + '?')) {
       this.userService.deleteUser((new User()).usernameConstruct(username)).subscribe(
         data => {
           if (data.success) {
@@ -52,8 +54,6 @@ export class UserManagementComponent implements OnInit {
           this.throwError(failure.message);
         }
       );
-    } else {
-      this.throwError('You are attempting to delete the user that is currently logged in.');
     }
   }
 
