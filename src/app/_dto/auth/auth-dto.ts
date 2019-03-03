@@ -1,4 +1,4 @@
-import { User } from 'src/app/_auth/user';
+import { User } from 'src/app/_dto/user/user';
 
 export class AuthDTO {
   expiration: string;

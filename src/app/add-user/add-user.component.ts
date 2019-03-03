@@ -3,7 +3,7 @@ import { UserService } from './../_api/user.service';
 import { Component, OnInit } from '@angular/core';
 import { TitleService } from '../_interact/title.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { User } from '../_auth/user';
+import { User } from '../_dto/user/user';
 
 @Component({
   selector: 'app-add-user',

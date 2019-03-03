@@ -1,21 +1,35 @@
 <div class="jumbotron p-3">
   <div class="row">
     <div class="col">
+      <form class="form-inline">
+        <input class="form-control mr-sm-2" name="filter" type="search" placeholder="Search" aria-label="Search"
+        [(ngModel)]="this.filter" (keyup)="this.filterItems()" mdbInput>
+      </form>
+    </div>
+    <div class="col text-center" *ngIf="users">
+        <button type="button"color="primary" name="addUser" outline="true" disabled
+        mdbBtn floating="true" size="sm">Total Users: <b>{{users.length}}</b></button>
+      </div>
+    <div class="col">
       <button type="button" class="float-right" color="primary" routerLink="/addUser" name="addUser"
       mdbBtn floating="true" size="sm" mdbWavesEffect>Add User <i class="fa fa-plus ml-1" aria-hidden="true"></i></button>
     </div>
   </div>
+  <hr class="my-4">
   <div class="row">
     <div class="col">
-      <table mdbTable>
+      <h2 *ngIf="!users">Loading data...</h2>
+      <table mdbTable *ngIf="users">
         <thead>
           <tr>
-            <th scope="col" *ngFor="let f of fields">{{f}}</th>
+            <th *ngFor="let f of fields; let i = index" scope="col" [mdbTableSort]="users" [sortBy]="fields[i]">{{f}}
+              <i class="fa fa-sort ml-1"></i>
+            </th>
             <th scope="col">Options</th>
           </tr>
         </thead>
         <tbody>
-          <tr mdbTableCol *ngFor="let p of users; let i = index" class="animated fadeIn" [ngStyle]="{'animation-delay': (50*i) + 'ms'}">
+          <tr mdbTableCol *ngFor="let p of users; let i = index" class="animated fadeIn" [ngStyle]="{'animation-delay': (30*i) + 'ms'}">
             <th scope="row">{{p.username}}</th>
             <td>{{p.realName}}</td>
             <td>{{p.email}}</td>
