@@ -8,7 +8,11 @@
     </div>
     <div class="col text-center" *ngIf="users">
         <button type="button"color="primary" name="addUser" outline="true" disabled
-        mdbBtn floating="true" size="sm">Total Users: <b>{{users.length}}</b></button>
+        mdbBtn floating="true" size="sm">
+        <span *ngIf="!this.filter">Total Users: </span>
+        <span *ngIf="this.filter">Search Results: </span>
+        <b>{{users.length}}</b>
+      </button>
       </div>
     <div class="col">
       <button type="button" class="float-right" color="primary" routerLink="/addUser" name="addUser"
@@ -29,7 +33,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr mdbTableCol *ngFor="let p of users; let i = index" class="animated fadeIn" [ngStyle]="{'animation-delay': (30*i) + 'ms'}">
+          <tr mdbTableCol *ngFor="let p of users; let i = index" class="animated fadeIn" [style.animation-delay]="this.min((30*i), 1000)+ 'ms'">
             <th scope="row">{{p.username}}</th>
             <td>{{p.realName}}</td>
             <td>{{p.email}}</td>

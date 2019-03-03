@@ -7,6 +7,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
+import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
+
 import { HomeComponent } from './home/home.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { AlertComponent } from './alert/alert.component';
@@ -41,6 +43,7 @@ import { LoginRedirectComponent } from './login-redirect/login-redirect.componen
     FormsModule,
     HttpClientModule,
     ReactiveFormsModule,
+    LoadingBarHttpClientModule,
     MDBBootstrapModule.forRoot()
   ],
   providers: [

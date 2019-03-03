@@ -81,4 +81,9 @@ export class UserManagementComponent implements OnInit {
   private throwError(error: string): void {
     AlertService.newMessage('Error: ' + error, true);
   }
+
+  // Used for animation
+  public min(x: number, y: number): number {
+    return Math.min(x, y);
+  }
 }
