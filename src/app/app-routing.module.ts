@@ -1,3 +1,4 @@
+import { AddUserComponent } from './add-user/add-user.component';
 import { EdituserComponent } from './edituser/edituser.component';
 import { CreateCardComponent } from './create-card/create-card.component';
 import { UserManagementComponent } from './user-management/user-management.component';
@@ -8,6 +9,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { AuthGuard, NotAuthGuard } from './_auth/auth.guard';
 import { AuthRedirectComponent } from './auth-redirect/auth-redirect.component';
+import { LoginRedirectComponent } from './login-redirect/login-redirect.component';
 
 
 const routes: Routes = [
@@ -21,6 +23,10 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'loginRedirect',
+    component: LoginRedirectComponent
+  },
+  {
     path: 'dataView',
     component: DataViewComponent,
     canActivate: [AuthGuard]
@@ -28,6 +34,11 @@ const routes: Routes = [
   {
     path: 'userManagement',
     component: UserManagementComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'addUser',
+    component: AddUserComponent,
     canActivate: [AuthGuard]
   },
   {

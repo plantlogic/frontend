@@ -7,6 +7,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
+import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
+
 import { HomeComponent } from './home/home.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { AlertComponent } from './alert/alert.component';
@@ -17,6 +19,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthRedirectComponent } from './auth-redirect/auth-redirect.component';
 import { CreateCardComponent } from './create-card/create-card.component';
 import { EdituserComponent } from './edituser/edituser.component';
+import { AddUserComponent } from './add-user/add-user.component';
+import { LoginRedirectComponent } from './login-redirect/login-redirect.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +33,9 @@ import { EdituserComponent } from './edituser/edituser.component';
     LoginComponent,
     AuthRedirectComponent,
     CreateCardComponent,
-    EdituserComponent
+    EdituserComponent,
+    AddUserComponent,
+    LoginRedirectComponent
   ],
   imports: [
     BrowserModule,
@@ -37,6 +43,7 @@ import { EdituserComponent } from './edituser/edituser.component';
     FormsModule,
     HttpClientModule,
     ReactiveFormsModule,
+    LoadingBarHttpClientModule,
     MDBBootstrapModule.forRoot()
   ],
   providers: [
