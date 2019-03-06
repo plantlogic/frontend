@@ -1,23 +1,96 @@
 <form>
   <div class="form-group">
-    <label for="ranchName"> Ranch Name</label>
-    <input ngModel name="ranchName" id="ranchName" type="text" size="4" class="form-control">
+    <label for="ranchName">Ranch</label>
+      <select class="browser-default custom-select">  <!--TODO: Update dynamically-->
+        <option selected>Select Ranch</option>
+        <option value="1">Ranch One</option>
+        <option value="2">Ranch Two</option>
+        <option value="3">Ranch Three</option>
+      </select>
   </div>
   <div class="form-group">
-      <label for="commodityType">Commodity</label>
-      <input ngModel name="commodityType" id="commodityType" type="text" class="form-control">
+      <div class="md-form">
+            <input type="number" class="form-control" id="numberInputEx" mdbInput min="1">
+            <label for="numberInputEx">Lot Number</label> <!--Input Format-->
+          </div>
   </div>
   <div class="form-group">
-      <label for="variety">Variety</label>
-      <input ngModel name="variety" id="variety" type="text" class="form-control">
+      <div class="md-form">
+        <!--What is appopriate min & increment-->
+          <input type="number" class="form-control" id="numberInputEx" mdbInput min="1">
+          <label for="numberInputEx">Acer Size</label>
+        </div>
   </div>
   <div class="form-group">
-      <label for="acreSize">Acres</label>
-      <input ngModel name="acreSize" id="acreSize" type="number" class="form-control">
+      <label for="cropYear">Crop Year</label>
+      <select class="browser-default custom-select">  <!--TODO: Update dynamically-->
+        <option value="2018">2018</option>
+        <option selected value="2019">2019</option>
+        <option value="2020">2020</option>
+      </select>
   </div>
   <div class="form-group">
-      <label for="plotID">Plot Number</label>
-      <input ngModel name="plotID" id="plotID" type="number" class="form-control">
+      <label for="cropNumber">Crop Number</label>
+      <select class="browser-default custom-select">
+        <option selected>Select Number</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+      </select>
   </div>
+  <div class="form-group">
+    <label for="commodityType">Commodity</label>
+    <select class="browser-default custom-select">  <!--TODO: Update dynamically-->
+      <option selected>Select Commodity</option>
+      <option value="1">Lettuce</option>
+      <option value="2">Broccoli</option>
+      <option value="3">Strawberry</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="variety">Variety</label>
+    <select class="browser-default custom-select">  <!--TODO: Update dynamically-->
+      <option selected>Select Variety</option>
+      <option value="1">Romain</option>
+      <option value="2">Iceberg</option>
+      <option value="3">Spring Mix</option>
+    </select>
+  </div>
+  <div class="form-group">
+      <label for="bedCount">Bed Count</label> <!--What is an appropriate value?-->
+      <select class="browser-default custom-select">
+        <option selected>Select Count</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+      </select>
+    </div>
+    <div class="form-group">
+        <label for="seedLotNumber">Seed Lot Number</label> <!--What is an appropriate value?-->
+        <select class="browser-default custom-select">
+          <option selected>Select Count</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+        </select>
+      </div>
+  <div class="form-group">
+    <label for="bedType">Bed Type</label>
+    <select class="browser-default custom-select">
+      <option selected>Select Type</option>
+      <option value="40">40</option>
+      <option value="80">80</option>
+    </select>
+  </div>
+  <div class="form-group">
+      <label for="prepMaterial">Prep Material</label>
+      <select class="browser-default custom-select">  <!--TODO: Update dynamically-->
+        <option selected>Select Material</option>
+        <option value="1">Dacthal</option>
+        <option value="2">Prefar</option>
+        <option value="3">Kerb</option>
+      </select>
+    </div>
+
   <button class="btn btn-primary" (click)="exampleInput()">Create</button>
 </form>
+prep material & rate applied
