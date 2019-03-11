@@ -38,7 +38,14 @@
             <td>{{p.realName}}</td>
             <td>{{p.email}}</td>
             <td>{{p.passwordUpdated | date:'longDate'}}</td>
-            <td>{{p.permissions}}</td>
+            <td>
+              <span *ngIf="p.permissions.length <= 0" class="badge badge-danger">User Disabled</span>
+              <ul class="list-group" *ngIf="p.permissions.length > 0">
+                  <li class="list-group-item" *ngFor="let r of p.permissions">
+                    {{r | underscoreToSpace | titlecase}}
+                  </li>
+              </ul>
+            </td>
             <td>
               <button type="button" color="amber" routerLink="/editUser/{{p.username}}" alt="Edit User" class="mr-1"
               mdbBtn floating="true" size="sm" mdbWavesEffect>Edit <i class="ml-1 fa fa-edit" aria-hidden="true"></i></button>
