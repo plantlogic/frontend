@@ -35,7 +35,29 @@
           </div>
         </div>
         <div class="col-md">
-          Permissions will go here
+          <div class="row">
+            <div class="col-sm">
+              <div class="form-group">
+                <label for="roleSelector">Permissions</label>
+                <br />
+                <div formArrayName="roles" *ngFor="let c of this.form.controls['roles'].controls; let i = index"
+                  class="form-check form-check-inline" name="roleSelector" id="roleSelector">
+                  <input class="form-check-input" type="checkbox" name="{{i}}" id="{{i}}" [formControlName]="i">
+                  <label for="{{i}}">
+                    <span class="badge"
+                    [class.badge-success]="roleList[i] == 'DATA_ENTRY'" [class.badge-info]="roleList[i] == 'DATA_VIEW'"
+                    [class.badge-primary]="roleList[i] == 'DATA_EDIT'" [class.badge-warning]="roleList[i] == 'USER_MANAGEMENT'"
+                    [class.badge-danger]="roleList[i] == 'APP_ADMIN'">
+                      {{roleList[i] | underscoreToSpace | titlecase}}
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm">
+              Ranch Access
+            </div>
+          </div>
         </div>
       </div>
     </div>

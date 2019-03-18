@@ -2,7 +2,7 @@
   <mdb-navbar-brand>
       <a routerLink="/" class="navbar-brand">
         <img *ngIf="isLoggedIn()" src="/assets/images/logo.svg" height="30" class="mr-3">
-        <b>{{titleService.getSiteTitle()}}</b> | {{titleService.getPageTitle()}}
+        <span class="d-none d-md-inline-block"><b>{{titleService.getSiteTitle()}}</b> |</span> {{titleService.getPageTitle()}}
       </a>
   </mdb-navbar-brand>
   <links *ngIf="isLoggedIn()">

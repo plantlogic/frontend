@@ -39,12 +39,15 @@
             <td>{{p.email}}</td>
             <td>{{p.passwordUpdated | date:'longDate'}}</td>
             <td>
-              <span *ngIf="p.permissions.length <= 0" class="badge badge-danger">User Disabled</span>
-              <ul class="list-group" *ngIf="p.permissions.length > 0">
-                  <li class="list-group-item" *ngFor="let r of p.permissions">
-                    {{r | underscoreToSpace | titlecase}}
-                  </li>
-              </ul>
+              <span *ngIf="p.permissions.length <= 0" class="badge badge-dark">User Disabled</span>
+              <div *ngFor="let r of p.permissions; let i = index">
+                <span class="badge mr-1"
+                [class.badge-success]="r == 'DATA_ENTRY'" [class.badge-info]="r == 'DATA_VIEW'"
+                [class.badge-primary]="r == 'DATA_EDIT'" [class.badge-warning]="r == 'USER_MANAGEMENT'"
+                [class.badge-danger]="r == 'APP_ADMIN'">
+                  {{r | underscoreToSpace | titlecase}}
+                </span>
+              </div>
             </td>
             <td>
               <button type="button" color="amber" routerLink="/editUser/{{p.username}}" alt="Edit User" class="mr-1"
