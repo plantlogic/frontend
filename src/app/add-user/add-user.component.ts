@@ -24,10 +24,10 @@ export class AddUserComponent implements OnInit {
       username: ['', [Validators.required, Validators.minLength(4)]],
       email: ['', [Validators.required, Validators.email]],
       realname: ['', Validators.required],
-      roles: this.fb.array(this.getRoleBoolArray())
+      roles: this.fb.array(this.initRoleBoolArray())
     });
 
-    this.roleList = this.getRoles();
+    this.roleList = this.initRoles();
   }
 
   ngOnInit() {
@@ -65,27 +65,18 @@ export class AddUserComponent implements OnInit {
     }
   }
 
-  getRoles(): Array<string> {
+  initRoles(): Array<string> {
     const keys = Object.keys(this.plRole);
     return keys.slice(keys.length / 2);
   }
 
-  getRoleBoolArray(): Array<boolean> {
-    const out: Array<boolean> = [];
-    for (let i = 0; i < (Object.keys(this.plRole).length) / 2; i++) {
-      out.push(false);
-    }
-    return out;
+  initRoleBoolArray(): Array<boolean> {
+    return Array((Object.keys(this.plRole).length) / 2).fill(false);
   }
 
   getSelectedRoles(): Array<PlRole> {
-    /* const perms: Array<PlRole> = [];
-    for (let i = 0; i < this.roleList.length; i++) {
-      if ((this.form.get('roles').value)[i]) {
-        perms.push(PlRole[this.roleList[i]]);
-      }
-    }
-    return perms; */
-    return Object.keys(this.plRole).filter((d, ind) => this.form.get('roles').value[ind]).map(key => PlRole[key]);
+    return Object.keys(this.plRole)
+      .filter((d, ind) => this.form.get('roles').value[ind])
+      .map(key => PlRole[key]);
   }
 }
