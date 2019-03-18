@@ -3,7 +3,7 @@ import { AlertService } from './../_interact/alert.service';
 import { UserService } from './../_api/user.service';
 import { Component, OnInit } from '@angular/core';
 import { TitleService } from '../_interact/title.service';
-import { FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, FormArray, Validators, AbstractControl } from '@angular/forms';
 import { User } from '../_dto/user/user';
 
 @Component({
@@ -72,6 +72,10 @@ export class AddUserComponent implements OnInit {
 
   initRoleBoolArray(): Array<boolean> {
     return Array((Object.keys(this.plRole).length) / 2).fill(false);
+  }
+
+  getRoleFormControls(): AbstractControl[] {
+    return (this.form.get('roles') as FormArray).controls;
   }
 
   getSelectedRoles(): Array<PlRole> {
