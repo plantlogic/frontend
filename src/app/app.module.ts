@@ -21,6 +21,7 @@ import { CreateCardComponent } from './create-card/create-card.component';
 import { EdituserComponent } from './edituser/edituser.component';
 import { AddUserComponent } from './add-user/add-user.component';
 import { LoginRedirectComponent } from './login-redirect/login-redirect.component';
+import { UnderscoreToSpace } from './_pipe/underscore-to-space';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { LoginRedirectComponent } from './login-redirect/login-redirect.componen
     CreateCardComponent,
     EdituserComponent,
     AddUserComponent,
-    LoginRedirectComponent
+    LoginRedirectComponent,
+    UnderscoreToSpace
   ],
   imports: [
     BrowserModule,

@@ -38,7 +38,17 @@
             <td>{{p.realName}}</td>
             <td>{{p.email}}</td>
             <td>{{p.passwordUpdated | date:'longDate'}}</td>
-            <td>{{p.permissions}}</td>
+            <td>
+              <span *ngIf="p.permissions.length <= 0" class="badge badge-dark">User Disabled</span>
+              <div *ngFor="let r of p.permissions; let i = index">
+                <span class="badge mr-1"
+                [class.badge-success]="r == 'DATA_ENTRY'" [class.badge-info]="r == 'DATA_VIEW'"
+                [class.badge-primary]="r == 'DATA_EDIT'" [class.badge-warning]="r == 'USER_MANAGEMENT'"
+                [class.badge-danger]="r == 'APP_ADMIN'">
+                  {{r | underscoreToSpace | titlecase}}
+                </span>
+              </div>
+            </td>
             <td>
               <button type="button" color="amber" routerLink="/editUser/{{p.username}}" alt="Edit User" class="mr-1"
               mdbBtn floating="true" size="sm" mdbWavesEffect>Edit <i class="ml-1 fa fa-edit" aria-hidden="true"></i></button>
