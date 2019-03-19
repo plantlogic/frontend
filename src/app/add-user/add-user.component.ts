@@ -14,7 +14,6 @@ import { User } from '../_dto/user/user';
 export class AddUserComponent implements OnInit {
   form: FormGroup;
   submitAttempted = false;
-  password: string;
   plRole = PlRole;
   roleList: Array<string>;
 
@@ -51,8 +50,7 @@ export class AddUserComponent implements OnInit {
       this.userService.addUser(user).subscribe(
         data => {
           if (data.success) {
-            this.password = data.data;
-            AlertService.newMessage('User created successfully! Password below.', false);
+            AlertService.newMessage('User created successfully! Their temporary password was emailed to them.', false);
             this.form.reset();
           } else if (!data.success) {
             AlertService.newMessage('Error: ' + data.error, true);
