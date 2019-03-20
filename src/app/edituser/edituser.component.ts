@@ -18,7 +18,7 @@ import { throwError } from 'rxjs';
 
 export class EdituserComponent implements OnInit {
   constructor(private titleService: TitleService, private userService: UserService, private auth: AuthService,
-    private tableService: MdbTableService) {}
+              private tableService: MdbTableService) {}
 
     users: User;
     userName: string;
@@ -37,17 +37,17 @@ export class EdituserComponent implements OnInit {
   }
 
   private loadUser() {
-    const x  = (new User).usernameConstruct(this.userName);
+    const x  = new User().usernameConstruct(this.userName);
 
     this.userService.getUser(x).subscribe(
       data => {
-        if(data.success) {
+        if (data.success) {
               this.userName = data.data.username;
               this.realName = data.data.realName;
               this.email = data.data.email;
         }
       }
-    )
+    );
   }
 
 }
