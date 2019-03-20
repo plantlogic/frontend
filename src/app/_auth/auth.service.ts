@@ -17,7 +17,7 @@ export class AuthService {
 
   public login(username: string, password: string, rememberMe: boolean): void {
     if (!this.isLoggedIn()) {
-      this.http.post<BasicDTO<AuthDTO>>('//' + environment.ApiUrl + '/user/auth/signin', {username, password}, this.httpOptions)
+      this.http.post<BasicDTO<AuthDTO>>('//' + environment.ApiUrl + '/user/auth/signIn', {username, password}, this.httpOptions)
         .subscribe(
           data => {
             if (data.success) {
@@ -74,7 +74,7 @@ export class AuthService {
     }
   }
 
-  public isResetPassword(): boolean {
+  public isPasswordChangeRequired(): boolean {
     if (environment.disableAuth) {
       return false;
     }

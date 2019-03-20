@@ -30,7 +30,7 @@ export class ForgotPasswordComponent implements OnInit {
     this.error = null;
     if (this.form.get('username').invalid) {
       this.error = 'Please enter a username.';
-    } else if (!this.auth.isLoggedIn() && !this.auth.isResetPassword()) {
+    } else if (!this.auth.isLoggedIn() && !this.auth.isPasswordChangeRequired()) {
       this.isLoading = true;
       this.form.get('username').disable();
       this.auth.resetPassword(this.form.get('username').value)

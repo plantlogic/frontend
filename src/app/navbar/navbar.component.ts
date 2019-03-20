@@ -19,7 +19,7 @@ export class NavbarComponent implements OnInit {
   }
 
   inPasswordChange(): boolean {
-    return this.auth.isResetPassword();
+    return this.auth.isPasswordChangeRequired();
   }
 
   getName(): string {

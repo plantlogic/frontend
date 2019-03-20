@@ -24,7 +24,7 @@ export class AuthGuard implements CanActivate {
 export class NotAuthGuard implements CanActivate {
   constructor(private auth: AuthService, private router: Router) {}
   canActivate() {
-    if (this.auth.isResetPassword()) {
+    if (this.auth.isPasswordChangeRequired()) {
       this.router.navigate(['/changePassword']);
       return false;
     } else if (!this.auth.isLoggedIn()) {
@@ -42,7 +42,7 @@ export class NotAuthGuard implements CanActivate {
 export class ChangePasswordGuard implements CanActivate {
   constructor(private auth: AuthService, private router: Router) {}
   canActivate() {
-    if (this.auth.isResetPassword() || this.auth.isLoggedIn()) {
+    if (this.auth.isPasswordChangeRequired() || this.auth.isLoggedIn()) {
       return true;
     } else {
       this.router.navigate(['/']);
