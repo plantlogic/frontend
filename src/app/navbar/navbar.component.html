@@ -23,6 +23,7 @@
           <a dropdownToggle mdbWavesEffect type="button" class="nav-link dropdown-toggle waves-light" mdbWavesEffect>
             <i class="fa fa-user-circle p-1"></i> Hi, {{this.getName()}}<span class="caret"></span></a>
           <div *dropdownMenu class="dropdown-menu dropdown dropdown-primary" role="menu">
+              <a class="dropdown-item waves-light" mdbWavesEffect routerLink="/editUser/username">My Account</a>
               <a class="dropdown-item waves-light" mdbWavesEffect routerLink="/changePassword">Change Password</a>
               <div class="divider dropdown-divider"></div>
               <a class="dropdown-item waves-light" (click)="logout()" mdbWavesEffect>Logout</a>

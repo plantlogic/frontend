@@ -32,4 +32,8 @@ export class UserService {
   public resetPassword(user: User): void {
     this.http.post<BasicDTO<null>>('//' + environment.ApiUrl + '/user/management/resetPassword', user, this.httpOptions);
   }
+
+  public getUser(user: User) {
+    return this.http.post<BasicDTO<User>>('//' + environment.ApiUrl + '/user/management/getUser', user, this.httpOptions);
+  }
 }

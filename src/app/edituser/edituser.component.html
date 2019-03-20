@@ -1,95 +1,76 @@
-
 <!-- User Name Section -->
+<!-- Button not usable yet -->
 <div class="row">
-  <div class="col-6">
-    <table mdbTable>
-      <thead class="yellow darken-3 ">
-        <tr>
-          <!-- <th *ngFor="let head of headElements" scope="col">{{head}} </th> -->
-          <th scope="col">User Name</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- <tr mdbTableCol *ngFor="let el of elements"> -->
-        <tr>
-          <!-- <th scope="row">{{el.id}}</th>
-          <td>{{el.first}}</td>
-          <td>{{el.last}}</td>
-          <td>{{el.handle}}</td> -->
-          <th scope="row"><b>Username:</b> TestDum1</th>
-        </tr>
-      </tbody>
-    </table>
+    <div class="col-6">
+      <table mdbTable>
+        <thead class="yellow darken-3 ">
+          <tr>
+            <th scope="col">User Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row"><b>Username:</b> {{this.userName}}<br><button type="button" mdbBtn color="primary" mdbWavesEffect>Change Username</button></th>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
-</div>
-  <!-- Personal Info Section -->
-  <div class="row">
-      <div class="col-6">
-        <table mdbTable>
-          <thead class="yellow darken-3 ">
-            <tr>
-              <!-- <th *ngFor="let head of headElements" scope="col">{{head}} </th> -->
-              <th scope="col">Personal Info</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- <tr mdbTableCol *ngFor="let el of elements"> -->
-            <tr>
-              <!-- <th scope="row">{{el.id}}</th>
-              <td>{{el.first}}</td>
-              <td>{{el.last}}</td>
-              <td>{{el.handle}}</td> -->
-              <th scope="row"><b> Name:</b> Test Dummy</th>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-  <!-- Email Section -->
-  <div class="row">
-      <div class="col-6">
-        <table mdbTable>
-          <thead class="yellow darken-3 ">
-            <tr>
-              <!-- <th *ngFor="let head of headElements" scope="col">{{head}} </th> -->
-              <th scope="col">Email</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- <tr mdbTableCol *ngFor="let el of elements"> -->
-            <tr>
-              <!-- <th scope="row">{{el.id}}</th>
-              <td>{{el.first}}</td>
-              <td>{{el.last}}</td>
-              <td>{{el.handle}}</td> -->
-              <th scope="row"><b>Email:</b> testing@gmail.com</th>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Password section -->
+    <!-- Personal Info Section -->
+    <!-- Button not usable yet -->
     <div class="row">
         <div class="col-6">
           <table mdbTable>
             <thead class="yellow darken-3 ">
               <tr>
-                <!-- <th *ngFor="let head of headElements" scope="col">{{head}} </th> -->
-                <th scope="col">Password</th>
+                <th scope="col">Personal Info</th>
               </tr>
             </thead>
             <tbody>
-              <!-- <tr mdbTableCol *ngFor="let el of elements"> -->
               <tr>
-                <!-- <th scope="row">{{el.id}}</th>
-                <td>{{el.first}}</td>
-                <td>{{el.last}}</td>
-                <td>{{el.handle}}</td> -->
-                <th scope="row"><button type="button" mdbBtn color="primary" mdbWavesEffect>Change Password</button></th>
+                <th scope="row"><b> Name:</b> {{this.realName}}<br><button type="button" mdbBtn color="primary" mdbWavesEffect>Change Name</button></th>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
+
+    <!-- Email Section -->
+    <!-- Button not usable yet -->
+    <div class="row">
+        <div class="col-6">
+          <table mdbTable>
+            <thead class="yellow darken-3 ">
+              <tr>
+                <th scope="col">Email Address</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row"><b>Email:</b> {{this.email}}<br><button type="button" mdbBtn color="primary" mdbWavesEffect>Change Email</button></th>
+
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Password section -->
+      <!-- Button not usable yet -->
+      <!-- In progress -->
+      <div class="row">
+          <div class="col-6">
+            <table mdbTable>
+              <thead class="yellow darken-3 ">
+                <tr>
+                  <th scope="col">Password</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row"><button type="button" mdbBtn color="primary" mdbWavesEffect>Change Password</button></th>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
