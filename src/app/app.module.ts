@@ -22,6 +22,7 @@ import { EdituserComponent } from './edituser/edituser.component';
 import { AddUserComponent } from './add-user/add-user.component';
 import { LoginRedirectComponent } from './login-redirect/login-redirect.component';
 import { UnderscoreToSpace } from './_pipe/underscore-to-space';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { UnderscoreToSpace } from './_pipe/underscore-to-space';
     EdituserComponent,
     AddUserComponent,
     LoginRedirectComponent,
-    UnderscoreToSpace
+    UnderscoreToSpace,
+    ResetPasswordComponent
   ],
   imports: [
     BrowserModule,

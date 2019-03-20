@@ -24,10 +24,28 @@ export class AuthGuard implements CanActivate {
 export class NotAuthGuard implements CanActivate {
   constructor(private auth: AuthService, private router: Router) {}
   canActivate() {
-    if (!this.auth.isLoggedIn()) {
+    if (this.auth.isResetPassword()) {
+      this.router.navigate(['/resetPassword']);
+      return false;
+    } else if (!this.auth.isLoggedIn()) {
       return true;
     } else {
       this.router.navigate(['/home']);
+      return false;
+    }
+  }
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ResetPasswordGuard implements CanActivate {
+  constructor(private auth: AuthService, private router: Router) {}
+  canActivate() {
+    if (this.auth.isResetPassword() || this.auth.isLoggedIn()) {
+      return true;
+    } else {
+      this.router.navigate(['/']);
       return false;
     }
   }

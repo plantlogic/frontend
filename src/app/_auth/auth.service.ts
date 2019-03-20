@@ -21,19 +21,23 @@ export class AuthService {
         .subscribe(
           data => {
             if (data.success) {
-              console.log(data);
-              if (rememberMe) {
-                localStorage.setItem('user_token', JSON.stringify(data.data));
-              } else {
+              if (data.data.user.passwordReset) {
                 sessionStorage.setItem('user_token', JSON.stringify(data.data));
+                this.router.navigate(['/resetPassword']);
+              } else {
+                if (rememberMe) {
+                  localStorage.setItem('user_token', JSON.stringify(data.data));
+                } else {
+                  sessionStorage.setItem('user_token', JSON.stringify(data.data));
+                }
+                this.router.navigate(['/loginRedirect']);
               }
-              this.router.navigate(['/loginRedirect']);
             } else if (!data.success) {
-              AlertService.newMessage('Login failed: ' + data.error, true);
+              AlertService.newMessage('Login Failed: ' + data.error, true);
             }
           },
           failure => {
-            AlertService.newMessage('Login failed: ' + failure.message, true);
+            AlertService.newMessage('Login Failed: ' + failure.message, true);
           }
         );
     }
@@ -45,7 +49,7 @@ export class AuthService {
       this.router.navigate(['/loginRedirect']);
   }
 
-  public isLoggedIn() {
+  public isLoggedIn(): boolean {
     if (environment.disableAuth) {
       return true;
     }
@@ -63,8 +67,35 @@ export class AuthService {
       this.logout();
       AlertService.newMessage('Your session timed out.', true);
       return false;
+    } else if (user.user.passwordReset) {
+      return false;
     } else {
       return true;
+    }
+  }
+
+  public isResetPassword(): boolean {
+    if (environment.disableAuth) {
+      return false;
+    }
+
+    let user: AuthDTO;
+    if (localStorage.hasOwnProperty('user_token')) {
+      user = JSON.parse(localStorage.getItem('user_token'));
+    } else if (sessionStorage.hasOwnProperty('user_token')) {
+      user = JSON.parse(sessionStorage.getItem('user_token'));
+    }
+
+    if (!user) {
+      return false;
+    } else if (Date.parse(user.expiration) <= Date.now()) {
+      this.logout();
+      AlertService.newMessage('Your session timed out.', true);
+      return false;
+    } else if (user.user.passwordReset) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -110,6 +141,28 @@ export class AuthService {
       return user.token;
     } else {
       return '';
+    }
+  }
+
+
+  public changePassword(oldPassword: string, newPassword: string): void {
+    if (!this.isLoggedIn()) {
+      this.http.post<BasicDTO<any>>('//' + environment.ApiUrl + '/user/me/changePassword', {oldPassword, newPassword}, this.httpOptions)
+        .subscribe(
+          data => {
+            if (data.success) {
+              AlertService.newMessage('Password changed successfully!', false);
+              localStorage.removeItem('user_token');
+              sessionStorage.removeItem('user_token');
+              this.router.navigate(['/']);
+            } else if (!data.success) {
+              AlertService.newMessage('Change Failed: ' + data.error, true);
+            }
+          },
+          failure => {
+            AlertService.newMessage('Change Failed: ' + failure.message, true);
+          }
+        );
     }
   }
 }

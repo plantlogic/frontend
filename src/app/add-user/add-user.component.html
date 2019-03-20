@@ -46,8 +46,8 @@
                   <label for="{{i}}">
                     <span class="badge"
                     [class.badge-success]="roleList[i] == 'DATA_ENTRY'" [class.badge-info]="roleList[i] == 'DATA_VIEW'"
-                    [class.badge-primary]="roleList[i] == 'DATA_EDIT'" [class.badge-warning]="roleList[i] == 'USER_MANAGEMENT'"
-                    [class.badge-danger]="roleList[i] == 'APP_ADMIN'">
+                    [class.badge-primary]="roleList[i] == 'DATA_EDIT'" [class.badge-danger]="roleList[i] == 'USER_MANAGEMENT'"
+                    [class.badge-warning]="roleList[i] == 'APP_ADMIN'">
                       {{roleList[i] | underscoreToSpace | titlecase}}
                     </span>
                   </label>
