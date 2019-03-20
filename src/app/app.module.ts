@@ -19,10 +19,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthRedirectComponent } from './auth-redirect/auth-redirect.component';
 import { CreateCardComponent } from './create-card/create-card.component';
 import { EdituserComponent } from './edituser/edituser.component';
-import { AddUserComponent } from './add-user/add-user.component';
+import { AddUserComponent } from './user-management/add-user/add-user.component';
 import { LoginRedirectComponent } from './login-redirect/login-redirect.component';
 import { UnderscoreToSpace } from './_pipe/underscore-to-space';
-import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { ChangePasswordComponent } from './change-password/change-password.component';
+import { ForgotPasswordComponent } from './login/forgot-password/forgot-password.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
     AddUserComponent,
     LoginRedirectComponent,
     UnderscoreToSpace,
-    ResetPasswordComponent
+    ChangePasswordComponent,
+    ForgotPasswordComponent
   ],
   imports: [
     BrowserModule,

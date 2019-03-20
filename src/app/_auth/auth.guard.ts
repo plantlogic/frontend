@@ -25,7 +25,7 @@ export class NotAuthGuard implements CanActivate {
   constructor(private auth: AuthService, private router: Router) {}
   canActivate() {
     if (this.auth.isResetPassword()) {
-      this.router.navigate(['/resetPassword']);
+      this.router.navigate(['/changePassword']);
       return false;
     } else if (!this.auth.isLoggedIn()) {
       return true;
@@ -39,7 +39,7 @@ export class NotAuthGuard implements CanActivate {
 @Injectable({
   providedIn: 'root'
 })
-export class ResetPasswordGuard implements CanActivate {
+export class ChangePasswordGuard implements CanActivate {
   constructor(private auth: AuthService, private router: Router) {}
   canActivate() {
     if (this.auth.isResetPassword() || this.auth.isLoggedIn()) {
