@@ -14,6 +14,7 @@ import {environment} from '../../../environments/environment';
 export class ForgotPasswordComponent implements OnInit {
   form: FormGroup;
   error: string;
+  isLoading = false;
   @ViewChild('fpModal') fpModal: ModalDirective;
 
   constructor(private fb: FormBuilder, private auth: AuthService) {
@@ -26,21 +27,31 @@ export class ForgotPasswordComponent implements OnInit {
   }
 
   public submit() {
+    this.error = null;
     if (this.form.get('username').invalid) {
       this.error = 'Please enter a username.';
     } else if (!this.auth.isLoggedIn() && !this.auth.isResetPassword()) {
+      this.isLoading = true;
+      this.form.get('username').disable();
       this.auth.resetPassword(this.form.get('username').value)
         .subscribe(
           data => {
             if (data.success) {
               this.fpModal.hide();
               AlertService.newMessage('Success! A temporary password has been emailed to you.', false);
+              this.isLoading = false;
+              this.form.get('username').enable();
+              this.form.reset();
             } else if (!data.success) {
-              this.error = 'Reset Failed: ' + data.error;
+              this.error = 'Reset failed: ' + data.error;
+              this.isLoading = false;
+              this.form.get('username').enable();
             }
           },
           failure => {
-            this.error = 'Reset Failed: ' + failure.message;
+            this.error = 'Reset failed: ' + failure.message;
+            this.isLoading = false;
+            this.form.get('username').enable();
           }
         );
     } else {
