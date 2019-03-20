@@ -1,16 +1,14 @@
-import { AuthService } from './../_auth/auth.service';
-import { AlertService } from './../_interact/alert.service';
+import { AuthService } from '../../../_auth/auth.service';
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { TitleService } from '../_interact/title.service';
+import { TitleService } from '../../../_interact/title.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
-  selector: 'app-reset-password',
-  templateUrl: './reset-password.component.html',
-  styleUrls: ['./reset-password.component.scss']
+  selector: 'app-change-password',
+  templateUrl: './change-password.component.html',
+  styleUrls: ['./change-password.component.scss']
 })
-export class ResetPasswordComponent implements OnInit {
+export class ChangePasswordComponent implements OnInit {
   form: FormGroup;
   submitAttempted = false;
 

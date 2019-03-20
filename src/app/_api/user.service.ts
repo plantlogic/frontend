@@ -28,4 +28,8 @@ export class UserService {
   public deleteUser(user: User) {
     return this.http.post<BasicDTO<null>>('//' + environment.ApiUrl + '/user/management/deleteUser', user, this.httpOptions);
   }
+
+  public resetPassword(user: User): void {
+    this.http.post<BasicDTO<null>>('//' + environment.ApiUrl + '/user/management/resetPassword', user, this.httpOptions);
+  }
 }

@@ -13,16 +13,17 @@ import { HomeComponent } from './home/home.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { AlertComponent } from './alert/alert.component';
 import { DataViewComponent } from './data-view/data-view.component';
-import { UserManagementComponent } from './user-management/user-management.component';
+import { UserManagementComponent } from './user/management/user-management.component';
 import { LoginComponent } from './login/login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AuthRedirectComponent } from './auth-redirect/auth-redirect.component';
+import { AuthRedirectComponent } from './redirects/auth-redirect/auth-redirect.component';
 import { CreateCardComponent } from './create-card/create-card.component';
 import { EdituserComponent } from './edituser/edituser.component';
-import { AddUserComponent } from './add-user/add-user.component';
-import { LoginRedirectComponent } from './login-redirect/login-redirect.component';
+import { AddUserComponent } from './user/management/add-user/add-user.component';
+import { LoginRedirectComponent } from './redirects/login-redirect/login-redirect.component';
 import { UnderscoreToSpace } from './_pipe/underscore-to-space';
-import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { ChangePasswordComponent } from './user/self/change-password/change-password.component';
+import { ForgotPasswordComponent } from './login/forgot-password/forgot-password.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
     AddUserComponent,
     LoginRedirectComponent,
     UnderscoreToSpace,
-    ResetPasswordComponent
+    ChangePasswordComponent,
+    ForgotPasswordComponent
   ],
   imports: [
     BrowserModule,

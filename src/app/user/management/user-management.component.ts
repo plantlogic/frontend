@@ -1,9 +1,9 @@
-import { AuthService } from './../_auth/auth.service';
+import { AuthService } from '../../_auth/auth.service';
 import { Component, OnInit } from '@angular/core';
-import { TitleService } from '../_interact/title.service';
-import { UserService } from './../_api/user.service';
-import { AlertService } from '../_interact/alert.service';
-import { User, fields as UserFields } from '../_dto/user/user';
+import { TitleService } from '../../_interact/title.service';
+import { UserService } from '../../_api/user.service';
+import { AlertService } from '../../_interact/alert.service';
+import { User, fields as UserFields } from '../../_dto/user/user';
 import { MdbTableService } from 'angular-bootstrap-md';
 import { throwError } from 'rxjs';
 
