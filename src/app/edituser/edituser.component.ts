@@ -1,4 +1,4 @@
-import { UserManagementComponent } from './../user-management/user-management.component';
+import { UserManagementComponent } from '../user/management/user-management.component';
 import { AuthService } from './../_auth/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { TitleService } from '../_interact/title.service';
