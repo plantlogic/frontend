@@ -1,0 +1,6 @@
+{
+  "AppName": "${APP_NAME}",
+  "ApiUrl": "${API_URL}",
+  "production": true,
+  "disableAuth": false
+}
