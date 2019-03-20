@@ -1,10 +1,10 @@
-import { PlRole } from './../../_dto/user/pl-role.enum';
-import { AlertService } from './../../_interact/alert.service';
-import { UserService } from './../../_api/user.service';
+import { PlRole } from '../../../_dto/user/pl-role.enum';
+import { AlertService } from '../../../_interact/alert.service';
+import { UserService } from '../../../_api/user.service';
 import { Component, OnInit } from '@angular/core';
-import { TitleService } from './../../_interact/title.service';
+import { TitleService } from '../../../_interact/title.service';
 import { FormGroup, FormBuilder, FormArray, Validators, AbstractControl } from '@angular/forms';
-import { User } from './../../_dto/user/user';
+import { User } from '../../../_dto/user/user';
 
 @Component({
   selector: 'app-add-user',

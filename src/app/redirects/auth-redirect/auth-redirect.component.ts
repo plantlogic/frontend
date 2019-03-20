@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../_auth/auth.service';
+import { AuthService } from '../../_auth/auth.service';
 
 @Component({
   selector: 'app-auth-redirect',
