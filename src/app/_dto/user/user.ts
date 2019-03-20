@@ -6,6 +6,7 @@ export class User {
   realName: string;
   passwordUpdated: string;
   permissions: PlRole[];
+  passwordReset: boolean;
 
   // For sending
   infoConstruct(email: string, username: string, realName: string, permissions: PlRole[]): User {

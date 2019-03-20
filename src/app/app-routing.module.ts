@@ -1,3 +1,4 @@
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { AddUserComponent } from './add-user/add-user.component';
 import { EdituserComponent } from './edituser/edituser.component';
 import { CreateCardComponent } from './create-card/create-card.component';
@@ -7,7 +8,7 @@ import { LoginComponent } from './login/login.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './home/home.component';
-import { AuthGuard, NotAuthGuard } from './_auth/auth.guard';
+import { AuthGuard, NotAuthGuard, ResetPasswordGuard } from './_auth/auth.guard';
 import { AuthRedirectComponent } from './auth-redirect/auth-redirect.component';
 import { LoginRedirectComponent } from './login-redirect/login-redirect.component';
 
@@ -55,6 +56,11 @@ const routes: Routes = [
     path: 'login',
     component: LoginComponent,
     canActivate: [NotAuthGuard]
+  },
+  {
+    path: 'resetPassword',
+    component: ResetPasswordComponent,
+    canActivate: [ResetPasswordGuard]
   },
   {path: '**', redirectTo: ''}
 ];
