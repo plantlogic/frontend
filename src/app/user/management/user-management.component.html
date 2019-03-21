@@ -26,8 +26,20 @@
       <table mdbTable *ngIf="users">
         <thead>
           <tr>
-            <th *ngFor="let f of fields; let i = index" scope="col" [mdbTableSort]="users" [sortBy]="fields[i]">{{f}}
-              <i class="fa fa-sort ml-1"></i>
+            <th scope="col" [mdbTableSort]="users" [sortBy]="'username'">
+              Username <i class="fa fa-sort ml-1"></i>
+            </th>
+            <th scope="col" [mdbTableSort]="users" [sortBy]="'realName'">
+              Name <i class="fa fa-sort ml-1"></i>
+            </th>
+            <th scope="col" [mdbTableSort]="users" [sortBy]="'email'" class="d-none d-md-table-cell">
+              Email <i class="fa fa-sort ml-1"></i>
+            </th>
+            <th scope="col" [mdbTableSort]="users" [sortBy]="'passwordUpdated'" class="d-none d-md-table-cell">
+              Password Last Updated <i class="fa fa-sort ml-1"></i>
+            </th>
+            <th scope="col" [mdbTableSort]="users" [sortBy]="'permissions'" class="d-none d-md-table-cell">
+              Permissions <i class="fa fa-sort ml-1"></i>
             </th>
             <th scope="col">Options</th>
           </tr>
@@ -36,9 +48,9 @@
           <tr mdbTableCol *ngFor="let p of users; let i = index" class="animated fadeIn" [style.animation-delay]="this.min((30*i), 1000)+ 'ms'">
             <th scope="row">{{p.username}}</th>
             <td>{{p.realName}}</td>
-            <td>{{p.email}}</td>
-            <td>{{p.passwordUpdated | date:'longDate'}}</td>
-            <td>
+            <td class="d-none d-md-table-cell">{{p.email}}</td>
+            <td class="d-none d-md-table-cell">{{p.passwordUpdated | date:'longDate'}}</td>
+            <td class="d-none d-md-table-cell">
               <div *ngIf="p.permissions.length <= 0" class="badge badge-dark text-wrap">
                 User Disabled
                 <div *ngIf="p.passwordReset" class="mt-1">Password Change Required</div>
@@ -53,7 +65,7 @@
               </div>
             </td>
             <td>
-              <button type="button" color="amber" routerLink="/editUser/{{p.username}}" alt="Edit User" class="mr-1"
+              <button type="button" color="amber" routerLink="/editUser/{{p.username}}" alt="Edit User" class="mr-1 mb-1"
               mdbBtn floating="true" size="sm" mdbWavesEffect>Edit <i class="ml-1 fa fa-edit" aria-hidden="true"></i></button>
               <button type="button" color="danger" alt="Delete User" (click)="this.deleteUser(p.username)"
               mdbBtn floating="true" size="sm" mdbWavesEffect>Delete <i class="ml-1 fa fa-trash" aria-hidden="true"></i></button>

@@ -25,5 +25,3 @@ export class User {
     return this;
   }
 }
-
-export const fields = ['Username', 'Name', 'Email', 'Password Last Updated', 'Permissions'];

@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { TitleService } from '../../_interact/title.service';
 import { UserService } from '../../_api/user.service';
 import { AlertService } from '../../_interact/alert.service';
-import { User, fields as UserFields } from '../../_dto/user/user';
+import { User } from '../../_dto/user/user';
 import { MdbTableService } from 'angular-bootstrap-md';
 import { throwError } from 'rxjs';
 
@@ -17,7 +17,6 @@ export class UserManagementComponent implements OnInit {
               private tableService: MdbTableService) {}
 
   users: User[];
-  fields = UserFields;
   filter: string;
   previous: string;
 
