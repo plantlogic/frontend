@@ -149,25 +149,10 @@ export class AuthService {
   }
 
 
-  public changePassword(oldPassword: string, newPassword: string): void {
-    this.http.post<BasicDTO<any>>(
+  public changePassword(oldPassword: string, newPassword: string) {
+    return this.http.post<BasicDTO<any>>(
         '//' + environment.ApiUrl + '/user/me/changePassword',
         {oldPassword, newPassword},
-        this.httpOptions
-      ).subscribe(
-        data => {
-          if (data.success) {
-            AlertService.newMessage('Password changed successfully!', false);
-            localStorage.removeItem('user_token');
-            sessionStorage.removeItem('user_token');
-            this.router.navigate(['/']);
-          } else if (!data.success) {
-            AlertService.newMessage('Change Failed: ' + data.error, true);
-          }
-        },
-        failure => {
-          AlertService.newMessage('Change Failed: ' + failure.message, true);
-        }
-      );
+        this.httpOptions);
   }
 }
