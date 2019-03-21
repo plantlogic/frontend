@@ -18,12 +18,12 @@ import { LoginComponent } from './login/login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthRedirectComponent } from './redirects/auth-redirect/auth-redirect.component';
 import { CreateCardComponent } from './create-card/create-card.component';
-import { EdituserComponent } from './edituser/edituser.component';
 import { AddUserComponent } from './user/management/add-user/add-user.component';
 import { LoginRedirectComponent } from './redirects/login-redirect/login-redirect.component';
 import { UnderscoreToSpace } from './_pipe/underscore-to-space';
 import { ChangePasswordComponent } from './user/self/change-password/change-password.component';
 import { ForgotPasswordComponent } from './login/forgot-password/forgot-password.component';
+import { EditUserComponent } from './user/management/edit-user/edit-user.component';
 
 @NgModule({
   declarations: [
@@ -36,12 +36,12 @@ import { ForgotPasswordComponent } from './login/forgot-password/forgot-password
     LoginComponent,
     AuthRedirectComponent,
     CreateCardComponent,
-    EdituserComponent,
     AddUserComponent,
     LoginRedirectComponent,
     UnderscoreToSpace,
     ChangePasswordComponent,
-    ForgotPasswordComponent
+    ForgotPasswordComponent,
+    EditUserComponent
   ],
   imports: [
     BrowserModule,

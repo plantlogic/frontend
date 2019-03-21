@@ -21,6 +21,10 @@ export class UserService {
     return this.http.get<BasicDTO<number>>('//' + environment.ApiUrl + '/user/management/userCount', this.httpOptions);
   }
 
+  public getUser(username: string) {
+    return this.http.post<BasicDTO<User>>('//' + environment.ApiUrl + '/user/management/getUser', {username}, this.httpOptions);
+  }
+
   public addUser(user: User) {
     return this.http.post<BasicDTO<string>>('//' + environment.ApiUrl + '/user/management/addUser', user, this.httpOptions);
   }
@@ -29,7 +33,11 @@ export class UserService {
     return this.http.post<BasicDTO<null>>('//' + environment.ApiUrl + '/user/management/deleteUser', user, this.httpOptions);
   }
 
-  public resetPassword(user: User): void {
-    this.http.post<BasicDTO<null>>('//' + environment.ApiUrl + '/user/management/resetPassword', user, this.httpOptions);
+  public resetPassword(username: string) {
+    return this.http.post<BasicDTO<null>>('//' + environment.ApiUrl + '/user/management/resetPassword', {username}, this.httpOptions);
+  }
+
+  public editUser(user: User) {
+    return this.http.post<BasicDTO<null>>('//' + environment.ApiUrl + '/user/management/editUser', user, this.httpOptions);
   }
 }
