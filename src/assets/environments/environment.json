@@ -1,6 +1,6 @@
 {
   "AppName": "Default App Name",
-  "ApiUrl": "127.0.0.1:8080",
+  "ApiUrl": "127.0.0.1:8080/api",
   "production": false,
   "disableAuth": false
 }

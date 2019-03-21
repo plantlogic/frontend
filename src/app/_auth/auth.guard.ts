@@ -24,10 +24,28 @@ export class AuthGuard implements CanActivate {
 export class NotAuthGuard implements CanActivate {
   constructor(private auth: AuthService, private router: Router) {}
   canActivate() {
-    if (!this.auth.isLoggedIn()) {
+    if (this.auth.isPasswordChangeRequired()) {
+      this.router.navigate(['/changePassword']);
+      return false;
+    } else if (!this.auth.isLoggedIn()) {
       return true;
     } else {
       this.router.navigate(['/home']);
+      return false;
+    }
+  }
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ChangePasswordGuard implements CanActivate {
+  constructor(private auth: AuthService, private router: Router) {}
+  canActivate() {
+    if (this.auth.isPasswordChangeRequired() || this.auth.isLoggedIn()) {
+      return true;
+    } else {
+      this.router.navigate(['/']);
       return false;
     }
   }

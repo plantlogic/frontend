@@ -1,16 +1,26 @@
+import { PlRole } from './pl-role.enum';
+
 export class User {
   email: string;
   username: string;
   realName: string;
   passwordUpdated: string;
-  permissions: string[];
+  permissions: PlRole[];
+  passwordReset: boolean;
+  initialUsername: string;
 
   // For sending
-  infoConstruct(email: string, username: string, realName: string, permissions: string[]): User {
+  infoConstruct(email: string, username: string, realName: string, permissions: PlRole[]): User {
     this.email = email;
     this.username = username;
     this.realName = realName;
     this.permissions = permissions;
+
+    return this;
+  }
+
+  editConstruct(initialUsername: string): User {
+    this.initialUsername = initialUsername;
 
     return this;
   }
@@ -21,6 +31,12 @@ export class User {
 
     return this;
   }
-}
 
-export const fields = ['Username', 'Name', 'Email', 'Password Last Updated', 'Permissions'];
+  importInfo(user: User): void {
+    this.email = user.email;
+    this.username = user.username;
+    this.realName = user.realName;
+    this.permissions = user.permissions;
+    this.passwordReset = user.passwordReset;
+  }
+}

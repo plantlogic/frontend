@@ -8,7 +8,7 @@ export class AuthInjector implements HttpInterceptor {
   constructor(private auth: AuthService) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-      if (this.auth.isLoggedIn()) {
+      if (this.auth.isLoggedIn() || this.auth.isPasswordChangeRequired()) {
         request = request.clone({
           setHeaders: {
               Authorization: `Bearer ${this.auth.getToken()}`

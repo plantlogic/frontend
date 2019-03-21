@@ -18,6 +18,10 @@ export class NavbarComponent implements OnInit {
     return this.auth.isLoggedIn();
   }
 
+  inPasswordChange(): boolean {
+    return this.auth.isPasswordChangeRequired();
+  }
+
   getName(): string {
     return this.auth.getName();
   }

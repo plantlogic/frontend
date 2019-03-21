@@ -1,0 +1,7 @@
+export enum PlRole {
+  DATA_ENTRY,
+  DATA_VIEW,
+  DATA_EDIT,
+  APP_ADMIN,
+  USER_MANAGEMENT
+}

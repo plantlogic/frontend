@@ -6,3 +6,11 @@ Dockerized Angular 7 frontend for the PlantLogic application. Part of our CSUMB 
 ## Development
 To disable authentication (so the frontend can be navigated freely), serve the application with the following configuration:
 `ng serve -c disableAuth`
+
+## Docker Environment Variables
+* **APP_NAME:** The name of the app, eg. `PlantLogic`
+* **REDIRECT_URL:** The URL to redirect to if the server isn't accessed from a valid URL, eg. `example.com`
+* **FRONTEND_URL:** The URL to access the frontend at, eg. `example.com`
+* **API_URL:** The URL to access the API at, eg. `api.example.com`
+* **APP_URL:** This overrides both `FRONTEND_URL` and `API_URL` - if `APP_URL` is set to `example.com`, then `FRONTEND_URL` is set to `example.com` and `API_URL` is set to `example.com/api`
+

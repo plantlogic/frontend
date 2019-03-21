@@ -14,11 +14,15 @@ export class UserService {
   private httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'})};
 
   public getUserList() {
-    return this.http.get<BasicDTO<User[]>>('//' + environment.ApiUrl + '/user/management/userlist', this.httpOptions);
+    return this.http.get<BasicDTO<User[]>>('//' + environment.ApiUrl + '/user/management/userList', this.httpOptions);
   }
 
   public getUserCount() {
     return this.http.get<BasicDTO<number>>('//' + environment.ApiUrl + '/user/management/userCount', this.httpOptions);
+  }
+
+  public getUser(username: string) {
+    return this.http.post<BasicDTO<User>>('//' + environment.ApiUrl + '/user/management/getUser', {username}, this.httpOptions);
   }
 
   public addUser(user: User) {
@@ -27,5 +31,13 @@ export class UserService {
 
   public deleteUser(user: User) {
     return this.http.post<BasicDTO<null>>('//' + environment.ApiUrl + '/user/management/deleteUser', user, this.httpOptions);
+  }
+
+  public resetPassword(username: string) {
+    return this.http.post<BasicDTO<null>>('//' + environment.ApiUrl + '/user/management/resetPassword', {username}, this.httpOptions);
+  }
+
+  public editUser(user: User) {
+    return this.http.post<BasicDTO<null>>('//' + environment.ApiUrl + '/user/management/editUser', user, this.httpOptions);
   }
 }
