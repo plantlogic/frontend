@@ -67,6 +67,7 @@ export class EditUserComponent implements OnInit {
       this.submitAttempted = true;
     } else {
       this.submitAttempted = false;
+      this.form.disable();
 
       this.user.username = this.form.value.username;
       this.user.email = this.form.value.email;
@@ -77,17 +78,23 @@ export class EditUserComponent implements OnInit {
         data => {
           if (data.success) {
             if (this.user.initialUsername === this.auth.getUsername()) {
-              this.auth.logout();
+              AlertService.newMessage('Changes have been saved successfully! ' +
+                'Because you edited yourself, you will be logged out in 5 seconds.', false);
+              setTimeout(() => {
+                this.auth.logout();
+              }, 5000);
             } else {
               AlertService.newMessage('Changes have been saved successfully!', false);
               this.router.navigate(['/userManagement']);
             }
           } else if (!data.success) {
             AlertService.newMessage('Error: ' + data.error, true);
+            this.form.enable();
           }
         },
         failure => {
           AlertService.newMessage('Error: ' + failure.message, true);
+          this.form.enable();
         }
       );
     }
@@ -99,7 +106,11 @@ export class EditUserComponent implements OnInit {
       data => {
         if (data.success) {
           if (this.user.initialUsername === this.auth.getUsername()) {
-            this.auth.logout();
+            AlertService.newMessage('Reset successful! A temporary password has been emailed to you. ' +
+            'Because you edited yourself, you will be logged out in 5 seconds.', false);
+            setTimeout(() => {
+              this.auth.logout();
+            }, 5000);
           } else {
             AlertService.newMessage('Reset successful! A temporary password has been emailed to the user.', false);
             this.router.navigate(['/userManagement']);
