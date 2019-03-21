@@ -7,6 +7,7 @@ export class User {
   passwordUpdated: string;
   permissions: PlRole[];
   passwordReset: boolean;
+  initialUsername: string;
 
   // For sending
   infoConstruct(email: string, username: string, realName: string, permissions: PlRole[]): User {
@@ -18,10 +19,24 @@ export class User {
     return this;
   }
 
+  editConstruct(initialUsername: string): User {
+    this.initialUsername = initialUsername;
+
+    return this;
+  }
+
   // For transfer of just the user's username
   usernameConstruct(username: string): User {
     this.username = username;
 
     return this;
+  }
+
+  importInfo(user: User): void {
+    this.email = user.email;
+    this.username = user.username;
+    this.realName = user.realName;
+    this.permissions = user.permissions;
+    this.passwordReset = user.passwordReset;
   }
 }

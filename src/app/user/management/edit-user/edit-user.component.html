@@ -1,0 +1,72 @@
+<div class="jumbotron p-3">
+  <form [formGroup]="form">
+    <button type="reset" class="btn btn-warning" routerLink="/userManagement"><i class="mr-1 fa fa-angle-left"
+                                                                                 aria-hidden="true"></i> Back</button>
+    <button type="submit" class="btn btn-primary float-right" (click)="submit()">Save User <i class="ml-1 fa fa-save"
+                                                                                              aria-hidden="true"></i></button>
+    <button type="submit" class="btn btn-danger float-right" (click)="resetPassword()">Reset Password</button>
+
+    <div class="m-5">
+      <div class="row">
+        <div class="col-md">
+          <div class="form-group">
+            <label for="usernameInput">Username</label>
+            <input type="text" name="username" formControlName="username" class="form-control" id="usernameInput"
+                 [class.is-invalid]="this.submitAttempted && this.form.get('username').invalid" required>
+            <div class="invalid-feedback" role="alert">Username must be at least 4 characters long.</div>
+          </div>
+        </div>
+        <div class="col-md">
+          <div class="form-group">
+            <label for="emailInput">Email</label>
+            <input type="email" name="email" formControlName="email" class="form-control" id="emailInput"
+                   [class.is-invalid]="this.submitAttempted && this.form.get('email').invalid" required>
+            <div class="invalid-feedback" role="alert">A valid email address is required.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md">
+          <div class="form-group">
+            <label for="realnameInput">Employee Name</label>
+            <input type="text" name="realname" formControlName="realname" class="form-control" id="realnameInput"
+                   [class.is-invalid]="this.submitAttempted && this.form.get('realname').invalid" required>
+            <div class="invalid-feedback" role="alert">User's full name is required.</div>
+          </div>
+        </div>
+        <div class="col-md">
+          <div class="row">
+            <div class="col-sm">
+              <div class="form-group">
+                <label for="roleSelector">Permissions</label>
+                <br />
+                <div *ngIf="user.permissions.length <= 0" class="badge badge-dark text-wrap">
+                  User Disabled
+                  <div *ngIf="user.passwordReset" class="mt-1">Password Change Required</div>
+                </div>
+                <div *ngIf="!user.passwordReset">
+                  <div formArrayName="roles" *ngFor="let c of this.getRoleFormControls(); let i = index"
+                       class="form-check form-check-inline" name="roleSelector" id="roleSelector">
+                    <input class="form-check-input" type="checkbox" name="{{i}}" id="{{i}}" [formControlName]="i">
+                    <label for="{{i}}">
+                      <span class="badge"
+                            [class.badge-success]="roleList[i] == 'DATA_ENTRY'" [class.badge-info]="roleList[i] == 'DATA_VIEW'"
+                            [class.badge-primary]="roleList[i] == 'DATA_EDIT'" [class.badge-danger]="roleList[i] == 'USER_MANAGEMENT'"
+                            [class.badge-warning]="roleList[i] == 'APP_ADMIN'">
+                        {{roleList[i] | underscoreToSpace | titlecase}}
+                      </span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm">
+              Ranch Access
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

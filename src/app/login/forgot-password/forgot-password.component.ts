@@ -3,8 +3,6 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AlertService} from '../../_interact/alert.service';
 import {AuthService} from '../../_auth/auth.service';
 import { ModalDirective } from 'angular-bootstrap-md';
-import {BasicDTO} from '../../_dto/basicDTO';
-import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-forgot-password',
@@ -19,7 +17,7 @@ export class ForgotPasswordComponent implements OnInit {
 
   constructor(private fb: FormBuilder, private auth: AuthService) {
     this.form = this.fb.group({
-      username: ['', Validators.required]
+      usernameFp: ['', Validators.required]
     });
   }
 
@@ -28,30 +26,30 @@ export class ForgotPasswordComponent implements OnInit {
 
   public submit() {
     this.error = null;
-    if (this.form.get('username').invalid) {
+    if (this.form.get('usernameFp').invalid) {
       this.error = 'Please enter a username.';
     } else if (!this.auth.isLoggedIn() && !this.auth.isPasswordChangeRequired()) {
       this.isLoading = true;
-      this.form.get('username').disable();
-      this.auth.resetPassword(this.form.get('username').value)
+      this.form.get('usernameFp').disable();
+      this.auth.resetPassword(this.form.get('usernameFp').value)
         .subscribe(
           data => {
             if (data.success) {
               this.fpModal.hide();
               AlertService.newMessage('Success! A temporary password has been emailed to you.', false);
               this.isLoading = false;
-              this.form.get('username').enable();
+              this.form.get('usernameFp').enable();
               this.form.reset();
             } else if (!data.success) {
               this.error = 'Reset failed: ' + data.error;
               this.isLoading = false;
-              this.form.get('username').enable();
+              this.form.get('usernameFp').enable();
             }
           },
           failure => {
             this.error = 'Reset failed: ' + failure.message;
             this.isLoading = false;
-            this.form.get('username').enable();
+            this.form.get('usernameFp').enable();
           }
         );
     } else {

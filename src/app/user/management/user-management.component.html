@@ -65,8 +65,9 @@
               </div>
             </td>
             <td>
-              <button type="button" color="amber" routerLink="/editUser/{{p.username}}" alt="Edit User" class="mr-1 mb-1"
-              mdbBtn floating="true" size="sm" mdbWavesEffect>Edit <i class="ml-1 fa fa-edit" aria-hidden="true"></i></button>
+              <button type="button" color="amber" [routerLink]="['/userManagement/editUser', p.username]"
+                      alt="Edit User" class="mr-1 mb-1" mdbBtn floating="true" size="sm"
+                      mdbWavesEffect>Edit <i class="ml-1 fa fa-edit" aria-hidden="true"></i></button>
               <button type="button" color="danger" alt="Delete User" (click)="this.deleteUser(p.username)"
               mdbBtn floating="true" size="sm" mdbWavesEffect>Delete <i class="ml-1 fa fa-trash" aria-hidden="true"></i></button>
             </td>
