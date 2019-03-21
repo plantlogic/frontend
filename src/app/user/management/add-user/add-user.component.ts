@@ -5,6 +5,7 @@ import { Component, OnInit } from '@angular/core';
 import { TitleService } from '../../../_interact/title.service';
 import { FormGroup, FormBuilder, FormArray, Validators, AbstractControl } from '@angular/forms';
 import { User } from '../../../_dto/user/user';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-add-user',
@@ -17,7 +18,8 @@ export class AddUserComponent implements OnInit {
   plRole = PlRole;
   roleList: Array<string>;
 
-  constructor(private titleService: TitleService, private fb: FormBuilder, private userService: UserService) {
+  constructor(private titleService: TitleService, private fb: FormBuilder, private userService: UserService,
+              private router: Router) {
 
     this.form = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(4)]],
@@ -34,12 +36,8 @@ export class AddUserComponent implements OnInit {
   }
 
   submit() {
-    if (this.form.get('username').invalid ||
-        this.form.get('email').invalid ||
-        this.form.get('realname').invalid) {
-
-          this.submitAttempted = true;
-
+    if (this.form.get('username').invalid || this.form.get('email').invalid || this.form.get('realname').invalid) {
+      this.submitAttempted = true;
     } else {
       this.submitAttempted = false;
 
@@ -51,7 +49,7 @@ export class AddUserComponent implements OnInit {
         data => {
           if (data.success) {
             AlertService.newMessage('User created successfully! Their temporary password was emailed to them.', false);
-            this.form.reset();
+            this.router.navigate(['/userManagement']);
           } else if (!data.success) {
             AlertService.newMessage('Error: ' + data.error, true);
           }

@@ -39,6 +39,6 @@ export class ChangePasswordComponent implements OnInit {
   }
 
   public isRequired(): boolean {
-    return this.auth.isResetPassword();
+    return this.auth.isPasswordChangeRequired();
   }
 }
