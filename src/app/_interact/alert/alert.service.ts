@@ -1,6 +1,5 @@
-import {Injectable, ViewChild} from '@angular/core';
-import {interval, Observable, Subscription} from 'rxjs';
-import {ModalDirective} from 'angular-bootstrap-md';
+import {Injectable} from '@angular/core';
+import {interval} from 'rxjs';
 import {Alert} from './alert';
 
 @Injectable({
@@ -12,12 +11,20 @@ export class AlertService {
   public static newAlert(newAlert: Alert) {
     if (this.currentAlert) {
       this.clearAlert();
-    }
 
-    this.currentAlert = newAlert;
+      setTimeout(() => {
+        this.currentAlert = newAlert;
 
-    if (this.currentAlert.timeLeft !== undefined) {
-      this.startTimeout();
+        if (this.currentAlert.timeLeft !== undefined) {
+          this.startTimeout();
+        }
+      }, 100);
+    } else {
+      this.currentAlert = newAlert;
+
+      if (this.currentAlert.timeLeft !== undefined) {
+        this.startTimeout();
+      }
     }
   }
 
@@ -34,7 +41,19 @@ export class AlertService {
   }
 
   public static clearAlert() {
-    this.currentAlert.observeInterval$.unsubscribe();
+    if (this.currentAlert.observeInterval$) {
+      this.currentAlert.observeInterval$.unsubscribe();
+    }
+
+    if (this.currentAlert.subscribedAction$) {
+      this.currentAlert.subscribedAction$.unsubscribe();
+    }
+
+    if (this.currentAlert.subscribedOnClose$) {
+      this.currentAlert.onClose$.emit();
+      this.currentAlert.subscribedOnClose$.unsubscribe();
+    }
+
     this.currentAlert = undefined;
   }
 

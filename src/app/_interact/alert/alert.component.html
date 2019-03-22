@@ -21,8 +21,8 @@
            (click)="alertService.clearAlert()" mdbWavesEffect>
           Close<span *ngIf="value.timeLeft"> ({{value.timeLeft}})</span>
         </button>
-        <button mdbBtn *ngIf="value.actionName" type="button" color="{{value.color}}" outline="false"
-                (click)="value.action$.subscribe().unsubscribe()" mdbWavesEffect>
+        <button mdbBtn *ngIf="value.actionName" type="button" color="{{value.color}}"
+                (click)="emitAction()" mdbWavesEffect>
           {{value.actionName}}
         </button>
       </div>

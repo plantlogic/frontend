@@ -1,11 +1,12 @@
 import { AuthService } from '../../_auth/auth.service';
-import { Component, OnInit } from '@angular/core';
+import {Component, EventEmitter, OnInit} from '@angular/core';
 import { TitleService } from '../../_interact/title.service';
 import { UserService } from '../../_api/user.service';
 import { AlertService } from '../../_interact/alert/alert.service';
 import { User } from '../../_dto/user/user';
 import { MdbTableService } from 'angular-bootstrap-md';
 import { throwError } from 'rxjs';
+import {Alert} from '../../_interact/alert/alert';
 
 @Component({
   selector: 'app-user-management',
@@ -60,20 +61,33 @@ export class UserManagementComponent implements OnInit {
   public deleteUser(username: string) {
     if (username === this.auth.getUsername()) {
       this.throwError('You can\'t delete the user that is currently logged in.');
-    } else if (confirm('Are you sure you want to delete user "' + username + '"?')) {
-      this.userService.deleteUser((new User()).usernameConstruct(username)).subscribe(
-        data => {
-          if (data.success) {
-            AlertService.newBasicAlert('User deleted successfully!', false);
-          } else if (!data.success) {
-            this.throwError(data.error);
+    // } else if (confirm('Are you sure you want to delete user "' + username + '"?')) {
+    } else {
+      const newAlert = new Alert();
+      newAlert.title = 'Delete user?';
+      newAlert.color = 'danger';
+      newAlert.blockPageInteraction = true;
+      newAlert.showClose = true;
+      newAlert.message = 'Are you sure you want to delete user ' + username + '?';
+      newAlert.actionName = 'Delete User';
+      newAlert.action$ = new EventEmitter<null>();
+      AlertService.newAlert(newAlert);
+
+      newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
+        this.userService.deleteUser((new User()).usernameConstruct(username)).subscribe(
+          data => {
+            if (data.success) {
+              AlertService.newBasicAlert('User deleted successfully!', false);
+            } else if (!data.success) {
+              this.throwError(data.error);
+            }
+            this.ngOnInit();
+          },
+          failure => {
+            this.throwError(failure.message);
           }
-          this.ngOnInit();
-        },
-        failure => {
-          this.throwError(failure.message);
-        }
-      );
+        );
+      });
     }
   }
 

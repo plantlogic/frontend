@@ -2,7 +2,6 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import { AlertService } from './alert.service';
 import {ModalDirective} from 'angular-bootstrap-md';
 import {Alert} from './alert';
-import {interval} from 'rxjs';
 
 @Component({
   selector: 'app-alert',
@@ -18,11 +17,12 @@ export class AlertComponent implements OnInit {
 
   ngOnInit() {}
 
-  private isAlertShown(): boolean {
+  isAlertShown(): boolean {
     if (this.alertService.getAlert()) {
       this.value = this.alertService.getAlert();
       if (!this.alertModal.isShown) {
         this.alertModal.config.backdrop = this.value.blockPageInteraction;
+        this.alertModal.config.ignoreBackdropClick = true;
         this.alertModal.show();
       }
       return true;
@@ -40,6 +40,14 @@ export class AlertComponent implements OnInit {
       return !this.value.blockPageInteraction;
     } else {
       return false;
+    }
+  }
+
+  emitAction(): void {
+    if (this.value.subscribedAction$) {
+      this.value.action$.emit();
+    } else {
+      AlertService.newBasicAlert('Error: There wasn\'t any action tied to that button.', true, 10);
     }
   }
 }
