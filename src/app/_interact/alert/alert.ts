@@ -11,8 +11,11 @@ export class Alert {
   actionName: string;
   action$: EventEmitter<null>;
   subscribedAction$: Subscription;
+  actionClosesAlert = false;
+  actionClosesAlertWithoutOnClose = false;
 
   showClose = true;
+  closeName = 'Close';
   onClose$: EventEmitter<null>;
   subscribedOnClose$: Subscription;
 

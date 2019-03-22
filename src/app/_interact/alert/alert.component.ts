@@ -46,6 +46,14 @@ export class AlertComponent implements OnInit {
   emitAction(): void {
     if (this.value.subscribedAction$) {
       this.value.action$.emit();
+
+      if (this.value.actionClosesAlert) {
+        if (this.value.actionClosesAlertWithoutOnClose) {
+          this.alertService.clearAlertWithoutOnClose();
+        } else {
+          this.alertService.clearAlert();
+        }
+      }
     } else {
       AlertService.newBasicAlert('Error: There wasn\'t any action tied to that button.', true, 10);
     }

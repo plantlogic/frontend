@@ -58,7 +58,7 @@ export class ChangePasswordComponent implements OnInit {
           }
         },
         failure => {
-          AlertService.newBasicAlert('Change Failed: ' + failure.message, true);
+          AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
           this.form.enable();
         }
       );

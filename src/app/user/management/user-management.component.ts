@@ -5,7 +5,6 @@ import { UserService } from '../../_api/user.service';
 import { AlertService } from '../../_interact/alert/alert.service';
 import { User } from '../../_dto/user/user';
 import { MdbTableService } from 'angular-bootstrap-md';
-import { throwError } from 'rxjs';
 import {Alert} from '../../_interact/alert/alert';
 
 @Component({
@@ -35,11 +34,11 @@ export class UserManagementComponent implements OnInit {
           this.users = this.tableService.getDataSource();
           this.previous = this.tableService.getDataSource();
         } else if (!data.success) {
-          this.throwError(data.error);
+          AlertService.newBasicAlert('Error: ' + data.error, true);
         }
       },
       failure => {
-        this.throwError(failure.message);
+        AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
       }
     );
   }
@@ -60,8 +59,7 @@ export class UserManagementComponent implements OnInit {
 
   public deleteUser(username: string) {
     if (username === this.auth.getUsername()) {
-      this.throwError('You can\'t delete the user that is currently logged in.');
-    // } else if (confirm('Are you sure you want to delete user "' + username + '"?')) {
+      AlertService.newBasicAlert('You can\'t delete the user that is currently logged in.', true);
     } else {
       const newAlert = new Alert();
       newAlert.title = 'Delete user?';
@@ -79,20 +77,16 @@ export class UserManagementComponent implements OnInit {
             if (data.success) {
               AlertService.newBasicAlert('User deleted successfully!', false);
             } else if (!data.success) {
-              this.throwError(data.error);
+              AlertService.newBasicAlert('Error: ' + data.error, true);
             }
             this.ngOnInit();
           },
           failure => {
-            this.throwError(failure.message);
+            AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
           }
         );
       });
     }
-  }
-
-  private throwError(error: string): void {
-    AlertService.newBasicAlert('Error: ' + error, true);
   }
 
   // Used for animation

@@ -19,7 +19,7 @@
       <div class="modal-footer">
         <button mdbBtn *ngIf="value.showClose" type="button" color="{{value.color}}" outline="true"
            (click)="alertService.clearAlert()" mdbWavesEffect>
-          Close<span *ngIf="value.timeLeft"> ({{value.timeLeft}})</span>
+          {{value.closeName}}<span *ngIf="value.timeLeft"> ({{value.timeLeft}})</span>
         </button>
         <button mdbBtn *ngIf="value.actionName" type="button" color="{{value.color}}"
                 (click)="emitAction()" mdbWavesEffect>

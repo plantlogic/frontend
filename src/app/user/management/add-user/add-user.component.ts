@@ -57,7 +57,7 @@ export class AddUserComponent implements OnInit {
           }
         },
         failure => {
-          AlertService.newBasicAlert('Error: ' + failure.message, true);
+          AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
           this.form.enable();
         }
       );

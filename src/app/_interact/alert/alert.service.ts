@@ -57,6 +57,23 @@ export class AlertService {
     this.currentAlert = undefined;
   }
 
+
+  public static clearAlertWithoutOnClose() {
+    if (this.currentAlert.observeInterval$) {
+      this.currentAlert.observeInterval$.unsubscribe();
+    }
+
+    if (this.currentAlert.subscribedAction$) {
+      this.currentAlert.subscribedAction$.unsubscribe();
+    }
+
+    if (this.currentAlert.subscribedOnClose$) {
+      this.currentAlert.subscribedOnClose$.unsubscribe();
+    }
+
+    this.currentAlert = undefined;
+  }
+
   public static getAlert(): Alert {
     return this.currentAlert;
   }
