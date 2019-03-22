@@ -2,7 +2,7 @@ import { AuthService } from '../../../_auth/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { TitleService } from '../../../_interact/title.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import {AlertService} from '../../../_interact/alert.service';
+import {AlertService} from '../../../_interact/alert/alert.service';
 import {Router} from '@angular/router';
 
 @Component({
@@ -42,23 +42,23 @@ export class ChangePasswordComponent implements OnInit {
         data => {
           if (data.success) {
             if (this.auth.isPasswordChangeRequired()) {
-              AlertService.newMessage('Password changed successfully!', false);
+              AlertService.newBasicAlert('Password changed successfully!', false);
               localStorage.removeItem('user_token');
               sessionStorage.removeItem('user_token');
               this.router.navigate(['/']);
             } else {
-              AlertService.newMessage('Password changed successfully! You will be logged out in 5 seconds.', false);
+              AlertService.newBasicAlert('Password changed successfully! You will be logged out in 5 seconds.', false);
               setTimeout(() => {
                 this.auth.logout();
               }, 5000);
             }
           } else if (!data.success) {
-            AlertService.newMessage('Change Failed: ' + data.error, true);
+            AlertService.newBasicAlert('Change Failed: ' + data.error, true);
             this.form.enable();
           }
         },
         failure => {
-          AlertService.newMessage('Change Failed: ' + failure.message, true);
+          AlertService.newBasicAlert('Change Failed: ' + failure.message, true);
           this.form.enable();
         }
       );

@@ -2,7 +2,7 @@ import { AuthService } from '../../_auth/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { TitleService } from '../../_interact/title.service';
 import { UserService } from '../../_api/user.service';
-import { AlertService } from '../../_interact/alert.service';
+import { AlertService } from '../../_interact/alert/alert.service';
 import { User } from '../../_dto/user/user';
 import { MdbTableService } from 'angular-bootstrap-md';
 import { throwError } from 'rxjs';
@@ -64,7 +64,7 @@ export class UserManagementComponent implements OnInit {
       this.userService.deleteUser((new User()).usernameConstruct(username)).subscribe(
         data => {
           if (data.success) {
-            AlertService.newMessage('User deleted successfully!', false);
+            AlertService.newBasicAlert('User deleted successfully!', false);
           } else if (!data.success) {
             this.throwError(data.error);
           }
@@ -78,7 +78,7 @@ export class UserManagementComponent implements OnInit {
   }
 
   private throwError(error: string): void {
-    AlertService.newMessage('Error: ' + error, true);
+    AlertService.newBasicAlert('Error: ' + error, true);
   }
 
   // Used for animation

@@ -1,5 +1,5 @@
 import { PlRole } from '../../../_dto/user/pl-role.enum';
-import { AlertService } from '../../../_interact/alert.service';
+import { AlertService } from '../../../_interact/alert/alert.service';
 import { UserService } from '../../../_api/user.service';
 import { Component, OnInit } from '@angular/core';
 import { TitleService } from '../../../_interact/title.service';
@@ -40,6 +40,7 @@ export class AddUserComponent implements OnInit {
       this.submitAttempted = true;
     } else {
       this.submitAttempted = false;
+      this.form.disable()
 
       const user = (
         new User()).infoConstruct(this.form.value.email, this.form.value.username, this.form.value.realname, this.getSelectedRoles()
@@ -48,14 +49,16 @@ export class AddUserComponent implements OnInit {
       this.userService.addUser(user).subscribe(
         data => {
           if (data.success) {
-            AlertService.newMessage('User created successfully! Their temporary password was emailed to them.', false);
+            AlertService.newBasicAlert('User created successfully! Their temporary password was emailed to them.', false);
             this.router.navigate(['/userManagement']);
           } else if (!data.success) {
-            AlertService.newMessage('Error: ' + data.error, true);
+            AlertService.newBasicAlert('Error: ' + data.error, true);
+            this.form.enable();
           }
         },
         failure => {
-          AlertService.newMessage('Error: ' + failure.message, true);
+          AlertService.newBasicAlert('Error: ' + failure.message, true);
+          this.form.enable();
         }
       );
     }

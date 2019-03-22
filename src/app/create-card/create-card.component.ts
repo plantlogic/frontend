@@ -1,5 +1,5 @@
 import { FormGroup, FormControl } from '@angular/forms';
-import { AlertService } from '../_interact/alert.service';
+import { AlertService } from '../_interact/alert/alert.service';
 import { Component, OnInit } from '@angular/core';
 
 
@@ -17,6 +17,6 @@ export class CreateCardComponent implements OnInit {
   }
 
   public exampleInput() {
-    AlertService.newMessage('testing', false);
+    AlertService.newBasicAlert('testing', false);
   }
 }

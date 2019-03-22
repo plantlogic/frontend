@@ -1,0 +1,4 @@
+// Hack to allow click-behind
+.allow-click-through {
+  pointer-events: none;
+}

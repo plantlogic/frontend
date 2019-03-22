@@ -1,0 +1,31 @@
+<!-- Code for the modal -->
+<div mdbModal #alertModal="mdbModal" class="modal fade text-left" tabindex="-1"
+     role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true"
+     [class.allow-click-through]="isClickThroughAllowed()">
+  <div *ngIf="isAlertShown()" class="modal-dialog modal-notify modal-{{value.color}}" role="document"
+       [class.modal-dialog-centered]="value.blockPageInteraction">
+    <div class="modal-content">
+      <div class="modal-header">
+        <p *ngIf="value.title" class="modal-title heading lead" id="alertModalLabel">{{value.title}}</p>
+        <span *ngIf="!value.showClose && value.timeLeft" class="pull-right white-text">({{value.timeLeft}})</span>
+        <button *ngIf="value.showClose" type="button" class="close pull-right" aria-label="Close"
+                (click)="alertService.clearAlert()">
+          <span aria-hidden="true" class="white-text">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          {{value.message}}
+      </div>
+      <div class="modal-footer">
+        <button mdbBtn *ngIf="value.showClose" type="button" color="{{value.color}}" outline="true"
+           (click)="alertService.clearAlert()" mdbWavesEffect>
+          Close<span *ngIf="value.timeLeft"> ({{value.timeLeft}})</span>
+        </button>
+        <button mdbBtn *ngIf="value.actionName" type="button" color="{{value.color}}" outline="false"
+                (click)="value.action$.subscribe().unsubscribe()" mdbWavesEffect>
+          {{value.actionName}}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

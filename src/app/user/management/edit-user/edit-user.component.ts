@@ -5,7 +5,7 @@ import {TitleService} from '../../../_interact/title.service';
 import {UserService} from '../../../_api/user.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {User} from '../../../_dto/user/user';
-import {AlertService} from '../../../_interact/alert.service';
+import {AlertService} from '../../../_interact/alert/alert.service';
 import {AuthService} from '../../../_auth/auth.service';
 
 @Component({
@@ -49,12 +49,12 @@ export class EditUserComponent implements OnInit {
               this.form.get('roles').setValue(this.setSelectedRoles());
               this.form.enable();
             } else if (!apiData.success) {
-              AlertService.newMessage('Error: ' + apiData.error, true);
+              AlertService.newBasicAlert('Error: ' + apiData.error, true);
               this.router.navigate(['/userManagement']);
             }
           },
           failure => {
-            AlertService.newMessage('Error: ' + failure.message, true);
+            AlertService.newBasicAlert('Error: ' + failure.message, true);
             this.router.navigate(['/userManagement']);
           }
         );
@@ -78,22 +78,22 @@ export class EditUserComponent implements OnInit {
         data => {
           if (data.success) {
             if (this.user.initialUsername === this.auth.getUsername()) {
-              AlertService.newMessage('Changes have been saved successfully! ' +
+              AlertService.newBasicAlert('Changes have been saved successfully! ' +
                 'Because you edited yourself, you will be logged out in 5 seconds.', false);
               setTimeout(() => {
                 this.auth.logout();
               }, 5000);
             } else {
-              AlertService.newMessage('Changes have been saved successfully!', false);
+              AlertService.newBasicAlert('Changes have been saved successfully!', false);
               this.router.navigate(['/userManagement']);
             }
           } else if (!data.success) {
-            AlertService.newMessage('Error: ' + data.error, true);
+            AlertService.newBasicAlert('Error: ' + data.error, true);
             this.form.enable();
           }
         },
         failure => {
-          AlertService.newMessage('Error: ' + failure.message, true);
+          AlertService.newBasicAlert('Error: ' + failure.message, true);
           this.form.enable();
         }
       );
@@ -106,22 +106,22 @@ export class EditUserComponent implements OnInit {
       data => {
         if (data.success) {
           if (this.user.initialUsername === this.auth.getUsername()) {
-            AlertService.newMessage('Reset successful! A temporary password has been emailed to you. ' +
-            'Because you edited yourself, you will be logged out in 5 seconds.', false);
+            AlertService.newBasicAlert('Reset successful! A temporary password has been emailed to you. ' +
+              'Because you edited yourself, you will be logged out in 5 seconds.', false);
             setTimeout(() => {
               this.auth.logout();
             }, 5000);
           } else {
-            AlertService.newMessage('Reset successful! A temporary password has been emailed to the user.', false);
+            AlertService.newBasicAlert('Reset successful! A temporary password has been emailed to the user.', false);
             this.router.navigate(['/userManagement']);
           }
         } else if (!data.success) {
-          AlertService.newMessage('Error: ' + data.error, true);
+          AlertService.newBasicAlert('Error: ' + data.error, true);
           this.form.enable();
         }
       },
       failure => {
-        AlertService.newMessage('Error: ' + failure.message, true);
+        AlertService.newBasicAlert('Error: ' + failure.message, true);
         this.form.enable();
       }
     );

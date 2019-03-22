@@ -1,10 +1,11 @@
 import { Router } from '@angular/router';
-import { AlertService } from '../_interact/alert.service';
+import { AlertService } from '../_interact/alert/alert.service';
 import { BasicDTO } from '../_dto/basicDTO';
 import { environment } from '../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthDTO } from '../_dto/auth/auth-dto';
+import {Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -33,11 +34,11 @@ export class AuthService {
                 this.router.navigate(['/loginRedirect']);
               }
             } else if (!data.success) {
-              AlertService.newMessage('Login Failed: ' + data.error, true);
+              AlertService.newBasicAlert('Login Failed: ' + data.error, true);
             }
           },
           failure => {
-            AlertService.newMessage('Login Failed: ' + failure.message, true);
+            AlertService.newBasicAlert('Login Failed: ' + failure.message, true);
           }
         );
     }
@@ -65,7 +66,7 @@ export class AuthService {
       return false;
     } else if (Date.parse(user.expiration) <= Date.now()) {
       this.logout();
-      AlertService.newMessage('Your session timed out.', true);
+      AlertService.newBasicAlert('Your session timed out.', true);
       return false;
     } else if (user.user.passwordReset) {
       return false;
@@ -90,7 +91,7 @@ export class AuthService {
       return false;
     } else if (Date.parse(user.expiration) <= Date.now()) {
       this.logout();
-      AlertService.newMessage('Your session timed out.', true);
+      AlertService.newBasicAlert('Your session timed out.', true);
       return false;
     } else if (user.user.passwordReset) {
       return true;
@@ -144,15 +145,22 @@ export class AuthService {
     }
   }
 
-  public resetPassword(username: string) {
-    return this.http.post<BasicDTO<any>>('//' + environment.ApiUrl + '/user/auth/resetPassword', {username}, this.httpOptions);
+  public validateToken(): Observable<BasicDTO<null>> {
+    return this.http.get<BasicDTO<null>>(
+      '//' + environment.ApiUrl + '/user/me/tokenValid',
+      {headers: new HttpHeaders({'Content-Type': 'application/json', ignoreLoadingBar: ''})}
+    );
   }
 
+  public resetPassword(username: string): Observable<BasicDTO<any>> {
+    return this.http.post<BasicDTO<null>>('//' + environment.ApiUrl + '/user/auth/resetPassword', {username}, this.httpOptions);
+  }
 
-  public changePassword(oldPassword: string, newPassword: string) {
-    return this.http.post<BasicDTO<any>>(
+  public changePassword(oldPassword: string, newPassword: string): Observable<BasicDTO<null>> {
+    return this.http.post<BasicDTO<null>>(
         '//' + environment.ApiUrl + '/user/me/changePassword',
         {oldPassword, newPassword},
-        this.httpOptions);
+        this.httpOptions
+    );
   }
 }

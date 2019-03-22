@@ -11,7 +11,7 @@ import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 
 import { HomeComponent } from './home/home.component';
 import { NavbarComponent } from './navbar/navbar.component';
-import { AlertComponent } from './alert/alert.component';
+import { AlertComponent } from './_interact/alert/alert.component';
 import { DataViewComponent } from './data-view/data-view.component';
 import { UserManagementComponent } from './user/management/user-management.component';
 import { LoginComponent } from './login/login.component';

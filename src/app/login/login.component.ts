@@ -1,7 +1,7 @@
 import { AuthService } from './../_auth/auth.service';
 import { TitleService } from '../_interact/title.service';
 import { Component, OnInit } from '@angular/core';
-import { AlertService } from '../_interact/alert.service';
+import { AlertService } from '../_interact/alert/alert.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -28,9 +28,9 @@ export class LoginComponent implements OnInit {
 
   public login() {
     if (this.form.get('username').invalid && this.form.get('username').errors.required) {
-      AlertService.newMessage('Username is required.', true);
+      AlertService.newBasicAlert('Username is required.', true);
     } else if (this.form.get('password').invalid && this.form.get('password').errors.required) {
-      AlertService.newMessage('Password is required.', true);
+      AlertService.newBasicAlert('Password is required.', true);
     } else {
       const val = this.form.value;
       this.auth.login(val.username, val.password, val.rememberMe);
