@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent implements OnInit {
   form: FormGroup;
+  submitAttempted = false;
 
   constructor(private fb: FormBuilder, private titleService: TitleService, private auth: AuthService,
               private router: Router) {
@@ -27,10 +28,8 @@ export class LoginComponent implements OnInit {
   }
 
   public login() {
-    if (this.form.get('username').invalid && this.form.get('username').errors.required) {
-      AlertService.newBasicAlert('Username is required.', true);
-    } else if (this.form.get('password').invalid && this.form.get('password').errors.required) {
-      AlertService.newBasicAlert('Password is required.', true);
+    if (this.form.get('username').invalid || this.form.get('password').invalid) {
+      this.submitAttempted = true;
     } else {
       const val = this.form.value;
       this.auth.login(val.username, val.password, val.rememberMe);

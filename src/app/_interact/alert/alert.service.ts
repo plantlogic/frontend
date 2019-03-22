@@ -18,7 +18,7 @@ export class AlertService {
         if (this.currentAlert.timeLeft !== undefined) {
           this.startTimeout();
         }
-      }, 100);
+      }, 400);
     } else {
       this.currentAlert = newAlert;
 
