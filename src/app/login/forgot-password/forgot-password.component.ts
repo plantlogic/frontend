@@ -36,7 +36,8 @@ export class ForgotPasswordComponent implements OnInit {
           data => {
             if (data.success) {
               this.fpModal.hide();
-              AlertService.newBasicAlert('Success! A temporary password has been emailed to you.', false);
+              AlertService.newBasicAlert('Success! If a user by that username exists, ' +
+                'a temporary password has been emailed to the corresponding email address.', false, 30);
               this.isLoading = false;
               this.form.get('usernameFp').enable();
               this.form.reset();
