@@ -3,14 +3,14 @@
     <div class="col">
       <form class="form-inline">
         <input class="form-control mr-sm-2" name="filter" type="search" placeholder="Search" aria-label="Search"
-        [(ngModel)]="this.filter" (keyup)="this.filterItems()" mdbInput>
+               [(ngModel)]="filter" (keyup)="filterItems()" mdbInput>
       </form>
     </div>
     <div class="col text-center" *ngIf="users">
         <button type="button"color="primary" name="addUser" outline="true" disabled
         mdbBtn floating="true" size="sm">
-        <span *ngIf="!this.filter">Total Users: </span>
-        <span *ngIf="this.filter">Search Results: </span>
+        <span *ngIf="!backendFilter">Total Users: </span>
+        <span *ngIf="backendFilter">Search Results: </span>
         <b>{{users.length}}</b>
       </button>
       </div>
