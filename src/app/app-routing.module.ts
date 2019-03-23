@@ -1,3 +1,4 @@
+import { ManageRanchComponent } from './manage-ranch/manage-ranch.component';
 import { ChangePasswordComponent } from './user/self/change-password/change-password.component';
 import { AddUserComponent } from './user/management/add-user/add-user.component';
 import { CreateCardComponent } from './create-card/create-card.component';
@@ -45,6 +46,11 @@ const routes: Routes = [
   {
     path: 'createCard',
     component: CreateCardComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'manageRanch',
+    component: ManageRanchComponent,
     canActivate: [AuthGuard]
   },
   {

@@ -24,6 +24,7 @@ import { UnderscoreToSpace } from './_pipe/underscore-to-space';
 import { ChangePasswordComponent } from './user/self/change-password/change-password.component';
 import { ForgotPasswordComponent } from './login/forgot-password/forgot-password.component';
 import { EditUserComponent } from './user/management/edit-user/edit-user.component';
+import { ManageRanchComponent } from './manage-ranch/manage-ranch.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { EditUserComponent } from './user/management/edit-user/edit-user.compone
     UnderscoreToSpace,
     ChangePasswordComponent,
     ForgotPasswordComponent,
-    EditUserComponent
+    EditUserComponent,
+    ManageRanchComponent
   ],
   imports: [
     BrowserModule,
