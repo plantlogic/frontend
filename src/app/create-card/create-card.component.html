@@ -48,28 +48,21 @@
       </select>
       <div class="invalid-feedback" role="alert">Please Select A Crop Number</div>
   </div>
-  <div class="form-group">
-    <label for="commodityType">Commodity</label>
-    <select class="browser-default custom-select" name="commodity"
-    [class.is-invalid]="this.submitAttempted && this.form.get('commodity').invalid">  <!--TODO: Update dynamically-->
-      <option disabled selected value="0">Select Commodity</option>
-      <option value="1">Lettuce</option>
-      <option value="2">Broccoli</option>
-      <option value="3">Strawberry</option>
-    </select>
-    <div class="invalid-feedback" role="alert">Please Select A Commodity</div>
+
+  <label>Commodity</label>
+  <div>
+    <select (change)="changeCommodity($event.target.value)">
+          <option *ngFor ="let com of commodityList">{{com.commodity}} </option>
+      </select>
   </div>
-  <div class="form-group">
-    <label for="variety">Variety</label>
-    <select class="browser-default custom-select" name="variety"
-    [class.is-invalid]="this.submitAttempted && this.form.get('variety').invalid">  <!--TODO: Update dynamically-->
-      <option disabled selected value=0>Select Variety</option>
-      <option value="1">Romain</option>
-      <option value="2">Iceberg</option>
-      <option value="3">Spring Mix</option>
+
+  <label>Variety</label>
+  <div>
+    <select>
+          <option *ngFor ="let v of variety">{{v}} </option>
     </select>
-    <div class="invalid-feedback" role="alert">Please Select A Variety</div>
   </div>
+
   <div class="form-group">
       <label for="bedCount">Bed Count</label> <!--What is an appropriate value?-->
       <select class="browser-default custom-select" name="bedCount"
