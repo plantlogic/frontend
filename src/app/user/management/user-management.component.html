@@ -52,7 +52,7 @@
             <td class="d-none d-md-table-cell">{{p.passwordUpdated | date:'longDate'}}</td>
             <td class="d-none d-md-table-cell">
               <div *ngIf="p.permissions.length <= 0" class="badge badge-dark text-wrap">
-                User Disabled
+                User Disabled:
                 <div *ngIf="p.passwordReset" class="mt-1">Password Change Required</div>
                 <div *ngIf="!p.passwordReset" class="mt-1">User Has No Permissions</div>
               </div>
