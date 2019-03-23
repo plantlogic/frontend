@@ -1,6 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {AlertService} from '../../_interact/alert.service';
+import {AlertService} from '../../_interact/alert/alert.service';
 import {AuthService} from '../../_auth/auth.service';
 import { ModalDirective } from 'angular-bootstrap-md';
 
@@ -36,7 +36,7 @@ export class ForgotPasswordComponent implements OnInit {
           data => {
             if (data.success) {
               this.fpModal.hide();
-              AlertService.newMessage('Success! A temporary password has been emailed to you.', false);
+              AlertService.newBasicAlert('Success! A temporary password has been emailed to you.', false);
               this.isLoading = false;
               this.form.get('usernameFp').enable();
               this.form.reset();
