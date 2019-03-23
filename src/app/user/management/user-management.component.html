@@ -54,6 +54,7 @@
               <div *ngIf="p.permissions.length <= 0" class="badge badge-dark text-wrap">
                 User Disabled
                 <div *ngIf="p.passwordReset" class="mt-1">Password Change Required</div>
+                <div *ngIf="!p.passwordReset" class="mt-1">User Has No Permissions</div>
               </div>
               <div *ngFor="let r of p.permissions; let i = index">
                 <span class="badge mr-1"

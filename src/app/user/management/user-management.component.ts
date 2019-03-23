@@ -63,10 +63,11 @@ export class UserManagementComponent implements OnInit {
     } else {
       const newAlert = new Alert();
       newAlert.title = 'Delete user?';
+      newAlert.message = 'Are you sure you want to delete user ' + username + '?';
       newAlert.color = 'danger';
       newAlert.blockPageInteraction = true;
       newAlert.showClose = true;
-      newAlert.message = 'Are you sure you want to delete user ' + username + '?';
+      newAlert.closeName = 'Cancel';
       newAlert.actionName = 'Delete User';
       newAlert.action$ = new EventEmitter<null>();
       AlertService.newAlert(newAlert);
