@@ -52,7 +52,8 @@ export class UserManagementComponent implements OnInit {
     }
 
     if (this.filter) {
-      this.users = this.tableService.searchLocalDataBy(this.filter);
+      this.filter.toLowerCase();
+      this.users = this.tableService.searchLocalDataBy(this.filter.toLowerCase());
       this.tableService.setDataSource(prev);
     }
   }
