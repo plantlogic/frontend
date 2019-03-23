@@ -40,7 +40,7 @@ export class AddUserComponent implements OnInit {
       this.submitAttempted = true;
     } else {
       this.submitAttempted = false;
-      this.form.disable()
+      this.form.disable();
 
       const user = (
         new User()).infoConstruct(this.form.value.email, this.form.value.username, this.form.value.realname, this.getSelectedRoles()
