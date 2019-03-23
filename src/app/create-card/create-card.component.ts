@@ -15,8 +15,19 @@ export class CreateCardComponent implements OnInit {
   // cardModel = new Card('1', 20, 5, 2019, 3, 'Lettuce', 'Iceberg', 100, 4, 40, '');
   cardModel = Card;
 
-  constructor(private titleService: TitleService, private fb: FormBuilder) {
+  commodityList: Array<any> = [ { commodity: 'Select'},
+  { commodity: 'Lettuce', variety: ['Lettuce v1', 'Lettuce v2'] },
+  { commodity: 'Strawberry', variety: ['Strawberry v1', 'Strawberry v2'] },
+  { commodity: 'Broccoli', variety: ['Broccoli v1', ' Broccoli v2', 'Broccoli v3'] },
+  { commodity: 'Tomato', variety: ['Tomato v1'] },
+  ];
 
+  variety: Array<any>;
+  changeCommodity(count) {
+    this.variety = this.commodityList.find(con => con.commodity === count).variety;
+  }
+
+  constructor(private titleService: TitleService, private fb: FormBuilder) {
     this.form = this.fb.group({
       ranch: ['', [Validators.required, Validators.min(1)]],
       lotNumber: ['', [Validators.required, Validators.min(1)]],
