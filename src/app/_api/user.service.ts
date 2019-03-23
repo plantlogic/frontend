@@ -22,8 +22,10 @@ export class UserService {
     return this.http.get<BasicDTO<number>>('//' + environment.ApiUrl + '/user/management/userCount', this.httpOptions);
   }
 
-  public getUser(username: string): Observable<BasicDTO<User>> {
-    return this.http.post<BasicDTO<User>>('//' + environment.ApiUrl + '/user/management/getUser', {username}, this.httpOptions);
+  public getUser(username: string, withNonNullPerms: boolean = false): Observable<BasicDTO<User>> {
+    return this.http.post<BasicDTO<User>>(
+      '//' + environment.ApiUrl + '/user/management/getUser?withNonNullPerms=' + withNonNullPerms,
+      {username}, this.httpOptions);
   }
 
   public addUser(user: User): Observable<BasicDTO<string>> {

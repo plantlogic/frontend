@@ -40,7 +40,7 @@ export class EditUserComponent implements OnInit {
     this.route.params.subscribe(
       data => {
         this.user = (new User()).editConstruct(data.username);
-        this.userService.getUser(this.user.initialUsername).subscribe(
+        this.userService.getUser(this.user.initialUsername, true).subscribe(
           apiData => {
             if (apiData.success) {
               this.user.importInfo(apiData.data);
