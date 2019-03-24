@@ -1,9 +1,10 @@
 import { AuthService } from '../../../_auth/auth.service';
-import { Component, OnInit } from '@angular/core';
+import {Component, EventEmitter, OnInit} from '@angular/core';
 import { TitleService } from '../../../_interact/title.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {AlertService} from '../../../_interact/alert/alert.service';
 import {Router} from '@angular/router';
+import {Alert} from '../../../_interact/alert/alert';
 
 @Component({
   selector: 'app-change-password',
@@ -43,14 +44,20 @@ export class ChangePasswordComponent implements OnInit {
           if (data.success) {
             if (this.auth.isPasswordChangeRequired()) {
               AlertService.newBasicAlert('Password changed successfully!', false);
-              localStorage.removeItem('user_token');
-              sessionStorage.removeItem('user_token');
-              this.router.navigate(['/']);
+              this.auth.logoutWithCustomRoute('/');
             } else {
-              AlertService.newBasicAlert('Password changed successfully! You will be logged out in 5 seconds.', false);
-              setTimeout(() => {
-                this.auth.logout();
-              }, 5000);
+              const newAlert = new Alert();
+              newAlert.title = 'Success';
+              newAlert.message = 'Password changed successfully! You must logout and log back in to complete the change.';
+              newAlert.color = 'success';
+              newAlert.timeLeft = 30;
+              newAlert.blockPageInteraction = true;
+              newAlert.showClose = true;
+              newAlert.closeName = 'Logout';
+              newAlert.onClose$ = new EventEmitter<null>();
+              AlertService.newAlert(newAlert);
+
+              newAlert.subscribedOnClose$ = newAlert.onClose$.subscribe(() => this.auth.logout());
             }
           } else if (!data.success) {
             AlertService.newBasicAlert('Change Failed: ' + data.error, true);
