@@ -7,6 +7,8 @@ Dockerized Angular 7 frontend for the PlantLogic application. Part of our CSUMB 
 To disable authentication (so the frontend can be navigated freely), serve the application with the following configuration:
 `ng serve -c disableAuth`
 
+Or to use the demo server's API, run with: `ng serve -c demoServerAPI`
+
 ## Docker Environment Variables
 * **APP_NAME:** The name of the app, eg. `PlantLogic`
 * **REDIRECT_URL:** The URL to redirect to if the server isn't accessed from a valid URL, eg. `example.com`

@@ -66,6 +66,14 @@
                   "with": "src/environments/disableAuth.json"
                 }
               ]
+            },
+            "demoServerAPI": {
+              "fileReplacements": [
+                {
+                  "replace": "src/assets/environments/environment.json",
+                  "with": "src/environments/demoServerAPI.json"
+                }
+              ]
             }
           }
         },
@@ -80,6 +88,9 @@
             },
             "disableAuth": {
               "browserTarget": "plantLogic:build:disableAuth"
+            },
+            "demoServerAPI": {
+              "browserTarget": "plantLogic:build:demoServerAPI"
             }
           }
         },

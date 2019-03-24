@@ -1,0 +1,6 @@
+{
+  "AppName": "PlantLogic",
+  "ApiUrl": "https://demo.plantlogic.org/api",
+  "production": false,
+  "disableAuth": false
+}
