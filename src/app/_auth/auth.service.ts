@@ -68,13 +68,6 @@ export class AuthService {
       this.router.navigate(['/loginRedirect']);
   }
 
-  public logoutWithCustomRoute(route: string) {
-    localStorage.removeItem('user_token');
-    sessionStorage.removeItem('user_token');
-    AuthService.tokenCache = undefined;
-    this.router.navigate([route]);
-  }
-
   public renewToken(): void {
     this.http.get<BasicDTO<string>>('//' + environment.ApiUrl + '/user/me/renewToken', this.httpOptions)
       .subscribe(

@@ -42,23 +42,18 @@ export class ChangePasswordComponent implements OnInit {
       this.auth.changePassword(val.oldPassword, val.newPassword).subscribe(
         data => {
           if (data.success) {
-            if (this.auth.isPasswordChangeRequired()) {
-              AlertService.newBasicAlert('Password changed successfully!', false);
-              this.auth.logoutWithCustomRoute('/');
-            } else {
-              const newAlert = new Alert();
-              newAlert.title = 'Success';
-              newAlert.message = 'Password changed successfully! You must logout and log back in to complete the change.';
-              newAlert.color = 'success';
-              newAlert.timeLeft = 30;
-              newAlert.blockPageInteraction = true;
-              newAlert.showClose = true;
-              newAlert.closeName = 'Logout';
-              newAlert.onClose$ = new EventEmitter<null>();
-              AlertService.newAlert(newAlert);
+            const newAlert = new Alert();
+            newAlert.title = 'Success';
+            newAlert.message = 'Password changed successfully! You must logout and log back in to complete the change.';
+            newAlert.color = 'success';
+            newAlert.timeLeft = 30;
+            newAlert.blockPageInteraction = true;
+            newAlert.showClose = true;
+            newAlert.closeName = 'Logout';
+            newAlert.onClose$ = new EventEmitter<null>();
+            AlertService.newAlert(newAlert);
 
-              newAlert.subscribedOnClose$ = newAlert.onClose$.subscribe(() => this.auth.logout());
-            }
+            newAlert.subscribedOnClose$ = newAlert.onClose$.subscribe(() => this.auth.logout());
           } else if (!data.success) {
             AlertService.newBasicAlert('Change Failed: ' + data.error, true);
             this.form.enable();
