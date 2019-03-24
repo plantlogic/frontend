@@ -68,6 +68,13 @@ export class AuthService {
       this.router.navigate(['/loginRedirect']);
   }
 
+  public logoutWithCustomRoute(route: string) {
+    localStorage.removeItem('user_token');
+    sessionStorage.removeItem('user_token');
+    AuthService.tokenCache = undefined;
+    this.router.navigate([route]);
+  }
+
   public renewToken(): void {
     this.http.get<BasicDTO<string>>('//' + environment.ApiUrl + '/user/me/renewToken', this.httpOptions)
       .subscribe(
@@ -345,7 +352,9 @@ export class AuthService {
   public hasPermission(perm): boolean {
     const user: BasicDTO<User> = this.getParsedTokenUser();
 
-    if (user.success) {
+    if (environment.disableAuth) {
+      return true;
+    } else if (user.success) {
       return user.data.permissions.includes(PlRole[this.roleList[perm]]);
     } else {
       return false;
