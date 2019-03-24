@@ -17,6 +17,8 @@ export class AuthService {
   private static badTokenPing = 0;
   private static logoutSequenceInitiated = false;
   private static tokenCache: string;
+  private static userCache: User;
+  private static expCache: number;
   private MAXBADPING = 3;
   private roleList = Object.keys(PlRole);
 
@@ -32,24 +34,21 @@ export class AuthService {
 
   public login(username: string, password: string, rememberMe: boolean): void {
     if (!this.isLoggedIn()) {
-      this.http.post<BasicDTO<string>>('//' + environment.ApiUrl + '/user/auth/signIn', {username, password}, this.httpOptions)
+      this.http.post<BasicDTO<string>>(environment.ApiUrl + '/user/auth/signIn', {username, password}, this.httpOptions)
         .subscribe(
           data => {
             if (data.success) {
-              const parsedUser: User = decode(data.data);
 
-              AuthService.tokenCache = data.data;
-              if (parsedUser.passwordReset) {
-                sessionStorage.setItem('user_token', data.data);
-                this.router.navigate(['/resetPassword']);
+              this.resetCache();
+              /* if (rememberMe) {
+                localStorage.setItem('user_token', data.data);
               } else {
-                if (rememberMe) {
-                  localStorage.setItem('user_token', data.data);
-                } else {
-                  sessionStorage.setItem('user_token', data.data);
-                }
-                this.router.navigate(['/loginRedirect']);
-              }
+                sessionStorage.setItem('user_token', data.data);
+              } */
+
+              localStorage.setItem('user_token', data.data);
+
+              this.router.navigate(['/loginRedirect']);
             } else if (!data.success) {
               AlertService.newBasicAlert('Login Failed: ' + data.error, true);
             }
@@ -62,18 +61,16 @@ export class AuthService {
   }
 
   public logout() {
-      localStorage.removeItem('user_token');
-      sessionStorage.removeItem('user_token');
-      AuthService.tokenCache = undefined;
+      this.clearTokenStore();
       this.router.navigate(['/loginRedirect']);
   }
 
   public renewToken(): void {
-    this.http.get<BasicDTO<string>>('//' + environment.ApiUrl + '/user/me/renewToken', this.httpOptions)
+    this.http.get<BasicDTO<string>>(environment.ApiUrl + '/user/me/renewToken', this.httpOptions)
       .subscribe(
         data => {
           if (data.success) {
-            AuthService.tokenCache = data.data;
+            this.resetCache();
             if (localStorage.hasOwnProperty('user_token')) {
               localStorage.setItem('user_token', data.data);
             } else {
@@ -114,12 +111,12 @@ export class AuthService {
   }
 
   public resetPassword(username: string): Observable<BasicDTO<any>> {
-    return this.http.post<BasicDTO<null>>('//' + environment.ApiUrl + '/user/auth/resetPassword', {username}, this.httpOptions);
+    return this.http.post<BasicDTO<null>>(environment.ApiUrl + '/user/auth/resetPassword', {username}, this.httpOptions);
   }
 
   public changePassword(oldPassword: string, newPassword: string): Observable<BasicDTO<null>> {
     return this.http.post<BasicDTO<null>>(
-      '//' + environment.ApiUrl + '/user/me/changePassword',
+      environment.ApiUrl + '/user/me/changePassword',
       {oldPassword, newPassword},
       this.httpOptions
     );
@@ -128,7 +125,7 @@ export class AuthService {
   public occasionalTokenValidate(): void {
     if (!AuthService.logoutSequenceInitiated) {
       if (this.isLoggedIn() || this.isPasswordChangeRequired()) {
-        if (this.getParsedTokenExpiration().data <= Date.now() + (1000 * 60 * 3)) {
+        if (this.getParsedTokenExpiration() <= Date.now() + (1000 * 60 * 3)) {
           const newAlert = new Alert();
           newAlert.title = 'Session Expiring';
           newAlert.message = 'Your session is about to expire - would you like to stay logged in?';
@@ -164,7 +161,7 @@ export class AuthService {
           localStorage.setItem('errorForLoginComponent', JSON.stringify(savedAlert));
         } else {
           this.http.get<BasicDTO<null>>(
-            '//' + environment.ApiUrl + '/user/me/tokenValid',
+            environment.ApiUrl + '/user/me/tokenValid',
             {headers: new HttpHeaders({'Content-Type': 'application/json', ignoreLoadingBar: ''})}
           ).subscribe(
             data => {
@@ -275,18 +272,19 @@ export class AuthService {
       return true;
     }
 
-    const user: BasicDTO<User> = this.getParsedTokenUser();
-    const exp: BasicDTO<number> = this.getParsedTokenExpiration();
+    const user: User = this.getParsedTokenUser();
+    const exp: number = this.getParsedTokenExpiration();
 
-    if (!user.success || !exp.success) {
+    if (!user && !exp) {
       return false;
-    } else if (exp.data <= Date.now()) {
-      localStorage.removeItem('user_token');
-      sessionStorage.removeItem('user_token');
-      AuthService.tokenCache = undefined;
+    } else if (!user || !exp) {
+      this.clearTokenStore();
+      return false;
+    } else if (exp <= Date.now()) {
+      this.clearTokenStore();
       this.occasionalTokenValidate();
       return false;
-    } else if (user.data.passwordReset) {
+    } else if (user.passwordReset) {
       return false;
     } else {
       return true;
@@ -298,18 +296,19 @@ export class AuthService {
       return false;
     }
 
-    const user: BasicDTO<User> = this.getParsedTokenUser();
-    const exp: BasicDTO<number> = this.getParsedTokenExpiration();
+    const user: User = this.getParsedTokenUser();
+    const exp: number = this.getParsedTokenExpiration();
 
-    if (!user.success || !exp.success) {
+    if (!user && !exp) {
       return false;
-    } else if (exp.data <= Date.now()) {
-      localStorage.removeItem('user_token');
-      sessionStorage.removeItem('user_token');
-      AuthService.tokenCache = undefined;
+    } else if (!user || !exp) {
+      this.clearTokenStore();
+      return false;
+    } else if (exp <= Date.now()) {
+      this.clearTokenStore();
       this.occasionalTokenValidate();
       return false;
-    } else if (user.data.passwordReset) {
+    } else if (user.passwordReset) {
       return true;
     } else {
       return false;
@@ -323,42 +322,42 @@ export class AuthService {
   // =============================
 
   public getName(): string {
-    const user: BasicDTO<User> = this.getParsedTokenUser();
+    const user: User = this.getParsedTokenUser();
 
-    if (user.success) {
-      return user.data.realName;
+    if (user) {
+      return user.realName;
     } else {
       return '<No_Name>';
     }
   }
 
   public getUsername(): string {
-    const user: BasicDTO<User> = this.getParsedTokenUser();
+    const user: User = this.getParsedTokenUser();
 
-    if (user.success) {
-      return user.data.username;
+    if (user) {
+      return user.username;
     } else {
       return '<No_Username>';
     }
   }
 
   public hasPermission(perm): boolean {
-    const user: BasicDTO<User> = this.getParsedTokenUser();
+    const user: User = this.getParsedTokenUser();
 
     if (environment.disableAuth) {
       return true;
-    } else if (user.success) {
-      return user.data.permissions.includes(PlRole[this.roleList[perm]]);
+    } else if (user) {
+      return user.permissions.includes(PlRole[this.roleList[perm]]);
     } else {
       return false;
     }
   }
 
   public permissionCount(): number {
-    const user: BasicDTO<User> = this.getParsedTokenUser();
+    const user: User = this.getParsedTokenUser();
 
-    if (user.success) {
-      return user.data.permissions.length;
+    if (user) {
+      return user.permissions.length;
     } else {
       return -1;
     }
@@ -366,10 +365,10 @@ export class AuthService {
 
 
   // =============================
-  // Token Getters
+  // Token Management
   // =============================
 
-  public getToken(): BasicDTO<string> {
+  public getToken(): string {
     if (!AuthService.tokenCache) {
       if (localStorage.hasOwnProperty('user_token')) {
         AuthService.tokenCache = localStorage.getItem('user_token');
@@ -378,32 +377,44 @@ export class AuthService {
       }
     }
 
-    if (AuthService.tokenCache) {
-      return new BasicDTO(true, AuthService.tokenCache);
-    } else {
-      return new BasicDTO(false);
-    }
+    return AuthService.tokenCache;
   }
 
-  public getParsedTokenExpiration(): BasicDTO<number> {
-    const val = this.getToken();
-    if (val.success) {
-      try {
-        return new BasicDTO(true, (decode(val.data).exp * 1000));
-      } catch (error) {}
+  public getParsedTokenExpiration(): number {
+    if (!AuthService.expCache) {
+      const token = this.getToken();
+      if (token) {
+        try {
+          AuthService.expCache = decode(token).exp * 1000;
+        } catch (error) {}
+      }
     }
 
-    return new BasicDTO(false);
+    return AuthService.expCache;
   }
 
-  public getParsedTokenUser(): BasicDTO<User> {
-    const val = this.getToken();
-    if (val.success) {
-      try {
-        return new BasicDTO(true, decode(val.data).auth);
-      } catch (error) {}
+  public getParsedTokenUser(): User {
+    if (!AuthService.userCache) {
+      const token = this.getToken();
+      if (token) {
+        try {
+          AuthService.userCache = decode(token).auth;
+        } catch (error) {}
+      }
     }
 
-    return new BasicDTO(false);
+    return AuthService.userCache;
+  }
+
+  public resetCache(): void {
+    AuthService.tokenCache = undefined;
+    AuthService.userCache = undefined;
+    AuthService.expCache = undefined;
+  }
+
+  public clearTokenStore(): void {
+    localStorage.removeItem('user_token');
+    sessionStorage.removeItem('user_token');
+    this.resetCache();
   }
 }
