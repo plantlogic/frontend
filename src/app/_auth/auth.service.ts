@@ -40,13 +40,11 @@ export class AuthService {
             if (data.success) {
 
               this.resetCache();
-              /* if (rememberMe) {
+              if (rememberMe) {
                 localStorage.setItem('user_token', data.data);
               } else {
                 sessionStorage.setItem('user_token', data.data);
-              } */
-
-              localStorage.setItem('user_token', data.data);
+              }
 
               this.router.navigate(['/loginRedirect']);
             } else if (!data.success) {
