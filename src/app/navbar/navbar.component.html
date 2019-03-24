@@ -7,16 +7,13 @@
   </mdb-navbar-brand>
   <links *ngIf="isLoggedIn()">
       <ul class="navbar-nav ml-auto">
-        <li class="nav-item p-2" routerLinkActive="active" routerLink="/home">
-            <a class="nav-link waves-light" mdbWavesEffect>Home</a>
-        </li>
-        <li class="nav-item p-2" routerLinkActive="active" routerLink="/dataView">
+        <li class="nav-item p-2" routerLinkActive="active" routerLink="/dataView" *ngIf="hasRole(role.DATA_VIEW)">
             <a class="nav-link waves-light" mdbWavesEffect>View Data</a>
         </li>
-        <li class="nav-item p-2" routerLinkActive="active" routerLink="/userManagement">
+        <li class="nav-item p-2" routerLinkActive="active" routerLink="/userManagement" *ngIf="hasRole(role.USER_MANAGEMENT)">
             <a class="nav-link waves-light" mdbWavesEffect>Users</a>
         </li>
-        <li class="nav-item p-2" routerLinkActive="active" routerLink="/createCard">
+        <li class="nav-item p-2" routerLinkActive="active" routerLink="/createCard" *ngIf="hasRole(role.DATA_ENTRY)">
           <a class="nav-link waves-light" mdbWavesEffect>Create New Card</a>
         </li>
         <li class="nav-item dropdown p-2" dropdown>

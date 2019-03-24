@@ -7,10 +7,11 @@ import { LoginComponent } from './login/login.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './home/home.component';
-import { AuthGuard, NotAuthGuard, ChangePasswordGuard } from './_auth/auth.guard';
+import {AllLoggedIn, NotAuthenticated, RequiredPasswordChange, RoleGuard} from './_auth/auth.guard';
 import { AuthRedirectComponent } from './redirects/auth-redirect/auth-redirect.component';
 import { LoginRedirectComponent } from './redirects/login-redirect/login-redirect.component';
 import { EditUserComponent } from './user/management/edit-user/edit-user.component';
+import {PlRole} from './_dto/user/pl-role.enum';
 
 
 const routes: Routes = [
@@ -21,7 +22,7 @@ const routes: Routes = [
   {
     path: 'home',
     component: HomeComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AllLoggedIn]
   },
   {
     path: 'loginRedirect',
@@ -30,37 +31,52 @@ const routes: Routes = [
   {
     path: 'dataView',
     component: DataViewComponent,
-    canActivate: [AuthGuard]
+    canActivate: [RoleGuard],
+    data: {
+      role: PlRole.DATA_VIEW
+    }
   },
   {
     path: 'userManagement',
     component: UserManagementComponent,
-    canActivate: [AuthGuard]
+    canActivate: [RoleGuard],
+    data: {
+      role: PlRole.USER_MANAGEMENT
+    }
   },
   {
     path: 'userManagement/addUser',
     component: AddUserComponent,
-    canActivate: [AuthGuard]
+    canActivate: [RoleGuard],
+    data: {
+      role: PlRole.USER_MANAGEMENT
+    }
   },
   {
     path: 'createCard',
     component: CreateCardComponent,
-    canActivate: [AuthGuard]
+    canActivate: [RoleGuard],
+    data: {
+      role: PlRole.DATA_ENTRY
+    }
   },
   {
     path: 'userManagement/editUser/:username',
     component: EditUserComponent,
-    canActivate: [AuthGuard]
+    canActivate: [RoleGuard],
+    data: {
+      role: PlRole.USER_MANAGEMENT
+    }
   },
   {
     path: 'login',
     component: LoginComponent,
-    canActivate: [NotAuthGuard]
+    canActivate: [NotAuthenticated]
   },
   {
     path: 'changePassword',
     component: ChangePasswordComponent,
-    canActivate: [ChangePasswordGuard]
+    canActivate: [RequiredPasswordChange]
   },
   {path: '**', redirectTo: ''}
 ];

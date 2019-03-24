@@ -11,7 +11,7 @@ export class AuthInjector implements HttpInterceptor {
       if (this.auth.isLoggedIn() || this.auth.isPasswordChangeRequired()) {
         request = request.clone({
           setHeaders: {
-              Authorization: `Bearer ${this.auth.getToken()}`
+              Authorization: `Bearer ${this.auth.getToken().data}`
           }
         });
       }
