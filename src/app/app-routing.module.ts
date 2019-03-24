@@ -31,12 +31,18 @@ const routes: Routes = [
   {
     path: 'dataView',
     component: DataViewComponent,
-    canActivate: [AllLoggedIn]
+    canActivate: [RoleGuard],
+    data: {
+      role: PlRole.DATA_VIEW
+    }
   },
   {
     path: 'userManagement',
     component: UserManagementComponent,
-    canActivate: [AllLoggedIn]
+    canActivate: [RoleGuard],
+    data: {
+      role: PlRole.USER_MANAGEMENT
+    }
   },
   {
     path: 'userManagement/addUser',
@@ -49,12 +55,18 @@ const routes: Routes = [
   {
     path: 'createCard',
     component: CreateCardComponent,
-    canActivate: [AllLoggedIn]
+    canActivate: [RoleGuard],
+    data: {
+      role: PlRole.DATA_ENTRY
+    }
   },
   {
     path: 'userManagement/editUser/:username',
     component: EditUserComponent,
-    canActivate: [AllLoggedIn]
+    canActivate: [RoleGuard],
+    data: {
+      role: PlRole.USER_MANAGEMENT
+    }
   },
   {
     path: 'login',

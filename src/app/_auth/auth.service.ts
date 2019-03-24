@@ -16,7 +16,9 @@ import {User} from '../_dto/user/user';
 export class AuthService {
   private static badTokenPing = 0;
   private static logoutSequenceInitiated = false;
+  private static tokenCache: string;
   private MAXBADPING = 3;
+  private roleList = Object.keys(PlRole);
 
   constructor(private http: HttpClient, private router: Router) { }
 
@@ -36,6 +38,7 @@ export class AuthService {
             if (data.success) {
               const parsedUser: User = decode(data.data);
 
+              AuthService.tokenCache = data.data;
               if (parsedUser.passwordReset) {
                 sessionStorage.setItem('user_token', data.data);
                 this.router.navigate(['/resetPassword']);
@@ -61,6 +64,7 @@ export class AuthService {
   public logout() {
       localStorage.removeItem('user_token');
       sessionStorage.removeItem('user_token');
+      AuthService.tokenCache = undefined;
       this.router.navigate(['/loginRedirect']);
   }
 
@@ -69,10 +73,11 @@ export class AuthService {
       .subscribe(
         data => {
           if (data.success) {
+            AuthService.tokenCache = data.data;
             if (localStorage.hasOwnProperty('user_token')) {
-              localStorage.setItem('user_token', JSON.stringify(data.data));
+              localStorage.setItem('user_token', data.data);
             } else {
-              sessionStorage.setItem('user_token', JSON.stringify(data.data));
+              sessionStorage.setItem('user_token', data.data);
             }
           } else if (!data.success) {
             const newAlert = new Alert();
@@ -123,7 +128,6 @@ export class AuthService {
   public occasionalTokenValidate(): void {
     if (!AuthService.logoutSequenceInitiated) {
       if (this.isLoggedIn() || this.isPasswordChangeRequired()) {
-
         if (this.getParsedTokenExpiration().data <= Date.now() + (1000 * 60 * 3)) {
           const newAlert = new Alert();
           newAlert.title = 'Session Expiring';
@@ -279,6 +283,8 @@ export class AuthService {
     } else if (exp.data <= Date.now()) {
       localStorage.removeItem('user_token');
       sessionStorage.removeItem('user_token');
+      AuthService.tokenCache = undefined;
+      this.occasionalTokenValidate();
       return false;
     } else if (user.data.passwordReset) {
       return false;
@@ -300,6 +306,8 @@ export class AuthService {
     } else if (exp.data <= Date.now()) {
       localStorage.removeItem('user_token');
       sessionStorage.removeItem('user_token');
+      AuthService.tokenCache = undefined;
+      this.occasionalTokenValidate();
       return false;
     } else if (user.data.passwordReset) {
       return true;
@@ -334,14 +342,23 @@ export class AuthService {
     }
   }
 
-
-  public hasPermission(perm: PlRole): boolean {
+  public hasPermission(perm): boolean {
     const user: BasicDTO<User> = this.getParsedTokenUser();
 
     if (user.success) {
-      return user.data.permissions.includes(perm);
+      return user.data.permissions.includes(PlRole[this.roleList[perm]]);
     } else {
       return false;
+    }
+  }
+
+  public permissionCount(): number {
+    const user: BasicDTO<User> = this.getParsedTokenUser();
+
+    if (user.success) {
+      return user.data.permissions.length;
+    } else {
+      return -1;
     }
   }
 
@@ -351,15 +368,16 @@ export class AuthService {
   // =============================
 
   public getToken(): BasicDTO<string> {
-    let token: string;
-    if (localStorage.hasOwnProperty('user_token')) {
-      token = localStorage.getItem('user_token');
-    } else if (sessionStorage.hasOwnProperty('user_token')) {
-      token = sessionStorage.getItem('user_token');
+    if (!AuthService.tokenCache) {
+      if (localStorage.hasOwnProperty('user_token')) {
+        AuthService.tokenCache = localStorage.getItem('user_token');
+      } else if (sessionStorage.hasOwnProperty('user_token')) {
+        AuthService.tokenCache = sessionStorage.getItem('user_token');
+      }
     }
 
-    if (token) {
-      return new BasicDTO(true, token);
+    if (AuthService.tokenCache) {
+      return new BasicDTO(true, AuthService.tokenCache);
     } else {
       return new BasicDTO(false);
     }

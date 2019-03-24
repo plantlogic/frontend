@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Location} from '@angular/common';
-import {ActivatedRoute, CanActivate, Router} from '@angular/router';
+import {ActivatedRoute, ActivatedRouteSnapshot, CanActivate, Router} from '@angular/router';
 import {AuthService} from './auth.service';
 import {PlRole} from '../_dto/user/pl-role.enum';
 
@@ -61,12 +61,10 @@ export class RequiredPasswordChange implements CanActivate {
   providedIn: 'root'
 })
 export class RoleGuard implements CanActivate {
-  constructor(private auth: AuthService, private router: Router, private route: ActivatedRoute) {}
+  constructor(private auth: AuthService, private router: Router) {}
 
-  canActivate() {
-    const role: PlRole = this.route.snapshot.data.role;
-
-    if (this.auth.isLoggedIn() && this.auth.hasPermission(role)) {
+  canActivate(route: ActivatedRouteSnapshot) {
+    if (this.auth.isLoggedIn() && this.auth.hasPermission(route.data.role)) {
       return true;
     } else {
       this.router.navigate(['/']);
