@@ -14,16 +14,30 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { AlertComponent } from './_interact/alert/alert.component';
 import { DataViewComponent } from './data-view/data-view.component';
 import { UserManagementComponent } from './user/management/user-management.component';
-import { LoginComponent } from './login/login.component';
+import { LoginComponent } from './user/login/login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthRedirectComponent } from './redirects/auth-redirect/auth-redirect.component';
-import { CreateCardComponent } from './create-card/create-card.component';
+import { CreateCardComponent } from './card/entry/create/create-card.component';
 import { AddUserComponent } from './user/management/add-user/add-user.component';
 import { LoginRedirectComponent } from './redirects/login-redirect/login-redirect.component';
 import { UnderscoreToSpace } from './_pipe/underscore-to-space';
 import { ChangePasswordComponent } from './user/self/change-password/change-password.component';
-import { ForgotPasswordComponent } from './login/forgot-password/forgot-password.component';
+import { ForgotPasswordComponent } from './user/login/forgot-password/forgot-password.component';
 import { EditUserComponent } from './user/management/edit-user/edit-user.component';
+import { EntryComponent } from './card/entry/entry.component';
+import { IrrigationComponent } from './card/entry/irrigation/irrigation.component';
+import { TractorComponent } from './card/entry/tractor/tractor.component';
+import { ManagementComponent } from './card/management/management.component';
+import { ExportComponent } from './card/management/export/export.component';
+import { OpenComponent } from './card/management/open/open.component';
+import { AdminComponent } from './card/admin/admin.component';
+import { CloseComponent } from './card/entry/open/close/close.component';
+import { OpenCardComponent } from './card/management/open/open-card.component';
+import { AddTractorComponent } from './card/entry/open/add-tractor/add-tractor.component';
+import { AddIrrigationComponent } from './card/entry/open/add-irrigation/add-irrigation.component';
+import { CloseCardComponent } from './card/entry/open/close/close-card.component';
+import { ViewCardComponent } from './card/management/view-card/view-card.component';
+import { OpenCardEntryComponent } from './card/entry/open/open-card-entry.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +55,21 @@ import { EditUserComponent } from './user/management/edit-user/edit-user.compone
     UnderscoreToSpace,
     ChangePasswordComponent,
     ForgotPasswordComponent,
-    EditUserComponent
+    EditUserComponent,
+    EntryComponent,
+    IrrigationComponent,
+    TractorComponent,
+    ManagementComponent,
+    ExportComponent,
+    OpenComponent,
+    AdminComponent,
+    CloseComponent,
+    OpenCardComponent,
+    AddTractorComponent,
+    AddIrrigationComponent,
+    CloseCardComponent,
+    ViewCardComponent,
+    OpenCardEntryComponent
   ],
   imports: [
     BrowserModule,

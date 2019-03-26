@@ -1,7 +1,7 @@
-import { AuthService } from '../_auth/auth.service';
-import { TitleService } from '../_interact/title.service';
+import { AuthService } from '../../_auth/auth.service';
+import { TitleService } from '../../_interact/title.service';
 import { Component, OnInit } from '@angular/core';
-import { AlertService } from '../_interact/alert/alert.service';
+import { AlertService } from '../../_interact/alert/alert.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({

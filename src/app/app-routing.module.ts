@@ -1,9 +1,7 @@
 import { ChangePasswordComponent } from './user/self/change-password/change-password.component';
 import { AddUserComponent } from './user/management/add-user/add-user.component';
-import { CreateCardComponent } from './create-card/create-card.component';
 import { UserManagementComponent } from './user/management/user-management.component';
-import { DataViewComponent } from './data-view/data-view.component';
-import { LoginComponent } from './login/login.component';
+import { LoginComponent } from './user/login/login.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './home/home.component';
@@ -12,30 +10,37 @@ import { AuthRedirectComponent } from './redirects/auth-redirect/auth-redirect.c
 import { LoginRedirectComponent } from './redirects/login-redirect/login-redirect.component';
 import { EditUserComponent } from './user/management/edit-user/edit-user.component';
 import {PlRole} from './_dto/user/pl-role.enum';
+import {EntryComponent} from './card/entry/entry.component';
+import {CreateCardComponent} from './card/entry/create/create-card.component';
 
 
 const routes: Routes = [
+  // Redirects
   {
     path: '',
     component: AuthRedirectComponent,
+  },
+  {
+    path: 'loginRedirect',
+    component: LoginRedirectComponent
+  },
+  // Basic Functions
+  {
+    path: 'login',
+    component: LoginComponent,
+    canActivate: [NotAuthenticated]
+  },
+  {
+    path: 'changePassword',
+    component: ChangePasswordComponent,
+    canActivate: [RequiredPasswordChange]
   },
   {
     path: 'home',
     component: HomeComponent,
     canActivate: [AllLoggedIn]
   },
-  {
-    path: 'loginRedirect',
-    component: LoginRedirectComponent
-  },
-  {
-    path: 'dataView',
-    component: DataViewComponent,
-    canActivate: [RoleGuard],
-    data: {
-      role: PlRole.DATA_VIEW
-    }
-  },
+  // User Management
   {
     path: 'userManagement',
     component: UserManagementComponent,
@@ -53,14 +58,6 @@ const routes: Routes = [
     }
   },
   {
-    path: 'createCard',
-    component: CreateCardComponent,
-    canActivate: [RoleGuard],
-    data: {
-      role: PlRole.DATA_ENTRY
-    }
-  },
-  {
     path: 'userManagement/editUser/:username',
     component: EditUserComponent,
     canActivate: [RoleGuard],
@@ -68,15 +65,30 @@ const routes: Routes = [
       role: PlRole.USER_MANAGEMENT
     }
   },
+  // Card Entry
   {
-    path: 'login',
-    component: LoginComponent,
-    canActivate: [NotAuthenticated]
+    path: 'entry',
+    component: EntryComponent,
+    canActivate: [RoleGuard],
+    data: {
+      role: PlRole.DATA_ENTRY
+    }
   },
   {
-    path: 'changePassword',
-    component: ChangePasswordComponent,
-    canActivate: [RequiredPasswordChange]
+    path: 'entry/#/',
+    component: CreateCardComponent,
+    canActivate: [RoleGuard],
+    data: {
+      role: PlRole.DATA_ENTRY
+    }
+  },
+  {
+    path: 'entry/irrigation',
+    component: CreateCardComponent,
+    canActivate: [RoleGuard],
+    data: {
+      role: PlRole.DATA_ENTRY
+    }
   },
   {path: '**', redirectTo: ''}
 ];
