@@ -32,6 +32,7 @@ const routes: Routes = [
     path: 'loginRedirect',
     component: LoginRedirectComponent
   },
+
   // Basic Functions
   {
     path: 'login',
@@ -48,6 +49,7 @@ const routes: Routes = [
     component: HomeComponent,
     canActivate: [AllLoggedIn]
   },
+
   // User Management
   {
     path: 'userManagement',
@@ -73,6 +75,7 @@ const routes: Routes = [
       role: PlRole.USER_MANAGEMENT
     }
   },
+
   // Card Entry
   {
     path: 'entry',
@@ -122,6 +125,7 @@ const routes: Routes = [
       role: PlRole.DATA_ENTRY
     }
   },
+
   // Card Management
   {
     path: 'manage',
@@ -147,6 +151,7 @@ const routes: Routes = [
       role: PlRole.DATA_VIEW
     }
   },
+
   // App Administration
   {
     path: 'admin',
