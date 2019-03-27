@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DataViewComponent } from './data-view.component';
+import { OpenCardDataComponent } from './open-card-data.component';
 
-describe('DataViewComponent', () => {
-  let component: DataViewComponent;
-  let fixture: ComponentFixture<DataViewComponent>;
+describe('OpenCardDataComponent', () => {
+  let component: OpenCardDataComponent;
+  let fixture: ComponentFixture<OpenCardDataComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DataViewComponent ]
+      declarations: [ OpenCardDataComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DataViewComponent);
+    fixture = TestBed.createComponent(OpenCardDataComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

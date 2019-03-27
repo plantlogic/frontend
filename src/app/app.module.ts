@@ -1,5 +1,5 @@
 import { AuthInjector } from './_auth/auth.injector';
-import { HttpClientModule, HttpClientXsrfModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 
@@ -12,18 +12,27 @@ import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { HomeComponent } from './home/home.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { AlertComponent } from './_interact/alert/alert.component';
-import { DataViewComponent } from './data-view/data-view.component';
 import { UserManagementComponent } from './user/management/user-management.component';
-import { LoginComponent } from './login/login.component';
+import { LoginComponent } from './user/login/login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthRedirectComponent } from './redirects/auth-redirect/auth-redirect.component';
-import { CreateCardComponent } from './create-card/create-card.component';
+import { CreateCardEntryComponent } from './card/entry/create/create-card-entry.component';
 import { AddUserComponent } from './user/management/add-user/add-user.component';
 import { LoginRedirectComponent } from './redirects/login-redirect/login-redirect.component';
 import { UnderscoreToSpace } from './_pipe/underscore-to-space';
 import { ChangePasswordComponent } from './user/self/change-password/change-password.component';
-import { ForgotPasswordComponent } from './login/forgot-password/forgot-password.component';
+import { ForgotPasswordComponent } from './user/login/forgot-password/forgot-password.component';
 import { EditUserComponent } from './user/management/edit-user/edit-user.component';
+import {EntryDashboardComponent} from './card/entry/entry-dashboard.component';
+import {OpenCardEntryComponent} from './card/entry/open/open-card-entry.component';
+import {CloseCardEntryComponent} from './card/entry/open/close/close-card-entry.component';
+import {AddTractorEntryComponent} from './card/entry/open/add-tractor/add-tractor-entry.component';
+import {AddIrrigationEntryComponent} from './card/entry/open/add-irrigation/add-irrigation-entry.component';
+import {CardManagementComponent} from './card/management/card-management.component';
+import {OpenCardDataComponent} from './card/management/open/open-card-data.component';
+import {ExportCardDataComponent} from './card/management/export/export-card-data.component';
+import {AppAdminComponent} from './card/admin/app-admin.component';
+
 
 @NgModule({
   declarations: [
@@ -31,17 +40,26 @@ import { EditUserComponent } from './user/management/edit-user/edit-user.compone
     HomeComponent,
     NavbarComponent,
     AlertComponent,
-    DataViewComponent,
     UserManagementComponent,
     LoginComponent,
     AuthRedirectComponent,
-    CreateCardComponent,
+    CreateCardEntryComponent,
     AddUserComponent,
     LoginRedirectComponent,
     UnderscoreToSpace,
     ChangePasswordComponent,
     ForgotPasswordComponent,
-    EditUserComponent
+    EditUserComponent,
+    EntryDashboardComponent,
+    OpenCardEntryComponent,
+    CloseCardEntryComponent,
+    AddTractorEntryComponent,
+    AddIrrigationEntryComponent,
+    CreateCardEntryComponent,
+    CardManagementComponent,
+    OpenCardDataComponent,
+    ExportCardDataComponent,
+    AppAdminComponent
   ],
   imports: [
     BrowserModule,
