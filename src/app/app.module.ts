@@ -1,5 +1,5 @@
 import { AuthInjector } from './_auth/auth.injector';
-import { HttpClientModule, HttpClientXsrfModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 
@@ -12,7 +12,6 @@ import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { HomeComponent } from './home/home.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { AlertComponent } from './_interact/alert/alert.component';
-import { DataViewComponent } from './data-view/data-view.component';
 import { UserManagementComponent } from './user/management/user-management.component';
 import { LoginComponent } from './user/login/login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -24,20 +23,16 @@ import { UnderscoreToSpace } from './_pipe/underscore-to-space';
 import { ChangePasswordComponent } from './user/self/change-password/change-password.component';
 import { ForgotPasswordComponent } from './user/login/forgot-password/forgot-password.component';
 import { EditUserComponent } from './user/management/edit-user/edit-user.component';
-import { EntryComponent } from './card/entry/entry.component';
-import { IrrigationComponent } from './card/entry/irrigation/irrigation.component';
-import { TractorComponent } from './card/entry/tractor/tractor.component';
-import { ManagementComponent } from './card/management/management.component';
-import { ExportComponent } from './card/management/export/export.component';
-import { OpenComponent } from './card/management/open/open.component';
-import { AdminComponent } from './card/admin/admin.component';
-import { CloseComponent } from './card/entry/open/close/close.component';
-import { OpenCardComponent } from './card/management/open/open-card.component';
-import { AddTractorComponent } from './card/entry/open/add-tractor/add-tractor.component';
-import { AddIrrigationComponent } from './card/entry/open/add-irrigation/add-irrigation.component';
-import { CloseCardComponent } from './card/entry/open/close/close-card.component';
-import { ViewCardComponent } from './card/management/view-card/view-card.component';
-import { OpenCardEntryComponent } from './card/entry/open/open-card-entry.component';
+import {EntryComponent} from './card/entry/entry.component';
+import {OpenCardEntryComponent} from './card/entry/open/open-card-entry.component';
+import {CloseCardComponent} from './card/entry/open/close/close-card.component';
+import {AddTractorComponent} from './card/entry/open/add-tractor/add-tractor.component';
+import {AddIrrigationComponent} from './card/entry/open/add-irrigation/add-irrigation.component';
+import {ManagementComponent} from './card/management/management.component';
+import {OpenCardComponent} from './card/management/open/open-card.component';
+import {ExportComponent} from './card/management/export/export.component';
+import {AdminComponent} from './card/admin/admin.component';
+
 
 @NgModule({
   declarations: [
@@ -45,7 +40,6 @@ import { OpenCardEntryComponent } from './card/entry/open/open-card-entry.compon
     HomeComponent,
     NavbarComponent,
     AlertComponent,
-    DataViewComponent,
     UserManagementComponent,
     LoginComponent,
     AuthRedirectComponent,
@@ -57,19 +51,15 @@ import { OpenCardEntryComponent } from './card/entry/open/open-card-entry.compon
     ForgotPasswordComponent,
     EditUserComponent,
     EntryComponent,
-    IrrigationComponent,
-    TractorComponent,
-    ManagementComponent,
-    ExportComponent,
-    OpenComponent,
-    AdminComponent,
-    CloseComponent,
-    OpenCardComponent,
+    OpenCardEntryComponent,
+    CloseCardComponent,
     AddTractorComponent,
     AddIrrigationComponent,
-    CloseCardComponent,
-    ViewCardComponent,
-    OpenCardEntryComponent
+    CreateCardComponent,
+    ManagementComponent,
+    OpenCardComponent,
+    ExportComponent,
+    AdminComponent
   ],
   imports: [
     BrowserModule,

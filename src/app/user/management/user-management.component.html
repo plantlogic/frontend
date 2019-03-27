@@ -9,8 +9,8 @@
     <div class="col text-center" *ngIf="users">
         <button type="button"color="primary" name="addUser" outline="true" disabled
         mdbBtn floating="true" size="sm">
-        <span *ngIf="!backendFilter">Total Users: </span>
-        <span *ngIf="backendFilter">Search Results: </span>
+        <span *ngIf="!filter">Total Users: </span>
+        <span *ngIf="filter">Search Results: </span>
         <b>{{users.length}}</b>
       </button>
       </div>

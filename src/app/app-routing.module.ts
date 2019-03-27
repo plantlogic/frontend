@@ -12,6 +12,14 @@ import { EditUserComponent } from './user/management/edit-user/edit-user.compone
 import {PlRole} from './_dto/user/pl-role.enum';
 import {EntryComponent} from './card/entry/entry.component';
 import {CreateCardComponent} from './card/entry/create/create-card.component';
+import {OpenCardEntryComponent} from './card/entry/open/open-card-entry.component';
+import {AddIrrigationComponent} from './card/entry/open/add-irrigation/add-irrigation.component';
+import {AddTractorComponent} from './card/entry/open/add-tractor/add-tractor.component';
+import {CloseCardComponent} from './card/entry/open/close/close-card.component';
+import {ManagementComponent} from './card/management/management.component';
+import {OpenCardComponent} from './card/management/open/open-card.component';
+import {ExportComponent} from './card/management/export/export.component';
+import {AdminComponent} from './card/admin/admin.component';
 
 
 const routes: Routes = [
@@ -75,7 +83,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'entry/#/',
+    path: 'entry/create',
     component: CreateCardComponent,
     canActivate: [RoleGuard],
     data: {
@@ -83,11 +91,69 @@ const routes: Routes = [
     }
   },
   {
-    path: 'entry/irrigation',
-    component: CreateCardComponent,
+    path: 'entry/o/:id',
+    component: OpenCardEntryComponent,
     canActivate: [RoleGuard],
     data: {
       role: PlRole.DATA_ENTRY
+    }
+  },
+  {
+    path: 'entry/o/:id/add/irrigation',
+    component: AddIrrigationComponent,
+    canActivate: [RoleGuard],
+    data: {
+      role: PlRole.DATA_ENTRY
+    }
+  },
+  {
+    path: 'entry/o/:id/add/tractor',
+    component: AddTractorComponent,
+    canActivate: [RoleGuard],
+    data: {
+      role: PlRole.DATA_ENTRY
+    }
+  },
+  {
+    path: 'entry/o/:id/close',
+    component: CloseCardComponent,
+    canActivate: [RoleGuard],
+    data: {
+      role: PlRole.DATA_ENTRY
+    }
+  },
+  // Card Management
+  {
+    path: 'manage',
+    component: ManagementComponent,
+    canActivate: [RoleGuard],
+    data: {
+      role: PlRole.DATA_VIEW
+    }
+  },
+  {
+    path: 'manage/o/:id',
+    component: OpenCardComponent,
+    canActivate: [RoleGuard],
+    data: {
+      role: PlRole.DATA_VIEW
+    }
+  },
+  {
+    path: 'manage/export',
+    component: ExportComponent,
+    canActivate: [RoleGuard],
+    data: {
+      role: PlRole.DATA_VIEW
+    }
+  },
+  // App Administration
+  {
+    path: 'admin',
+    component: AdminComponent,
+    canActivate: [RoleGuard],
+    data: {
+      role: PlRole.APP_ADMIN
     }
   },
   {path: '**', redirectTo: ''}
