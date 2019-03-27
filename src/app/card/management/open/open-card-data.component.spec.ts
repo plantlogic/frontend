@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddIrrigationComponent } from './add-irrigation.component';
+import { OpenCardDataComponent } from './open-card-data.component';
 
-describe('AddIrrigationComponent', () => {
-  let component: AddIrrigationComponent;
-  let fixture: ComponentFixture<AddIrrigationComponent>;
+describe('OpenCardDataComponent', () => {
+  let component: OpenCardDataComponent;
+  let fixture: ComponentFixture<OpenCardDataComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AddIrrigationComponent ]
+      declarations: [ OpenCardDataComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AddIrrigationComponent);
+    fixture = TestBed.createComponent(OpenCardDataComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ManagementComponent } from './management.component';
+import { CloseCardEntryComponent } from './close-card-entry.component';
 
-describe('ManagementComponent', () => {
-  let component: ManagementComponent;
-  let fixture: ComponentFixture<ManagementComponent>;
+describe('CloseCardEntryComponent', () => {
+  let component: CloseCardEntryComponent;
+  let fixture: ComponentFixture<CloseCardEntryComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ManagementComponent ]
+      declarations: [ CloseCardEntryComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ManagementComponent);
+    fixture = TestBed.createComponent(CloseCardEntryComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

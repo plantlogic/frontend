@@ -10,16 +10,16 @@ import { AuthRedirectComponent } from './redirects/auth-redirect/auth-redirect.c
 import { LoginRedirectComponent } from './redirects/login-redirect/login-redirect.component';
 import { EditUserComponent } from './user/management/edit-user/edit-user.component';
 import {PlRole} from './_dto/user/pl-role.enum';
-import {EntryComponent} from './card/entry/entry.component';
-import {CreateCardComponent} from './card/entry/create/create-card.component';
+import {EntryDashboardComponent} from './card/entry/entry-dashboard.component';
+import {CreateCardEntryComponent} from './card/entry/create/create-card-entry.component';
 import {OpenCardEntryComponent} from './card/entry/open/open-card-entry.component';
-import {AddIrrigationComponent} from './card/entry/open/add-irrigation/add-irrigation.component';
-import {AddTractorComponent} from './card/entry/open/add-tractor/add-tractor.component';
-import {CloseCardComponent} from './card/entry/open/close/close-card.component';
-import {ManagementComponent} from './card/management/management.component';
-import {OpenCardComponent} from './card/management/open/open-card.component';
-import {ExportComponent} from './card/management/export/export.component';
-import {AdminComponent} from './card/admin/admin.component';
+import {AddIrrigationEntryComponent} from './card/entry/open/add-irrigation/add-irrigation-entry.component';
+import {AddTractorEntryComponent} from './card/entry/open/add-tractor/add-tractor-entry.component';
+import {CloseCardEntryComponent} from './card/entry/open/close/close-card-entry.component';
+import {CardManagementComponent} from './card/management/card-management.component';
+import {OpenCardDataComponent} from './card/management/open/open-card-data.component';
+import {ExportCardDataComponent} from './card/management/export/export-card-data.component';
+import {AppAdminComponent} from './card/admin/app-admin.component';
 
 
 const routes: Routes = [
@@ -76,7 +76,7 @@ const routes: Routes = [
   // Card Entry
   {
     path: 'entry',
-    component: EntryComponent,
+    component: EntryDashboardComponent,
     canActivate: [RoleGuard],
     data: {
       role: PlRole.DATA_ENTRY
@@ -84,7 +84,7 @@ const routes: Routes = [
   },
   {
     path: 'entry/create',
-    component: CreateCardComponent,
+    component: CreateCardEntryComponent,
     canActivate: [RoleGuard],
     data: {
       role: PlRole.DATA_ENTRY
@@ -100,7 +100,7 @@ const routes: Routes = [
   },
   {
     path: 'entry/o/:id/add/irrigation',
-    component: AddIrrigationComponent,
+    component: AddIrrigationEntryComponent,
     canActivate: [RoleGuard],
     data: {
       role: PlRole.DATA_ENTRY
@@ -108,7 +108,7 @@ const routes: Routes = [
   },
   {
     path: 'entry/o/:id/add/tractor',
-    component: AddTractorComponent,
+    component: AddTractorEntryComponent,
     canActivate: [RoleGuard],
     data: {
       role: PlRole.DATA_ENTRY
@@ -116,7 +116,7 @@ const routes: Routes = [
   },
   {
     path: 'entry/o/:id/close',
-    component: CloseCardComponent,
+    component: CloseCardEntryComponent,
     canActivate: [RoleGuard],
     data: {
       role: PlRole.DATA_ENTRY
@@ -125,7 +125,7 @@ const routes: Routes = [
   // Card Management
   {
     path: 'manage',
-    component: ManagementComponent,
+    component: CardManagementComponent,
     canActivate: [RoleGuard],
     data: {
       role: PlRole.DATA_VIEW
@@ -133,7 +133,7 @@ const routes: Routes = [
   },
   {
     path: 'manage/o/:id',
-    component: OpenCardComponent,
+    component: OpenCardDataComponent,
     canActivate: [RoleGuard],
     data: {
       role: PlRole.DATA_VIEW
@@ -141,7 +141,7 @@ const routes: Routes = [
   },
   {
     path: 'manage/export',
-    component: ExportComponent,
+    component: ExportCardDataComponent,
     canActivate: [RoleGuard],
     data: {
       role: PlRole.DATA_VIEW
@@ -150,7 +150,7 @@ const routes: Routes = [
   // App Administration
   {
     path: 'admin',
-    component: AdminComponent,
+    component: AppAdminComponent,
     canActivate: [RoleGuard],
     data: {
       role: PlRole.APP_ADMIN

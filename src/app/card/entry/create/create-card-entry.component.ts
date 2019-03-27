@@ -6,10 +6,10 @@ import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-create-card',
-  templateUrl: './create-card.component.html',
-  styleUrls: ['./create-card.component.scss']
+  templateUrl: './create-card-entry.component.html',
+  styleUrls: ['./create-card-entry.component.scss']
 })
-export class CreateCardComponent implements OnInit {
+export class CreateCardEntryComponent implements OnInit {
   form: FormGroup;
   submitAttempted = false;
   // cardModel = new Card('1', 20, 5, 2019, 3, 'Lettuce', 'Iceberg', 100, 4, 40, '');

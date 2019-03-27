@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EntryComponent } from './entry.component';
+import { ExportCardDataComponent } from './export-card-data.component';
 
-describe('EntryComponent', () => {
-  let component: EntryComponent;
-  let fixture: ComponentFixture<EntryComponent>;
+describe('ExportCardDataComponent', () => {
+  let component: ExportCardDataComponent;
+  let fixture: ComponentFixture<ExportCardDataComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ EntryComponent ]
+      declarations: [ ExportCardDataComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(EntryComponent);
+    fixture = TestBed.createComponent(ExportCardDataComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

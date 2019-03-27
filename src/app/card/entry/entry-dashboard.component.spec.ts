@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CloseCardComponent } from './close-card.component';
+import { EntryDashboardComponent } from './entry-dashboard.component';
 
-describe('CloseCardComponent', () => {
-  let component: CloseCardComponent;
-  let fixture: ComponentFixture<CloseCardComponent>;
+describe('EntryDashboardComponent', () => {
+  let component: EntryDashboardComponent;
+  let fixture: ComponentFixture<EntryDashboardComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CloseCardComponent ]
+      declarations: [ EntryDashboardComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CloseCardComponent);
+    fixture = TestBed.createComponent(EntryDashboardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
