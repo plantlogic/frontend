@@ -1,6 +1,90 @@
-<button class="button button-primary" routerLink="/entry/create">Create Card</button>
-<button class="button button-primary" routerLink="/entry/o/cardIdHere">Open A Card</button>
-
-<p>
-  List of user's currently open cards with options to view and add tractor/irrigation data + 'new card' button
-</p>
+<div class="jumbotron p-3">
+  <div class="row">
+    <div class="col">
+      <form class="form-inline">
+        <input class="form-control mr-sm-2" name="filter" type="search" placeholder="Search" aria-label="Search" mdbInput>
+      </form>
+    </div>
+    <div class="col text-center">
+    <!-- <div class="col text-center" *ngIf="users"> -->
+      <button type="button"color="primary" name="addUser" outline="true" disabled
+      mdbBtn floating="true" size="sm">
+      <span>Open Cards: 1</span>
+      <!-- <span>Search Results: </span> -->
+      <!-- <span *ngIf="!filter">Total Users: </span>
+      <span *ngIf="filter">Search Results: </span> -->
+      <!-- <b>{{users.length}}</b> -->
+      </button>
+    </div>
+    <div class="col">
+      <button type="button" class="float-right" color="primary" routerLink="/entry/create"
+      mdbBtn floating="true" size="sm" mdbWavesEffect>Create Card<i class="fa fa-plus ml-1" aria-hidden="true"></i></button>
+    </div>
+  </div>
+  <hr class="my-4">
+  <div class="row">
+      <div class="col">
+        <!-- <h2 *ngIf="!users">Loading data...</h2> -->
+        <!-- <table mdbTable *ngIf="users"> -->
+          <thead>
+            <tr>
+              <!-- <th scope="col" [mdbTableSort]="users" [sortBy]="'username'">
+                Username <i class="fa fa-sort ml-1"></i>
+              </th>
+              <th scope="col" [mdbTableSort]="users" [sortBy]="'realName'">
+                Name <i class="fa fa-sort ml-1"></i>
+              </th>
+              <th scope="col" [mdbTableSort]="users" [sortBy]="'email'" class="d-none d-md-table-cell">
+                Email <i class="fa fa-sort ml-1"></i>
+              </th>
+              <th scope="col" [mdbTableSort]="users" [sortBy]="'passwordUpdated'" class="d-none d-md-table-cell">
+                Password Last Updated <i class="fa fa-sort ml-1"></i>
+              </th>
+              <th scope="col" [mdbTableSort]="users" [sortBy]="'permissions'" class="d-none d-md-table-cell">
+                Permissions <i class="fa fa-sort ml-1"></i>
+              </th>
+              <th scope="col">Options</th> -->
+            </tr>
+          </thead>
+          <!-- <tbody> -->
+            <!-- <tr mdbTableCol *ngFor="let p of users; let i = index" class="animated fadeIn" [style.animation-delay]="this.min((30*i), 1000)+ 'ms'"> -->
+            <!-- <tr mdbTableCol class="animated fadeIn">
+              <td class="d-none d-md-table-cell">Del Monte Ranch</td> -->
+              <!-- <td class="d-none d-md-table-cell">Buena Vista Ranch</td> -->
+              <!-- <td>{{p.realName}}</td>
+              <td class="d-none d-md-table-cell">{{p.email}}</td>
+              <td class="d-none d-md-table-cell">{{p.passwordUpdated | date:'longDate'}}</td>
+              <td class="d-none d-md-table-cell">
+                <div *ngIf="p.permissions.length <= 0" class="badge badge-dark text-wrap">
+                  User Disabled:
+                  <div *ngIf="p.passwordReset" class="mt-1">Password Change Required</div>
+                  <div *ngIf="!p.passwordReset" class="mt-1">User Has No Permissions</div>
+                </div>
+                <div *ngFor="let r of p.permissions; let i = index">
+                  <span class="badge mr-1"
+                  [class.badge-success]="r == 'DATA_ENTRY'" [class.badge-info]="r == 'DATA_VIEW'"
+                  [class.badge-primary]="r == 'DATA_EDIT'" [class.badge-danger]="r == 'USER_MANAGEMENT'"
+                  [class.badge-warning]="r == 'APP_ADMIN'">
+                    {{r | underscoreToSpace | titlecase}}
+                  </span>
+                </div> -->
+              <!-- </td> -->
+              <!-- <td> -->
+                <!-- <button type="button" color="amber" [routerLink]="['/userManagement/editUser', p.username]"
+                        alt="Edit User" class="mr-1 mb-1" mdbBtn floating="true" size="sm"
+                        mdbWavesEffect>Edit <i class="ml-1 fa fa-edit" aria-hidden="true"></i></button> -->
+              <!-- </td> -->
+            <!-- </tr>
+          </tbody> -->
+        <!-- </table> -->
+        <div class="row">
+            <div class="col">
+              Del Monte Ranch
+              <button type="button" color="amber" routerLink="/entry/o/cardIdHere"
+              alt="Edit User" class="float-right" mdbBtn floating="true" size="sm"
+              mdbWavesEffect>Open Card <i class="ml-1 fa fa-edit" aria-hidden="true"></i></button>
+            </div>
+        </div>
+      </div>
+    </div>
+</div>
