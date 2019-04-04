@@ -1,7 +1,18 @@
-<p>
-  Used to view card data and irrigation/tractor data - cannot be edited. Links to add irrigation/tractor data
-</p>
+<div class="jumbotron p-3">
+  <div class="row">
+    <div class="col">
+      <button type="button" class="btn btn-warning float-right ml-1" routerLink="/entry/o/cardIdHere/add/tractor">
+        <span class="d-md-none">+ </span>
+        <span class="d-none d-md-inline-block">Add </span>
+        <i class="fas fa-tractor ml-1"></i>
+      </button>
+      <button type="button" class="btn btn-primary ml-1 float-right" routerLink="/entry/o/cardIdHere/add/irrigation">
+        <span class="d-md-none">+ </span>
+        <span class="d-none d-md-inline-block">Add </span>
+        <i class="fas fa-tint ml-1"></i>
+      </button>
+    </div>
+  </div>
+</div>
 
-<button class="button button-primary" routerLink="/entry/o/cardIdHere/close">Close This Card</button>
-<button class="button button-primary" routerLink="/entry/o/cardIdHere/add/irrigation">Add Irrigation Data</button>
-<button class="button button-primary" routerLink="/entry/o/cardIdHere/add/tractor">Add Tractor Data</button>
+<button class="button button-primary" routerLink="/entry/o/cardIdHere/close">Close Card</button>
