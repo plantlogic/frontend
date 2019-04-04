@@ -2,6 +2,8 @@ import { AuthService } from './../_auth/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { TitleService } from '../_interact/title.service';
 import { PlRole } from '../_dto/user/pl-role.enum';
+import {Router} from '@angular/router';
+import {NavService} from '../_interact/nav.service';
 
 @Component({
   selector: 'app-navbar',
@@ -12,10 +14,10 @@ export class NavbarComponent implements OnInit {
   // Allows for use in template
   role = PlRole;
 
-  constructor(public titleService: TitleService, private auth: AuthService) {}
+  constructor(public titleService: TitleService, private auth: AuthService, private router: Router,
+              private navService: NavService) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   hasRole(x: PlRole): boolean {
     return this.auth.hasPermission(x);
@@ -31,5 +33,13 @@ export class NavbarComponent implements OnInit {
 
   logout(): void {
     this.auth.logout();
+  }
+
+  goBack(): void {
+    this.navService.goBack();
+  }
+
+  hasParent(): boolean {
+    return this.navService.hasParent();
   }
 }

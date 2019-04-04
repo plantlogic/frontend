@@ -2,5 +2,6 @@
 <app-navbar></app-navbar>
 <div class="container">
   <app-alert></app-alert>
-  <router-outlet></router-outlet>
+  <app-back-button></app-back-button>
+  <router-outlet (activate)="onActivate($event)"></router-outlet>
 </div>

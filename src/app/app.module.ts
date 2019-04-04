@@ -32,6 +32,7 @@ import {CardManagementComponent} from './card/management/card-management.compone
 import {OpenCardDataComponent} from './card/management/open/open-card-data.component';
 import {ExportCardDataComponent} from './card/management/export/export-card-data.component';
 import {AppAdminComponent} from './card/admin/app-admin.component';
+import { BackButtonComponent } from './navbar/back-button/back-button.component';
 
 
 @NgModule({
@@ -59,7 +60,8 @@ import {AppAdminComponent} from './card/admin/app-admin.component';
     CardManagementComponent,
     OpenCardDataComponent,
     ExportCardDataComponent,
-    AppAdminComponent
+    AppAdminComponent,
+    BackButtonComponent
   ],
   imports: [
     BrowserModule,

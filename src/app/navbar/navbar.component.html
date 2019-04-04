@@ -1,8 +1,15 @@
 <mdb-navbar SideClass="navbar navbar-expand-lg navbar-light amber lighten-1 mb-4">
   <mdb-navbar-brand>
-      <a routerLink="/" class="navbar-brand">
+    <!-- On Mobile -->
+      <a (click)="goBack()" class="navbar-brand d-md-none">
+        <i *ngIf="hasParent()" class="mr-1 my-auto fa fa-angle-left"></i>
         <img *ngIf="isLoggedIn()" src="/assets/images/logo.svg" height="30" class="mr-3">
-        <span class="d-none d-md-inline-block"><b>{{titleService.getSiteTitle()}}</b> |</span> {{titleService.getPageTitle()}}
+        {{titleService.getPageTitle()}}
+      </a>
+    <!-- On Desktop -->
+      <a (click)="goBack()" class="navbar-brand d-none d-md-inline-block">
+        <img *ngIf="isLoggedIn()" src="/assets/images/logo.svg" height="30" class="mr-3">
+        <b>{{titleService.getSiteTitle()}}</b> | {{titleService.getPageTitle()}}
       </a>
   </mdb-navbar-brand>
   <links *ngIf="isLoggedIn()">
