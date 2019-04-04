@@ -128,7 +128,7 @@ const routes: Routes = [
     component: CloseCardEntryComponent,
     canActivate: [RoleGuard],
     data: {
-      parent: '../../',
+      parent: '../',
       role: PlRole.DATA_ENTRY
     }
   },
