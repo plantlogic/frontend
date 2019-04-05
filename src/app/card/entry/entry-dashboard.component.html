@@ -1,91 +1,87 @@
 <div class="jumbotron p-3">
   <div class="row">
-    <div class="col">
-    <!-- <div class="col text-center" *ngIf="users"> -->
-      <button type="button"color="primary" name="addUser" outline="true" disabled
-      mdbBtn floating="true" size="sm">
-      <span>Open Cards: 1</span>
-      <!-- <span>Search Results: </span> -->
-      <!-- <span *ngIf="!filter">Total Users: </span>
-      <span *ngIf="filter">Search Results: </span> -->
-      <!-- <b>{{users.length}}</b> -->
+    <!-- Desktop Search -->
+    <div class="col d-none d-md-inline-block">
+      <form class="form-inline">
+        <input class="form-control mr-sm-2" name="filter" type="search" placeholder="Search" aria-label="Search"
+               [(ngModel)]="filter" (keyup)="filterItems()" mdbInput>
+      </form>
+    </div>
+    <!-- On Mobile -->
+    <div class="col d-md-none">
+      <button type="button"color="primary" name="cardCount" outline="true" disabled
+              mdbBtn floating="true" size="lg">
+        <span *ngIf="!filter">Cards: </span>
+        <span *ngIf="filter">Results: </span>
+        <b>{{cards.length}}</b>
       </button>
     </div>
-    <div class="col">
-      <button type="button" class="float-right" color="primary" routerLink="/entry/create"
-      mdbBtn floating="true" size="lg"><i class="fa fa-plus ml-1" aria-hidden="true"></i></button>
+    <!-- On Desktop -->
+    <div class="col d-none d-md-inline-block text-center">
+      <button type="button"color="primary" name="cardCount" outline="true" disabled
+              mdbBtn floating="true" size="sm">
+        <span *ngIf="!filter">Open Cards: </span>
+        <span *ngIf="filter">Search Results: </span>
+        <b>{{cards.length}}</b>
+      </button>
     </div>
-  </div>
-  <div class="row mt-3">
-    <div class="col">
+    <!-- On Mobile -->
+    <div class="col d-md-none">
+      <button type="button" class="float-right" color="primary" routerLink="/entry/create" name="addCard"
+              mdbBtn floating="true" size="lg"><i class="fa fa-plus ml-1" aria-hidden="true"></i></button>
+    </div>
+    <!-- On Desktop -->
+    <div class="col d-none d-md-inline-block">
+      <button type="button" class="float-right" color="primary" routerLink="/entry/create" name="addCard"
+              mdbBtn floating="true" size="sm" mdbWavesEffect>Add Card <i class="fa fa-plus ml-1" aria-hidden="true"></i></button>
+    </div>
+    <!-- Mobile Search -->
+    <div class="col-lg d-md-none mt-4">
       <form class="form-inline">
-        <input class="form-control mr-sm-2" name="filter" type="search" placeholder="Search" aria-label="Search" mdbInput>
+        <input class="form-control mr-sm-2" name="filter" type="search" placeholder="Search" aria-label="Search"
+               [(ngModel)]="filter" (keyup)="filterItems()" mdbInput>
       </form>
     </div>
   </div>
   <hr class="my-4">
   <div class="row">
       <div class="col">
-        <!-- <h2 *ngIf="!users">Loading data...</h2> -->
-        <!-- <table mdbTable *ngIf="users"> -->
+        <h2 *ngIf="!cards">Loading data...</h2>
+        <table mdbTable *ngIf="cards">
           <thead>
             <tr>
-              <!-- <th scope="col" [mdbTableSort]="users" [sortBy]="'username'">
-                Username <i class="fa fa-sort ml-1"></i>
+              <th scope="col" [mdbTableSort]="cards" [sortBy]="'ranchName'">
+                Ranch <span class="d-none d-md-inline-block">Name</span> <i class="fa fa-sort ml-1"></i>
               </th>
-              <th scope="col" [mdbTableSort]="users" [sortBy]="'realName'">
-                Name <i class="fa fa-sort ml-1"></i>
+              <th scope="col" [mdbTableSort]="cards" [sortBy]="'lotNumber'">
+                Lot # <i class="fa fa-sort ml-1"></i>
               </th>
-              <th scope="col" [mdbTableSort]="users" [sortBy]="'email'" class="d-none d-md-table-cell">
-                Email <i class="fa fa-sort ml-1"></i>
-              </th>
-              <th scope="col" [mdbTableSort]="users" [sortBy]="'passwordUpdated'" class="d-none d-md-table-cell">
-                Password Last Updated <i class="fa fa-sort ml-1"></i>
-              </th>
-              <th scope="col" [mdbTableSort]="users" [sortBy]="'permissions'" class="d-none d-md-table-cell">
-                Permissions <i class="fa fa-sort ml-1"></i>
-              </th>
-              <th scope="col">Options</th> -->
+              <th scope="col">Options</th>
             </tr>
           </thead>
-          <!-- <tbody> -->
-            <!-- <tr mdbTableCol *ngFor="let p of users; let i = index" class="animated fadeIn" [style.animation-delay]="this.min((30*i), 1000)+ 'ms'"> -->
-            <!-- <tr mdbTableCol class="animated fadeIn">
-              <td class="d-none d-md-table-cell">Del Monte Ranch</td> -->
-              <!-- <td class="d-none d-md-table-cell">Buena Vista Ranch</td> -->
-              <!-- <td>{{p.realName}}</td>
-              <td class="d-none d-md-table-cell">{{p.email}}</td>
-              <td class="d-none d-md-table-cell">{{p.passwordUpdated | date:'longDate'}}</td>
-              <td class="d-none d-md-table-cell">
-                <div *ngIf="p.permissions.length <= 0" class="badge badge-dark text-wrap">
-                  User Disabled:
-                  <div *ngIf="p.passwordReset" class="mt-1">Password Change Required</div>
-                  <div *ngIf="!p.passwordReset" class="mt-1">User Has No Permissions</div>
+          <tbody>
+            <tr mdbTableCol *ngFor="let p of cards; let i = index" class="animated fadeIn" [style.animation-delay]="this.min((30*i), 1000)+ 'ms'">
+              <td>{{p.ranchName}}</td>
+              <td>{{p.lotNumber}}</td>
+              <td>
+                <!-- On Mobile -->
+                <div class="d-md-none">
+                  <button type="button" color="success" [routerLink]="['/entry/o/', p.id]"
+                          alt="Open Card" class="float-right" mdbBtn floating="true" size="lg">
+                    <i class="ml-1 fa fa-external-link-alt" aria-hidden="true"></i>
+                  </button>
                 </div>
-                <div *ngFor="let r of p.permissions; let i = index">
-                  <span class="badge mr-1"
-                  [class.badge-success]="r == 'DATA_ENTRY'" [class.badge-info]="r == 'DATA_VIEW'"
-                  [class.badge-primary]="r == 'DATA_EDIT'" [class.badge-danger]="r == 'USER_MANAGEMENT'"
-                  [class.badge-warning]="r == 'APP_ADMIN'">
-                    {{r | underscoreToSpace | titlecase}}
-                  </span>
-                </div> -->
-              <!-- </td> -->
-              <!-- <td> -->
-                <!-- <button type="button" color="amber" [routerLink]="['/userManagement/editUser', p.username]"
-                        alt="Edit User" class="mr-1 mb-1" mdbBtn floating="true" size="sm"
-                        mdbWavesEffect>Edit <i class="ml-1 fa fa-edit" aria-hidden="true"></i></button> -->
-              <!-- </td> -->
-            <!-- </tr>
-          </tbody> -->
-        <!-- </table> -->
-        <div class="row">
-            <div class="col">
-              Del Monte Ranch
-              <button type="button" color="amber" routerLink="/entry/o/cardIdHere"
-              alt="Open Card" class="float-right" mdbBtn floating="true" size="lg"><i class="ml-1 fa fa-edit" aria-hidden="true"></i></button>
-            </div>
-        </div>
+                <!-- On Desktop -->
+                <div class="d-none d-md-inline-block">
+                  <button type="button" color="success" [routerLink]="['/entry/o/', p.id]"
+                          alt="Open Card" mdbBtn floating="true" size="sm">
+                    Open <i class="ml-1 fa fa-external-link-alt" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 </div>
