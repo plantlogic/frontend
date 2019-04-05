@@ -4,6 +4,8 @@ import {AlertService} from '../../_interact/alert/alert.service';
 import {TitleService} from '../../_interact/title.service';
 import {CardEntryService} from '../../_api/card-entry.service';
 import {MdbTableService} from 'angular-bootstrap-md';
+import {Router} from '@angular/router';
+import {NavService} from '../../_interact/nav.service';
 
 @Component({
   selector: 'app-entry',
@@ -11,7 +13,8 @@ import {MdbTableService} from 'angular-bootstrap-md';
   styleUrls: ['./entry-dashboard.component.scss']
 })
 export class EntryDashboardComponent implements OnInit {
-  constructor(private titleService: TitleService, private cardService: CardEntryService, private tableService: MdbTableService) { }
+  constructor(private titleService: TitleService, private cardService: CardEntryService, private tableService: MdbTableService,
+              private nav: NavService) { }
 
   cards: Card[];
   filter: string;
@@ -19,11 +22,11 @@ export class EntryDashboardComponent implements OnInit {
 
   ngOnInit() {
     this.titleService.setTitle('Open Cards');
-    this.loadUserData();
+    this.loadCardData();
   }
 
 
-  private loadUserData() {
+  private loadCardData() {
     this.cardService.getMyCards().subscribe(
       data => {
         if (data.success) {
