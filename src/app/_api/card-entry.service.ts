@@ -28,14 +28,14 @@ export class CardEntryService {
     return this.http.get<BasicDTO<Card>>(environment.ApiUrl + '/data/entry/ranches/' + id, this.httpOptions);
   }
 
-  public addTractorData(id: string, tractorEntry: TractorEntry) {
+  public addTractorData(id: string, tractorEntry: TractorEntry): Observable<BasicDTO<null>> {
     return this.http.post<BasicDTO<null>>(
       environment.ApiUrl + '/data/entry/ranches/' + id + '/tractor',
       tractorEntry, this.httpOptions
     );
   }
 
-  public addIrrigationData(id: string, irrigationEntry: IrrigationEntry) {
+  public addIrrigationData(id: string, irrigationEntry: IrrigationEntry): Observable<BasicDTO<null>> {
     return this.http.post<BasicDTO<null>>(
       environment.ApiUrl + '/data/entry/ranches/' + id + '/irrigation',
       irrigationEntry, this.httpOptions
