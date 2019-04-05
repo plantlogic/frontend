@@ -37,7 +37,7 @@ export class CreateCardEntryComponent implements OnInit {
     this.titleService.setTitle('Create Card');
     this.form = this.fb.group({
       ranch: ['', [Validators.required]],
-      lotNumber: ['', [ Validators.min(0)]],
+      lotNumber: ['', [ Validators.minLength(1)]],
       acreSize: ['', [ Validators.required, Validators.min(1), Validators.max(500)]],
       cropYear: ['', [ Validators.min(2018)]],
       cropNumber: ['', [ Validators.min(0)]],

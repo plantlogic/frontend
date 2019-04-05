@@ -1,7 +1,7 @@
 export class Card {
     constructor(
         public ranchName: string,
-        public lotNumber: number,
+        public lotNumber: string,
         public acreSize: number,
         public cropYear: number,
         public cropNumber: number,

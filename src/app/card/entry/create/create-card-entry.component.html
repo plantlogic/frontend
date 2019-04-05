@@ -50,9 +50,9 @@
 
       <div class="form-group">
           <label for="lotNumberInput">Lot Number</label>
-          <input type="number" name="lotNumber" class="browser-default custom-select" formControlName="lotNumber" class="form-control" id="lotNumberInput"
-          [class.is-invalid]="this.submitAttempted && this.form.get('lotNumber').invalid" min="1">
-          <div class="invalid-feedback" role="alert">Enter a valid number</div>
+          <input type="text" name="lotNumberInput" class="browser-default custom-select" formControlName="lotNumber" class="form-control" id="lotNumberInput"
+          [class.is-invalid]="this.submitAttempted && this.form.get('lotNumber').invalid">
+          <div class="invalid-feedback" role="alert">Enter a valid lot number</div>
       </div>
 
       <div class="form-group">
