@@ -48,15 +48,15 @@
       <div class="col">
         <h2 *ngIf="!cards">Loading data...</h2>
         <table mdbTable *ngIf="cards">
-          <thead>
+          <thead class="text-nowrap">
             <tr>
-              <th scope="col" [mdbTableSort]="cards" [sortBy]="'ranchName'">
+              <th scope="col" class="small" [mdbTableSort]="cards" [sortBy]="'ranchName'">
                 Ranch <span class="d-none d-md-inline-block">Name</span> <i class="fa fa-sort ml-1"></i>
               </th>
-              <th scope="col" [mdbTableSort]="cards" [sortBy]="'lotNumber'">
+              <th scope="col" class="small" [mdbTableSort]="cards" [sortBy]="'lotNumber'">
                 Lot # <i class="fa fa-sort ml-1"></i>
               </th>
-              <th scope="col">Options</th>
+              <th class="small" scope="col">Options</th>
             </tr>
           </thead>
           <tbody>

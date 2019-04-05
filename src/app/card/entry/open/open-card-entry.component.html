@@ -1,21 +1,79 @@
 <div class="jumbotron p-3">
-  <div class="row">
-    <div class="col">
-      <button type="button" class="btn btn-warning float-right ml-1" routerLink="./add/tractor">
-        <span class="d-md-none">+ </span>
-        <span class="d-none d-md-inline-block">Add </span>
-        <i class="fas fa-tractor ml-1"></i>
-      </button>
-      <button type="button" class="btn btn-primary ml-1 float-right" routerLink="./add/irrigation">
-        <span class="d-md-none">+ </span>
-        <span class="d-none d-md-inline-block">Add </span>
-        <i class="fas fa-tint ml-1"></i>
-      </button>
+  <h2 *ngIf="!card">Loading...</h2>
+  <div *ngIf="card" >
+    <div class="row">
+      <div class="col-md">
+        <h5>
+          <b>Ranch Name:</b>
+          <i> {{card.ranchName}}</i>
+        </h5>
+        <h5>
+          <b>Lot #:</b>
+          <i> {{card.lotNumber}}</i>
+        </h5>
+      </div>
+      <div class="col-md">
+        <button type="button" class="btn btn-warning float-right ml-1" routerLink="./add/tractor">
+          <span class="d-md-none">+ </span>
+          <span class="d-none d-md-inline-block">Add </span>
+          <i class="fas fa-tractor ml-1"></i>
+        </button>
+        <button type="button" class="btn btn-primary ml-1 float-right" routerLink="./add/irrigation">
+          <span class="d-md-none">+ </span>
+          <span class="d-none d-md-inline-block">Add </span>
+          <i class="fas fa-tint ml-1"></i>
+        </button>
+      </div>
+    </div>
+    <hr class="my-4">
+    <div class="row">
+      <div class="col-md">
+        <h5>Irrigation Data</h5>
+        <table mdbTable *ngIf="card">
+          <thead class="text-nowrap">
+          <tr>
+            <th scope="col" class="small">Date</th>
+            <th scope="col" class="small">Method</th>
+            <th scope="col" class="small">Fertilizer</th>
+            <th scope="col" class="small">Gallons</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr mdbTableCol *ngFor="let p of card.irrigationData; let i = index" class="animated fadeIn" [style.animation-delay]="this.min((30*i), 1000)+ 'ms'">
+            <td class="small">{{p.workDate}}</td>
+            <td class="small">{{p.method}}</td>
+            <td class="small">{{p.fertilizer}}</td>
+            <td class="small">{{p.gallons}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-md">
+        <h5>Tractor Data</h5>
+        <table mdbTable *ngIf="card">
+          <thead class="text-nowrap">
+          <tr>
+            <th scope="col" class="small">Date</th>
+            <th scope="col" class="small">Done</th>
+            <th scope="col" class="small">Fertilizer</th>
+            <th scope="col" class="small">Gallons</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr mdbTableCol *ngFor="let p of card.tractorData; let i = index" class="animated fadeIn" [style.animation-delay]="this.min((30*i), 1000)+ 'ms'">
+            <td class="small">{{p.workDate}}</td>
+            <td class="small">{{p.workDone}}</td>
+            <td class="small">{{p.fertilizer}}</td>
+            <td class="small">{{p.gallons}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
 
-<button type="button" class="btn btn-danger ml-1 float-right" routerLink="./close">
+<button *ngIf="card" type="button" class="btn btn-danger ml-1 float-right" routerLink="./close">
   <span>Close Card </span>
   <i class="fas fa-check ml-1"></i>
 </button>
