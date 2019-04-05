@@ -64,6 +64,7 @@ const routes: Routes = [
     component: AddUserComponent,
     canActivate: [RoleGuard],
     data: {
+      parent: '/userManagement',
       role: PlRole.USER_MANAGEMENT
     }
   },
@@ -72,6 +73,7 @@ const routes: Routes = [
     component: EditUserComponent,
     canActivate: [RoleGuard],
     data: {
+      parent: '/userManagement',
       role: PlRole.USER_MANAGEMENT
     }
   },
@@ -90,6 +92,7 @@ const routes: Routes = [
     component: CreateCardEntryComponent,
     canActivate: [RoleGuard],
     data: {
+      parent: '/entry',
       role: PlRole.DATA_ENTRY
     }
   },
@@ -98,6 +101,7 @@ const routes: Routes = [
     component: OpenCardEntryComponent,
     canActivate: [RoleGuard],
     data: {
+      parent: '/entry',
       role: PlRole.DATA_ENTRY
     }
   },
@@ -106,6 +110,7 @@ const routes: Routes = [
     component: AddIrrigationEntryComponent,
     canActivate: [RoleGuard],
     data: {
+      parent: '../../',
       role: PlRole.DATA_ENTRY
     }
   },
@@ -114,6 +119,7 @@ const routes: Routes = [
     component: AddTractorEntryComponent,
     canActivate: [RoleGuard],
     data: {
+      parent: '../../',
       role: PlRole.DATA_ENTRY
     }
   },
@@ -122,6 +128,7 @@ const routes: Routes = [
     component: CloseCardEntryComponent,
     canActivate: [RoleGuard],
     data: {
+      parent: '../',
       role: PlRole.DATA_ENTRY
     }
   },
@@ -140,6 +147,7 @@ const routes: Routes = [
     component: OpenCardDataComponent,
     canActivate: [RoleGuard],
     data: {
+      parent: '/manage',
       role: PlRole.DATA_VIEW
     }
   },
@@ -148,6 +156,7 @@ const routes: Routes = [
     component: ExportCardDataComponent,
     canActivate: [RoleGuard],
     data: {
+      parent: '/manage',
       role: PlRole.DATA_VIEW
     }
   },
