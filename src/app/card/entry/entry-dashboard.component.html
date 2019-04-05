@@ -1,6 +1,87 @@
-<button class="button button-primary" routerLink="/entry/create">Create Card</button>
-<button class="button button-primary" routerLink="/entry/o/cardIdHere">Open A Card</button>
-
-<p>
-  List of user's currently open cards with options to view and add tractor/irrigation data + 'new card' button
-</p>
+<div class="jumbotron p-3">
+  <div class="row">
+    <!-- Desktop Search -->
+    <div class="col d-none d-md-inline-block">
+      <form class="form-inline">
+        <input class="form-control mr-sm-2" name="filter" type="search" placeholder="Search" aria-label="Search"
+               [(ngModel)]="filter" (keyup)="filterItems()" mdbInput>
+      </form>
+    </div>
+    <!-- On Mobile -->
+    <div class="col d-md-none">
+      <button type="button"color="primary" name="cardCount" outline="true" disabled
+              mdbBtn floating="true" size="lg">
+        <span *ngIf="!filter">Cards: </span>
+        <span *ngIf="filter">Results: </span>
+        <b>{{cards.length}}</b>
+      </button>
+    </div>
+    <!-- On Desktop -->
+    <div class="col d-none d-md-inline-block text-center">
+      <button type="button"color="primary" name="cardCount" outline="true" disabled
+              mdbBtn floating="true" size="sm">
+        <span *ngIf="!filter">Open Cards: </span>
+        <span *ngIf="filter">Search Results: </span>
+        <b>{{cards.length}}</b>
+      </button>
+    </div>
+    <!-- On Mobile -->
+    <div class="col d-md-none">
+      <button type="button" class="float-right" color="primary" routerLink="/entry/create" name="addCard"
+              mdbBtn floating="true" size="lg"><i class="fa fa-plus ml-1" aria-hidden="true"></i></button>
+    </div>
+    <!-- On Desktop -->
+    <div class="col d-none d-md-inline-block">
+      <button type="button" class="float-right" color="primary" routerLink="/entry/create" name="addCard"
+              mdbBtn floating="true" size="sm" mdbWavesEffect>Add Card <i class="fa fa-plus ml-1" aria-hidden="true"></i></button>
+    </div>
+    <!-- Mobile Search -->
+    <div class="col-lg d-md-none mt-4">
+      <form class="form-inline">
+        <input class="form-control mr-sm-2" name="filter" type="search" placeholder="Search" aria-label="Search"
+               [(ngModel)]="filter" (keyup)="filterItems()" mdbInput>
+      </form>
+    </div>
+  </div>
+  <hr class="my-4">
+  <div class="row">
+      <div class="col">
+        <h2 *ngIf="!cards">Loading data...</h2>
+        <table mdbTable *ngIf="cards">
+          <thead>
+            <tr>
+              <th scope="col" [mdbTableSort]="cards" [sortBy]="'ranchName'">
+                Ranch <span class="d-none d-md-inline-block">Name</span> <i class="fa fa-sort ml-1"></i>
+              </th>
+              <th scope="col" [mdbTableSort]="cards" [sortBy]="'lotNumber'">
+                Lot # <i class="fa fa-sort ml-1"></i>
+              </th>
+              <th scope="col">Options</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr mdbTableCol *ngFor="let p of cards; let i = index" class="animated fadeIn" [style.animation-delay]="this.min((30*i), 1000)+ 'ms'">
+              <td>{{p.ranchName}}</td>
+              <td>{{p.lotNumber}}</td>
+              <td>
+                <!-- On Mobile -->
+                <div class="d-md-none">
+                  <button type="button" color="success" [routerLink]="['/entry/o/', p.id]"
+                          alt="Open Card" class="float-right" mdbBtn floating="true" size="lg">
+                    <i class="ml-1 fa fa-external-link-alt" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <!-- On Desktop -->
+                <div class="d-none d-md-inline-block">
+                  <button type="button" color="success" [routerLink]="['/entry/o/', p.id]"
+                          alt="Open Card" mdbBtn floating="true" size="sm">
+                    Open <i class="ml-1 fa fa-external-link-alt" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+</div>

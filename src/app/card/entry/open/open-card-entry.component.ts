@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {TitleService} from '../../../_interact/title.service';
 
 @Component({
   selector: 'app-open-card-entry',
@@ -7,9 +8,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class OpenCardEntryComponent implements OnInit {
 
-  constructor() { }
+  constructor(private titleService: TitleService) { }
 
   ngOnInit() {
+    this.titleService.setTitle('View Card');
   }
 
 }
