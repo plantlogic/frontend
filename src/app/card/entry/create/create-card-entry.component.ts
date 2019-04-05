@@ -4,6 +4,7 @@ import { TitleService } from '../../../_interact/title.service';
 import { AlertService } from '../../../_interact/alert/alert.service';
 import { Component, OnInit, EventEmitter } from '@angular/core';
 import {Alert} from '../../../_interact/alert/alert';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-card',
@@ -11,7 +12,7 @@ import {Alert} from '../../../_interact/alert/alert';
   styleUrls: ['./create-card-entry.component.scss']
 })
 export class CreateCardEntryComponent implements OnInit {
-  constructor(private titleService: TitleService, private fb: FormBuilder) {
+  constructor(private titleService: TitleService, private fb: FormBuilder, private router: Router) {
 
   }
   form: FormGroup;
@@ -52,6 +53,7 @@ export class CreateCardEntryComponent implements OnInit {
   submit() {
     if ( this.form.get('ranch').invalid ||
         this.form.get('lotNumber').invalid ||
+        this.form.get('acreSize').invalid ||
         this.form.get('cropYear').invalid ||
         this.form.get('cropNumber').invalid ||
         this.form.get('commodity').invalid ||
@@ -61,8 +63,25 @@ export class CreateCardEntryComponent implements OnInit {
         this.submitAttempted = true;
     } else {
       this.submitAttempted = false;
-      console.log('success');
+      this.confirmfAlert(this.form.get('ranch').value, this.form.get('acreSize').value,
+      this.form.get('cropYear').value, this.form.get('commodity').value, this.form.get('variety').value );
+     // this.router.navigate(['/manage']);
     }
+  }
+
+  confirmfAlert(ranchName: string, acreSize: number, cropYear: number, comm: string, va: string): void {
+    const newAlert = new Alert();
+
+    newAlert.title = 'Confirm';
+    newAlert.showClose = true;
+    newAlert.closeName = 'Submit';
+    newAlert.timeLeft = 10;
+    newAlert.message = 'Are you sure you want to create a new card with the following information? Ranch: ' + ranchName
+    + '\nAcre Size: ' + acreSize + '\nCrop Year: ' + cropYear + 'Commodity: ' + comm + '\nVariety: ' + va;
+    newAlert.color = 'success';
+    newAlert.blockPageInteraction = true;
+   // newAlert.onClose$ = new EventEmitter<null>();
+    AlertService.newAlert(newAlert);
   }
 
 }

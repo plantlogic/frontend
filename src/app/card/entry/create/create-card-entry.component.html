@@ -1,6 +1,6 @@
 <div class="jumbotron p-3">
   <h1>Create A New Card</h1>
-  <small>* required</small>
+  <p align="right">* required</p>
   <form [formGroup]="form">
 
       <!--Value: {{ form.value | json}}-->
@@ -50,8 +50,8 @@
 
       <div class="form-group">
           <label for="lotNumberInput">Lot Number</label>
-          <input type="number" name="lotNumber" formControlName="lotNumber" class="form-control" id="lotNumberInput"
-          [class.is-invalid]="this.submitAttempted && this.form.get('lotNumber').invalid" min="1" class="browser-default custom-select">
+          <input type="number" name="lotNumber" class="browser-default custom-select" formControlName="lotNumber" class="form-control" id="lotNumberInput"
+          [class.is-invalid]="this.submitAttempted && this.form.get('lotNumber').invalid" min="1">
           <div class="invalid-feedback" role="alert">Enter a valid number</div>
       </div>
 
