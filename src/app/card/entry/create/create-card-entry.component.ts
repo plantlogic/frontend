@@ -1,4 +1,3 @@
-import { Card } from '../../../card';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { TitleService } from '../../../_interact/title.service';
 import { AlertService } from '../../../_interact/alert/alert.service';
@@ -12,9 +11,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./create-card-entry.component.scss']
 })
 export class CreateCardEntryComponent implements OnInit {
-  constructor(private titleService: TitleService, private fb: FormBuilder, private router: Router) {
+  constructor(private titleService: TitleService, private fb: FormBuilder, private router: Router) { }
 
-  }
   form: FormGroup;
   submitAttempted = false;
   ranchList: Array<any> = [ 'Ranch1', 'Ranch2'];
@@ -36,10 +34,10 @@ export class CreateCardEntryComponent implements OnInit {
   ngOnInit() {
     this.titleService.setTitle('Create Card');
     this.form = this.fb.group({
-      ranch: ['', [Validators.required]],
+      ranch: ['', [Validators.required, Validators.minLength(1)]],
       lotNumber: ['', [ Validators.minLength(1)]],
-      acreSize: ['', [ Validators.required, Validators.min(1), Validators.max(500)]],
-      cropYear: ['', [ Validators.min(2018)]],
+      acreSize: ['', [ Validators.required, Validators.min(0.1), Validators.max(499.9)]],
+      cropYear: ['', [ Validators.min(1000), Validators.max(9999)]],
       cropNumber: ['', [ Validators.min(0)]],
       commodity: ['', [Validators.required, Validators.min(1)]],
       variety: ['', [Validators.required]],
