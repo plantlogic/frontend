@@ -8,6 +8,7 @@ import { AppComponent } from './app.component';
 
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
+import { Ng2FlatpickrModule } from 'ng2-flatpickr';
 
 import { HomeComponent } from './home/home.component';
 import { NavbarComponent } from './navbar/navbar.component';
@@ -69,6 +70,7 @@ import { BackButtonComponent } from './navbar/back-button/back-button.component'
     FormsModule,
     HttpClientModule,
     ReactiveFormsModule,
+    Ng2FlatpickrModule,
     LoadingBarHttpClientModule,
     MDBBootstrapModule.forRoot()
   ],

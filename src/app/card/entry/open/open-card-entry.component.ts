@@ -29,9 +29,6 @@ export class OpenCardEntryComponent implements OnInit {
       data => {
         if (data.success) {
           this.card = data.data;
-          // this.tableService.setDataSource(this.card);
-          // this.card = this.tableService.getDataSource();
-          // this.previous = this.tableService.getDataSource();
         } else if (!data.success) {
           AlertService.newBasicAlert('Error: ' + data.error, true);
           this.nav.goBack();
@@ -43,5 +40,4 @@ export class OpenCardEntryComponent implements OnInit {
       }
     );
   }
-
 }
