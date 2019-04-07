@@ -1,3 +1,38 @@
-<p>
-  Add irrigation data to card here (saves to localStorage)
-</p>
+<h1>Enter Irrigation Data</h1>
+<div class="jumbotron p-3">
+    <form [formGroup]="irrigationEntryForm">
+        <div class="form-group">
+            <label for="workDateInput" class="control-label">Work Date</label>
+            <input type="number" class="browser-default custom-select" formControlName="workDate"
+            [class.is-invalid]="this.submitAttempted && this.irrigationEntryForm.get('workDate').invalid" required>
+            <div class="invalid-feedback" role="alert">Please enter date.</div>
+          </div>
+
+        <div class="form-group">
+          <label for="methodInput" class="control-label">Method:</label>
+          <br>
+          <input type="text" class="browser-default" formControlName="method"
+          [class.is-invalid]="this.submitAttempted && this.irrigationEntryForm.get('method').invalid" required>
+          <div class="invalid-feedback" role="alert">Please enter a method.</div>
+        </div>
+
+        <div class="form-group">
+          <label for="fertilizerInput" class="control-label">Fertilizer</label>
+          <select class="browser-default custom-select" formControlName="fertilizer"
+            [class.is-invalid]="this.submitAttempted && this.irrigationEntryForm.get('fertilizer').invalid" required>
+              <option default disabled value="Select">Select</option>
+              <option *ngFor ="let fz of fertilizer" [ngValue]="fz">{{fz}} </option>
+            </select>
+          <div class="invalid-feedback" role="alert">Please select a fertilizer.</div>
+        </div>
+
+        <div class="form-group">
+          <label for="gallonsInput" class="control-label">Gallons</label>
+          <input type="number" class="browser-default custom-select" formControlName="gallons"
+          [class.is-invalid]="this.submitAttempted && this.irrigationEntryForm.get('gallons').invalid" required min="0.1">
+          <div class="invalid-feedback" role="alert">Please enter a valid amount.</div>
+        </div>
+
+        <button  mdbBtn color="primary" (click)="submit()">Add</button>
+    </form>
+</div>

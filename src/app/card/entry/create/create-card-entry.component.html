@@ -1,131 +1,95 @@
-<form  #cardForm="ngForm">
-  <div class="form-group">
-    <label for="ranchName">Ranch</label>
-      <select name="ranch"class="browser-default custom-select"
-      [class.is-invalid]="this.submitAttempted && this.form.get('ranch')">  <!--TODO: Update dynamically-->
-        <option disabled value="0">Select Ranch</option>
-        <option value="1">Ranch One</option>
-        <option value="2">Ranch Two</option>
-        <option value="3">Ranch Three</option>
-      </select>
-      <div class="invalid-feedback" role="alert">Please Select a Ranch</div>
-  </div>
-  <div class="form-group">
-      <div class="md-form">
-            <input type="number" name="lotNumber" formControlName="lotNumber" class="form-control" id="lotNumber"
-            required mdbInput min="1" [class.is-invalid]="this.submitAttempted && this.form.get('lotNumber').invalid">
-            <label for="lotNumberInput">Lot Number</label> <!--Input Format-->
-            <div class="invalid-feedback" role="alert">Please Enter A Valid Number</div>
-          </div>
-  </div>
-  <div class="form-group">
-      <div class="md-form">
-        <!--What is appopriate min & increment-->
-          <input type="number" name="acreSize" forControlName="acreSize" class="form-control" id="acreSize" mdbInput min="1"
-          [class.is-invalid]="this.submitAttempted && this.form.get('acreSize').invalid">
-          <label for="acreSizeInput">Acer Size</label>
-          <div class="invalid-feedback" role="alert">Please Enter A Valid Size</div>
-        </div>
-  </div>
-  <div class="form-group">
-      <label for="cropYear">Crop Year</label>
-      <select class="browser-default custom-select">  <!--TODO: Update dynamically-->
-        <option value="2018">2018</option>
-        <option selected value="2019">2019</option>
-        <option value="2020">2020</option>
-      </select>
-      <div class="invalid-feedback" role="alert">Please Select A Crop Year</div>
-  </div>
-  <div class="form-group">
-      <label for="cropNumber">Crop Number</label>
-      <select class="browser-default custom-select"  name="cropNumber"
-      [class.is-invalid]="this.submitAttempted && this.form.get('cropNumber').invalid">
-        <option disabled selected value="0">Select Number</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-      </select>
-      <div class="invalid-feedback" role="alert">Please Select A Crop Number</div>
-  </div>
+<div class="jumbotron p-3">
+  <h1>Create A New Card</h1>
+  <p align="right">* required</p>
+  <form [formGroup]="form">
 
-  <label>Commodity</label>
-  <div>
-    <select (change)="changeCommodity($event.target.value)">
-          <option *ngFor ="let com of commodityList">{{com.commodity}} </option>
-      </select>
-  </div>
+      <!--Value: {{ form.value | json}}-->
 
-  <label>Variety</label>
-  <div>
-    <select>
-          <option *ngFor ="let v of variety">{{v}} </option>
-    </select>
-  </div>
-
-  <div class="form-group">
-      <label for="bedCount">Bed Count</label> <!--What is an appropriate value?-->
-      <select class="browser-default custom-select" name="bedCount"
-      [class.is-invalid]="this.submitAttempted && this.form.get('bedCount').invalid">
-        <option disabled selected value="0">Select Count</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-      </select>
-      <div class="invalid-feedback" role="alert">Please Select A Bed Count</div>
-    </div>
-    <div class="form-group">
-        <label for="seedLotNumber">Seed Lot Number</label> <!--What is an appropriate value?-->
-        <select class="browser-default custom-select" name="seedLotNumber"
-        [class.is-invalid]="this.submitAttempted && this.form.get('seedLotNumber').invalid">
-          <option selected disabled value="0">Select Count</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
+      <div class="form-group">
+        <label for="ranchNameInput" class="control-label">Ranch *</label>
+        <select class="browser-default custom-select"  formControlName="ranch"
+        [class.is-invalid]="this.submitAttempted && this.form.get('ranch').invalid" required>
+          <option default disabled value="Select">Select</option>
+          <option [ngValue]="ranch" *ngFor="let ranch of ranchList">{{ranch}}</option>
         </select>
-        <div class="invalid-feedback" role="alert">Please Select A Seed Lot Number</div>
+        <div class="invalid-feedback" role="alert">Please Select a Ranch</div>
       </div>
-  <div class="form-group">
-    <label for="bedType">Bed Type</label>
-    <select class="browser-default custom-select" name="bedType"
-    [class.is-invalid]="this.submitAttempted && this.form.get('bedType').invalid">
-      <option selected disabled value="0">Select Type</option>
-      <option value="40">40</option>
-      <option value="80">80</option>
-    </select>
-    <div class="invalid-feedback" role="alert">Please Select A Bed Type</div>
-  </div>
-  <div class="form-group">
-      <label for="prepMaterial">Prep Material</label>
-      <select class="browser-default custom-select" name="prepMaterial"
-      [class.is-invalid]="this.submitAttempted && this.form.get('prepMaterial').invalid">  <!--TODO: Update dynamically-->
-        <option disabled selected value="0">Select Material</option>
-        <option value="1">Dacthal</option>
-        <option value="2">Prefar</option>
-        <option value="3">Kerb</option>
-      </select>
-      <div class="invalid-feedback" role="alert">Please Select A Prep Material</div>
-    </div>
 
-  <!--  <button class="btn btn-primary" (click)="exampleInput()">Create</button> -->
-</form>
+      <div class="form-group">
+        <label>Acre Size *</label>
+        <input type="number" name="acreSize" formControlName="acreSize" class="form-control"
+        [class.is-invalid]="this.submitAttempted && this.form.get('acreSize').invalid" required min="0">
+        <div class="invalid-feedback" role="alert">Enter a valid acre size</div>
+      </div>
 
-<button type="submit" (click)="submit()" mdbBtn color="primary" class="relative waves-light" (click)="basicModal.show()" mdbWavesEffect>Create Card</button>
+      <div class="form-group">
+          <label for="cropYearInput" class="control-label">Crop Year *</label>
+          <select class="browser-default custom-select" formControlName="cropYear"
+          [class.is-invalid]="this.submitAttempted && this.form.get('cropYear').invalid" required>
+            <option>Select</option>
+            <option [ngValue]="year" *ngFor="let year of cropYear">{{year}}</option>
+          </select>
+        <div class="invalid-feedback" role="alert">Please Select a Year</div>
+      </div>
 
-<div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close pull-right" aria-label="Close" (click)="basicModal.hide()">
-          <span aria-hidden="true">×</span>
-        </button>
-        <h4 class="modal-title w-100" id="myModalLabel">Create New Card</h4>
+      <div class="form-group">
+        <label for="commodityInput" class="control-label">Commodity *</label>
+        <select class="browser-default custom-select" formControlName="commodity" (change)="changeCommodity($event.target.value)"
+        [class.is-invalid]="this.submitAttempted && this.form.get('commodity').invalid" required>
+          <option *ngFor ="let com of commodityList">{{com.commodity}} </option>
+        </select>
+        <div class="invalid-feedback" role="alert">Please Select a commodity</div>
       </div>
-      <div class="modal-body">
-        <p>Please make sure information is accurate, you will <b>not</b> be able to edit data once submitted</p>
+
+      <div class="form-group">
+        <label for="varietyInput" class="control-label">Variety</label>
+        <select class="browser-default custom-select" formControlName="variety">
+          <option *ngFor ="let v of variety">{{v}} </option>
+        </select>
       </div>
-      <div class="modal-footer">
-        <button type="button" mdbBtn color="white" class="waves-light" aria-label="Close" (click)="basicModal.hide()" mdbWavesEffect>Edit</button>
-        <button type="button" mdbBtn color="amber" class="relative waves-light" mdbWavesEffect>Save changes</button>
+
+      <div class="form-group">
+          <label for="lotNumberInput">Lot Number</label>
+          <input type="text" name="lotNumberInput" class="browser-default custom-select" formControlName="lotNumber" class="form-control" id="lotNumberInput"
+          [class.is-invalid]="this.submitAttempted && this.form.get('lotNumber').invalid">
+          <div class="invalid-feedback" role="alert">Enter a valid lot number</div>
       </div>
-    </div>
-  </div>
+
+      <div class="form-group">
+          <label>Crop Number</label>
+          <input type="number" name="cropNumber" formControlName="cropNumber" class="form-control"
+          [class.is-invalid]="this.submitAttempted && this.form.get('cropNumber').invalid" min="0">
+          <div class="invalid-feedback" role="alert">Enter a valid crop number</div>
+      </div>
+
+      <div class="form-group">
+          <label>Seed Lot Number</label>
+          <input type="number" name="seedLotNumber" formControlName="seedLotNumber" class="form-control"
+          [class.is-invalid]="this.submitAttempted && this.form.get('seedLotNumber').invalid" min="0">
+          <div class="invalid-feedback" role="alert">Enter a valid number</div>
+      </div>
+
+    <div class="form-group">
+          <label for="bedTypeInput" class="control-label">Bed Type</label>
+          <select class="browser-default custom-select" formControlName="bedType"
+          [class.is-invalid]="this.submitAttempted && this.form.get('bedType').invalid">
+          <option selected value='0'>Select</option>
+          <option>40</option>
+          <option>80</option>
+        </select>
+        <div class="invalid-feedback" role="alert">Please Select a valid bed type.</div>
+      </div>
+
+      <div class="form-group">
+          <label for="pmInput" class="control-label">Prep Material</label>
+            <select class="browser-default custom-select" formControlName="prepMaterial"
+            [class.is-invalid]="this.submitAttempted && this.form.get('prepMaterial').invalid">
+              <option default value="Select">Select</option>
+              <option *ngFor ="let pm of prepMaterial"  [ngValue]="pm">{{pm}} </option>
+            </select>
+          <div class="invalid-feedback" role="alert">Please Select a Prep Material</div>
+      </div>
+
+        <button  mdbBtn color="primary" (click)="submit()">Create</button>
+  </form>
 </div>
