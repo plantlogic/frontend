@@ -41,4 +41,11 @@ export class CardEntryService {
       irrigationEntry, this.httpOptions
     );
   }
+
+  public closeCard(card: Card): Observable<BasicDTO<null>> {
+    return this.http.put<BasicDTO<null>>(
+      environment.ApiUrl + '/data/entry/ranches/' + card.id + '/close',
+      card, this.httpOptions
+    );
+  }
 }
