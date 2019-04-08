@@ -6,6 +6,7 @@ import { Component, OnInit, EventEmitter } from '@angular/core';
 import {Alert} from '../../../_interact/alert/alert';
 import { Router } from '@angular/router';
 import { Card } from '../../../_dto/card/card';
+import { AuthService } from 'src/app/_auth/auth.service';
 
 @Component({
   selector: 'app-create-card',
@@ -14,7 +15,7 @@ import { Card } from '../../../_dto/card/card';
 })
 export class CreateCardEntryComponent implements OnInit {
   constructor(private titleService: TitleService, private fb: FormBuilder, private router: Router,
-              private cardEntryService: CardEntryService) { }
+              private cardEntryService: CardEntryService, private auth: AuthService) { }
 
   form: FormGroup;
   newCard: Card;
@@ -67,6 +68,7 @@ export class CreateCardEntryComponent implements OnInit {
       this.submitAttempted = false;
      // this.confirmfAlert(this.form.get('ranch').value, this.form.get('acreSize').value,
      // this.form.get('cropYear').value, this.form.get('commodity').value, this.form.get('variety').value );
+      this.newCard.ranchManagerName = this.auth.getUsername();
       this.newCard.ranchName = this.form.get('ranch').value;
       this.newCard.totalAcres = this.form.get('acreSize').value;
       this.newCard.cropYear = this.form.get('cropYear').value;
