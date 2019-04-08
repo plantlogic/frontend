@@ -1,7 +1,57 @@
-<p>
-  List of all cards should be here, whether they're closed or not, with buttons to view/edit each card
-  + a button to re-open cards (in case one is accidentally closed)
-</p>
-
-<button class="button button-primary" routerLink="/manage/o/cardIdHere">Open A Card</button>
-<button class="button button-primary" routerLink="/manage/export">Export Data</button>
+<div class="jumbotron p-3">
+  <div class="row">
+    <div class="col d-none d-md-inline-block">
+      <form class="form-inline">
+        <input class="form-control mr-sm-2" name="filter" type="search" placeholder="Search" aria-label="Search"
+               [(ngModel)]="filter" (keyup)="filterItems()" mdbInput>
+      </form>
+    </div>
+    <div class="col d-none d-md-inline-block text-center">
+      <button type="button"color="primary" name="cardCount" outline="true" disabled
+              mdbBtn floating="true" size="sm">
+        <span *ngIf="!filter">Cards: </span>
+        <span *ngIf="filter">Search Results: </span>
+        <b>{{cards.length}}</b>
+      </button>
+    </div>
+    <div class="col d-none d-md-inline-block">
+      <button type="button" class="float-right" color="primary" routerLink="/manage/export" name="addCard"
+              mdbBtn floating="true" size="sm" mdbWavesEffect>Export Data</button>
+    </div>
+  </div>
+  <hr class="my-4">
+  <div class="row">
+      <div class="col">
+        <h2 *ngIf="!cards">Loading data...</h2>
+        <table mdbTable *ngIf="cards">
+          <thead class="text-nowrap">
+            <tr>
+              <th scope="col" class="small" [mdbTableSort]="cards" [sortBy]="'ranchName'">
+                Ranch <span class="d-none d-md-inline-block">Name</span> <i class="fa fa-sort ml-1"></i>
+              </th>
+              <th scope="col" class="small" [mdbTableSort]="cards" [sortBy]="'lotNumber'">
+                Lot # <i class="fa fa-sort ml-1"></i>
+              </th>
+              <th class="small" scope="col">Options</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr mdbTableCol *ngFor="let p of cards; let i = index" class="animated fadeIn" [style.animation-delay]="this.min((30*i), 1000)+ 'ms'">
+              <td>{{p.ranchName}}</td>
+              <td>{{p.lotNumber}}</td>
+              <td>
+                  <button type="button" color="success" [routerLink]="['/entry/o/', p.id]"
+                          alt="View Card" class="mr-1 mb-1" mdbBtn floating="true" size="sm">
+                    View <i class="ml-1 fa fa-external-link-alt" aria-hidden="true"></i>
+                  </button>
+                  <button type="button" color="amber" routerLink="/manage/o/cardIdHere"
+                          alt="Re-Open Card" class="mr-1 mb-1" mdbBtn floating="true" size="sm">
+                    Re-open <i class="ml-1 fa fa-edit" aria-hidden="true"></i>
+                  </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+</div>
