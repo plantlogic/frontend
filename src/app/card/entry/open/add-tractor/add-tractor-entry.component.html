@@ -2,8 +2,9 @@
     <form [formGroup]="tractorEntryForm">
         <div class="form-group">
             <label for="workDateInput" class="control-label">Work Date</label>
-            <input type="number" class="browser-default custom-select" formControlName="workDate"
-            [class.is-invalid]="this.submitAttempted && this.tractorEntryForm.get('workDate').invalid" required>
+            <ng2-flatpickr placeholder="Work Date" id="workDate" formControlName="workDate"
+                           [config]="flatpickrOptions">
+            </ng2-flatpickr>
             <div class="invalid-feedback" role="alert">Please enter date.</div>
           </div>
 

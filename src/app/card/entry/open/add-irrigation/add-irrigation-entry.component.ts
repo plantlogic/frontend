@@ -4,7 +4,8 @@ import { TitleService } from 'src/app/_interact/title.service';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { CardEntryService } from 'src/app/_api/card-entry.service';
 import { AlertService } from 'src/app/_interact/alert/alert.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import {FlatpickrOptions} from 'ng2-flatpickr';
 
 @Component({
   selector: 'app-add-irrigation',
@@ -14,22 +15,27 @@ import { Router } from '@angular/router';
 export class AddIrrigationEntryComponent implements OnInit {
 
   constructor(private titleService: TitleService, private fb: FormBuilder,
-              private cardEntryService: CardEntryService, private router: Router) { }
+              private cardEntryService: CardEntryService,
+              private route: ActivatedRoute, private routes: Router) { }
 
+  flatpickrOptions: FlatpickrOptions = { dateFormat: 'm-d-Y', defaultDate: new Date(Date.now())};
   irrigationEntryForm: FormGroup;
   submitAttempted = false;
   fertilizer: Array<any> = ['Lorsban', 'Diaznon', 'Kerb', 'Dacthal'];
-  irrigationEntry: IrrigationEntry;
+  irrigationEntry: IrrigationEntry = new IrrigationEntry();
+  cardId: string;
 
   ngOnInit() {
     this.titleService.setTitle('Irrigation');
     this.irrigationEntryForm = this.fb.group({
-      workDate: ['', [ Validators.required, Validators.min(1)] ],
+      workDate: [Date.now(), [ Validators.required] ],
       method: ['', [ Validators.required, Validators.minLength(1)]],
       fertilizer: ['', [ Validators.required]],
       gallons: ['', [ Validators.required, Validators.min(0.1), Validators.max(999.9)]]
     });
+    this.route.params.subscribe(data => this.cardId = data.id);
     this.irrigationEntryForm.valueChanges.subscribe(console.log);
+    console.log(this.cardId);
   }
 
   submit() {
@@ -46,11 +52,11 @@ export class AddIrrigationEntryComponent implements OnInit {
       this.irrigationEntry.method = this.irrigationEntryForm.get('method').value;
       this.irrigationEntry.workDate = this.irrigationEntryForm.get('workDate').value;
 
-      this.cardEntryService.addIrrigationData('this.cardEntryService.getCardById() ', this.irrigationEntry).subscribe(
+      this.cardEntryService.addIrrigationData(this.cardId, this.irrigationEntry).subscribe(
         data => {
           if (data.success) {
             this.irrigationEntry = data.data;
-            this.router.navigateByUrl('/entry');
+            this.routes.navigateByUrl('/entry');
           } else if (!data.success) {
             AlertService.newBasicAlert('Error: ' + data.error, true);
           }
@@ -59,7 +65,6 @@ export class AddIrrigationEntryComponent implements OnInit {
           AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again', true);
         }
       );
-     // this.router.navigate(['/manage']);
     }
   }
 

@@ -1,4 +1,4 @@
-/* Font Awesome fonts
+/* Font Awesome fonts */
 $fa-font-path: "../node_modules/@fortawesome/fontawesome-free/webfonts";
 @import "~@fortawesome/fontawesome-free/scss/fontawesome";
 @import "~@fortawesome/fontawesome-free/scss/brands";
@@ -8,7 +8,7 @@ $fa-font-path: "../node_modules/@fortawesome/fontawesome-free/webfonts";
 /* Flatpickr CSS */
 @import "~flatpickr/dist/flatpickr";
 
-Disables the forced control highlight in some browsers */
+/*Disables the forced control highlight in some browsers */
 *:focus {
   outline: none !important;
 }

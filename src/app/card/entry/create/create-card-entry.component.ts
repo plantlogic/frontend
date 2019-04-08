@@ -18,7 +18,7 @@ export class CreateCardEntryComponent implements OnInit {
               private cardEntryService: CardEntryService, private auth: AuthService) { }
 
   form: FormGroup;
-  newCard: Card;
+  newCard: Card = new Card();
   submitAttempted = false;
   ranchList: Array<any> = [ 'Ranch1', 'Ranch2'];
   cropYear: Array<any> = ['2018', '2019', '2020'];
@@ -72,12 +72,12 @@ export class CreateCardEntryComponent implements OnInit {
       this.newCard.ranchName = this.form.get('ranch').value;
       this.newCard.totalAcres = this.form.get('acreSize').value;
       this.newCard.cropYear = this.form.get('cropYear').value;
-      this.newCard.commodity = this.form.get('commodity').value;
-      this.newCard.variety = this.form.get('variety').value;
+      this.newCard.commodity.push(this.form.get('commodity').value);
+      this.newCard.variety.push(this.form.get('variety').value);
       this.cardEntryService.createCard(this.newCard).subscribe(
         data => {
           if (data.success) {
-            this.newCard = data.data;
+            AlertService.newBasicAlert('Success!', false);
             this.router.navigateByUrl('/entry');
           } else if (!data.success) {
             AlertService.newBasicAlert('Error: ' + data.error, true);
@@ -87,7 +87,6 @@ export class CreateCardEntryComponent implements OnInit {
           AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again', true);
         }
       );
-      this.router.navigate(['/manage']);
     }
   }
 

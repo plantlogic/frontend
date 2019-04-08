@@ -23,11 +23,7 @@
 
       <div class="form-group">
           <label for="cropYearInput" class="control-label">Crop Year *</label>
-          <select class="browser-default custom-select" formControlName="cropYear"
-          [class.is-invalid]="this.submitAttempted && this.form.get('cropYear').invalid" required>
-            <option>Select</option>
-            <option [ngValue]="year" *ngFor="let year of cropYear">{{year}}</option>
-          </select>
+          <input type="number" name="cropYear" formControlName="cropYear" class="form-control">
         <div class="invalid-feedback" role="alert">Please Select a Year</div>
       </div>
 
