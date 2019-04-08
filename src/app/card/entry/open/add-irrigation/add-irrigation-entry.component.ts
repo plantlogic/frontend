@@ -22,7 +22,7 @@ export class AddIrrigationEntryComponent implements OnInit {
   irrigationEntry: IrrigationEntry;
 
   ngOnInit() {
-    this.titleService.setTitle('Add Irrigation Data');
+    this.titleService.setTitle('Irrigation');
     this.irrigationEntryForm = this.fb.group({
       workDate: ['', [ Validators.required, Validators.min(1)] ],
       method: ['', [ Validators.required, Validators.minLength(1)]],

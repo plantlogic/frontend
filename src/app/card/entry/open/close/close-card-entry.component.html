@@ -1,3 +1,38 @@
-<p>
-  For closing a card - will ask for harvest date, etc.
-</p>
+<div class="jumbotron p-3">
+  <h2 *ngIf="!card">Loading...</h2>
+  <div *ngIf="card" >
+    <div class="row">
+      <div class="col-md">
+        <h5>
+          <b>Ranch:</b>
+          <i> {{card.ranchName}}</i>
+        </h5>
+        <h5>
+          <b>Lot #:</b>
+          <i> {{card.lotNumber}}</i>
+        </h5>
+      </div>
+    </div>
+    <hr class="my-4">
+    <div class="row">
+      <div class="col">
+        <form [formGroup]="form">
+          <div class="form-group">
+            <label for="harvestDate"><h5>Harvest Date</h5></label>
+            <ng2-flatpickr placeholder="Harvest Date" id="harvestDate" formControlName="harvestDate"
+                           [config]="flatpickrOptions">
+            </ng2-flatpickr>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <button *ngIf="card" type="button" class="btn btn-danger float-right" (click)="closeCard()">
+          <span>Close Card </span>
+          <i class="fas fa-check ml-1"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

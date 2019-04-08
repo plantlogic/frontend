@@ -21,7 +21,7 @@ export class AddTractorEntryComponent implements OnInit {
   tractorEntery: TractorEntry;
 
   ngOnInit() {
-    this.titleService.setTitle('Add Tractor Data');
+    this.titleService.setTitle('Tractor');
     this.tractorEntryForm = this.fb.group({
       workDate: ['', [ Validators.required, Validators.min(1)] ],
       workDone: ['', [ Validators.required, Validators.minLength(1)]],

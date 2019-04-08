@@ -3,12 +3,14 @@ import { AuthInjector } from './_auth/auth.injector';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
+import { Ng2FlatpickrModule } from 'ng2-flatpickr';
 
 import { HomeComponent } from './home/home.component';
 import { NavbarComponent } from './navbar/navbar.component';
@@ -70,6 +72,8 @@ import { BackButtonComponent } from './navbar/back-button/back-button.component'
     FormsModule,
     HttpClientModule,
     ReactiveFormsModule,
+    BrowserAnimationsModule,
+    Ng2FlatpickrModule,
     LoadingBarHttpClientModule,
     MDBBootstrapModule.forRoot()
   ],

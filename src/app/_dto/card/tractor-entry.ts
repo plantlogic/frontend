@@ -7,4 +7,6 @@ export class TractorEntry {
   workDate: number;
   // workDone	string
   workDone: string;
+  // operator string
+  operator: string;
 }
