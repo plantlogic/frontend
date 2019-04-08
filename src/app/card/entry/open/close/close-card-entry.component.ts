@@ -31,7 +31,7 @@ export class CloseCardEntryComponent implements OnInit {
   card: Card;
 
   ngOnInit() {
-    this.titleService.setTitle('View Card');
+    this.titleService.setTitle('Close Card');
     this.route.params.subscribe(data => this.loadCardData(data.id));
   }
 
