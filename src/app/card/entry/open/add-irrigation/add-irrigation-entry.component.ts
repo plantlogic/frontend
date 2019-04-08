@@ -16,7 +16,7 @@ export class AddIrrigationEntryComponent implements OnInit {
   fertilizer: Array<any> = ['fertilizer 1', 'fertilizer 2', 'fertilizer 3'];
 
   ngOnInit() {
-    this.titleService.setTitle('Add Irrigation Data');
+    this.titleService.setTitle('Irrigation');
     this.irrigationEntryForm = this.fb.group({
       workDate: ['', [ Validators.required, Validators.min(1)] ],
       method: ['', [ Validators.required, Validators.minLength(1)]],

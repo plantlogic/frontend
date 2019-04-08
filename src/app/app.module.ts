@@ -2,6 +2,7 @@ import { AuthInjector } from './_auth/auth.injector';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -70,6 +71,7 @@ import { BackButtonComponent } from './navbar/back-button/back-button.component'
     FormsModule,
     HttpClientModule,
     ReactiveFormsModule,
+    BrowserAnimationsModule,
     Ng2FlatpickrModule,
     LoadingBarHttpClientModule,
     MDBBootstrapModule.forRoot()
