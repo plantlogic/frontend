@@ -7,7 +7,7 @@
 
       <div class="form-group">
         <label for="ranchNameInput" class="control-label">Ranch *</label>
-        <select class="browser-default custom-select"  formControlName="ranch"
+        <select id="ranch" class="browser-default custom-select"  formControlName="ranch"
         [class.is-invalid]="this.submitAttempted && this.form.get('ranch').invalid" required>
           <option default disabled value="Select">Select</option>
           <option [ngValue]="ranch" *ngFor="let ranch of ranchList">{{ranch}}</option>
@@ -17,7 +17,7 @@
 
       <div class="form-group">
         <label>Acre Size *</label>
-        <input type="number" name="acreSize" formControlName="acreSize" class="form-control"
+        <input id="acreSize" type="number" name="acreSize" formControlName="acreSize" class="form-control"
         [class.is-invalid]="this.submitAttempted && this.form.get('acreSize').invalid" required min="0">
         <div class="invalid-feedback" role="alert">Enter a valid acre size</div>
       </div>
@@ -89,7 +89,6 @@
             </select>
           <div class="invalid-feedback" role="alert">Please Select a Prep Material</div>
       </div>
-
-        <button  mdbBtn color="primary" (click)="submit()">Create</button>
+      <button  mdbBtn color="primary" (click)="submit()">Create</button>
   </form>
 </div>

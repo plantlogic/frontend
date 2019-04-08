@@ -1,9 +1,11 @@
+import { CardEntryService } from './../../../_api/card-entry.service';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { TitleService } from '../../../_interact/title.service';
 import { AlertService } from '../../../_interact/alert/alert.service';
 import { Component, OnInit, EventEmitter } from '@angular/core';
 import {Alert} from '../../../_interact/alert/alert';
 import { Router } from '@angular/router';
+import { Card } from '../../../_dto/card/card';
 
 @Component({
   selector: 'app-create-card',
@@ -11,9 +13,11 @@ import { Router } from '@angular/router';
   styleUrls: ['./create-card-entry.component.scss']
 })
 export class CreateCardEntryComponent implements OnInit {
-  constructor(private titleService: TitleService, private fb: FormBuilder, private router: Router) { }
+  constructor(private titleService: TitleService, private fb: FormBuilder, private router: Router,
+              private cardEntryService: CardEntryService) { }
 
   form: FormGroup;
+  newCard: Card;
   submitAttempted = false;
   ranchList: Array<any> = [ 'Ranch1', 'Ranch2'];
   cropYear: Array<any> = ['2018', '2019', '2020'];
@@ -25,7 +29,7 @@ export class CreateCardEntryComponent implements OnInit {
   ];
 
   variety: Array<any>;
-  prepMaterial: Array<any> = ['material 1', 'material 2', 'material 3'];
+  prepMaterial: Array<any> = ['Lorsban', 'Diaznon', 'Kerb', 'Dacthal'];
 
   changeCommodity(count) {
     this.variety = this.commodityList.find(con => con.commodity === count).variety;
@@ -61,9 +65,27 @@ export class CreateCardEntryComponent implements OnInit {
         this.submitAttempted = true;
     } else {
       this.submitAttempted = false;
-      this.confirmfAlert(this.form.get('ranch').value, this.form.get('acreSize').value,
-      this.form.get('cropYear').value, this.form.get('commodity').value, this.form.get('variety').value );
-     // this.router.navigate(['/manage']);
+     // this.confirmfAlert(this.form.get('ranch').value, this.form.get('acreSize').value,
+     // this.form.get('cropYear').value, this.form.get('commodity').value, this.form.get('variety').value );
+      this.newCard.ranchName = this.form.get('ranch').value;
+      this.newCard.totalAcres = this.form.get('acreSize').value;
+      this.newCard.cropYear = this.form.get('cropYear').value;
+      this.newCard.commodity = this.form.get('commodity').value;
+      this.newCard.variety = this.form.get('variety').value;
+      this.cardEntryService.createCard(this.newCard).subscribe(
+        data => {
+          if (data.success) {
+            this.newCard = data.data;
+            this.router.navigateByUrl('/entry');
+          } else if (!data.success) {
+            AlertService.newBasicAlert('Error: ' + data.error, true);
+          }
+        },
+        failure => {
+          AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again', true);
+        }
+      );
+      this.router.navigate(['/manage']);
     }
   }
 
@@ -78,7 +100,6 @@ export class CreateCardEntryComponent implements OnInit {
     + '\nAcre Size: ' + acreSize + '\nCrop Year: ' + cropYear + 'Commodity: ' + comm + '\nVariety: ' + va;
     newAlert.color = 'success';
     newAlert.blockPageInteraction = true;
-   // newAlert.onClose$ = new EventEmitter<null>();
     AlertService.newAlert(newAlert);
   }
 

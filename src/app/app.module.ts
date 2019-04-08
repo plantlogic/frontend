@@ -1,3 +1,4 @@
+import { CardEntryService } from './_api/card-entry.service';
 import { AuthInjector } from './_auth/auth.injector';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserModule, Title } from '@angular/platform-browser';
@@ -74,7 +75,8 @@ import { BackButtonComponent } from './navbar/back-button/back-button.component'
   ],
   providers: [
     Title,
-    {provide: HTTP_INTERCEPTORS, useClass: AuthInjector, multi: true}
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInjector, multi: true},
+    CardEntryService
   ],
   bootstrap: [AppComponent],
   schemas: [ NO_ERRORS_SCHEMA ]
