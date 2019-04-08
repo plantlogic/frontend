@@ -14,8 +14,7 @@ import {NavService} from '../../_interact/nav.service';
 })
 export class CardManagementComponent implements OnInit {
   constructor(private titleService: TitleService, private cardService: CardViewService, private tableService: MdbTableService,
-    private nav: NavService) { }
-  constructor() { }
+              private nav: NavService) { }
 
   cards: Card[];
   filter: string;
