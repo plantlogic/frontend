@@ -6,7 +6,7 @@
 
       <div class="form-group">
         <label for="ranchNameInput" class="control-label">Ranch *</label>
-        <select id="ranch" class="browser-default custom-select"  formControlName="ranch"
+        <select id="ranch" class="browser-default custom-select"  formControlName="ranch" id="ranchNameInput"
         [class.is-invalid]="this.submitAttempted && this.form.get('ranch').invalid" required>
           <option default disabled value="Select">Select</option>
           <option [ngValue]="ranch" *ngFor="let ranch of ranchList">{{ranch}}</option>
@@ -15,22 +15,23 @@
       </div>
 
       <div class="form-group">
-        <label>Acre Size *</label>
+        <label for="acreSizeInput">Acre Size *</label>
         <input id="acreSize" type="number" name="acreSize" formControlName="acreSize" class="form-control"
-        [class.is-invalid]="this.submitAttempted && this.form.get('acreSize').invalid" required min="0">
+        [class.is-invalid]="this.submitAttempted && this.form.get('acreSize').invalid" required min="0"
+        id="acreSizeInput">
         <div class="invalid-feedback" role="alert">Enter a valid acre size</div>
       </div>
 
       <div class="form-group">
           <label for="cropYearInput" class="control-label">Crop Year *</label>
-          <input type="number" name="cropYear" formControlName="cropYear" class="form-control">
+          <input type="number" name="cropYear" formControlName="cropYear" class="form-control" id="cropYearInput">
         <div class="invalid-feedback" role="alert">Please Select a Year</div>
       </div>
 
       <div class="form-group">
         <label for="commodityInput" class="control-label">Commodity *</label>
         <select class="browser-default custom-select" formControlName="commodity" (change)="changeCommodity($event.target.value)"
-        [class.is-invalid]="this.submitAttempted && this.form.get('commodity').invalid" required>
+        [class.is-invalid]="this.submitAttempted && this.form.get('commodity').invalid" id="commodityInput" required>
           <option *ngFor ="let com of commodityList">{{com.commodity}} </option>
         </select>
         <div class="invalid-feedback" role="alert">Please Select a commodity</div>
@@ -38,7 +39,7 @@
 
       <div class="form-group">
         <label for="varietyInput" class="control-label">Variety</label>
-        <select class="browser-default custom-select" formControlName="variety">
+        <select class="browser-default custom-select" formControlName="variety" id="varietyInput">
           <option *ngFor ="let v of variety">{{v}} </option>
         </select>
       </div>
@@ -67,7 +68,7 @@
     <div class="form-group">
           <label for="bedTypeInput" class="control-label">Bed Type</label>
           <select class="browser-default custom-select" formControlName="bedType"
-          [class.is-invalid]="this.submitAttempted && this.form.get('bedType').invalid">
+          [class.is-invalid]="this.submitAttempted && this.form.get('bedType').invalid" id="bedTypeInput">
           <option selected value='0'>Select</option>
           <option>40</option>
           <option>80</option>
@@ -78,7 +79,7 @@
       <div class="form-group">
           <label for="pmInput" class="control-label">Prep Material</label>
             <select class="browser-default custom-select" formControlName="prepMaterial"
-            [class.is-invalid]="this.submitAttempted && this.form.get('prepMaterial').invalid">
+            [class.is-invalid]="this.submitAttempted && this.form.get('prepMaterial').invalid" id="pmInput">
               <option default value="Select">Select</option>
               <option *ngFor ="let pm of prepMaterial"  [ngValue]="pm">{{pm}} </option>
             </select>

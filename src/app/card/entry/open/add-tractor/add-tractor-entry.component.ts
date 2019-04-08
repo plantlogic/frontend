@@ -2,10 +2,11 @@ import { TractorEntry } from './../../../../_dto/card/tractor-entry';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TitleService } from 'src/app/_interact/title.service';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { CardEntryService } from 'src/app/_api/card-entry.service';
 import { AlertService } from 'src/app/_interact/alert/alert.service';
 import {FlatpickrOptions} from 'ng2-flatpickr';
+import {NavService} from '../../../../_interact/nav.service';
 
 @Component({
   selector: 'app-add-tractor',
@@ -13,9 +14,8 @@ import {FlatpickrOptions} from 'ng2-flatpickr';
   styleUrls: ['./add-tractor-entry.component.scss']
 })
 export class AddTractorEntryComponent implements OnInit {
-  constructor(private titleService: TitleService, private fb: FormBuilder,
-              private route: ActivatedRoute, private routes: Router,
-              private cardEntryService: CardEntryService) { }
+  constructor(private titleService: TitleService, private fb: FormBuilder, private nav: NavService,
+              private route: ActivatedRoute, private cardEntryService: CardEntryService) { }
 
   flatpickrOptions: FlatpickrOptions = { dateFormat: 'm-d-Y', defaultDate: new Date(Date.now())};
   tractorEntryForm: FormGroup;
@@ -58,7 +58,7 @@ export class AddTractorEntryComponent implements OnInit {
         data => {
           if (data.success) {
             this.tractorEntery = data.data;
-            this.routes.navigateByUrl('/entry');
+            this.nav.goBack();
           } else if (!data.success) {
             AlertService.newBasicAlert('Error: ' + data.error, true);
           }
