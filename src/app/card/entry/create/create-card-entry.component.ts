@@ -4,9 +4,9 @@ import { TitleService } from '../../../_interact/title.service';
 import { AlertService } from '../../../_interact/alert/alert.service';
 import { Component, OnInit, EventEmitter } from '@angular/core';
 import {Alert} from '../../../_interact/alert/alert';
-import { Router } from '@angular/router';
 import { Card } from '../../../_dto/card/card';
 import { AuthService } from 'src/app/_auth/auth.service';
+import {NavService} from '../../../_interact/nav.service';
 
 @Component({
   selector: 'app-create-card',
@@ -14,8 +14,8 @@ import { AuthService } from 'src/app/_auth/auth.service';
   styleUrls: ['./create-card-entry.component.scss']
 })
 export class CreateCardEntryComponent implements OnInit {
-  constructor(private titleService: TitleService, private fb: FormBuilder, private router: Router,
-              private cardEntryService: CardEntryService, private auth: AuthService) { }
+  constructor(private titleService: TitleService, private fb: FormBuilder,
+              private cardEntryService: CardEntryService, private auth: AuthService, private nav: NavService) { }
 
   form: FormGroup;
   newCard: Card = new Card();
@@ -78,7 +78,7 @@ export class CreateCardEntryComponent implements OnInit {
         data => {
           if (data.success) {
             AlertService.newBasicAlert('Success!', false);
-            this.router.navigateByUrl('/entry');
+            this.nav.goBack();
           } else if (!data.success) {
             AlertService.newBasicAlert('Error: ' + data.error, true);
           }
