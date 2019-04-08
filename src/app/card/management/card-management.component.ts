@@ -21,7 +21,7 @@ export class CardManagementComponent implements OnInit {
   previous: string;
 
   ngOnInit() {
-    this.titleService.setTitle('Open Cards');
+    this.titleService.setTitle('All Cards');
     this.loadCardData();
   }
 
