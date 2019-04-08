@@ -1,6 +1,11 @@
+import { IrrigationEntry } from './../../../../_dto/card/irrigation-entry';
 import { Component, OnInit } from '@angular/core';
 import { TitleService } from 'src/app/_interact/title.service';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { CardEntryService } from 'src/app/_api/card-entry.service';
+import { AlertService } from 'src/app/_interact/alert/alert.service';
+import { Router, ActivatedRoute } from '@angular/router';
+import {FlatpickrOptions} from 'ng2-flatpickr';
 
 @Component({
   selector: 'app-add-irrigation',
@@ -9,21 +14,28 @@ import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 })
 export class AddIrrigationEntryComponent implements OnInit {
 
-  constructor(private titleService: TitleService, private fb: FormBuilder) { }
+  constructor(private titleService: TitleService, private fb: FormBuilder,
+              private cardEntryService: CardEntryService,
+              private route: ActivatedRoute, private routes: Router) { }
 
+  flatpickrOptions: FlatpickrOptions = { dateFormat: 'm-d-Y', defaultDate: new Date(Date.now())};
   irrigationEntryForm: FormGroup;
   submitAttempted = false;
-  fertilizer: Array<any> = ['fertilizer 1', 'fertilizer 2', 'fertilizer 3'];
+  fertilizer: Array<any> = ['Lorsban', 'Diaznon', 'Kerb', 'Dacthal'];
+  irrigationEntry: IrrigationEntry = new IrrigationEntry();
+  cardId: string;
 
   ngOnInit() {
     this.titleService.setTitle('Irrigation');
     this.irrigationEntryForm = this.fb.group({
-      workDate: ['', [ Validators.required, Validators.min(1)] ],
+      workDate: [Date.now(), [ Validators.required] ],
       method: ['', [ Validators.required, Validators.minLength(1)]],
       fertilizer: ['', [ Validators.required]],
       gallons: ['', [ Validators.required, Validators.min(0.1), Validators.max(999.9)]]
     });
+    this.route.params.subscribe(data => this.cardId = data.id);
     this.irrigationEntryForm.valueChanges.subscribe(console.log);
+    console.log(this.cardId);
   }
 
   submit() {
@@ -35,7 +47,24 @@ export class AddIrrigationEntryComponent implements OnInit {
     } else {
       this.submitAttempted = false;
       console.log('success');
-     // this.router.navigate(['/manage']);
+      this.irrigationEntry.fertilizer = this.irrigationEntryForm.get('fertilizer').value;
+      this.irrigationEntry.gallons = this.irrigationEntryForm.get('gallons').value;
+      this.irrigationEntry.method = this.irrigationEntryForm.get('method').value;
+      this.irrigationEntry.workDate = this.irrigationEntryForm.get('workDate').value;
+
+      this.cardEntryService.addIrrigationData(this.cardId, this.irrigationEntry).subscribe(
+        data => {
+          if (data.success) {
+            this.irrigationEntry = data.data;
+            this.routes.navigateByUrl('/entry');
+          } else if (!data.success) {
+            AlertService.newBasicAlert('Error: ' + data.error, true);
+          }
+        },
+        failure => {
+          AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again', true);
+        }
+      );
     }
   }
 

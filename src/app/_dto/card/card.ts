@@ -3,13 +3,13 @@ import {TractorEntry} from './tractor-entry';
 
 export class Card {
   // bedCount	[integer($int32)]
-  bedCount: Array<number>;
+  bedCount: Array<number> = [];
   // bedType	integer($int32)
   bedType: number;
   // commodity	[string]
-  commodity: Array<string>;
+  commodity: Array<string> = [];
   // cropAcres	[number($float)]
-  cropAcres: Array<number>;
+  cropAcres: Array<number> = [];
   // cropYear	integer($int32)
   cropYear: number;
   // dacthalRate	number($float)
@@ -25,7 +25,7 @@ export class Card {
   // id	string
   id: string;
   // irrigationData	[IrrigationData{...}]
-  irrigationData: Array<IrrigationEntry>;
+  irrigationData: Array<IrrigationEntry> = [];
   // kerbRate	number($float)
   kerbRate: number;
   // lorsbanRate	number($float)
@@ -37,15 +37,15 @@ export class Card {
   // ranchName	string
   ranchName: string;
   // seedLotNumber	[integer($int32)]
-  seedLotNumber: Array<number>;
+  seedLotNumber: Array<number> = [];
   // thinDate	string($date-time)
   thinDate: number;
   // totalAcres	number($float)
   totalAcres: number;
   // tractorData	[TractorData{...}]
-  tractorData: Array<TractorEntry>;
+  tractorData: Array<TractorEntry> = [];
   // variety	[string]
-  variety: Array<string>;
+  variety: Array<string> = [];
   // wetDate	string($date-time)
   wetDate: number;
 }

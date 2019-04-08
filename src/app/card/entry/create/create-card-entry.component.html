@@ -6,7 +6,7 @@
 
       <div class="form-group">
         <label for="ranchNameInput" class="control-label">Ranch *</label>
-        <select class="browser-default custom-select"  formControlName="ranch"
+        <select id="ranch" class="browser-default custom-select"  formControlName="ranch"
         [class.is-invalid]="this.submitAttempted && this.form.get('ranch').invalid" required>
           <option default disabled value="Select">Select</option>
           <option [ngValue]="ranch" *ngFor="let ranch of ranchList">{{ranch}}</option>
@@ -16,18 +16,14 @@
 
       <div class="form-group">
         <label>Acre Size *</label>
-        <input type="number" name="acreSize" formControlName="acreSize" class="form-control"
+        <input id="acreSize" type="number" name="acreSize" formControlName="acreSize" class="form-control"
         [class.is-invalid]="this.submitAttempted && this.form.get('acreSize').invalid" required min="0">
         <div class="invalid-feedback" role="alert">Enter a valid acre size</div>
       </div>
 
       <div class="form-group">
           <label for="cropYearInput" class="control-label">Crop Year *</label>
-          <select class="browser-default custom-select" formControlName="cropYear"
-          [class.is-invalid]="this.submitAttempted && this.form.get('cropYear').invalid" required>
-            <option>Select</option>
-            <option [ngValue]="year" *ngFor="let year of cropYear">{{year}}</option>
-          </select>
+          <input type="number" name="cropYear" formControlName="cropYear" class="form-control">
         <div class="invalid-feedback" role="alert">Please Select a Year</div>
       </div>
 
@@ -88,7 +84,6 @@
             </select>
           <div class="invalid-feedback" role="alert">Please Select a Prep Material</div>
       </div>
-
-        <button  mdbBtn color="primary" (click)="submit()">Create</button>
+      <button  mdbBtn color="primary" (click)="submit()">Create</button>
   </form>
 </div>
