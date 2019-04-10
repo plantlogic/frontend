@@ -152,6 +152,7 @@ export class OpenCardDataComponent implements OnInit {
       this.cardEdit.updateCard(this.card).subscribe(data => {
           if (data.success) {
             AlertService.newBasicAlert('Change saved successfully!', false);
+            this.untouchedCard = (new Card()).copyConstructor(this.card);
             this.toggleEditing();
           } else {
             AlertService.newBasicAlert('Error: ' + data.error, true);
