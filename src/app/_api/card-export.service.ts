@@ -62,10 +62,8 @@ export class CardExportService {
   // Takes care of commas and quotations that may occur in any cells, following RFC 4180
   private replaceBadCharacters(x: string): string {
     if (x && x.includes(',')) {
-      console.log('Before: ' + x);
       // Escapes quotation marks
       x = x.replace(/"/g, '""');
-      console.log('After: ' + x);
       // Adds quotes around cell that contains at least one comma
       x = '"' + x + '"';
     }
