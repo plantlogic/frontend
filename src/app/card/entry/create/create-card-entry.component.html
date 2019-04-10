@@ -65,7 +65,14 @@
           <div class="invalid-feedback" role="alert">Enter a valid number</div>
       </div>
 
-    <div class="form-group">
+      <div class="form-group">
+        <label>Bed Count</label>
+        <input type="number" name="bedCount" formControlName="bedCount" class="form-control"
+        [class.is-invalid]="this.submitAttempted && this.form.get('bedCount').invalid" min="0">
+        <div class="invalid-feedback" role="alert">Enter a valid number</div>
+      </div>
+
+      <div class="form-group">
           <label for="bedTypeInput" class="control-label">Bed Type</label>
           <select class="browser-default custom-select" formControlName="bedType"
           [class.is-invalid]="this.submitAttempted && this.form.get('bedType').invalid" id="bedTypeInput">

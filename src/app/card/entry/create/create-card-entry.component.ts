@@ -37,17 +37,19 @@ export class CreateCardEntryComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log('Ranch Manager name is: ' + this.auth.getName());
     this.titleService.setTitle('Create Card');
     this.form = this.fb.group({
       ranch: ['', [Validators.required, Validators.minLength(1)]],
       lotNumber: ['', [ Validators.minLength(1)]],
       acreSize: ['', [ Validators.required, Validators.min(0.1), Validators.max(499.9)]],
-      cropYear: ['', [ Validators.min(1000), Validators.max(9999)]],
+      cropYear: ['', [ Validators.required, Validators.min(1000), Validators.max(9999)]],
       cropNumber: ['', [ Validators.min(0)]],
       commodity: ['', [Validators.required, Validators.min(1)]],
       variety: ['', [Validators.required]],
       seedLotNumber: ['', [ Validators.min(1)]],
       bedType: ['', [ Validators.min(0), Validators.max(80)]],
+      bedCount: ['', [Validators.min(0), Validators.max(100)]],
       prepMaterial: ['', [ Validators.min(1)]],
       prepMaterialRate: ['', [ Validators.min(0.1), Validators.max(100)]]
     });
@@ -62,23 +64,24 @@ export class CreateCardEntryComponent implements OnInit {
         this.form.get('cropNumber').invalid ||
         this.form.get('commodity').invalid ||
         this.form.get('seedLotNumber').invalid ||
-        this.form.get('bedType').invalid ||
-        this.form.get('prepMaterial').invalid) {
+        this.form.get('bedType').invalid) {
         this.submitAttempted = true;
     } else {
       this.submitAttempted = false;
-     // this.confirmfAlert(this.form.get('ranch').value, this.form.get('acreSize').value,
-     // this.form.get('cropYear').value, this.form.get('commodity').value, this.form.get('variety').value );
-      this.newCard.ranchManagerName = this.auth.getUsername();
+      console.log('Ranch Manager name is: ' + this.auth.getName());
+      this.newCard.ranchManagerName = this.auth.getName();
       this.newCard.ranchName = this.form.get('ranch').value;
       this.newCard.totalAcres = this.form.get('acreSize').value;
       this.newCard.cropYear = this.form.get('cropYear').value;
       this.newCard.commodity.push(this.form.get('commodity').value);
       this.newCard.variety.push(this.form.get('variety').value);
       this.newCard.lotNumber = this.form.get('lotNumber').value;
-      // this.newCard.seedLotNumber = this.form.get('seedLotNumber').value;
-      // this.newCard.bedType = this.form.get('bedType').value;
-      // this.newCard.prpMaterial = this.form.get('prepMaterial').value;
+      // this.newCard.cropNumber = this.form.get('cropNumber').value;   <- need to add to card.ts
+      this.newCard.seedLotNumber.push(this.form.get('seedLotNumber').value);
+      this.newCard.bedType = this.form.get('bedType').value;
+      this.newCard.bedCount.push(this.form.get('bedCount').value);
+      // this.newCard.prepMaterial = this.form.get('prepMaterial').value; <- need to add to card.ts
+      // this.newCard.prepMaterialRate = this.form.get('prepMaterialRate').value <- need to add to card.ts
       this.cardEntryService.createCard(this.newCard).subscribe(
         data => {
           if (data.success) {
@@ -94,19 +97,4 @@ export class CreateCardEntryComponent implements OnInit {
       );
     }
   }
-
-  confirmfAlert(ranchName: string, acreSize: number, cropYear: number, comm: string, va: string): void {
-    const newAlert = new Alert();
-
-    newAlert.title = 'Confirm';
-    newAlert.showClose = true;
-    newAlert.closeName = 'Submit';
-    newAlert.timeLeft = 10;
-    newAlert.message = 'Are you sure you want to create a new card with the following information? Ranch: ' + ranchName
-    + '\nAcre Size: ' + acreSize + '\nCrop Year: ' + cropYear + 'Commodity: ' + comm + '\nVariety: ' + va;
-    newAlert.color = 'success';
-    newAlert.blockPageInteraction = true;
-    AlertService.newAlert(newAlert);
-  }
-
 }
