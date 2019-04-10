@@ -13,7 +13,7 @@ export class CardEditService {
 
   private httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'})};
 
-  public updateCard(card: Card): Observable<BasicDTO<Card>> {
+  public updateCard(card: Card): Observable<BasicDTO<null>> {
     return this.http.put<BasicDTO<null>>(environment.ApiUrl + '/data/edit/ranches/' + card.id, card, this.httpOptions);
   }
 
