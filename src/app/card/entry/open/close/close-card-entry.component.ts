@@ -38,7 +38,7 @@ export class CloseCardEntryComponent implements OnInit {
   private closeCard() {
     if (this.form.valid) {
       this.submitAttempted = false;
-      this.card.harvestDate = (new Date(this.form.get('harvestDate').value)).getDate();
+      this.card.harvestDate = (new Date(this.form.get('harvestDate').value)).valueOf();
       this.cardService.closeCard(this.card).subscribe(
         data => {
           if (data.success) {
