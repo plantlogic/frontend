@@ -4,8 +4,9 @@ import { TitleService } from 'src/app/_interact/title.service';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { CardEntryService } from 'src/app/_api/card-entry.service';
 import { AlertService } from 'src/app/_interact/alert/alert.service';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import {FlatpickrOptions} from 'ng2-flatpickr';
+import {NavService} from '../../../../_interact/nav.service';
 
 @Component({
   selector: 'app-add-irrigation',
@@ -15,8 +16,8 @@ import {FlatpickrOptions} from 'ng2-flatpickr';
 export class AddIrrigationEntryComponent implements OnInit {
 
   constructor(private titleService: TitleService, private fb: FormBuilder,
-              private cardEntryService: CardEntryService,
-              private route: ActivatedRoute, private routes: Router) { }
+              private cardEntryService: CardEntryService, private nav: NavService,
+              private route: ActivatedRoute) { }
 
   flatpickrOptions: FlatpickrOptions = { dateFormat: 'm-d-Y', defaultDate: new Date(Date.now())};
   irrigationEntryForm: FormGroup;
@@ -56,7 +57,7 @@ export class AddIrrigationEntryComponent implements OnInit {
         data => {
           if (data.success) {
             this.irrigationEntry = data.data;
-            this.routes.navigateByUrl('/entry');
+            this.nav.goBack();
           } else if (!data.success) {
             AlertService.newBasicAlert('Error: ' + data.error, true);
           }
