@@ -10,12 +10,6 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
   providedIn: 'root'
 })
 export class CardExportService {
-  // Format is [x][y]: [x] is a row and [y] is a column. Commas and newlines will automatically be added.
-  private table: Array<Array<string>> = [];
-  // The name of the file. The .csv extension will automatically be appended.
-  private fileName = environment.AppName + '-export';
-
-
   constructor(private http: HttpClient) { }
   private httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'})};
 
@@ -27,39 +21,52 @@ export class CardExportService {
       data => {
         // If data is successful retrieved
         if (data.success) {
+          // Format is [x][y]: [x] is a row and [y] is a column. Commas and newlines will automatically be added.
+          const table: Array<Array<string>> = [];
           // Add column labels
-          this.table.push(['Lot Number', 'Ranch Manager', 'Commodities']);
+          table.push(['Lot Number', 'Ranch Name', 'Ranch Manager', 'Commodities']);
 
           // Take our data and put it in the table.
           data.data.forEach(x => {
-              this.table.push(
-                [x.lotNumber, x.ranchManagerName, x.commodity.join(' - ')]
+              table.push(
+                [x.lotNumber, x.ranchName, x.ranchManagerName, x.commodity.join(' - ')]
               );
             }
           );
 
-          this.fileName = 'example-generated-card';
-
           // Initiate generation and download
-          this.generateAndDownload();
+          this.generateAndDownload(table, 'example-generated-card');
 
         } else {
+          // Show server error
           AlertService.newBasicAlert('Error: ' + data.error, true);
         }
       },
       failure => {
+        // Show connection error
         AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
       }
     );
   }
 
   // Helper - generates the CSV and invokes the file download
-  private generateAndDownload(): void {
+  private generateAndDownload(table: Array<Array<string>>, fileName: string): void {
     FileDownload(
       // Generate the CSV from the table
-      this.table.map(x => x.join(',')).join('\n'),
+      table.map(x => x.map(y => this.replaceBadCharacters(y)).join(',')).join('\n'),
       // Filename
-      this.fileName + '.csv'
+      fileName + '.csv'
     );
+  }
+
+  // Takes care of commas and quotations that may occur in any cells, following RFC 4180
+  private replaceBadCharacters(x: string): string {
+    if (x && x.includes(',')) {
+      // Escapes quotation marks
+      x = x.replace(/"/g, '""');
+      // Adds quotes around cell that contains at least one comma
+      x = '"' + x + '"';
+    }
+    return x;
   }
 }
