@@ -32,6 +32,12 @@
               <th scope="col" class="small" [mdbTableSort]="cards" [sortBy]="'lotNumber'">
                 Lot # <i class="fa fa-sort ml-1"></i>
               </th>
+              <th scope="col" class="small" [mdbTableSort]="cards" [sortBy]="'lastUpdated'">
+                Last Updated <i class="fa fa-sort ml-1"></i>
+              </th>
+              <th scope="col" class="small" [mdbTableSort]="cards" [sortBy]="'isClosed'">
+                State <i class="fa fa-sort ml-1"></i>
+              </th>
               <th class="small" scope="col">Options</th>
             </tr>
           </thead>
@@ -39,15 +45,24 @@
             <tr mdbTableCol *ngFor="let p of cards; let i = index" class="animated fadeIn" [style.animation-delay]="this.min((30*i), 1000)+ 'ms'">
               <td>{{p.ranchName}}</td>
               <td>{{p.lotNumber}}</td>
+              <td>{{p.lastUpdated | date:'longDate'}}</td>
               <td>
-                  <button type="button" color="success" [routerLink]="['/entry/o/', p.id]"
-                          alt="View Card" class="mr-1 mb-1" mdbBtn floating="true" size="sm">
-                    View <i class="ml-1 fa fa-external-link-alt" aria-hidden="true"></i>
-                  </button>
-                  <button type="button" color="amber" routerLink="/manage/o/cardIdHere"
-                          alt="Re-Open Card" class="mr-1 mb-1" mdbBtn floating="true" size="sm">
-                    Re-open <i class="ml-1 fa fa-edit" aria-hidden="true"></i>
-                  </button>
+                <h5 *ngIf="p.isClosed">
+                  <span class="badge badge-light">
+                    Closed
+                  </span>
+                </h5>
+                <h5 *ngIf="!p.isClosed">
+                  <span class="badge badge-primary">
+                    Open
+                  </span>
+                </h5>
+              </td>
+              <td>
+                <button type="button" color="success" [routerLink]="['/manage/o/', p.id]"
+                        alt="View Card" class="mr-1 mb-1" mdbBtn floating="true" size="sm">
+                  Open <i class="ml-1 fa fa-external-link-alt" aria-hidden="true"></i>
+                </button>
               </td>
             </tr>
           </tbody>
