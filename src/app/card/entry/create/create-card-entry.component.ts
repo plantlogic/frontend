@@ -37,7 +37,6 @@ export class CreateCardEntryComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('Ranch Manager name is: ' + this.auth.getName());
     this.titleService.setTitle('Create Card');
     this.form = this.fb.group({
       ranch: ['', [Validators.required, Validators.minLength(1)]],
@@ -68,7 +67,6 @@ export class CreateCardEntryComponent implements OnInit {
         this.submitAttempted = true;
     } else {
       this.submitAttempted = false;
-      console.log('Ranch Manager name is: ' + this.auth.getName());
       this.newCard.ranchManagerName = this.auth.getName();
       this.newCard.ranchName = this.form.get('ranch').value;
       this.newCard.totalAcres = this.form.get('acreSize').value;

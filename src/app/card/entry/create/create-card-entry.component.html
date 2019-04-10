@@ -24,7 +24,8 @@
 
       <div class="form-group">
           <label for="cropYearInput" class="control-label">Crop Year *</label>
-          <input type="number" name="cropYear" formControlName="cropYear" class="form-control" id="cropYearInput" required>
+          <input type="number" name="cropYear" formControlName="cropYear" class="form-control" id="cropYearInput"
+          [class.is-invalid]="this.submitAttempted && this.form.get('cropYear').invalid" required>
         <div class="invalid-feedback" role="alert">Please Select a Year</div>
       </div>
 
