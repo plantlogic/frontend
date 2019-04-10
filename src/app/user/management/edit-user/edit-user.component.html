@@ -17,7 +17,7 @@
           <div class="form-group">
             <label for="usernameInput">Username</label>
             <input type="text" name="username" formControlName="username" class="form-control" id="usernameInput"
-                 [class.is-invalid]="this.submitAttempted && this.form.get('username').invalid" required>
+                 [class.is-invalid]="submitAttempted && form.get('username').invalid" required>
             <div class="invalid-feedback" role="alert">Username must be at least 4 characters long.</div>
           </div>
         </div>
@@ -25,7 +25,7 @@
           <div class="form-group">
             <label for="emailInput">Email</label>
             <input type="email" name="email" formControlName="email" class="form-control" id="emailInput"
-                   [class.is-invalid]="this.submitAttempted && this.form.get('email').invalid" required>
+                   [class.is-invalid]="submitAttempted && form.get('email').invalid" required>
             <div class="invalid-feedback" role="alert">A valid email address is required.</div>
           </div>
         </div>
@@ -36,7 +36,7 @@
           <div class="form-group">
             <label for="realnameInput">Employee Name</label>
             <input type="text" name="realname" formControlName="realname" class="form-control" id="realnameInput"
-                   [class.is-invalid]="this.submitAttempted && this.form.get('realname').invalid" required>
+                   [class.is-invalid]="submitAttempted && form.get('realname').invalid" required>
             <div class="invalid-feedback" role="alert">User's full name is required.</div>
           </div>
         </div>
