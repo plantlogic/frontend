@@ -26,8 +26,12 @@ export class Card {
   id: string;
   // irrigationData	[IrrigationData{...}]
   irrigationData: Array<IrrigationEntry> = [];
+  // isClosed	boolean
+  isClosed: boolean;
   // kerbRate	number($float)
   kerbRate: number;
+  // lastUpdated: string($date-time)
+  lastUpdated: number;
   // lorsbanRate	number($float)
   lorsbanRate: number;
   // lotNumber	string
@@ -48,4 +52,33 @@ export class Card {
   variety: Array<string> = [];
   // wetDate	string($date-time)
   wetDate: number;
+
+  public copyConstructor(card: Card): Card {
+    this.bedCount = JSON.parse(JSON.stringify(card.bedCount));
+    this.bedType = card.bedType;
+    this.commodity = JSON.parse(JSON.stringify(card.commodity));
+    this.cropAcres = JSON.parse(JSON.stringify(card.cropAcres));
+    this.cropYear = card.cropYear;
+    this.dacthalRate = card.dacthalRate;
+    this.diaznonRate = card.diaznonRate;
+    this.fieldID = card.fieldID;
+    this.harvestDate = card.harvestDate;
+    this.hoeDate = card.hoeDate;
+    this.id = card.id;
+    this.irrigationData = JSON.parse(JSON.stringify(card.irrigationData));
+    this.isClosed = card.isClosed;
+    this.kerbRate = card.kerbRate;
+    this.lastUpdated = card.lastUpdated;
+    this.lorsbanRate = card.lorsbanRate;
+    this.lotNumber = card.lotNumber;
+    this.ranchManagerName = card.ranchManagerName;
+    this.ranchName = card.ranchName;
+    this.seedLotNumber = JSON.parse(JSON.stringify(card.seedLotNumber));
+    this.thinDate = card.thinDate;
+    this.totalAcres = card.totalAcres;
+    this.tractorData = JSON.parse(JSON.stringify(card.tractorData));
+    this.variety = JSON.parse(JSON.stringify(card.variety));
+    this.wetDate = card.wetDate;
+    return this;
+  }
 }

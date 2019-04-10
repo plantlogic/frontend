@@ -16,7 +16,7 @@ export class EntryDashboardComponent implements OnInit {
   constructor(private titleService: TitleService, private cardService: CardEntryService, private tableService: MdbTableService,
               private nav: NavService) { }
 
-  cards: Card[];
+  cards: Card[] = [];
   filter: string;
   previous: string;
 

@@ -28,32 +28,14 @@ export class CloseCardEntryComponent implements OnInit {
     });
   }
 
-  card: Card;
+  card: Card = new Card();
 
   ngOnInit() {
     this.titleService.setTitle('Close Card');
-    this.route.params.subscribe(data => this.loadCardData(data.id));
-  }
-
-  private loadCardData(id: string) {
-    this.cardService.getCardById(id).subscribe(
-      data => {
-        if (data.success) {
-          this.card = data.data;
-        } else if (!data.success) {
-          AlertService.newBasicAlert('Error: ' + data.error, true);
-          this.nav.goBack();
-        }
-      },
-      failure => {
-        AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
-        this.nav.goBack();
-      }
-    );
+    this.route.params.subscribe(data => this.card.id = data.id);
   }
 
   private closeCard() {
-    console.log(this.form.valid);
     if (this.form.valid) {
       this.submitAttempted = false;
       this.card.harvestDate = this.form.get('harvestDate').value;

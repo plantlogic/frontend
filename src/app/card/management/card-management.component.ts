@@ -16,7 +16,7 @@ export class CardManagementComponent implements OnInit {
   constructor(private titleService: TitleService, private cardService: CardViewService, private tableService: MdbTableService,
               private nav: NavService) { }
 
-  cards: Card[];
+  cards: Card[] = [];
   filter: string;
   previous: string;
 
