@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {CardExportService} from '../../../_api/card-export.service';
 
 @Component({
   selector: 'app-export',
@@ -7,9 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ExportCardDataComponent implements OnInit {
 
-  constructor() { }
+  constructor(private cardExport: CardExportService) { }
 
   ngOnInit() {
+  }
+
+  generateExampleCard(): void {
+    this.cardExport.exampleGenerate();
   }
 
 }
