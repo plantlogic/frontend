@@ -22,7 +22,7 @@ export class CloseCardEntryComponent implements OnInit {
   };
 
   constructor(private titleService: TitleService, private cardService: CardEntryService, private router: Router,
-              private nav: NavService, private route: ActivatedRoute, private fb: FormBuilder) {
+              private route: ActivatedRoute, private fb: FormBuilder) {
     this.form = this.fb.group({
       harvestDate: [Date.now(), Validators.required]
     });
@@ -38,11 +38,11 @@ export class CloseCardEntryComponent implements OnInit {
   private closeCard() {
     if (this.form.valid) {
       this.submitAttempted = false;
-      this.card.harvestDate = this.form.get('harvestDate').value;
+      this.card.harvestDate = (new Date(this.form.get('harvestDate').value)).valueOf();
       this.cardService.closeCard(this.card).subscribe(
         data => {
           if (data.success) {
-            this.card = data.data;
+            AlertService.newBasicAlert('Card closed successfully!', false);
             this.router.navigateByUrl('/entry');
           } else if (!data.success) {
             AlertService.newBasicAlert('Error: ' + data.error, true);
