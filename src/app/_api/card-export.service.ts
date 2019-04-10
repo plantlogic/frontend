@@ -24,12 +24,12 @@ export class CardExportService {
           // Format is [x][y]: [x] is a row and [y] is a column. Commas and newlines will automatically be added.
           const table: Array<Array<string>> = [];
           // Add column labels
-          table.push(['Lot Number', 'Ranch Manager', 'Commodities']);
+          table.push(['Lot Number', 'Ranch Name', 'Ranch Manager', 'Commodities']);
 
           // Take our data and put it in the table.
           data.data.forEach(x => {
               table.push(
-                [x.lotNumber, x.ranchManagerName, x.commodity.join(' - ')]
+                [x.lotNumber, x.ranchName, x.ranchManagerName, x.commodity.join(' - ')]
               );
             }
           );
@@ -53,9 +53,22 @@ export class CardExportService {
   private generateAndDownload(table: Array<Array<string>>, fileName: string): void {
     FileDownload(
       // Generate the CSV from the table
-      table.map(x => x.join(',')).join('\n'),
+      table.map(x => x.map(y => this.replaceBadCharacters(y)).join(',')).join('\n'),
       // Filename
       fileName + '.csv'
     );
+  }
+
+  // Takes care of commas and quotations that may occur in any cells, following RFC 4180
+  private replaceBadCharacters(x: string): string {
+    if (x && x.includes(',')) {
+      console.log('Before: ' + x);
+      // Escapes quotation marks
+      x = x.replace(/"/g, '""');
+      console.log('After: ' + x);
+      // Adds quotes around cell that contains at least one comma
+      x = '"' + x + '"';
+    }
+    return x;
   }
 }
