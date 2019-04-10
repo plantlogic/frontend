@@ -24,7 +24,7 @@
 
       <div class="form-group">
           <label for="cropYearInput" class="control-label">Crop Year *</label>
-          <input type="number" name="cropYear" formControlName="cropYear" class="form-control" id="cropYearInput">
+          <input type="number" name="cropYear" formControlName="cropYear" class="form-control" id="cropYearInput" required>
         <div class="invalid-feedback" role="alert">Please Select a Year</div>
       </div>
 
@@ -85,6 +85,15 @@
             </select>
           <div class="invalid-feedback" role="alert">Please Select a Prep Material</div>
       </div>
+
+      <div class="form-group">
+        <label for="pmRateInput">Prep Material Rate (in gallons)</label>
+        <input id="pmRateInput" type="number" name="pmRateInput" formControlName="prepMaterialRate" class="form-control"
+        [class.is-invalid]="this.submitAttempted && this.form.get('pmRateInput').invalid" required min="0"
+        id="pmRateInput">
+        <div class="invalid-feedback" role="alert">Enter a valid rate.</div>
+      </div>
+
       <button  mdbBtn color="primary" (click)="submit()">Create</button>
   </form>
 </div>

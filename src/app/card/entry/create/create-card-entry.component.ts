@@ -48,7 +48,8 @@ export class CreateCardEntryComponent implements OnInit {
       variety: ['', [Validators.required]],
       seedLotNumber: ['', [ Validators.min(1)]],
       bedType: ['', [ Validators.min(0), Validators.max(80)]],
-      prepMaterial: ['', [ Validators.min(1)]]
+      prepMaterial: ['', [ Validators.min(1)]],
+      prepMaterialRate: ['', [ Validators.min(0.1), Validators.max(100)]]
     });
     this.form.valueChanges.subscribe(console.log);
   }
@@ -74,6 +75,10 @@ export class CreateCardEntryComponent implements OnInit {
       this.newCard.cropYear = this.form.get('cropYear').value;
       this.newCard.commodity.push(this.form.get('commodity').value);
       this.newCard.variety.push(this.form.get('variety').value);
+      this.newCard.lotNumber = this.form.get('lotNumber').value;
+      // this.newCard.seedLotNumber = this.form.get('seedLotNumber').value;
+      // this.newCard.bedType = this.form.get('bedType').value;
+      // this.newCard.prpMaterial = this.form.get('prepMaterial').value;
       this.cardEntryService.createCard(this.newCard).subscribe(
         data => {
           if (data.success) {
