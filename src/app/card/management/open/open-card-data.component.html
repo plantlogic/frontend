@@ -164,7 +164,7 @@
   </div>
 </div>
 
-<button *ngIf="card" type="button" class="btn btn-danger mt-n2 float-right" routerLink="./close">
-  <span>Close Card </span>
-  <i class="fas fa-check ml-1"></i>
+<button *ngIf="card && editable" type="button" class="btn btn-danger mt-n2 float-right" (click)="deleteCard()">
+  <span>Delete Card </span>
+  <i class="fas fa-trash ml-1"></i>
 </button>
