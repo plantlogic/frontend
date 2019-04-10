@@ -41,14 +41,15 @@ export class CreateCardEntryComponent implements OnInit {
     this.form = this.fb.group({
       ranch: ['', [Validators.required, Validators.minLength(1)]],
       lotNumber: ['', [ Validators.minLength(1)]],
-      acreSize: ['', [ Validators.required, Validators.min(0.1), Validators.max(499.9)]],
+      totalAcres: ['', [ Validators.required, Validators.min(0.1), Validators.max(499.9)]],
+      cropAcres: ['',[ Validators.min(0), Validators.max(100)]],
       cropYear: ['', [ Validators.required, Validators.min(1000), Validators.max(9999)]],
       cropNumber: ['', [ Validators.min(0)]],
-      commodity: ['', [Validators.required, Validators.min(1)]],
-      variety: ['', [Validators.required]],
+      commodity: ['', [ Validators.required, Validators.min(1)]],
+      variety: ['', [ Validators.required]],
       seedLotNumber: ['', [ Validators.min(1)]],
       bedType: ['', [ Validators.min(0), Validators.max(80)]],
-      bedCount: ['', [Validators.min(0), Validators.max(100)]],
+      bedCount: ['', [ Validators.min(0), Validators.max(100)]],
       prepMaterial: ['', [ Validators.min(1)]],
       prepMaterialRate: ['', [ Validators.min(0.1), Validators.max(100)]]
     });
@@ -56,30 +57,27 @@ export class CreateCardEntryComponent implements OnInit {
   }
 
   submit() {
-    if ( this.form.get('ranch').invalid ||
-        this.form.get('lotNumber').invalid ||
-        this.form.get('acreSize').invalid ||
-        this.form.get('cropYear').invalid ||
-        this.form.get('cropNumber').invalid ||
-        this.form.get('commodity').invalid ||
-        this.form.get('seedLotNumber').invalid ||
-        this.form.get('bedType').invalid) {
+    if ( this.form.invalid) {
         this.submitAttempted = true;
     } else {
       this.submitAttempted = false;
       this.newCard.ranchManagerName = this.auth.getName();
       this.newCard.ranchName = this.form.get('ranch').value;
-      this.newCard.totalAcres = this.form.get('acreSize').value;
+      this.newCard.totalAcres = this.form.get('totalAcres').value;
       this.newCard.cropYear = this.form.get('cropYear').value;
       this.newCard.commodity.push(this.form.get('commodity').value);
       this.newCard.variety.push(this.form.get('variety').value);
-      this.newCard.lotNumber = this.form.get('lotNumber').value;
-      // this.newCard.cropNumber = this.form.get('cropNumber').value;   <- need to add to card.ts
       this.newCard.seedLotNumber.push(this.form.get('seedLotNumber').value);
-      this.newCard.bedType = this.form.get('bedType').value;
       this.newCard.bedCount.push(this.form.get('bedCount').value);
-      // this.newCard.prepMaterial = this.form.get('prepMaterial').value; <- need to add to card.ts
-      // this.newCard.prepMaterialRate = this.form.get('prepMaterialRate').value <- need to add to card.ts
+      this.newCard.cropAcres.push(this.form.get('cropAcres').value);
+      this.newCard.lotNumber = this.form.get('lotNumber').value;
+      this.newCard.bedType = this.form.get('bedType').value;
+      /*
+      -------Need to add the following to card model-----
+      this.newCard.cropNumber = this.form.get('cropNumber').value;
+      this.newCard.prepMaterial = this.form.get('prepMaterial').value;
+      this.newCard.prepMaterialRate = this.form.get('prepMaterialRate').value
+      */
       this.cardEntryService.createCard(this.newCard).subscribe(
         data => {
           if (data.success) {

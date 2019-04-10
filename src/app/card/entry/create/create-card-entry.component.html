@@ -15,10 +15,10 @@
       </div>
 
       <div class="form-group">
-        <label for="acreSizeInput">Acre Size *</label>
-        <input id="acreSize" type="number" name="acreSize" formControlName="acreSize" class="form-control"
-        [class.is-invalid]="this.submitAttempted && this.form.get('acreSize').invalid" required min="0"
-        id="acreSizeInput">
+        <label for="totalAcresInput">Total Acre Size *</label>
+        <input id="totalAcres" type="number" name="totalAcres" formControlName="totalAcres" class="form-control"
+        [class.is-invalid]="this.submitAttempted && this.form.get('totalAcres').invalid" required min="0"
+        id="totalAcresInput">
         <div class="invalid-feedback" role="alert">Enter a valid acre size</div>
       </div>
 
@@ -43,6 +43,15 @@
         <select class="browser-default custom-select" formControlName="variety" id="varietyInput">
           <option *ngFor ="let v of variety">{{v}} </option>
         </select>
+      </div>
+
+      <div class="form-group">
+        <label for="cropAcresInput">Crop Acre Size</label>
+        <input id="cropAcres" type="number" name="cropAcres" formControlName="cropAcres" class="form-control"
+        [class.is-invalid]="this.submitAttempted && this.form.get('cropAcres').invalid  ||
+        this.form.get('totalAcres').value < this.form.get('cropAcres').value" min="0"
+        id="cropAcresInput">
+        <div class="invalid-feedback" role="alert">Enter a valid acre size</div>
       </div>
 
       <div class="form-group">
@@ -97,7 +106,7 @@
       <div class="form-group">
         <label for="pmRateInput">Prep Material Rate (in gallons)</label>
         <input id="pmRateInput" type="number" name="pmRateInput" formControlName="prepMaterialRate" class="form-control"
-        [class.is-invalid]="this.submitAttempted && this.form.get('pmRateInput').invalid" required min="0"
+        [class.is-invalid]="this.submitAttempted && this.form.get('pmRateInput').invalid" min="0"
         id="pmRateInput">
         <div class="invalid-feedback" role="alert">Enter a valid rate.</div>
       </div>
