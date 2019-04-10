@@ -13,109 +13,96 @@
         </h5>
       </div>
       <div class="col-md">
-        <button type="button" class="btn btn-warning float-right ml-1" routerLink="./add/tractor">
-          <span class="d-md-none">+ </span>
-          <span class="d-none d-md-inline-block">Add </span>
-          <i class="fas fa-tractor ml-1"></i>
-        </button>
-        <button type="button" class="btn btn-primary ml-1 float-right" routerLink="./add/irrigation">
-          <span class="d-md-none">+ </span>
-          <span class="d-none d-md-inline-block">Add </span>
-          <i class="fas fa-tint ml-1"></i>
-        </button>
-      </div>
-      <div class="col-md">
-        <button mdbBtn color="light" class="waves-light float-right" type="button" (click)="info.toggle()" mdbWavesEffect>
-          More Info <i class="fas fa-caret-down ml-1"></i>
+        <button *ngIf="card && editable" type="button" class="btn mt-n2 float-right" (click)="toggleCard()"
+        [class.btn-light]="card.isClosed" [class.btn-primary]="!card.isClosed">
+          <span *ngIf="card.isClosed">Reopen <i class="fas fa-upload ml-1"></i></span>
+          <span *ngIf="!card.isClosed">Close <i class="fas fa-check ml-1"></i></span>
         </button>
       </div>
     </div>
-    <div mdbCollapse #info="bs-collapse">
-      <div class="row justify-content-center mt-3">
-        <div class="col-sm border">
-          <i class="fas fa-caret-square-right mr-2"></i>
-          <b>Ranch Name:</b>
-          <i> {{card.ranchName}}</i>
-          <br />
-          <i class="fas fa-caret-square-right mr-2"></i>
-          <b>Field ID:</b>
-          <i> {{card.fieldID}}</i>
-          <br />
-          <i class="fas fa-caret-square-right mr-2"></i>
-          <b>Ranch Manager:</b>
-          <i> {{card.ranchManagerName}}</i>
-          <br />
-          <i class="fas fa-caret-square-right mr-2"></i>
-          <b>Lot #:</b>
-          <i> {{card.lotNumber}}</i>
-          <br />
-          <i class="fas fa-caret-square-right mr-2"></i>
-          <b>Total Acres:</b>
-          <i> {{card.totalAcres}}</i>
-        </div>
-        <div class="col-sm border">
-          <i class="fas fa-caret-square-right mr-2"></i>
-          <b>Crop Year:</b>
-          <i> {{card.cropYear}}</i>
-          <br />
-          <i class="fas fa-caret-square-right mr-2"></i>
-          <b>Commodity:</b>
-          <i> {{card.commodity}}</i>
-          <br />
-          <i class="fas fa-caret-square-right mr-2"></i>
-          <b>Variety:</b>
-          <i> {{card.variety}}</i>
-          <br />
-          <i class="fas fa-caret-square-right mr-2"></i>
-          <b>Crop Acres:</b>
-          <i> {{card.cropAcres}}</i>
-          <br />
-          <i class="fas fa-caret-square-right mr-2"></i>
-          <b>Bed Count:</b>
-          <i> {{card.bedCount}}</i>
-          <br />
-          <i class="fas fa-caret-square-right mr-2"></i>
-          <b>Seed Lot #:</b>
-          <i> {{card.seedLotNumber}}</i>
-        </div>
-        <div class="col-sm border">
-          <i class="fas fa-caret-square-right mr-2"></i>
-          <b>Bed Type:</b>
-          <i> {{card.bedType}}</i>
-          <br />
-          <i class="fas fa-caret-square-right mr-2"></i>
-          <b>Lorsban Rate:</b>
-          <i> {{card.lorsbanRate}}</i>
-          <br />
-          <i class="fas fa-caret-square-right mr-2"></i>
-          <b>Diaznon Rate:</b>
-          <i> {{card.diaznonRate}}</i>
-          <br />
-          <i class="fas fa-caret-square-right mr-2"></i>
-          <b>Kerb Rate:</b>
-          <i> {{card.kerbRate}}</i>
-          <br />
-          <i class="fas fa-caret-square-right mr-2"></i>
-          <b>Dacthal Rate:</b>
-          <i> {{card.dacthalRate}}</i>
-        </div>
-        <div class="col-sm border">
-          <i class="fas fa-caret-square-right mr-2"></i>
-          <b>Wet Date:</b>
-          <i> {{card.wetDate | date:'shortDate'}}</i>
-          <br />
-          <i class="fas fa-caret-square-right mr-2"></i>
-          <b>Thin Date:</b>
-          <i> {{card.thinDate | date:'shortDate'}}</i>
-          <br />
-          <i class="fas fa-caret-square-right mr-2"></i>
-          <b>Hoe Date:</b>
-          <i> {{card.hoeDate | date:'shortDate'}}</i>
-        </div>
+    <div class="row justify-content-center mt-3">
+      <div class="col-sm border">
+        <i class="fas fa-caret-square-right mr-2"></i>
+        <b>Ranch Name:</b>
+        <i> {{card.ranchName}}</i>
+        <br />
+        <i class="fas fa-caret-square-right mr-2"></i>
+        <b>Field ID:</b>
+        <i> {{card.fieldID}}</i>
+        <br />
+        <i class="fas fa-caret-square-right mr-2"></i>
+        <b>Ranch Manager:</b>
+        <i> {{card.ranchManagerName}}</i>
+        <br />
+        <i class="fas fa-caret-square-right mr-2"></i>
+        <b>Lot #:</b>
+        <i> {{card.lotNumber}}</i>
+        <br />
+        <i class="fas fa-caret-square-right mr-2"></i>
+        <b>Total Acres:</b>
+        <i> {{card.totalAcres}}</i>
+      </div>
+      <div class="col-sm border">
+        <i class="fas fa-caret-square-right mr-2"></i>
+        <b>Crop Year:</b>
+        <i> {{card.cropYear}}</i>
+        <br />
+        <i class="fas fa-caret-square-right mr-2"></i>
+        <b>Commodity:</b>
+        <i> {{card.commodity}}</i>
+        <br />
+        <i class="fas fa-caret-square-right mr-2"></i>
+        <b>Variety:</b>
+        <i> {{card.variety}}</i>
+        <br />
+        <i class="fas fa-caret-square-right mr-2"></i>
+        <b>Crop Acres:</b>
+        <i> {{card.cropAcres}}</i>
+        <br />
+        <i class="fas fa-caret-square-right mr-2"></i>
+        <b>Bed Count:</b>
+        <i> {{card.bedCount}}</i>
+        <br />
+        <i class="fas fa-caret-square-right mr-2"></i>
+        <b>Seed Lot #:</b>
+        <i> {{card.seedLotNumber}}</i>
+      </div>
+      <div class="col-sm border">
+        <i class="fas fa-caret-square-right mr-2"></i>
+        <b>Bed Type:</b>
+        <i> {{card.bedType}}</i>
+        <br />
+        <i class="fas fa-caret-square-right mr-2"></i>
+        <b>Lorsban Rate:</b>
+        <i> {{card.lorsbanRate}}</i>
+        <br />
+        <i class="fas fa-caret-square-right mr-2"></i>
+        <b>Diaznon Rate:</b>
+        <i> {{card.diaznonRate}}</i>
+        <br />
+        <i class="fas fa-caret-square-right mr-2"></i>
+        <b>Kerb Rate:</b>
+        <i> {{card.kerbRate}}</i>
+        <br />
+        <i class="fas fa-caret-square-right mr-2"></i>
+        <b>Dacthal Rate:</b>
+        <i> {{card.dacthalRate}}</i>
+      </div>
+      <div class="col-sm border">
+        <i class="fas fa-caret-square-right mr-2"></i>
+        <b>Wet Date:</b>
+        <i> {{card.wetDate | date:'shortDate'}}</i>
+        <br />
+        <i class="fas fa-caret-square-right mr-2"></i>
+        <b>Thin Date:</b>
+        <i> {{card.thinDate | date:'shortDate'}}</i>
+        <br />
+        <i class="fas fa-caret-square-right mr-2"></i>
+        <b>Hoe Date:</b>
+        <i> {{card.hoeDate | date:'shortDate'}}</i>
       </div>
     </div>
-    <hr class="my-4">
-    <div class="row">
+    <div class="row mt-4">
       <div class="col-md">
         <h5>Irrigation Data</h5>
         <table mdbTable *ngIf="card" class="table-responsive">
@@ -165,6 +152,6 @@
 </div>
 
 <button *ngIf="card && editable" type="button" class="btn btn-danger mt-n2 float-right" (click)="deleteCard()">
-  <span>Delete Card </span>
+  <span>Delete </span>
   <i class="fas fa-trash ml-1"></i>
 </button>
