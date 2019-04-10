@@ -41,7 +41,7 @@ export class OpenCardDataComponent implements OnInit {
       // cropAcres	[number($float)]
       // cropAcres: this.fb.array([]),
       // cropYear	integer($int32)
-      cropYear: ['', []],
+      cropYear: ['', [Validators.min(1000), Validators.max(9999)]],
       // dacthalRate	number($float)
       dacthalRate: ['', []],
       // diaznonRate	number($float)
@@ -61,7 +61,7 @@ export class OpenCardDataComponent implements OnInit {
       // ranchManagerName	string
       ranchManagerName: ['', []],
       // ranchName	string
-      ranchName: ['', []],
+      ranchName: ['', [Validators.required, Validators.minLength(1)]],
       // seedLotNumber	[integer($int32)]
       // seedLotNumber: this.fb.array([]),
       // thinDate	string($date-time)
@@ -280,31 +280,35 @@ export class OpenCardDataComponent implements OnInit {
   }
 
   private saveChanges(): void {
-    const newAlert = new Alert();
-    newAlert.color = 'warning';
-    newAlert.title = 'Save Card';
-    newAlert.message = 'This will save the card, overwriting what is in the database. This cannot be undone. Continue?';
-    newAlert.actionName = 'Save';
-    newAlert.actionClosesAlert = true;
-    newAlert.timeLeft = undefined;
-    newAlert.blockPageInteraction = true;
-    newAlert.closeName = 'Cancel';
-    newAlert.action$ = new EventEmitter<null>();
-    newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
-      this.cardEdit.updateCard(this.loadFormToCard()).subscribe(data => {
-          if (data.success) {
-            this.route.params.subscribe(rData => this.loadCardData(rData.id));
-            AlertService.newBasicAlert('Change saved successfully!', false);
-            this.toggleEditing();
-          } else {
-            AlertService.newBasicAlert('Error: ' + data.error, true);
-          }
-        },
-        failure => {
-          AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
-        });
-    });
+    if (this.form.valid) {
+      const newAlert = new Alert();
+      newAlert.color = 'warning';
+      newAlert.title = 'Save Card';
+      newAlert.message = 'This will save the card, overwriting what is in the database. This cannot be undone. Continue?';
+      newAlert.actionName = 'Save';
+      newAlert.actionClosesAlert = true;
+      newAlert.timeLeft = undefined;
+      newAlert.blockPageInteraction = true;
+      newAlert.closeName = 'Cancel';
+      newAlert.action$ = new EventEmitter<null>();
+      newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
+        this.cardEdit.updateCard(this.loadFormToCard()).subscribe(data => {
+            if (data.success) {
+              this.route.params.subscribe(rData => this.loadCardData(rData.id));
+              AlertService.newBasicAlert('Change saved successfully!', false);
+              this.toggleEditing();
+            } else {
+              AlertService.newBasicAlert('Error: ' + data.error, true);
+            }
+          },
+          failure => {
+            AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
+          });
+      });
 
-    AlertService.newAlert(newAlert);
+      AlertService.newAlert(newAlert);
+    } else {
+      AlertService.newBasicAlert('A valid crop year, ranch name, and commodity are required.', true);
+    }
   }
 }
