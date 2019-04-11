@@ -148,6 +148,10 @@ export class OpenCardDataComponent implements OnInit {
     newAlert.blockPageInteraction = true;
     newAlert.closeName = 'Cancel';
     newAlert.action$ = new EventEmitter<null>();
+
+    // this.card.
+
+
     newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
       this.cardEdit.updateCard(this.card).subscribe(data => {
           if (data.success) {

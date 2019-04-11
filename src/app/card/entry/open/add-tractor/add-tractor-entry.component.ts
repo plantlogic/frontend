@@ -51,7 +51,7 @@ export class AddTractorEntryComponent implements OnInit {
       this.tractorEntery.fertilizer = this.tractorEntryForm.get('fertilizer').value;
       this.tractorEntery.gallons = this.tractorEntryForm.get('gallons').value;
       this.tractorEntery.workDone = this.tractorEntryForm.get('workDone').value;
-      this.tractorEntery.workDate = this.tractorEntryForm.get('workDate').value;
+      this.tractorEntery.workDate = (new Date(this.tractorEntryForm.get('workDate').value)).valueOf();
       this.tractorEntery.operator = this.tractorEntryForm.get('operator').value;
 
       this.cardEntryService.addTractorData(this.cardId, this.tractorEntery).subscribe(

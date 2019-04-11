@@ -30,7 +30,7 @@
       </div>
     </div>
     <div class="row justify-content-center mt-3">
-      <div class="col-sm border">
+      <div class="col-sm border p-4">
         <i class="fas fa-caret-square-right mr-2"></i>
         <b>Ranch Name:</b>
         <br />
@@ -39,7 +39,7 @@
         <i class="fas fa-caret-square-right mr-2"></i>
         <b>Field ID:</b>
         <br />
-        <input type="text" [(ngModel)]="card.fieldID" [disabled]="!editing" />
+        <input type="number" [(ngModel)]="card.fieldID" [disabled]="!editing" />
         <br />
         <i class="fas fa-caret-square-right mr-2"></i>
         <b>Ranch Manager:</b>
@@ -54,40 +54,9 @@
         <i class="fas fa-caret-square-right mr-2"></i>
         <b>Total Acres:</b>
         <br />
-        <input type="text" [(ngModel)]="card.totalAcres" [disabled]="!editing" />
+        <input type="number" [(ngModel)]="card.totalAcres" [disabled]="!editing" />
       </div>
-      <div class="col-sm border">
-        <i class="fas fa-caret-square-right mr-2"></i>
-        <b>Crop Year:</b>
-        <br />
-        <input type="text" [(ngModel)]="card.cropYear" [disabled]="!editing" />
-        <br />
-        <i class="fas fa-caret-square-right mr-2"></i>
-        <b>Commodity:</b>
-        <br />
-        <input type="text" [(ngModel)]="card.commodity" [disabled]="!editing" />
-        <br />
-        <i class="fas fa-caret-square-right mr-2"></i>
-        <b>Variety:</b>
-        <br />
-        <input type="text" [(ngModel)]="card.variety" [disabled]="!editing" />
-        <br />
-        <i class="fas fa-caret-square-right mr-2"></i>
-        <b>Crop Acres:</b>
-        <br />
-        <input type="text" [(ngModel)]="card.cropAcres" [disabled]="!editing" />
-        <br />
-        <i class="fas fa-caret-square-right mr-2"></i>
-        <b>Bed Count:</b>
-        <br />
-        <input type="text" [(ngModel)]="card.bedCount" [disabled]="!editing" />
-        <br />
-        <i class="fas fa-caret-square-right mr-2"></i>
-        <b>Seed Lot #:</b>
-        <br />
-        <input type="text" [(ngModel)]="card.seedLotNumber" [disabled]="!editing" />
-      </div>
-      <div class="col-sm border">
+      <div class="col-sm border p-4">
         <i class="fas fa-caret-square-right mr-2"></i>
         <b>Bed Type:</b>
         <br />
@@ -113,28 +82,76 @@
         <br />
         <input type="text" [(ngModel)]="card.dacthalRate" [disabled]="!editing" />
       </div>
-      <div class="col-sm border">
+      <div class="col-sm border p-4">
+        <i class="fas fa-caret-square-right mr-2"></i>
+        <b>Crop Year:</b>
+        <br />
+        <input type="text" [(ngModel)]="card.cropYear" [disabled]="!editing" />
+        <br />
         <i class="fas fa-caret-square-right mr-2"></i>
         <b>Wet Date:</b>
         <br />
-        <input type="text" [(ngModel)]="card.wetDate" [disabled]="!editing" />
+        <div *ngIf="!editing">
+          {{card.wetDate | date:'shortDate'}}
+        </div>
+        <ng2-flatpickr placeholder="Wet Date" id="wetDate" [setDate]="card.wetDate.toString()"
+                       [(ngModel)]="card.wetDate" *ngIf="editing">
+        </ng2-flatpickr>
         <br />
         <i class="fas fa-caret-square-right mr-2"></i>
         <b>Thin Date:</b>
         <br />
-        <input type="text" [(ngModel)]="card.thinDate" [disabled]="!editing" />
+        <div *ngIf="!editing">
+          {{card.thinDate | date:'shortDate'}}
+        </div>
+        <ng2-flatpickr placeholder="Thin Date" id="thinDate" [setDate]="card.thinDate.toString()"
+                       [(ngModel)]="card.thinDate" *ngIf="editing">
+        </ng2-flatpickr>
         <br />
         <i class="fas fa-caret-square-right mr-2"></i>
         <b>Hoe Date:</b>
         <br />
-        <input type="text" [(ngModel)]="card.hoeDate" [disabled]="!editing" />
+        <div *ngIf="!editing">
+          {{card.hoeDate | date:'shortDate'}}
+        </div>
+        <ng2-flatpickr placeholder="Hoe Date" id="hoeDate" [setDate]="card.hoeDate.toString()"
+                       [(ngModel)]="card.hoeDate" *ngIf="editing">
+        </ng2-flatpickr>
         <br />
         <i class="fas fa-caret-square-right mr-2"></i>
         <b>Harvest Date:</b>
         <br />
-        <input type="text" [(ngModel)]="card.harvestDate" [disabled]="!editing" />
+        <div *ngIf="!editing">
+          {{card.harvestDate | date:'shortDate'}}
+        </div>
+        <ng2-flatpickr placeholder="Harvest Date" id="harvestDate" [setDate]="card.harvestDate.toString()"
+                       [(ngModel)]="card.harvestDate" *ngIf="editing">
+        </ng2-flatpickr>
       </div>
     </div>
+    <div class="row mt-3">
+      <div class="col">
+        <i class="fas fa-caret-square-right mr-2"></i>
+        <b>Commodity:</b>
+      </div>
+      <div class="col">
+        <i class="fas fa-caret-square-right mr-2"></i>
+        <b>Crop Acres:</b>
+      </div>
+      <div class="col">
+        <i class="fas fa-caret-square-right mr-2"></i>
+        <b>Bed Count:</b>
+      </div>
+      <div class="col">
+        <i class="fas fa-caret-square-right mr-2"></i>
+        <b>Seed Lot #:</b>
+      </div>
+      <div class="col">
+        <i class="fas fa-caret-square-right mr-2"></i>
+        <b>Variety:</b>
+      </div>
+    </div>
+    <hr />
     <div class="row mt-4">
       <div class="col-md">
         <h5>Irrigation Data</h5>
