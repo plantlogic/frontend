@@ -23,7 +23,7 @@
           <span>Save <i class="fas fa-save ml-1"></i></span>
         </button>
         <button *ngIf="card && editable" type="button" class="btn mt-n2 float-right" (click)="toggleCard()"
-        [class.btn-light]="card.isClosed" [class.btn-primary]="!card.isClosed">
+                [class.btn-light]="card.isClosed" [class.btn-primary]="!card.isClosed">
           <span *ngIf="card.isClosed">Reopen <i class="fas fa-upload ml-1"></i></span>
           <span *ngIf="!card.isClosed">Close <i class="fas fa-check ml-1"></i></span>
         </button>
