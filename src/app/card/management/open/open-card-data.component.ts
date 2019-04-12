@@ -12,6 +12,8 @@ import {Alert} from '../../../_interact/alert/alert';
 import {FlatpickrOptions} from 'ng2-flatpickr';
 import {ModalDirective} from 'angular-bootstrap-md';
 import {NgModel} from '@angular/forms';
+import {TractorEntry} from '../../../_dto/card/tractor-entry';
+import {IrrigationEntry} from '../../../_dto/card/irrigation-entry';
 
 @Component({
   selector: 'app-open-card',
@@ -186,6 +188,8 @@ export class OpenCardDataComponent implements OnInit {
       this.card.harvestDate = (new Date(this.card.harvestDate)).valueOf();
       this.card.thinDate = (new Date(this.card.thinDate)).valueOf();
       this.card.wetDate = (new Date(this.card.wetDate)).valueOf();
+      this.card.tractorData.map(x => x.workDate = (new Date(x.workDate).valueOf()));
+      this.card.irrigationData.map(x => x.workDate = (new Date(x.workDate).valueOf()));
 
       newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
         this.cardEdit.updateCard(this.card).subscribe(data => {
@@ -204,5 +208,29 @@ export class OpenCardDataComponent implements OnInit {
 
       AlertService.newAlert(newAlert);
     }
+  }
+
+
+
+  private tractorDatePickr(i: number): FlatpickrOptions {
+    return {
+      dateFormat: 'm-d-Y',
+      defaultDate: new Date(this.card.tractorData[i].workDate)
+    };
+  }
+
+  private irrigationDatePickr(i: number): FlatpickrOptions {
+    return {
+      dateFormat: 'm-d-Y',
+      defaultDate: new Date(this.card.irrigationData[i].workDate)
+    };
+  }
+
+  private addTractorData(): void {
+    this.card.tractorData.push(new TractorEntry());
+  }
+
+  private addIrrigationData(): void {
+    this.card.irrigationData.push(new IrrigationEntry());
   }
 }

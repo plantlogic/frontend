@@ -31,132 +31,134 @@
     </div>
     <div class="row justify-content-center mt-3">
       <div class="col-sm border p-4">
-        <i class="fas fa-caret-square-right mr-2"></i>
+        <i class="far fa-circle fa-xs mr-2"></i>
         <b>Ranch Name:</b>
         <br />
         <input type="text" [(ngModel)]="card.ranchName" [disabled]="!editing" class="form-control"
           #ranchName="ngModel" [required]="true" minlength="1" [class.is-invalid]="ranchName.invalid" />
         <br />
-        <i class="fas fa-caret-square-right mr-2"></i>
+        <i class="far fa-circle fa-xs mr-2"></i>
         <b>Field ID:</b>
         <br />
         <input type="number" [(ngModel)]="card.fieldID" [disabled]="!editing" class="form-control" />
         <br />
-        <i class="fas fa-caret-square-right mr-2"></i>
+        <i class="far fa-circle fa-xs mr-2"></i>
         <b>Ranch Manager:</b>
         <br />
         <input type="text" [(ngModel)]="card.ranchManagerName" [disabled]="!editing" class="form-control" />
         <br />
-        <i class="fas fa-caret-square-right mr-2"></i>
+        <i class="far fa-circle fa-xs mr-2"></i>
         <b>Lot #:</b>
         <br />
         <input type="text" [(ngModel)]="card.lotNumber" [disabled]="!editing" class="form-control" />
         <br />
-        <i class="fas fa-caret-square-right mr-2"></i>
+        <i class="far fa-circle fa-xs mr-2"></i>
         <b>Total Acres:</b>
         <br />
         <input type="number" [(ngModel)]="card.totalAcres" [disabled]="!editing" class="form-control" />
       </div>
       <div class="col-sm border p-4">
-        <i class="fas fa-caret-square-right mr-2"></i>
+        <i class="far fa-circle fa-xs mr-2"></i>
         <b>Bed Type:</b>
         <br />
         <input type="number" [(ngModel)]="card.bedType" [disabled]="!editing" class="form-control" />
         <br />
-        <i class="fas fa-caret-square-right mr-2"></i>
+        <i class="far fa-circle fa-xs mr-2"></i>
         <b>Lorsban Rate:</b>
         <br />
         <input type="number" [(ngModel)]="card.lorsbanRate" [disabled]="!editing" class="form-control" />
         <br />
-        <i class="fas fa-caret-square-right mr-2"></i>
+        <i class="far fa-circle fa-xs mr-2"></i>
         <b>Diaznon Rate:</b>
         <br />
         <input type="number" [(ngModel)]="card.diaznonRate" [disabled]="!editing" class="form-control" />
         <br />
-        <i class="fas fa-caret-square-right mr-2"></i>
+        <i class="far fa-circle fa-xs mr-2"></i>
         <b>Kerb Rate:</b>
         <br />
         <input type="number" [(ngModel)]="card.kerbRate" [disabled]="!editing" class="form-control" />
         <br />
-        <i class="fas fa-caret-square-right mr-2"></i>
+        <i class="far fa-circle fa-xs mr-2"></i>
         <b>Dacthal Rate:</b>
         <br />
         <input type="number" [(ngModel)]="card.dacthalRate" [disabled]="!editing" class="form-control" />
       </div>
       <div class="col-sm border p-4">
-        <i class="fas fa-caret-square-right mr-2"></i>
+        <i class="far fa-circle fa-xs mr-2"></i>
         <b>Crop Year:</b>
         <br />
         <input type="number" [(ngModel)]="card.cropYear" [disabled]="!editing" class="form-control"
             [min]="1000" [max]="9999"  #cropYear="ngModel" [class.is-invalid]="card.cropYear < 1000 || card.cropYear > 9999" />
         <br />
-        <i class="fas fa-caret-square-right mr-2"></i>
+        <i class="far fa-circle fa-xs mr-2"></i>
         <b>Wet Date:</b>
         <br />
         <div *ngIf="!editing">
           {{card.wetDate | date:'shortDate'}}
         </div>
-        <ng2-flatpickr placeholder="Wet Date" id="wetDate"
+        <ng2-flatpickr [placeholder]="editing ? 'Wet Date' : ''" id="wetDate"
                        [config]="wetDatePickr" [(ngModel)]="card.wetDate" *ngIf="editing">
         </ng2-flatpickr>
         <br />
-        <i class="fas fa-caret-square-right mr-2"></i>
+        <i class="far fa-circle fa-xs mr-2"></i>
         <b>Thin Date:</b>
         <br />
         <div *ngIf="!editing">
           {{card.thinDate | date:'shortDate'}}
         </div>
-        <ng2-flatpickr placeholder="Thin Date" id="thinDate"
+        <ng2-flatpickr [placeholder]="editing ? 'Thin Date' : ''" id="thinDate"
                        [config]="thinDatePickr" [(ngModel)]="card.thinDate" *ngIf="editing">
         </ng2-flatpickr>
         <br />
-        <i class="fas fa-caret-square-right mr-2"></i>
+        <i class="far fa-circle fa-xs mr-2"></i>
         <b>Hoe Date:</b>
         <br />
         <div *ngIf="!editing">
           {{card.hoeDate | date:'shortDate'}}
         </div>
-        <ng2-flatpickr placeholder="Hoe Date" id="hoeDate"
+        <ng2-flatpickr [placeholder]="editing ? 'Hoe Date' : ''" id="hoeDate"
                        [config]="hoeDatePickr" [(ngModel)]="card.hoeDate" *ngIf="editing">
         </ng2-flatpickr>
         <br />
-        <i class="fas fa-caret-square-right mr-2"></i>
+        <i class="far fa-circle fa-xs mr-2"></i>
         <b>Harvest Date:</b>
         <br />
         <div *ngIf="!editing">
           {{card.harvestDate | date:'shortDate'}}
         </div>
-        <ng2-flatpickr placeholder="Harvest Date" id="harvestDate"
+        <ng2-flatpickr [placeholder]="editing ? 'Harvest Date' : ''" id="harvestDate"
                        [config]="harvestDatePickr" [(ngModel)]="card.harvestDate" *ngIf="editing">
         </ng2-flatpickr>
       </div>
     </div>
     <div class="row mt-3">
       <div class="col">
-        <i class="fas fa-caret-square-right mr-2"></i>
+        <i class="far fa-circle fa-xs mr-2"></i>
         <b>Commodity:</b>
       </div>
       <div class="col">
-        <i class="fas fa-caret-square-right mr-2"></i>
+        <i class="far fa-circle fa-xs mr-2"></i>
         <b>Crop Acres:</b>
       </div>
       <div class="col">
-        <i class="fas fa-caret-square-right mr-2"></i>
+        <i class="far fa-circle fa-xs mr-2"></i>
         <b>Bed Count:</b>
       </div>
       <div class="col">
-        <i class="fas fa-caret-square-right mr-2"></i>
+        <i class="far fa-circle fa-xs mr-2"></i>
         <b>Seed Lot #:</b>
       </div>
       <div class="col">
-        <i class="fas fa-caret-square-right mr-2"></i>
+        <i class="far fa-circle fa-xs mr-2"></i>
         <b>Variety:</b>
       </div>
     </div>
     <hr />
     <div class="row mt-4">
       <div class="col-md">
-        <h5>Irrigation Data</h5>
+        <button type="button" color="primary" (click)="addIrrigationData()" mdbBtn floating="true" *ngIf="editing"
+                class="float-right" size="sm" mdbWavesEffect><i class="fa fa-plus" aria-hidden="true"></i></button>
+        <h4>Irrigation Data</h4>
         <table mdbTable *ngIf="card" class="table-responsive">
           <thead>
           <tr>
@@ -164,20 +166,49 @@
             <th scope="col" class="small">Method</th>
             <th scope="col" class="small">Fertilizer</th>
             <th scope="col" class="small">Gallons</th>
+            <th scope="col" class="small" *ngIf="editing"></th>
           </tr>
           </thead>
           <tbody>
           <tr mdbTableCol *ngFor="let p of card.irrigationData; let i = index">
-            <td class="small">{{p.workDate | date:'shortDate'}}</td>
-            <td class="small">{{p.method}}</td>
-            <td class="small">{{p.fertilizer}}</td>
-            <td class="small">{{p.gallons}}</td>
+            <td>
+              <div *ngIf="!editing">
+                {{p.workDate | date:'shortDate'}}
+              </div>
+              <ng2-flatpickr placeholder="Select Date" class="w-20"
+                             [config]="irrigationDatePickr(i)" [(ngModel)]="p.workDate" *ngIf="editing">
+              </ng2-flatpickr>
+            </td>
+            <td>
+              <textarea type="text" [(ngModel)]="p.method" [disabled]="!editing" class="form-control form-control-sm"
+                [placeholder]="editing ? 'Enter Method' : ''" autosize>
+              </textarea>
+            </td>
+            <td>
+              <textarea type="text" [(ngModel)]="p.fertilizer" [disabled]="!editing" class="form-control form-control-sm"
+                [placeholder]="editing ? 'Enter Fertilizer' : ''" autosize>
+              </textarea>
+            </td>
+            <td>
+              <input type="number" [(ngModel)]="p.gallons" [disabled]="!editing" class="form-control form-control-sm"
+                [placeholder]="editing ? 'Enter Gallons' : ''" />
+            </td>
+            <td>
+            <td *ngIf="editing">
+              <button type="button" color="danger" (click)="card.irrigationData.splice(i, 1)" mdbBtn floating="true"
+                      size="sm" mdbWavesEffect>Delete <i class="ml-1 fa fa-trash" aria-hidden="true"></i></button>
+            </td>
           </tr>
           </tbody>
         </table>
       </div>
+      <div *ngIf="editing" class="w-100 my-2">
+        <hr />
+      </div>
       <div class="col-md">
-        <h5>Tractor Data</h5>
+        <button type="button" color="primary" (click)="addTractorData()" mdbBtn floating="true" *ngIf="editing"
+                class="float-right" size="sm" mdbWavesEffect><i class="fa fa-plus" aria-hidden="true"></i></button>
+        <h4>Tractor Data</h4>
         <table mdbTable *ngIf="card" class="table-responsive">
           <thead>
           <tr>
@@ -186,15 +217,42 @@
             <th scope="col" class="small">Operator</th>
             <th scope="col" class="small">Fertilizer</th>
             <th scope="col" class="small">Gallons</th>
+            <th scope="col" class="small" *ngIf="editing"></th>
           </tr>
           </thead>
           <tbody>
           <tr mdbTableCol *ngFor="let p of card.tractorData; let i = index">
-            <td class="small">{{p.workDate | date:'shortDate'}}</td>
-            <td><textarea type="text" [(ngModel)]="p.workDone" [disabled]="!editing" class="form-control form-control-sm"></textarea></td>
-            <td><textarea type="text" [(ngModel)]="p.operator" [disabled]="!editing" class="form-control form-control-sm"></textarea></td>
-            <td><textarea type="text" [(ngModel)]="p.fertilizer" [disabled]="!editing" class="form-control form-control-sm"></textarea></td>
-            <td><input type="number" [(ngModel)]="p.gallons" [disabled]="!editing" class="form-control form-control-sm" /></td>
+            <td>
+              <div *ngIf="!editing">
+                {{p.workDate | date:'shortDate'}}
+              </div>
+              <ng2-flatpickr placeholder="Select Date" class="w-20"
+                             [config]="tractorDatePickr(i)" [(ngModel)]="p.workDate" *ngIf="editing">
+              </ng2-flatpickr>
+            </td>
+            <td>
+              <textarea type="text" [(ngModel)]="p.workDone" [disabled]="!editing" class="form-control form-control-sm"
+              [placeholder]="editing ? 'Enter Work Done' : ''" autosize>
+              </textarea>
+            </td>
+            <td>
+              <textarea type="text" [(ngModel)]="p.operator" [disabled]="!editing" class="form-control form-control-sm"
+              [placeholder]="editing ? 'Enter Operator' : ''" autosize>
+              </textarea>
+            </td>
+            <td>
+              <textarea type="text" [(ngModel)]="p.fertilizer" [disabled]="!editing" class="form-control form-control-sm"
+              [placeholder]="editing ? 'Enter Fertilizer' : ''" autosize>
+              </textarea>
+            </td>
+            <td>
+              <input type="number" [(ngModel)]="p.gallons" [disabled]="!editing" class="form-control form-control-sm"
+              [placeholder]="editing ? 'Enter Gallons' : ''" />
+            </td>
+            <td *ngIf="editing">
+              <button type="button" color="danger" (click)="card.tractorData.splice(i, 1)" mdbBtn floating="true"
+                      size="sm" mdbWavesEffect>Delete <i class="ml-1 fa fa-trash" aria-hidden="true"></i></button>
+            </td>
           </tr>
           </tbody>
         </table>

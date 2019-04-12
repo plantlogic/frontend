@@ -6,5 +6,5 @@ export class IrrigationEntry {
   // method	string
   method: string;
   // workDate	string($date-time)
-  workDate: number;
+  workDate: number = Date.now();
 }
