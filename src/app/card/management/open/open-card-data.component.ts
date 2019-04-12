@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit, ViewChild} from '@angular/core';
 import {AlertService} from '../../../_interact/alert/alert.service';
 import {Card} from '../../../_dto/card/card';
 import {TitleService} from '../../../_interact/title.service';
@@ -10,6 +10,8 @@ import {AuthService} from '../../../_auth/auth.service';
 import {PlRole} from '../../../_dto/user/pl-role.enum';
 import {Alert} from '../../../_interact/alert/alert';
 import {FlatpickrOptions} from 'ng2-flatpickr';
+import {ModalDirective} from 'angular-bootstrap-md';
+import {NgModel} from '@angular/forms';
 
 @Component({
   selector: 'app-open-card',
@@ -24,6 +26,9 @@ export class OpenCardDataComponent implements OnInit {
   card: Card;
   editable: boolean;
   editing = false;
+
+  @ViewChild('ranchName') public ranchName: NgModel;
+  @ViewChild('cropYear') public cropYear: NgModel;
 
   hoeDatePickr: FlatpickrOptions = {
     dateFormat: 'm-d-Y'
@@ -162,38 +167,42 @@ export class OpenCardDataComponent implements OnInit {
   }
 
   private saveChanges(): void {
-    const newAlert = new Alert();
-    newAlert.color = 'warning';
-    newAlert.title = 'Save Card';
-    newAlert.message = 'This will save the card, overwriting what is in the database. This cannot be undone. Continue?';
-    newAlert.actionName = 'Save';
-    newAlert.actionClosesAlert = true;
-    newAlert.timeLeft = undefined;
-    newAlert.blockPageInteraction = true;
-    newAlert.closeName = 'Cancel';
-    newAlert.action$ = new EventEmitter<null>();
+    if (this.ranchName.invalid || (this.card.cropYear < 1000 || this.card.cropYear > 9999)) {
+      AlertService.newBasicAlert('There are some invalid values - please fix before saving.', true);
+    } else {
+      const newAlert = new Alert();
+      newAlert.color = 'warning';
+      newAlert.title = 'Save Card';
+      newAlert.message = 'This will save the card, overwriting what is in the database. This cannot be undone. Continue?';
+      newAlert.actionName = 'Save';
+      newAlert.actionClosesAlert = true;
+      newAlert.timeLeft = undefined;
+      newAlert.blockPageInteraction = true;
+      newAlert.closeName = 'Cancel';
+      newAlert.action$ = new EventEmitter<null>();
 
-    // Fix flatPickr date format
-    this.card.hoeDate = (new Date(this.card.hoeDate)).valueOf();
-    this.card.harvestDate = (new Date(this.card.harvestDate)).valueOf();
-    this.card.thinDate = (new Date(this.card.thinDate)).valueOf();
-    this.card.wetDate = (new Date(this.card.wetDate)).valueOf();
+      // Fix flatPickr date format
+      this.card.hoeDate = (new Date(this.card.hoeDate)).valueOf();
+      this.card.harvestDate = (new Date(this.card.harvestDate)).valueOf();
+      this.card.thinDate = (new Date(this.card.thinDate)).valueOf();
+      this.card.wetDate = (new Date(this.card.wetDate)).valueOf();
 
-    newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
-      this.cardEdit.updateCard(this.card).subscribe(data => {
-          if (data.success) {
-            AlertService.newBasicAlert('Change saved successfully!', false);
-            this.loadCardData();
-            this.toggleEditing();
-          } else {
-            AlertService.newBasicAlert('Error: ' + data.error, true);
-          }
-        },
-        failure => {
-          AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
-        });
-    });
+      newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
+        this.cardEdit.updateCard(this.card).subscribe(data => {
+            if (data.success) {
+              AlertService.newBasicAlert('Change saved successfully!', false);
+              this.loadCardData();
+              this.toggleEditing();
+            } else {
+              AlertService.newBasicAlert('Error: ' + data.error, true);
+            }
+          },
+          failure => {
+            AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
+          });
+      });
 
-    AlertService.newAlert(newAlert);
+      AlertService.newAlert(newAlert);
+    }
   }
 }
