@@ -2,8 +2,158 @@
   Data export functionality goes here, should be able to filter by date or something to keep file sizes from getting too big
 </p>
 
+<div class="jumbotron p-3">
+  <div class="row">
+    <div class="col d-none d-md-inline-block">
+      <form class="form-inline">
+        <input class="form-control mr-sm-2" name="filter" type="search" placeholder="Search" aria-label="Search"
+               [(ngModel)]="filter" (keyup)="filterItems()" mdbInput>
+      </form>
+    </div>
+    <!-- <div class="col d-none d-md-inline-block text-center">
+      <button type="button"color="primary" name="cardCount" outline="true" disabled
+              mdbBtn floating="true" size="sm">
+        <span *ngIf="filter">Search Results: </span>
+      </button>
+    </div> -->
+    <div class="col d-none d-md-inline-block">
+        <button type="button" class="float-right" color="primary" name="addCard" (click)="generateExampleCard()"
+                mdbBtn floating="true" size="sm" mdbWavesEffect>Example Generate/Save Button</button>
+      </div>
+  </div>
+  <hr class="my-4">
+  <div class="row">
+    <div class="mx-auto">
+      HEAD LETTUCE
+      <hr class="my-4">
+      <table mdbTable>
+          <thead class="text-nowrap">
+            <tr>
+              <th scope col="col" class="small">
+                  Field <span class="d-none d-md-inline-block">Id</span> <i class="fa fa-sort ml-1"></i>
+                </th>
+                <th scope col="col" class="small">
+                  Drip <span class="d-none d-md-inline-block"></span> <i class="fa fa-sort ml-1"></i>
+                </th>
+                <th scope col="col" class="small">
+                <!-- <th scope="col" class="small" [mdbTableSort]="cards" [sortBy]="'ranchName'"> -->
+                  Ranch <span class="d-none d-md-inline-block">Name</span> <i class="fa fa-sort ml-1"></i>
+                </th>
+                <th scope col="col" class="small">
+                <!-- <th scope="col" class="small" [mdbTableSort]="cards" [sortBy]="'lotNumber'"> -->
+                  Lot # <i class="fa fa-sort ml-1"></i>
+                </th>
+                <th scope col="col" class="small">
+                  Beds <span class="d-none d-md-inline-block"></span> <i class="fa fa-sort ml-1"></i>
+                </th>
+                <th scope col="col" class="small">
+                  Acres <span class="d-none d-md-inline-block"></span> <i class="fa fa-sort ml-1"></i>
+                </th>
+            </tr>
+          </thead>
+      </table>
+    </div>
+    <div class="mx-auto">
+      PRE PLANTING/LISTING
+      <hr class="my-4">
+      <table mdbTable>
+          <thead class="text-nowrap">
+            <tr>
+              <th scope col="col" class="small">
+                Date <span class="d-none d-md-inline-block"></span> <i class="fa fa-sort ml-1"></i>
+              </th>
+              <th scope col="col" class="small">
+                G/Lb <span class="d-none d-md-inline-block"></span> <i class="fa fa-sort ml-1"></i>
+              </th>
+              <th scope col="col" class="small">
+                Type <span class="d-none d-md-inline-block"></span> <i class="fa fa-sort ml-1"></i>
+              </th>
+            </tr>
+          </thead>
+      </table>
+    </div>
+    <div class="mx-auto">
+      AT PLANTING
+      <hr class="my-4">
+      <table mdbTable>
+          <thead class="text-nowrap">
+            <tr>
+              <th scope col="col" class="small">
+                Date <span class="d-none d-md-inline-block"></span> <i class="fa fa-sort ml-1"></i>
+              </th>
+              <th scope col="col" class="small">
+                G/Lb <span class="d-none d-md-inline-block"></span> <i class="fa fa-sort ml-1"></i>
+              </th>
+              <th scope col="col" class="small">
+                Type <span class="d-none d-md-inline-block"></span> <i class="fa fa-sort ml-1"></i>
+              </th>
+            </tr>
+          </thead>
+      </table>
+    </div>
+    <div class="mx-auto">
+      1st Application
+      <hr class="my-4">
+      <table mdbTable>
+          <thead class="text-nowrap">
+            <tr>
+              <th scope col="col" class="small">
+                Date <span class="d-none d-md-inline-block"></span> <i class="fa fa-sort ml-1"></i>
+              </th>
+              <th scope col="col" class="small">
+                Gal <span class="d-none d-md-inline-block"></span> <i class="fa fa-sort ml-1"></i>
+              </th>
+              <th scope col="col" class="small">
+                Type <span class="d-none d-md-inline-block"></span> <i class="fa fa-sort ml-1"></i>
+              </th>
+            </tr>
+          </thead>
+      </table>
+    </div>
+    <!-- <div class="mx-auto">
+      2nd Application
+      <hr class="my-4">
+      <table mdbTable>
+          <thead class="text-nowrap">
+            <tr>
+              <th scope col="col" class="small">
+                Date <span class="d-none d-md-inline-block"></span> <i class="fa fa-sort ml-1"></i>
+              </th>
+              <th scope col="col" class="small">
+                Gal <span class="d-none d-md-inline-block"></span> <i class="fa fa-sort ml-1"></i>
+              </th>
+              <th scope col="col" class="small">
+                Type <span class="d-none d-md-inline-block"></span> <i class="fa fa-sort ml-1"></i>
+              </th>
+            </tr>
+          </thead>
+      </table>
+    </div>
+    <div class="mx-auto">
+      3rd Application
+      <hr class="my-4">
+      <table mdbTable>
+          <thead class="text-nowrap">
+            <tr>
+              <th scope col="col" class="small">
+                Date <span class="d-none d-md-inline-block"></span> <i class="fa fa-sort ml-1"></i>
+              </th>
+              <th scope col="col" class="small">
+                Gal <span class="d-none d-md-inline-block"></span> <i class="fa fa-sort ml-1"></i>
+              </th>
+              <th scope col="col" class="small">
+                Type <span class="d-none d-md-inline-block"></span> <i class="fa fa-sort ml-1"></i>
+              </th>
+            </tr>
+          </thead>
+      </table>
+    </div> -->
+  </div>
+  <div class="row">
+      <div class="col">
+        <!-- <h2 *ngIf="!cards">Loading data...</h2> -->
+        <!-- <table mdbTable *ngIf="cards"> -->
 
-<div class="col d-none d-md-inline-block">
-  <button type="button" class="float-right" color="primary" name="addCard" (click)="generateExampleCard()"
-          mdbBtn floating="true" size="sm" mdbWavesEffect>Example Generate/Save Button</button>
+      </div>
+    </div>
 </div>
