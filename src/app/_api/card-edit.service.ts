@@ -17,6 +17,11 @@ export class CardEditService {
     return this.http.put<BasicDTO<null>>(environment.ApiUrl + '/data/edit/ranches/' + card.id, card, this.httpOptions);
   }
 
+  public setCardState(id: string, closed: boolean): Observable<BasicDTO<null>> {
+    return this.http.put<BasicDTO<null>>(environment.ApiUrl + '/data/edit/ranches/' + id + '/state?closed=' + closed,
+      null, this.httpOptions);
+  }
+
   public deleteCard(id: string): Observable<BasicDTO<null>> {
     return this.http.delete<BasicDTO<null>>(environment.ApiUrl + '/data/edit/ranches/' + id, this.httpOptions);
   }

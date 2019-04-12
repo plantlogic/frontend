@@ -4,7 +4,7 @@ export class TractorEntry {
   // gallons	number($float)
   gallons: number;
   // workDate	string($date-time)
-  workDate: number;
+  workDate: number = Date.now();
   // workDone	string
   workDone: string;
   // operator string
