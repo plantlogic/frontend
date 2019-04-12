@@ -21,7 +21,6 @@ export class CreateCardEntryComponent implements OnInit {
   newCard: Card = new Card();
   submitAttempted = false;
   ranchList: Array<any> = [ 'Ranch1', 'Ranch2'];
-  cropYear: Array<any> = ['2018', '2019', '2020'];
   commodityList: Array<any> = [ { commodity: 'Select' },
   { commodity: 'Lettuce', variety: ['Select', 'Lettuce v1', 'Lettuce v2'] },
   { commodity: 'Strawberry', variety: ['Select', 'Strawberry v1', 'Strawberry v2'] },
@@ -32,6 +31,8 @@ export class CreateCardEntryComponent implements OnInit {
   variety: Array<any>;
   prepMaterial: Array<any> = ['Lorsban', 'Diaznon', 'Kerb', 'Dacthal'];
 
+  time = new Date();
+
   changeCommodity(count) {
     this.variety = this.commodityList.find(con => con.commodity === count).variety;
   }
@@ -40,11 +41,9 @@ export class CreateCardEntryComponent implements OnInit {
     this.titleService.setTitle('Create Card');
     this.form = this.fb.group({
       ranch: ['', [ Validators.required, Validators.minLength(1)]],
-      lotNumber: ['', [ Validators.minLength(1)]],
-      totalAcres: ['', [ Validators.required, Validators.min(0.1), Validators.max(499.9)]],
-      cropAcres: ['',[ Validators.min(0), Validators.max(100)]],
-      cropYear: ['', [ Validators.required, Validators.min(1000), Validators.max(9999)]],
-      cropNumber: ['', [ Validators.min(0)]],
+      lotNumber: ['', [ Validators.required, Validators.minLength(1)]],
+      cropAcres: ['', [ Validators.min(0), Validators.max(100)]],
+      cropYear: [this.time.getFullYear(), [ Validators.required, Validators.min(0), Validators.max(9999)]],
       commodity: ['', [ Validators.required, Validators.min(1)]],
       variety: ['', [ Validators.required]],
       seedLotNumber: ['', [ Validators.min(1)]],
@@ -63,7 +62,6 @@ export class CreateCardEntryComponent implements OnInit {
       this.submitAttempted = false;
       this.newCard.ranchManagerName = this.auth.getName();
       this.newCard.ranchName = this.form.get('ranch').value;
-      this.newCard.totalAcres = this.form.get('totalAcres').value;
       this.newCard.cropYear = this.form.get('cropYear').value;
       this.newCard.commodity.push(this.form.get('commodity').value);
       this.newCard.variety.push(this.form.get('variety').value);
@@ -74,7 +72,6 @@ export class CreateCardEntryComponent implements OnInit {
       this.newCard.bedType = this.form.get('bedType').value;
       /*
       -------Need to add the following to card model-----
-      this.newCard.cropNumber = this.form.get('cropNumber').value;
       this.newCard.prepMaterial = this.form.get('prepMaterial').value;
       this.newCard.prepMaterialRate = this.form.get('prepMaterialRate').value
       */
