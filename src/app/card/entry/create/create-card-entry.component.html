@@ -15,17 +15,10 @@
       </div>
 
       <div class="form-group">
-        <label for="acreSizeInput">Acre Size *</label>
-        <input id="acreSize" type="number" name="acreSize" formControlName="acreSize" class="form-control"
-        [class.is-invalid]="this.submitAttempted && this.form.get('acreSize').invalid" required min="0"
-        id="acreSizeInput">
-        <div class="invalid-feedback" role="alert">Enter a valid acre size</div>
-      </div>
-
-      <div class="form-group">
-          <label for="cropYearInput" class="control-label">Crop Year *</label>
-          <input type="number" name="cropYear" formControlName="cropYear" class="form-control" id="cropYearInput">
-        <div class="invalid-feedback" role="alert">Please Select a Year</div>
+        <label for="lotNumberInput">Lot Number *</label>
+        <input type="text" name="lotNumberInput" class="browser-default custom-select" formControlName="lotNumber"
+        class="form-control" id="lotNumberInput" [class.is-invalid]="this.submitAttempted && this.form.get('lotNumber').invalid" required>
+        <div class="invalid-feedback" role="alert">Enter a valid lot number</div>
       </div>
 
       <div class="form-group">
@@ -45,17 +38,11 @@
       </div>
 
       <div class="form-group">
-          <label for="lotNumberInput">Lot Number</label>
-          <input type="text" name="lotNumberInput" class="browser-default custom-select" formControlName="lotNumber" class="form-control" id="lotNumberInput"
-          [class.is-invalid]="this.submitAttempted && this.form.get('lotNumber').invalid">
-          <div class="invalid-feedback" role="alert">Enter a valid lot number</div>
-      </div>
-
-      <div class="form-group">
-          <label>Crop Number</label>
-          <input type="number" name="cropNumber" formControlName="cropNumber" class="form-control"
-          [class.is-invalid]="this.submitAttempted && this.form.get('cropNumber').invalid" min="0">
-          <div class="invalid-feedback" role="alert">Enter a valid crop number</div>
+        <label for="cropAcresInput">Crop Acre Size</label>
+        <input id="cropAcres" type="number" name="cropAcres" formControlName="cropAcres" class="form-control"
+        [class.is-invalid]="this.submitAttempted && this.form.get('cropAcres').invalid " min="0"
+        id="cropAcresInput">
+        <div class="invalid-feedback" role="alert">Enter a valid acre size</div>
       </div>
 
       <div class="form-group">
@@ -65,7 +52,14 @@
           <div class="invalid-feedback" role="alert">Enter a valid number</div>
       </div>
 
-    <div class="form-group">
+      <div class="form-group">
+        <label>Bed Count</label>
+        <input type="number" name="bedCount" formControlName="bedCount" class="form-control"
+        [class.is-invalid]="this.submitAttempted && this.form.get('bedCount').invalid" min="0">
+        <div class="invalid-feedback" role="alert">Enter a valid number</div>
+      </div>
+
+      <div class="form-group">
           <label for="bedTypeInput" class="control-label">Bed Type</label>
           <select class="browser-default custom-select" formControlName="bedType"
           [class.is-invalid]="this.submitAttempted && this.form.get('bedType').invalid" id="bedTypeInput">
@@ -85,6 +79,22 @@
             </select>
           <div class="invalid-feedback" role="alert">Please Select a Prep Material</div>
       </div>
+
+      <div class="form-group">
+        <label for="pmRateInput">Prep Material Rate (in gallons)</label>
+        <input id="pmRateInput" type="number" name="pmRateInput" formControlName="prepMaterialRate" class="form-control"
+        [class.is-invalid]="this.submitAttempted && this.form.get('pmRateInput').invalid" min="0"
+        id="pmRateInput">
+        <div class="invalid-feedback" role="alert">Enter a valid rate.</div>
+      </div>
+
+      <div class="form-group">
+        <label for="cropYearInput" class="control-label">Crop Year *</label>
+        <input type="number" name="cropYear" formControlName="cropYear" class="form-control" id="cropYearInput"
+        [class.is-invalid]="this.submitAttempted && this.form.get('cropYear').invalid" required min="0">
+        <div class="invalid-feedback" role="alert">Please Enter a Year</div>
+      </div>
+
       <button  mdbBtn color="primary" (click)="submit()">Create</button>
   </form>
 </div>
