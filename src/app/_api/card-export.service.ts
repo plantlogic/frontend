@@ -24,13 +24,58 @@ export class CardExportService {
           // Format is [x][y]: [x] is a row and [y] is a column. Commas and newlines will automatically be added.
           const table: Array<Array<string>> = [];
           // Add column labels
-          table.push(['Lot Number', 'Ranch Name', 'Ranch Manager', 'Commodities']);
+          table.push(['Field ID', 'Ranch Name', 'Ranch Manager', 'Lot Number', 'Total Acres',
+                      'Bed Type', 'Lorsban Rate', 'Diaznon Rate', 'Kerb Rate', 'Dacthal Rate',
+                      'Wet Date', 'Thin Date', 'Hoe Date', 'Harvest Date',
+                      '']);
 
           // Take our data and put it in the table.
           data.data.forEach(x => {
+            // Push simple data
               table.push(
-                [x.lotNumber, x.ranchName, x.ranchManagerName, x.commodity.join(' - ')]
+                [String(x.fieldID), x.ranchName, x.ranchManagerName, x.lotNumber,
+                 String(x.totalAcres), String(x.bedType), String(x.lorsbanRate), String(x.diaznonRate),
+                 String(x.kerbRate), String(x.dacthalRate), String(x.wetDate), String(x.thinDate),
+                 String(x.hoeDate), String(x.harvestDate)]
               );
+
+              // Pushing headers for irrigation data
+              table.push(['', 'Irrigation Data']);
+              table.push(['', 'Date', 'Method', 'Fertilizer', 'Gallons', '',
+                      'Date', 'Method', 'Fertilizer', 'Gallons', '',
+                      'Date', 'Method', 'Fertilizer', 'Gallons', '',
+                      'Date', 'Method', 'Fertilizer', 'Gallons', '',
+                      'Date', 'Method', 'Fertilizer', 'Gallons', '',
+                      'Date', 'Method', 'Fertilizer', 'Gallons', '',
+                      'Date', 'Method', 'Fertilizer', 'Gallons', ''
+              ]);
+
+              // Retrieve data from nested irrigation data objects and insert into table
+              x.irrigationData.forEach(y => {
+                table.push(['', String(y.workDate), y.method, y.fertilizer, String(y.gallons)]);
+              });
+
+              // Blank line for seperation of irrigation and tractor data
+              table.push([]);
+
+              // Push headers for tractor data
+              table.push(['', 'Tractor Data']);
+              table.push(['', 'Date', 'Done', 'Operator', 'Fertilizer', 'Gallons', '',
+                          'Date', 'Done', 'Operator', 'Fertilizer', 'Gallons', '',
+                          'Date', 'Done', 'Operator', 'Fertilizer', 'Gallons', '',
+                          'Date', 'Done', 'Operator', 'Fertilizer', 'Gallons', '',
+                          'Date', 'Done', 'Operator', 'Fertilizer', 'Gallons', '',
+                          'Date', 'Done', 'Operator', 'Fertilizer', 'Gallons', '',
+                          'Date', 'Done', 'Operator', 'Fertilizer', 'Gallons', '',
+              ]);
+
+              // Retrieve data from nested tractor data objects and insert into table
+              x.tractorData.forEach(z => {
+                table.push(['', String(z.workDate), z.workDone, z.operator, z.fertilizer, String(z.gallons)]);
+              });
+
+              // Blank spaces to signal new planter card
+              table.push([]); table.push([]);
             }
           );
 

@@ -1,8 +1,7 @@
-import {Component, EventEmitter, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit, ViewChild} from '@angular/core';
 import {AlertService} from '../../../_interact/alert/alert.service';
 import {Card} from '../../../_dto/card/card';
 import {TitleService} from '../../../_interact/title.service';
-import {CardEntryService} from '../../../_api/card-entry.service';
 import {NavService} from '../../../_interact/nav.service';
 import {ActivatedRoute} from '@angular/router';
 import {CardViewService} from '../../../_api/card-view.service';
@@ -10,6 +9,11 @@ import {CardEditService} from '../../../_api/card-edit.service';
 import {AuthService} from '../../../_auth/auth.service';
 import {PlRole} from '../../../_dto/user/pl-role.enum';
 import {Alert} from '../../../_interact/alert/alert';
+import {FlatpickrOptions} from 'ng2-flatpickr';
+import {ModalDirective} from 'angular-bootstrap-md';
+import {NgModel} from '@angular/forms';
+import {TractorEntry} from '../../../_dto/card/tractor-entry';
+import {IrrigationEntry} from '../../../_dto/card/irrigation-entry';
 
 @Component({
   selector: 'app-open-card',
@@ -21,33 +25,63 @@ export class OpenCardDataComponent implements OnInit {
   constructor(private titleService: TitleService, private cardView: CardViewService, private cardEdit: CardEditService,
               private nav: NavService, private route: ActivatedRoute, private auth: AuthService) { }
 
-  untouchedCard: Card;
   card: Card;
   editable: boolean;
   editing = false;
 
+  @ViewChild('ranchName') public ranchName: NgModel;
+  @ViewChild('cropYear') public cropYear: NgModel;
+
+  hoeDatePickr: FlatpickrOptions = {
+    dateFormat: 'm-d-Y'
+  };
+  harvestDatePickr: FlatpickrOptions = {
+    dateFormat: 'm-d-Y'
+  };
+  thinDatePickr: FlatpickrOptions = {
+    dateFormat: 'm-d-Y'
+  };
+  wetDatePickr: FlatpickrOptions = {
+    dateFormat: 'm-d-Y'
+  };
+
+
   ngOnInit() {
     this.titleService.setTitle('View Card');
-    this.route.params.subscribe(data => this.loadCardData(data.id));
+    this.loadCardData();
     this.editable = this.auth.hasPermission(PlRole.DATA_EDIT);
   }
 
-  private loadCardData(id: string) {
-    this.cardView.getCardById(id).subscribe(
-      data => {
-        if (data.success) {
-          this.card = (new Card()).copyConstructor(data.data);
-          this.untouchedCard = (new Card()).copyConstructor(data.data);
-        } else if (!data.success) {
-          AlertService.newBasicAlert('Error: ' + data.error, true);
+  private loadCardData() {
+    this.route.params.subscribe(cr => {
+      this.cardView.getCardById(cr.id).subscribe(
+        data => {
+          if (data.success) {
+            this.card = (new Card()).copyConstructor(data.data);
+
+            if (this.card.hoeDate) {
+              this.hoeDatePickr.defaultDate = new Date(this.card.hoeDate);
+            }
+            if (this.card.harvestDate) {
+              this.harvestDatePickr.defaultDate = new Date(this.card.harvestDate);
+            }
+            if (this.card.thinDate) {
+              this.thinDatePickr.defaultDate = new Date(this.card.thinDate);
+            }
+            if (this.card.wetDate) {
+              this.wetDatePickr.defaultDate = new Date(this.card.wetDate);
+            }
+          } else if (!data.success) {
+            AlertService.newBasicAlert('Error: ' + data.error, true);
+            this.nav.goBack();
+          }
+        },
+        failure => {
+          AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
           this.nav.goBack();
         }
-      },
-      failure => {
-        AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
-        this.nav.goBack();
-      }
-    );
+      );
+    });
   }
 
   private deleteCard() {
@@ -95,18 +129,15 @@ export class OpenCardDataComponent implements OnInit {
     newAlert.closeName = 'Cancel';
     newAlert.action$ = new EventEmitter<null>();
     newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
-      this.untouchedCard.isClosed = !this.untouchedCard.isClosed;
-      this.cardEdit.updateCard(this.untouchedCard).subscribe(data => {
+      this.cardEdit.setCardState(this.card.id, !this.card.isClosed).subscribe(data => {
           if (data.success) {
             this.card.isClosed = !this.card.isClosed;
             AlertService.newBasicAlert('Change saved successfully!', false);
           } else {
-            this.untouchedCard.isClosed = !this.untouchedCard.isClosed;
             AlertService.newBasicAlert('Error: ' + data.error, true);
           }
         },
         failure => {
-          this.untouchedCard.isClosed = !this.untouchedCard.isClosed;
           AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
         });
     });
@@ -130,7 +161,7 @@ export class OpenCardDataComponent implements OnInit {
     newAlert.closeName = 'Cancel';
     newAlert.action$ = new EventEmitter<null>();
     newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
-      this.card = (new Card()).copyConstructor(this.untouchedCard);
+      this.loadCardData();
       this.toggleEditing();
     });
 
@@ -138,31 +169,68 @@ export class OpenCardDataComponent implements OnInit {
   }
 
   private saveChanges(): void {
-    const newAlert = new Alert();
-    newAlert.color = 'warning';
-    newAlert.title = 'Save Card';
-    newAlert.message = 'This will save the card, overwriting what is in the database. This cannot be undone. Continue?';
-    newAlert.actionName = 'Save';
-    newAlert.actionClosesAlert = true;
-    newAlert.timeLeft = undefined;
-    newAlert.blockPageInteraction = true;
-    newAlert.closeName = 'Cancel';
-    newAlert.action$ = new EventEmitter<null>();
-    newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
-      this.cardEdit.updateCard(this.card).subscribe(data => {
-          if (data.success) {
-            AlertService.newBasicAlert('Change saved successfully!', false);
-            this.untouchedCard = (new Card()).copyConstructor(this.card);
-            this.toggleEditing();
-          } else {
-            AlertService.newBasicAlert('Error: ' + data.error, true);
-          }
-        },
-        failure => {
-          AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
-        });
-    });
+    if (this.ranchName.invalid || (this.card.cropYear < 1000 || this.card.cropYear > 9999)) {
+      AlertService.newBasicAlert('There are some invalid values - please fix before saving.', true);
+    } else {
+      const newAlert = new Alert();
+      newAlert.color = 'warning';
+      newAlert.title = 'Save Card';
+      newAlert.message = 'This will save the card, overwriting what is in the database. This cannot be undone. Continue?';
+      newAlert.actionName = 'Save';
+      newAlert.actionClosesAlert = true;
+      newAlert.timeLeft = undefined;
+      newAlert.blockPageInteraction = true;
+      newAlert.closeName = 'Cancel';
+      newAlert.action$ = new EventEmitter<null>();
 
-    AlertService.newAlert(newAlert);
+      // Fix flatPickr date format
+      this.card.hoeDate = (new Date(this.card.hoeDate)).valueOf();
+      this.card.harvestDate = (new Date(this.card.harvestDate)).valueOf();
+      this.card.thinDate = (new Date(this.card.thinDate)).valueOf();
+      this.card.wetDate = (new Date(this.card.wetDate)).valueOf();
+      this.card.tractorData.map(x => x.workDate = (new Date(x.workDate).valueOf()));
+      this.card.irrigationData.map(x => x.workDate = (new Date(x.workDate).valueOf()));
+
+      newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
+        this.cardEdit.updateCard(this.card).subscribe(data => {
+            if (data.success) {
+              AlertService.newBasicAlert('Change saved successfully!', false);
+              this.loadCardData();
+              this.toggleEditing();
+            } else {
+              AlertService.newBasicAlert('Error: ' + data.error, true);
+            }
+          },
+          failure => {
+            AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
+          });
+      });
+
+      AlertService.newAlert(newAlert);
+    }
+  }
+
+
+
+  private tractorDatePickr(i: number): FlatpickrOptions {
+    return {
+      dateFormat: 'm-d-Y',
+      defaultDate: new Date(this.card.tractorData[i].workDate)
+    };
+  }
+
+  private irrigationDatePickr(i: number): FlatpickrOptions {
+    return {
+      dateFormat: 'm-d-Y',
+      defaultDate: new Date(this.card.irrigationData[i].workDate)
+    };
+  }
+
+  private addTractorData(): void {
+    this.card.tractorData.push(new TractorEntry());
+  }
+
+  private addIrrigationData(): void {
+    this.card.irrigationData.push(new IrrigationEntry());
   }
 }

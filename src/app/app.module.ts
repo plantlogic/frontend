@@ -9,6 +9,7 @@ import { AppComponent } from './app.component';
 
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
+import { AutosizeModule } from 'ngx-autosize';
 import { Ng2FlatpickrModule } from 'ng2-flatpickr';
 
 import { HomeComponent } from './home/home.component';
@@ -73,6 +74,7 @@ import { BackButtonComponent } from './navbar/back-button/back-button.component'
     ReactiveFormsModule,
     BrowserAnimationsModule,
     Ng2FlatpickrModule,
+    AutosizeModule,
     LoadingBarHttpClientModule,
     MDBBootstrapModule.forRoot()
   ],
