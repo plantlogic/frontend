@@ -20,12 +20,14 @@ export class EditUserComponent implements OnInit {
   submitAttempted = false;
   plRole = PlRole;
   roleList: Array<string>;
+  manualPassword = false;
 
   constructor(private titleService: TitleService, private fb: FormBuilder, private userService: UserService,
               private router: Router, private route: ActivatedRoute, private auth: AuthService) {
 
     this.form = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(4)]],
+      password: [''],
       email: ['', [Validators.required, Validators.email]],
       realname: ['', Validators.required],
       roles: this.fb.array(this.initRoleBoolArray())
@@ -48,6 +50,11 @@ export class EditUserComponent implements OnInit {
               this.form.get('email').setValue(this.user.email);
               this.form.get('realname').setValue(this.user.realName);
               this.form.get('roles').setValue(this.setSelectedRoles());
+
+              if (!this.user.email) {
+                this.manualPassword = true;
+              }
+
               this.form.enable();
             } else if (!apiData.success) {
               AlertService.newBasicAlert('Error: ' + apiData.error, true);
@@ -63,15 +70,33 @@ export class EditUserComponent implements OnInit {
     );
   }
 
+  passwordOrEmailInvalid(): boolean {
+    if (this.manualPassword) {
+      this.form.get('email').setValue('');
+      return this.form.get('password').invalid;
+    } else {
+      this.form.get('password').setValue('');
+      return this.form.get('email').invalid;
+    }
+  }
+
   submit() {
-    if (this.form.get('username').invalid || this.form.get('email').invalid || this.form.get('realname').invalid) {
+    if (this.form.get('username').invalid || this.form.get('realname').invalid  || this.passwordOrEmailInvalid()) {
       this.submitAttempted = true;
     } else {
       this.submitAttempted = false;
       this.form.disable();
 
       this.user.username = this.form.value.username;
-      this.user.email = this.form.value.email;
+
+      if (this.manualPassword) {
+        if (this.form.get('password').dirty && this.form.value.password) {
+          this.user.password = this.form.value.password;
+        }
+      } else {
+        this.user.email = this.form.value.email;
+      }
+
       this.user.realName = this.form.value.realname;
       this.user.permissions = this.getSelectedRoles();
 
@@ -81,7 +106,12 @@ export class EditUserComponent implements OnInit {
             if (this.user.initialUsername === this.auth.getUsername()) {
               this.editSelfAlert('Changes have been saved successfully!');
             } else {
-              AlertService.newBasicAlert('Changes have been saved successfully!', false);
+              if (this.manualPassword) {
+                AlertService.newBasicAlert('Changes have been saved successfully!', false);
+              } else {
+                AlertService.newBasicAlert('Changes have been saved successfully! If you added an email address to a user that ' +
+                  'previously did not have an email, their password has been reset and emailed to them.', false, 10);
+              }
               this.router.navigate(['/userManagement']);
             }
           } else if (!data.success) {

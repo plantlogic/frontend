@@ -5,7 +5,7 @@
         <button type="submit" class="btn btn-primary float-right" (click)="submit()">
           Save User <i class="ml-1 fa fa-save" aria-hidden="true"></i>
         </button>
-        <button type="submit" class="btn btn-danger float-right" (click)="resetPassword()">
+        <button *ngIf="user.email" type="submit" class="btn btn-danger float-right" (click)="resetPassword()">
           Reset Password
         </button>
       </div>
@@ -22,11 +22,16 @@
           </div>
         </div>
         <div class="col-md">
-          <div class="form-group">
+          <div class="form-group" *ngIf="!manualPassword">
             <label for="emailInput">Email</label>
             <input type="email" name="email" formControlName="email" class="form-control" id="emailInput"
-                   [class.is-invalid]="submitAttempted && form.get('email').invalid" required>
+                   placeholder="user@example.com" [class.is-invalid]="submitAttempted && form.get('email').invalid" required>
             <div class="invalid-feedback" role="alert">A valid email address is required.</div>
+          </div>
+          <div class="form-group" *ngIf="manualPassword">
+            <label for="passwordInput">Password</label>
+            <input type="password" name="password" formControlName="password" class="form-control" id="passwordInput"
+                   placeholder="Enter password">
           </div>
         </div>
       </div>
@@ -75,4 +80,12 @@
       </div>
     </div>
   </form>
+  <div class="row">
+    <div class="col">
+      <div class="float-right my-2 alert alert-info">
+        <label for="manualPassword" class="mr-2">Manual Password</label>
+        <input type="checkbox" [(ngModel)]="manualPassword" id="manualPassword">
+      </div>
+    </div>
+  </div>
 </div>
