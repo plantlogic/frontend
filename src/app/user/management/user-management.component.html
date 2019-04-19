@@ -48,7 +48,10 @@
           <tr mdbTableCol *ngFor="let p of users; let i = index" class="animated fadeIn" [style.animation-delay]="this.min((30*i), 1000)+ 'ms'">
             <th scope="row">{{p.username}}</th>
             <td>{{p.realName}}</td>
-            <td class="d-none d-md-table-cell">{{p.email}}</td>
+            <td class="d-none d-md-table-cell">
+              <span *ngIf="p.email">{{p.email}}</span>
+              <span *ngIf="!p.email" class="badge badge-dark">No Email</span>
+            </td>
             <td class="d-none d-md-table-cell">{{p.passwordUpdated | date:'longDate'}}</td>
             <td class="d-none d-md-table-cell">
               <div *ngIf="p.permissions.length <= 0" class="badge badge-dark text-wrap">

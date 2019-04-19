@@ -33,7 +33,7 @@
               <a class="dropdown-item waves-light" mdbWavesEffect routerLink="/changePassword" *ngIf="hasEmail()">
                 Change Password
               </a>
-              <div class="divider dropdown-divider"></div>
+              <div class="divider dropdown-divider" *ngIf="hasEmail()"></div>
               <a class="dropdown-item waves-light" (click)="logout()" mdbWavesEffect>Logout</a>
           </div>
         </li>
