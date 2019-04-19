@@ -21,6 +21,7 @@ export class EditUserComponent implements OnInit {
   plRole = PlRole;
   roleList: Array<string>;
   manualPassword = false;
+  hadEmail: boolean;
 
   constructor(private titleService: TitleService, private fb: FormBuilder, private userService: UserService,
               private router: Router, private route: ActivatedRoute, private auth: AuthService) {
@@ -53,6 +54,9 @@ export class EditUserComponent implements OnInit {
 
               if (!this.user.email) {
                 this.manualPassword = true;
+                this.hadEmail = false;
+              } else {
+                this.hadEmail = true;
               }
 
               this.form.enable();
@@ -99,11 +103,11 @@ export class EditUserComponent implements OnInit {
             if (this.user.initialUsername === this.auth.getUsername()) {
               this.editSelfAlert('Changes have been saved successfully!');
             } else {
-              if (this.manualPassword) {
-                AlertService.newBasicAlert('Changes have been saved successfully!', false);
+              if (!this.manualPassword && !this.hadEmail) {
+                AlertService.newBasicAlert('Changes have been saved successfully! Because you added an email address, the user\'s ' +
+                  'password has been reset and emailed to them.', false, 30);
               } else {
-                AlertService.newBasicAlert('Changes have been saved successfully! If you added an email address to a user that ' +
-                  'previously did not have an email, their password has been reset and emailed to them.', false, 10);
+                AlertService.newBasicAlert('Changes have been saved successfully!', false);
               }
               this.router.navigate(['/userManagement']);
             }

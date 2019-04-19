@@ -15,7 +15,7 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
     // Go straight to the create card page if only permission is data entry
     if (this.auth.permissionCount() === 1 && this.auth.hasPermission(PlRole.DATA_ENTRY)) {
-      this.router.navigate(['/createCard']);
+      this.router.navigate(['/entry']);
     }
 
     this.titleService.setTitle('Home');
