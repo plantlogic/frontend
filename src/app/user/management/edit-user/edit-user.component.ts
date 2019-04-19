@@ -88,15 +88,8 @@ export class EditUserComponent implements OnInit {
       this.form.disable();
 
       this.user.username = this.form.value.username;
-
-      if (this.manualPassword) {
-        if (this.form.get('password').dirty && this.form.value.password) {
-          this.user.password = this.form.value.password;
-        }
-      } else {
-        this.user.email = this.form.value.email;
-      }
-
+      this.user.email = this.form.value.email;
+      this.user.password = this.form.value.password;
       this.user.realName = this.form.value.realname;
       this.user.permissions = this.getSelectedRoles();
 
