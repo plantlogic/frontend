@@ -339,6 +339,16 @@ export class AuthService {
     }
   }
 
+  public hasEmail(): boolean {
+    const user: User = this.getParsedTokenUser();
+
+    if (user && user.email) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   public hasPermission(perm): boolean {
     const user: User = this.getParsedTokenUser();
 

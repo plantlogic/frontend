@@ -31,6 +31,10 @@ export class NavbarComponent implements OnInit {
     return this.auth.getName();
   }
 
+  hasEmail(): boolean {
+    return this.auth.hasEmail();
+  }
+
   logout(): void {
     this.auth.logout();
   }

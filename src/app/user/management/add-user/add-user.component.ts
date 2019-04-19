@@ -17,12 +17,14 @@ export class AddUserComponent implements OnInit {
   submitAttempted = false;
   plRole = PlRole;
   roleList: Array<string>;
+  manualPassword = false;
 
   constructor(private titleService: TitleService, private fb: FormBuilder, private userService: UserService,
               private router: Router) {
 
     this.form = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(4)]],
+      password: ['', [Validators.required, Validators.minLength(4)]],
       email: ['', [Validators.required, Validators.email]],
       realname: ['', Validators.required],
       roles: this.fb.array(this.initRoleBoolArray())
@@ -35,16 +37,31 @@ export class AddUserComponent implements OnInit {
     this.titleService.setTitle('Add User');
   }
 
+  passwordOrEmailInvalid(): boolean {
+    if (this.manualPassword) {
+      this.form.get('email').setValue('');
+      return this.form.get('password').invalid;
+    } else {
+      this.form.get('password').setValue('');
+      return this.form.get('email').invalid;
+    }
+  }
+
   submit() {
-    if (this.form.get('username').invalid || this.form.get('email').invalid || this.form.get('realname').invalid) {
+    if (this.form.get('username').invalid || this.form.get('realname').invalid || this.passwordOrEmailInvalid()) {
       this.submitAttempted = true;
     } else {
       this.submitAttempted = false;
       this.form.disable();
 
-      const user = (
-        new User()).infoConstruct(this.form.value.email, this.form.value.username, this.form.value.realname, this.getSelectedRoles()
-      );
+      let user: User;
+      if (this.manualPassword) {
+        user = (new User())
+          .passConstruct(this.form.value.password, this.form.value.username, this.form.value.realname, this.getSelectedRoles());
+      } else {
+        user = (new User())
+          .emailConstruct(this.form.value.email, this.form.value.username, this.form.value.realname, this.getSelectedRoles());
+      }
 
       this.userService.addUser(user).subscribe(
         data => {

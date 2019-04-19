@@ -7,7 +7,6 @@
         </button>
       </div>
     </div>
-
     <div class="m-5">
       <div class="row">
         <div class="col-md">
@@ -19,11 +18,17 @@
           </div>
         </div>
         <div class="col-md">
-          <div class="form-group">
+          <div class="form-group" *ngIf="!manualPassword">
             <label for="emailInput">Email</label>
             <input type="email" name="email" formControlName="email" class="form-control" id="emailInput"
               placeholder="user@example.com" [class.is-invalid]="submitAttempted && form.get('email').invalid" required>
             <div class="invalid-feedback" role="alert">A valid email address is required.</div>
+          </div>
+          <div class="form-group animated flash" *ngIf="manualPassword">
+            <label for="passwordInput">Password</label>
+            <input type="password" name="password" formControlName="password" class="form-control" id="passwordInput"
+                   placeholder="Enter password" [class.is-invalid]="submitAttempted && form.get('password').invalid" required>
+            <div class="invalid-feedback" role="alert">Password must be at least 4 characters long.</div>
           </div>
         </div>
       </div>
@@ -65,4 +70,12 @@
       </div>
     </div>
   </form>
+  <div class="row">
+    <div class="col">
+      <div class="float-right my-2 alert alert-info">
+        <label for="manualPassword" class="mr-2">Manual Password</label>
+        <input type="checkbox" [(ngModel)]="manualPassword" id="manualPassword">
+      </div>
+    </div>
+  </div>
 </div>
