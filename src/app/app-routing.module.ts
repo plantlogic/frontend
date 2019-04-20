@@ -56,7 +56,7 @@ const routes: Routes = [
     component: UserManagementComponent,
     canActivate: [RoleGuard],
     data: {
-      role: PlRole.USER_MANAGEMENT
+      role: [PlRole.USER_MANAGEMENT]
     }
   },
   {
@@ -65,7 +65,7 @@ const routes: Routes = [
     canActivate: [RoleGuard],
     data: {
       parent: '/userManagement',
-      role: PlRole.USER_MANAGEMENT
+      role: [PlRole.USER_MANAGEMENT]
     }
   },
   {
@@ -74,7 +74,7 @@ const routes: Routes = [
     canActivate: [RoleGuard],
     data: {
       parent: '/userManagement',
-      role: PlRole.USER_MANAGEMENT
+      role: [PlRole.USER_MANAGEMENT]
     }
   },
 
@@ -84,7 +84,7 @@ const routes: Routes = [
     component: EntryDashboardComponent,
     canActivate: [RoleGuard],
     data: {
-      role: PlRole.DATA_ENTRY
+      role: [PlRole.DATA_ENTRY]
     }
   },
   {
@@ -93,7 +93,7 @@ const routes: Routes = [
     canActivate: [RoleGuard],
     data: {
       parent: '/entry',
-      role: PlRole.DATA_ENTRY
+      role: [PlRole.DATA_ENTRY]
     }
   },
   {
@@ -102,7 +102,7 @@ const routes: Routes = [
     canActivate: [RoleGuard],
     data: {
       parent: '/entry',
-      role: PlRole.DATA_ENTRY
+      role: [PlRole.DATA_ENTRY]
     }
   },
   {
@@ -111,7 +111,7 @@ const routes: Routes = [
     canActivate: [RoleGuard],
     data: {
       parent: '../../',
-      role: PlRole.DATA_ENTRY
+      role: [PlRole.DATA_ENTRY]
     }
   },
   {
@@ -120,7 +120,7 @@ const routes: Routes = [
     canActivate: [RoleGuard],
     data: {
       parent: '../../',
-      role: PlRole.DATA_ENTRY
+      role: [PlRole.DATA_ENTRY]
     }
   },
   {
@@ -129,7 +129,7 @@ const routes: Routes = [
     canActivate: [RoleGuard],
     data: {
       parent: '../',
-      role: PlRole.DATA_ENTRY
+      role: [PlRole.DATA_ENTRY]
     }
   },
 
@@ -139,7 +139,7 @@ const routes: Routes = [
     component: CardManagementComponent,
     canActivate: [RoleGuard],
     data: {
-      role: PlRole.DATA_VIEW
+      role: [PlRole.DATA_VIEW, PlRole.DATA_ENTRY]
     }
   },
   {
@@ -148,7 +148,7 @@ const routes: Routes = [
     canActivate: [RoleGuard],
     data: {
       parent: '/manage',
-      role: PlRole.DATA_VIEW
+      role: [PlRole.DATA_VIEW, PlRole.DATA_ENTRY]
     }
   },
   {
@@ -157,7 +157,7 @@ const routes: Routes = [
     canActivate: [RoleGuard],
     data: {
       parent: '/manage',
-      role: PlRole.DATA_VIEW
+      role: [PlRole.DATA_VIEW]
     }
   },
 
@@ -167,7 +167,7 @@ const routes: Routes = [
     component: AppAdminComponent,
     canActivate: [RoleGuard],
     data: {
-      role: PlRole.APP_ADMIN
+      role: [PlRole.APP_ADMIN]
     }
   },
   {path: '**', redirectTo: ''}
