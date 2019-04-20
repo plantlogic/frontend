@@ -35,7 +35,7 @@
               <th scope="col" class="small" [mdbTableSort]="cards" [sortBy]="'lastUpdated'">
                 Last Updated <i class="fa fa-sort ml-1"></i>
               </th>
-              <th scope="col" class="small" [mdbTableSort]="cards" [sortBy]="'isClosed'">
+              <th scope="col" class="small" [mdbTableSort]="cards" [sortBy]="'closed'">
                 State <i class="fa fa-sort ml-1"></i>
               </th>
               <th class="small" scope="col">Options</th>
@@ -47,12 +47,12 @@
               <td>{{p.lotNumber}}</td>
               <td>{{p.lastUpdated | date:'longDate'}}</td>
               <td>
-                <h5 *ngIf="p.isClosed">
+                <h5 *ngIf="p.closed">
                   <span class="badge badge-light">
                     Closed
                   </span>
                 </h5>
-                <h5 *ngIf="!p.isClosed">
+                <h5 *ngIf="!p.closed">
                   <span class="badge badge-primary">
                     Open
                   </span>

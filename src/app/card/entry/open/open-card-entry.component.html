@@ -128,7 +128,7 @@
           </tr>
           </thead>
           <tbody>
-          <tr mdbTableCol *ngFor="let p of card.irrigationData; let i = index">
+          <tr mdbTableCol *ngFor="let p of card.irrigation; let i = index">
             <td class="small">{{p.workDate | date:'shortDate'}}</td>
             <td class="small">{{p.method}}</td>
             <td class="small">{{p.fertilizer}}</td>
@@ -150,7 +150,7 @@
           </tr>
           </thead>
           <tbody>
-          <tr mdbTableCol *ngFor="let p of card.tractorData; let i = index">
+          <tr mdbTableCol *ngFor="let p of card.tractor; let i = index">
             <td class="small">{{p.workDate | date:'shortDate'}}</td>
             <td class="small">{{p.workDone}}</td>
             <td class="small">{{p.operator}}</td>

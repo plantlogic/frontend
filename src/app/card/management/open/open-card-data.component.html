@@ -23,9 +23,9 @@
           <span>Save <i class="fas fa-save ml-1"></i></span>
         </button>
         <button *ngIf="card && editable" type="button" class="btn mt-n2 float-right" (click)="toggleCard()"
-                [class.btn-light]="card.isClosed" [class.btn-primary]="!card.isClosed">
-          <span *ngIf="card.isClosed">Reopen <i class="fas fa-upload ml-1"></i></span>
-          <span *ngIf="!card.isClosed">Close <i class="fas fa-check ml-1"></i></span>
+                [class.btn-light]="card.closed" [class.btn-primary]="!card.closed">
+          <span *ngIf="card.closed">Reopen <i class="fas fa-upload ml-1"></i></span>
+          <span *ngIf="!card.closed">Close <i class="fas fa-check ml-1"></i></span>
         </button>
       </div>
     </div>
@@ -170,7 +170,7 @@
           </tr>
           </thead>
           <tbody>
-          <tr mdbTableCol *ngFor="let p of card.irrigationData; let i = index">
+          <tr mdbTableCol *ngFor="let p of card.irrigation; let i = index">
             <td>
               <div *ngIf="!editing">
                 {{p.workDate | date:'shortDate'}}
@@ -195,7 +195,7 @@
             </td>
             <td>
             <td *ngIf="editing">
-              <button type="button" color="danger" (click)="card.irrigationData.splice(i, 1)" mdbBtn floating="true"
+              <button type="button" color="danger" (click)="card.irrigation.splice(i, 1)" mdbBtn floating="true"
                       size="sm" mdbWavesEffect>Delete <i class="ml-1 fa fa-trash" aria-hidden="true"></i></button>
             </td>
           </tr>
@@ -221,7 +221,7 @@
           </tr>
           </thead>
           <tbody>
-          <tr mdbTableCol *ngFor="let p of card.tractorData; let i = index">
+          <tr mdbTableCol *ngFor="let p of card.tractor; let i = index">
             <td>
               <div *ngIf="!editing">
                 {{p.workDate | date:'shortDate'}}
@@ -250,7 +250,7 @@
               [placeholder]="editing ? 'Enter Gallons' : ''" />
             </td>
             <td *ngIf="editing">
-              <button type="button" color="danger" (click)="card.tractorData.splice(i, 1)" mdbBtn floating="true"
+              <button type="button" color="danger" (click)="card.tractor.splice(i, 1)" mdbBtn floating="true"
                       size="sm" mdbWavesEffect>Delete <i class="ml-1 fa fa-trash" aria-hidden="true"></i></button>
             </td>
           </tr>

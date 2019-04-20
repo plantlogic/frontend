@@ -51,7 +51,7 @@ export class CardExportService {
               ]);
 
               // Retrieve data from nested irrigation data objects and insert into table
-              x.irrigationData.forEach(y => {
+              x.irrigation.forEach(y => {
                 table.push(['', String(y.workDate), y.method, y.fertilizer, String(y.gallons)]);
               });
 
@@ -70,7 +70,7 @@ export class CardExportService {
               ]);
 
               // Retrieve data from nested tractor data objects and insert into table
-              x.tractorData.forEach(z => {
+              x.tractor.forEach(z => {
                 table.push(['', String(z.workDate), z.workDone, z.operator, z.fertilizer, String(z.gallons)]);
               });
 
