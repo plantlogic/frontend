@@ -16,22 +16,21 @@ export class Card {
   lastUpdated: number;
 
   /*
-   ==============================
    ======== IMPORTANT: ==========
-   ==============================
-   These have a $ after them, but access as if it didn't have it (e.g. access 'irrigation$' as 'irrigation'). This will use the setters
-   and getters below (important for helping to enforce the list maximum sizes).
+   These are custom 'LimitedArrays' - when using push(), they will not add past the maximum allowed number of elements.
+   You can then use, for example, irrigation.isFull() to check if the array is already full and if so show an error to the user (and hide
+   the 'add' button).
    */
   // Irrigation Data (filled out after card creation) | Max 12
-  private irrigation$: Array<IrrigationEntry> = [];
+  irrigation: LimitedArray<IrrigationEntry> = new LimitedArray(this.MAX_LIST_SIZE_BIG);
   // Tractor Data (filled out after card creation) | Max 12
-  private tractor$: Array<TractorEntry> = [];
+  tractor: LimitedArray<TractorEntry> = new LimitedArray(this.MAX_LIST_SIZE_BIG);
   // Commodity Data (filled out on card creation) | Max 3
-  private commodities$: Array<Commodities> = [];
+  commodities: LimitedArray<Commodities> = new LimitedArray<Commodities>(this.MAX_LIST_SIZE_SMALL);
   // Pre-plant Chemicals (filled out on card creation) | Max 3
-  private preChemicals$: Array<Chemicals> = [];
+  preChemicals: LimitedArray<Chemicals> = new LimitedArray<Chemicals>(this.MAX_LIST_SIZE_SMALL);
   // Post-plant Chemicals (filled out after card creation) | Max 12
-  private postChemicals$: Array<Chemicals> = [];
+  postChemicals: LimitedArray<Chemicals> = new LimitedArray<Chemicals>(this.MAX_LIST_SIZE_BIG);
 
   // Name of the ranch
   ranchName: string;
@@ -71,11 +70,25 @@ export class Card {
     this.closed = card.closed;
     this.lastUpdated = card.lastUpdated;
 
-    this.irrigation$ = JSON.parse(JSON.stringify(card.irrigation));
-    this.tractor$ = JSON.parse(JSON.stringify(card.tractor));
-    this.commodities$ = JSON.parse(JSON.stringify(card.commodities));
-    this.preChemicals$ = JSON.parse(JSON.stringify(card.preChemicals));
-    this.postChemicals$ = JSON.parse(JSON.stringify(card.postChemicals));
+    if (card.irrigation) {
+      this.irrigation = JSON.parse(JSON.stringify(card.irrigation));
+    }
+
+    if (card.tractor) {
+      this.tractor = JSON.parse(JSON.stringify(card.tractor));
+    }
+
+    if (card.commodities) {
+      this.commodities = JSON.parse(JSON.stringify(card.commodities));
+    }
+
+    if (card.preChemicals) {
+      this.preChemicals = JSON.parse(JSON.stringify(card.preChemicals));
+    }
+
+    if (card.postChemicals) {
+      this.postChemicals = JSON.parse(JSON.stringify(card.postChemicals));
+    }
 
     this.ranchName = card.ranchName;
     this.fieldID = card.fieldID;
@@ -92,75 +105,29 @@ export class Card {
 
     return this;
   }
+}
 
 
 
 
+export class LimitedArray<T> extends Array<T> {
+  max: number;
 
-
-  // =======================
-  // Getters and setters
-  // =======================
-
-  get irrigation(): Array<IrrigationEntry> {
-    return this.irrigation$;
+  constructor(max: number) {
+    super();
+    this.max = max;
   }
 
-  set irrigation(value: Array<IrrigationEntry>) {
-    if (value.length > this.MAX_LIST_SIZE_BIG) {
-      throw new Error('Only ' + this.MAX_LIST_SIZE_BIG + ' irrigation entries allowed.');
+  push = (...value: T[]): number => {
+    if (this.length + value.length > this.max) {
+      return this.length;
     } else {
-      this.irrigation$ = value;
+      value.forEach(v => super.push(v));
+      return this.length;
     }
   }
 
-  get tractor(): Array<TractorEntry> {
-    return this.tractor$;
+  isFull(): boolean {
+    return this.length >= this.max;
   }
-
-  set tractor(value: Array<TractorEntry>) {
-    if (value.length > this.MAX_LIST_SIZE_BIG) {
-      throw new Error('Only ' + this.MAX_LIST_SIZE_BIG + ' tractor entries allowed.');
-    } else {
-      this.tractor$ = value;
-    }
-  }
-
-  get commodities(): Array<Commodities> {
-    return this.commodities$;
-  }
-
-  set commodities(value: Array<Commodities>) {
-    if (value.length > this.MAX_LIST_SIZE_SMALL) {
-      throw new Error('Only ' + this.MAX_LIST_SIZE_SMALL + ' commodities allowed.');
-    } else {
-      this.commodities$ = value;
-    }
-  }
-
-  get preChemicals(): Array<Chemicals> {
-    return this.preChemicals$;
-  }
-
-  set preChemicals(value: Array<Chemicals>) {
-    if (value.length > this.MAX_LIST_SIZE_SMALL) {
-      throw new Error('Only ' + this.MAX_LIST_SIZE_SMALL + ' pre-plant chemicals allowed.');
-    } else {
-      this.preChemicals$ = value;
-    }
-  }
-
-  get postChemicals(): Array<Chemicals> {
-    return this.postChemicals$;
-  }
-
-  set postChemicals(value: Array<Chemicals>) {
-    if (value.length > this.MAX_LIST_SIZE_BIG) {
-      throw new Error('Only ' + this.MAX_LIST_SIZE_BIG + ' post-plant chemicals allowed.');
-    } else {
-      this.postChemicals$ = value;
-    }
-  }
-
-
 }
