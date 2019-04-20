@@ -1,8 +1,9 @@
 <h1>For Adding/Removing Common Data</h1>
 <div class="jumbotron p-3">
-  <div>
-    <h2>Ranch Data</h2>
-      <table mdbTable hover="true">
+  <div class="row">
+    <div class="col-md">
+    <h3>Ranch Data</h3>
+      <table mdbTable hover="true" small="true">
           <thead class="orange white-text">
             <tr>
               <th *ngFor="let head of headElementsRanch" scope="col">{{head}} </th>
@@ -10,7 +11,6 @@
           </thead>
           <tbody>
             <tr mdbTableCol *ngFor="let ranch of ranchList">
-              <th scope="row">{{ranch.id}}</th>
               <td>{{ranch.name}}</td>
               <td>{{ranch.manager}}</td>
               <td><button type="button" class="btn btn-sm btn-danger">Remove</button></td>
@@ -18,30 +18,31 @@
           </tbody>
         </table>
         <button type="button" class="btn btn-success">Add Ranch</button>
-  </div>
-  <hr>
-  <div>
-    <h4>Chemical Data</h4>
-    <table mdbTable hover="true">
-        <thead class="orange white-text">
-          <tr>
-            <th *ngFor="let head of headElementsChem" scope="col">{{head}} </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr mdbTableCol *ngFor="let chem of chemicalList">
-            <td>{{chem.name}}</td>
-            <td>{{chem.type}}</td>
-            <td><button type="button" class="btn btn-sm btn-danger">Remove</button></td>
-          </tr>
-        </tbody>
-      </table>
-      <button type="button" class="btn btn-success">Add Checmical</button>
-  </div>
-  <hr>
-  <h4>Commodity & Variety Data</h4>
-  <div>
-      <table mdbTable hover="true">
+      </div> <!--End of first col-->
+
+      <div class="col-md">
+      <h3>Chemical Data</h3>
+      <table mdbTable hover="true" small="true">
+          <thead class="orange white-text">
+            <tr>
+              <th *ngFor="let head of headElementsChem" scope="col">{{head}} </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr mdbTableCol *ngFor="let chem of chemicalList">
+              <td>{{chem.name}}</td>
+              <td><button type="button" class="btn btn-sm btn-danger">Remove</button></td>
+            </tr>
+          </tbody>
+        </table>
+        <button type="button" class="btn btn-success">Add Checmical</button>
+      </div><!--End of first col-->
+  </div> <!--End of first row-->
+
+  <div class="row">
+    <div class="col-md">
+    <h3>Commodity & Variety Data</h3>
+      <table mdbTable hover="true" small="true">
           <thead class="orange white-text">
             <tr>
               <th *ngFor="let head of headElementsComm" scope="col">{{head}} </th>
@@ -57,5 +58,24 @@
           </tbody>
         </table>
         <button type="button" class="btn btn-success">Add Commodity</button>
-  </div>
-</div>
+    </div><!--End of first Col-->
+
+    <div class="col-md">
+        <h3>Fertilizer Data</h3>
+        <table mdbTable hover="true" small="true">
+            <thead class="orange white-text">
+              <tr>
+                <th *ngFor="let head of headElementsF" scope="col">{{head}} </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr mdbTableCol *ngFor="let f of fertilizerList">
+                <td>{{f.name}}</td>
+                <td><button type="button" class="btn btn-sm btn-danger">Remove</button></td>
+              </tr>
+            </tbody>
+          </table>
+          <button type="button" class="btn btn-success">Add Fertlizer</button>
+        </div><!--End of second col-->
+  </div><!--End of second Row-->
+</div> <!--End of Jumbotron-->

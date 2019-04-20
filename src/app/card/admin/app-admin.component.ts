@@ -16,18 +16,18 @@ export class AppAdminComponent implements OnInit {
     { id: '1213', name: 'Ranch 5', manger: 'Manger 5'}
   ];
 
-  headElementsRanch: Array<any> = ['ID', 'Ranch', 'Ranch Manager', 'Remove'];
+  headElementsRanch: Array<any> = ['Ranch', 'Ranch Manager', 'Remove'];
 
   chemicalList: Array<any> = [
-    {name: 'chemical 1', type: 'fertilizer'},
-    {name: 'chemical 2', type: 'fertilizer'},
-    {name: 'chemical 3', type: 'herbicide'},
-    {name: 'chemical 4', type: 'herbicide'},
-    {name: 'chemical 5', type: 'insecticide'},
-    {name: 'chemical 6', type: 'insecticide'},
+    {name: 'chemical 1'},
+    {name: 'chemical 2'},
+    {name: 'chemical 3'},
+    {name: 'chemical 4'},
+    {name: 'chemical 5'},
+    {name: 'chemical 6'}
   ];
 
-  headElementsChem: Array<any> = ['Checmical', 'Type', 'Remove'];
+  headElementsChem: Array<any> = ['Checmical', 'Remove'];
 
   commodityList: Array<any> = [
     { seedLot: '123', commodity: 'Lettuce', variety: 'Lettuce 1'},
@@ -38,6 +38,16 @@ export class AppAdminComponent implements OnInit {
   ];
 
   headElementsComm: Array<any> = ['Seed Lot', 'Commodity', 'Variety', 'Remove'];
+
+  fertilizerList: Array<any> = [
+    {name: 'fertilizer 1'},
+    {name: 'fertilizer 2'},
+    {name: 'fertilizer 3'},
+    {name: 'fertilizer 4'},
+    {name: 'fertilizer 5'},
+    {name: 'fertilizer 6'}
+  ];
+  headElementsF: Array<any> = ['Fertilizer', 'Remove'];
 
   constructor(private titleService: TitleService) { }
 
