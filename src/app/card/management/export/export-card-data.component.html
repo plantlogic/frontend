@@ -1,20 +1,16 @@
 <div class="jumbotron p-3">
-  <form [formGroup]="">
-    <!-- <div class="form-group"> -->
       <div class="row">
           <div class="col-3">
             <label for="workDateInput" class="control-label">From Work Date</label>
-            <ng2-flatpickr placeholder="Work Date" id="workDate" formControlName="workDate" id="workDateInput"
+            <ng2-flatpickr placeholder="Work Date" id="workFromDate"
                             [config]="flatpickrOptions">
             </ng2-flatpickr>
-            <div class="invalid-feedback" role="alert">Please enter from date.</div>
           </div>
           <div class="col-3">
             <label for="workDateInput" class="control-label">To Work Date</label>
-            <ng2-flatpickr placeholder="Work Date" id="workDate" formControlName="workDate" id="workDateInput"
-                            [config]="flatpickrOptions">
+            <ng2-flatpickr placeholder="Work Date" id="workToDate"
+                            [config]="flatpickrOptions2">
             </ng2-flatpickr>
-            <div class="invalid-feedback" role="alert">Please enter to date.</div>
           </div>
           <div class="col-3">
               <label for="ranchNameInput" class="control-label">Ranch Name</label>
@@ -31,13 +27,9 @@
         </div>
 
 
-    <!-- </div> -->
-
-
     <div class="col d-none d-md-inline-block">
       <button type="button" class="float-right" color="primary" name="addCard" (click)="generateExampleCard()"
               mdbBtn floating="true" size="sm" mdbWavesEffect>Example Generate/Save Button</button>
     </div>
-  </form>
 </div>
 

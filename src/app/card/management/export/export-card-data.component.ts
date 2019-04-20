@@ -14,8 +14,9 @@ export class ExportCardDataComponent implements OnInit {
   constructor(private titleService: TitleService, private fb: FormBuilder, private cardExport: CardExportService) { }
 
   flatpickrOptions: FlatpickrOptions = { dateFormat: 'm-d-Y', defaultDate: new Date(Date.now())};
+  FlatpickrOptions2: FlatpickrOptions = { dateFormat: 'm-d-Y'};
   form: FormGroup;
-  ranchList: Array<any> = ['Mesa Ranch', 'Wolf Ranch', 'El Paso Ranch'];
+  ranchList: Array<any> = ['Mesa Ranch', 'Wolf Ranch', 'El Paso Ranch', 'Coyote Ranch'];
   commodityList: Array<any> = [
   { commodity: 'Lettuce', variety: ['Select', 'Lettuce v1', 'Lettuce v2'] },
   { commodity: 'Strawberry', variety: ['Select', 'Strawberry v1', 'Strawberry v2'] },
