@@ -1,9 +1,33 @@
-<p>
-  Data export functionality goes here, should be able to filter by date or something to keep file sizes from getting too big
-</p>
-
-
-<div class="col d-none d-md-inline-block">
-  <button type="button" class="float-right" color="primary" name="addCard" (click)="generateExampleCard()"
-          mdbBtn floating="true" size="sm" mdbWavesEffect>Example Generate/Save Button</button>
+<div class="jumbotron p-3">
+  <div class="row">
+    <div class="col-3">
+      <label for="workDateInput" class="control-label">From Work Date</label>
+      <ng2-flatpickr placeholder="Work Date" id="workFromDate"
+                      [config]="flatpickrOptions">
+      </ng2-flatpickr>
+    </div>
+    <div class="col-3">
+      <label for="workDateInput" class="control-label">To Work Date</label>
+      <ng2-flatpickr placeholder="Work Date" id="workToDate"
+                      [config]="flatpickrOptions2">
+      </ng2-flatpickr>
+    </div>
+    <div class="col-3">
+      <label for="ranchNameInput" class="control-label">Ranch Name</label>
+      <select id="ranch" class="browser-default custom-select">
+        <option [ngValue]="ranch" *ngFor="let ranch of ranchList">{{ranch}}</option>
+      </select>
+    </div>
+    <div class="col-3">
+      <label for="commodityInput" class="control-label">Commodity</label>
+      <select class="browser-default custom-select">
+        <option *ngFor ="let com of commodityList">{{com.commodity}} </option>
+      </select>
+      </div>
+    </div>
+    <div class="col d-none d-md-inline-block mt-2">
+      <button type="button" class="float-right" color="primary" name="addCard" (click)="generateExampleCard()"
+              mdbBtn floating="true" size="sm" mdbWavesEffect>Example Generate/Save Button</button>
+    </div>
 </div>
+
