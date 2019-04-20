@@ -46,7 +46,7 @@ export class RequiredPasswordChange implements CanActivate {
   constructor(private auth: AuthService, private router: Router) {}
 
   canActivate() {
-    if (this.auth.isPasswordChangeRequired() || this.auth.isLoggedIn()) {
+    if (this.auth.isPasswordChangeRequired() || (this.auth.isLoggedIn() && this.auth.hasEmail())) {
       return true;
     } else {
       this.router.navigate(['/']);
@@ -54,8 +54,6 @@ export class RequiredPasswordChange implements CanActivate {
     }
   }
 }
-
-
 
 @Injectable({
   providedIn: 'root'
