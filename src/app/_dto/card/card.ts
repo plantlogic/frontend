@@ -4,10 +4,6 @@ import {Commodities} from './commodities';
 import {Chemicals} from './chemicals';
 
 export class Card {
-  // Limits
-  readonly MAX_LIST_SIZE_BIG: number = 12;
-  readonly MAX_LIST_SIZE_SMALL: number = 3;
-
   // Card ID (used by database to identify specific card)
   id: string;
   // Is the card closed?
@@ -22,15 +18,15 @@ export class Card {
    the 'add' button).
    */
   // Irrigation Data (filled out after card creation) | Max 12
-  irrigation: LimitedArray<IrrigationEntry> = new LimitedArray(this.MAX_LIST_SIZE_BIG);
+  irrigation: BigLimitedArray<IrrigationEntry> = new BigLimitedArray();
   // Tractor Data (filled out after card creation) | Max 12
-  tractor: LimitedArray<TractorEntry> = new LimitedArray(this.MAX_LIST_SIZE_BIG);
+  tractor: BigLimitedArray<TractorEntry> = new BigLimitedArray();
   // Commodity Data (filled out on card creation) | Max 3
-  commodities: LimitedArray<Commodities> = new LimitedArray<Commodities>(this.MAX_LIST_SIZE_SMALL);
+  commodities: SmallLimitedArray<Commodities> = new SmallLimitedArray<Commodities>();
   // Pre-plant Chemicals (filled out on card creation) | Max 3
-  preChemicals: LimitedArray<Chemicals> = new LimitedArray<Chemicals>(this.MAX_LIST_SIZE_SMALL);
+  preChemicals: SmallLimitedArray<Chemicals> = new SmallLimitedArray<Chemicals>();
   // Post-plant Chemicals (filled out after card creation) | Max 12
-  postChemicals: LimitedArray<Chemicals> = new LimitedArray<Chemicals>(this.MAX_LIST_SIZE_BIG);
+  postChemicals: BigLimitedArray<Chemicals> = new BigLimitedArray<Chemicals>();
 
   // Name of the ranch
   ranchName: string;
@@ -113,11 +109,6 @@ export class Card {
 export class LimitedArray<T> extends Array<T> {
   max: number;
 
-  constructor(max: number) {
-    super();
-    this.max = max;
-  }
-
   push = (...value: T[]): number => {
     if (this.length + value.length > this.max) {
       return this.length;
@@ -130,4 +121,12 @@ export class LimitedArray<T> extends Array<T> {
   isFull(): boolean {
     return this.length >= this.max;
   }
+}
+
+export class BigLimitedArray<T> extends LimitedArray<T> {
+  max = 12;
+}
+
+export class SmallLimitedArray<T> extends LimitedArray<T> {
+  max = 3;
 }
