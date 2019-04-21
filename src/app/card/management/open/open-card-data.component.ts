@@ -114,7 +114,7 @@ export class OpenCardDataComponent implements OnInit {
   private toggleCard() {
     const newAlert = new Alert();
     newAlert.color = 'primary';
-    if (this.card.isClosed) {
+    if (this.card.closed) {
       newAlert.title = 'Reopen Card';
       newAlert.message = 'This will reopen a closed card, allowing it to be edited again. Continue?';
       newAlert.actionName = 'Reopen';
@@ -129,9 +129,9 @@ export class OpenCardDataComponent implements OnInit {
     newAlert.closeName = 'Cancel';
     newAlert.action$ = new EventEmitter<null>();
     newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
-      this.cardEdit.setCardState(this.card.id, !this.card.isClosed).subscribe(data => {
+      this.cardEdit.setCardState(this.card.id, !this.card.closed).subscribe(data => {
           if (data.success) {
-            this.card.isClosed = !this.card.isClosed;
+            this.card.closed = !this.card.closed;
             AlertService.newBasicAlert('Change saved successfully!', false);
           } else {
             AlertService.newBasicAlert('Error: ' + data.error, true);
@@ -188,8 +188,8 @@ export class OpenCardDataComponent implements OnInit {
       this.card.harvestDate = (new Date(this.card.harvestDate)).valueOf();
       this.card.thinDate = (new Date(this.card.thinDate)).valueOf();
       this.card.wetDate = (new Date(this.card.wetDate)).valueOf();
-      this.card.tractorData.map(x => x.workDate = (new Date(x.workDate).valueOf()));
-      this.card.irrigationData.map(x => x.workDate = (new Date(x.workDate).valueOf()));
+      this.card.tractor.map(x => x.workDate = (new Date(x.workDate).valueOf()));
+      this.card.irrigation.map(x => x.workDate = (new Date(x.workDate).valueOf()));
 
       newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
         this.cardEdit.updateCard(this.card).subscribe(data => {
@@ -215,22 +215,22 @@ export class OpenCardDataComponent implements OnInit {
   private tractorDatePickr(i: number): FlatpickrOptions {
     return {
       dateFormat: 'm-d-Y',
-      defaultDate: new Date(this.card.tractorData[i].workDate)
+      defaultDate: new Date(this.card.tractor[i].workDate)
     };
   }
 
   private irrigationDatePickr(i: number): FlatpickrOptions {
     return {
       dateFormat: 'm-d-Y',
-      defaultDate: new Date(this.card.irrigationData[i].workDate)
+      defaultDate: new Date(this.card.irrigation[i].workDate)
     };
   }
 
   private addTractorData(): void {
-    this.card.tractorData.push(new TractorEntry());
+    this.card.tractor.push(new TractorEntry());
   }
 
   private addIrrigationData(): void {
-    this.card.irrigationData.push(new IrrigationEntry());
+    this.card.irrigation.push(new IrrigationEntry());
   }
 }

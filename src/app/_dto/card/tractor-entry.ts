@@ -1,12 +1,15 @@
+import {Chemical} from './chemical';
+
 export class TractorEntry {
-  // fertilizer	string
-  fertilizer: string;
-  // gallons	number($float)
-  gallons: number;
-  // workDate	string($date-time)
+  // The date on which the work was performed
   workDate: number = Date.now();
-  // workDone	string
+  // The work that was performed by the tractor
   workDone: string;
-  // operator string
+  // The name of who operated the tractor
   operator: string;
+
+  // Any fertilizer applied by tractor
+  fertilizer: Chemical;
+  // Any chemical applied by tractor
+  chemical: Chemical;
 }

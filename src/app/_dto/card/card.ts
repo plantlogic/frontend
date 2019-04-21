@@ -1,84 +1,133 @@
 import {IrrigationEntry} from './irrigation-entry';
 import {TractorEntry} from './tractor-entry';
+import {Commodities} from './commodities';
+import {Chemicals} from './chemicals';
 
 export class Card {
-  // bedCount	[integer($int32)]
-  bedCount: Array<number> = [];
-  // bedType	integer($int32)
-  bedType: number;
-  // commodity	[string]
-  commodity: Array<string> = [];
-  // cropAcres	[number($float)]
-  cropAcres: Array<number> = [];
-  // cropYear	integer($int32)
-  cropYear: number;
-  // dacthalRate	number($float)
-  dacthalRate: number;
-  // diaznonRate	number($float)
-  diaznonRate: number;
-  // fieldID	integer($int32)
-  fieldID: number;
-  // harvestDate	string($date-time)
-  harvestDate: number;
-  // hoeDate	string($date-time)
-  hoeDate: number;
-  // id	string
-  id: string;
-  // irrigationData	[IrrigationData{...}]
-  irrigationData: Array<IrrigationEntry> = [];
-  // isClosed	boolean
-  isClosed: boolean;
-  // kerbRate	number($float)
-  kerbRate: number;
-  // lastUpdated: string($date-time)
-  lastUpdated: number;
-  // lorsbanRate	number($float)
-  lorsbanRate: number;
-  // lotNumber	string
-  lotNumber: string;
-  // ranchManagerName	string
-  ranchManagerName: string;
-  // ranchName	string
-  ranchName: string;
-  // seedLotNumber	[integer($int32)]
-  seedLotNumber: Array<number> = [];
-  // thinDate	string($date-time)
-  thinDate: number;
-  // totalAcres	number($float)
-  totalAcres: number;
-  // tractorData	[TractorData{...}]
-  tractorData: Array<TractorEntry> = [];
-  // variety	[string]
-  variety: Array<string> = [];
-  // wetDate	string($date-time)
-  wetDate: number;
+  // Limits
+  readonly MAX_LIST_SIZE_BIG: number = 12;
+  readonly MAX_LIST_SIZE_SMALL: number = 3;
 
+  // Card ID (used by database to identify specific card)
+  id: string;
+  // Is the card closed?
+  closed: boolean;
+  // The date the card was last updated
+  lastUpdated: number;
+
+  /*
+   ======== IMPORTANT: ==========
+   These are custom 'LimitedArrays' - when using push(), they will not add past the maximum allowed number of elements.
+   You can then use, for example, irrigation.isFull() to check if the array is already full and if so show an error to the user (and hide
+   the 'add' button).
+   */
+  // Irrigation Data (filled out after card creation) | Max 12
+  irrigation: LimitedArray<IrrigationEntry> = new LimitedArray(this.MAX_LIST_SIZE_BIG);
+  // Tractor Data (filled out after card creation) | Max 12
+  tractor: LimitedArray<TractorEntry> = new LimitedArray(this.MAX_LIST_SIZE_BIG);
+  // Commodity Data (filled out on card creation) | Max 3
+  commodities: LimitedArray<Commodities> = new LimitedArray<Commodities>(this.MAX_LIST_SIZE_SMALL);
+  // Pre-plant Chemicals (filled out on card creation) | Max 3
+  preChemicals: LimitedArray<Chemicals> = new LimitedArray<Chemicals>(this.MAX_LIST_SIZE_SMALL);
+  // Post-plant Chemicals (filled out after card creation) | Max 12
+  postChemicals: LimitedArray<Chemicals> = new LimitedArray<Chemicals>(this.MAX_LIST_SIZE_BIG);
+
+  // Name of the ranch
+  ranchName: string;
+  // The field ID (set only by admin)
+  fieldID: number;
+  // The name of the ranch manager
+  ranchManagerName: string;
+  //
+  lotNumber: string;
+  //
+  shipperID: string;
+
+  //
+  wetDate: number;
+  //
+  thinDate: number;
+  //
+  hoeDate: number;
+  //
+  harvestDate: number;
+
+  //
+  cropYear: number = new Date().getFullYear();
+
+
+
+
+
+
+  // =======================
+  // Methods
+  // =======================
+
+  // Used for creating a copy of a card without referencing old data
   public copyConstructor(card: Card): Card {
-    this.bedCount = JSON.parse(JSON.stringify(card.bedCount));
-    this.bedType = card.bedType;
-    this.commodity = JSON.parse(JSON.stringify(card.commodity));
-    this.cropAcres = JSON.parse(JSON.stringify(card.cropAcres));
-    this.cropYear = card.cropYear;
-    this.dacthalRate = card.dacthalRate;
-    this.diaznonRate = card.diaznonRate;
-    this.fieldID = card.fieldID;
-    this.harvestDate = card.harvestDate;
-    this.hoeDate = card.hoeDate;
     this.id = card.id;
-    this.irrigationData = JSON.parse(JSON.stringify(card.irrigationData));
-    this.isClosed = card.isClosed;
-    this.kerbRate = card.kerbRate;
+    this.closed = card.closed;
     this.lastUpdated = card.lastUpdated;
-    this.lorsbanRate = card.lorsbanRate;
-    this.lotNumber = card.lotNumber;
-    this.ranchManagerName = card.ranchManagerName;
+
+    if (card.irrigation) {
+      this.irrigation = JSON.parse(JSON.stringify(card.irrigation));
+    }
+
+    if (card.tractor) {
+      this.tractor = JSON.parse(JSON.stringify(card.tractor));
+    }
+
+    if (card.commodities) {
+      this.commodities = JSON.parse(JSON.stringify(card.commodities));
+    }
+
+    if (card.preChemicals) {
+      this.preChemicals = JSON.parse(JSON.stringify(card.preChemicals));
+    }
+
+    if (card.postChemicals) {
+      this.postChemicals = JSON.parse(JSON.stringify(card.postChemicals));
+    }
+
     this.ranchName = card.ranchName;
-    this.seedLotNumber = JSON.parse(JSON.stringify(card.seedLotNumber));
-    this.thinDate = card.thinDate;
-    this.totalAcres = card.totalAcres;
-    this.tractorData = JSON.parse(JSON.stringify(card.tractorData));
-    this.variety = JSON.parse(JSON.stringify(card.variety));
+    this.fieldID = card.fieldID;
+    this.ranchManagerName = card.ranchManagerName;
+    this.lotNumber = card.lotNumber;
+    this.shipperID = card.shipperID;
+
     this.wetDate = card.wetDate;
+    this.thinDate = card.thinDate;
+    this.hoeDate = card.hoeDate;
+    this.harvestDate = card.harvestDate;
+
+    this.cropYear = card.cropYear;
+
     return this;
+  }
+}
+
+
+
+
+export class LimitedArray<T> extends Array<T> {
+  max: number;
+
+  constructor(max: number) {
+    super();
+    this.max = max;
+  }
+
+  push = (...value: T[]): number => {
+    if (this.length + value.length > this.max) {
+      return this.length;
+    } else {
+      value.forEach(v => super.push(v));
+      return this.length;
+    }
+  }
+
+  isFull(): boolean {
+    return this.length >= this.max;
   }
 }
