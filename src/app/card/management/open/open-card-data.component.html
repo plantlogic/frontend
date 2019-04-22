@@ -38,19 +38,26 @@
           #ranchName="ngModel" [required]="true" minlength="1" [class.is-invalid]="ranchName.invalid" />
         <br />
         <i class="far fa-circle fa-xs mr-2"></i>
-        <b>Field ID:</b>
-        <br />
-        <input type="number" [(ngModel)]="card.fieldID" [disabled]="!editing" class="form-control form-control-sm" />
-        <br />
-        <i class="far fa-circle fa-xs mr-2"></i>
         <b>Ranch Manager:</b>
         <br />
         <input type="text" [(ngModel)]="card.ranchManagerName" [disabled]="!editing" class="form-control form-control-sm" />
         <br />
         <i class="far fa-circle fa-xs mr-2"></i>
+        <b>Crop Year:</b>
+        <br />
+        <input type="number" [(ngModel)]="card.cropYear" [disabled]="!editing" class="form-control form-control-sm"
+               [min]="1000" [max]="9999"  #cropYear="ngModel" [class.is-invalid]="card.cropYear < 1000 || card.cropYear > 9999" />
+      </div>
+      <div class="col-sm border p-4">
+        <i class="far fa-circle fa-xs mr-2"></i>
         <b>Lot #:</b>
         <br />
         <input type="text" [(ngModel)]="card.lotNumber" [disabled]="!editing" class="form-control form-control-sm" />
+        <br />
+        <i class="far fa-circle fa-xs mr-2"></i>
+        <b>Field ID:</b>
+        <br />
+        <input type="number" [(ngModel)]="card.fieldID" [disabled]="!editing" class="form-control form-control-sm" />
         <br />
         <i class="far fa-circle fa-xs mr-2"></i>
         <b>Shipper ID:</b>
@@ -58,12 +65,6 @@
         <input type="number" [(ngModel)]="card.shipperID" [disabled]="!editing" class="form-control form-control-sm" />
       </div>
       <div class="col-sm border p-4">
-        <i class="far fa-circle fa-xs mr-2"></i>
-        <b>Crop Year:</b>
-        <br />
-        <input type="number" [(ngModel)]="card.cropYear" [disabled]="!editing" class="form-control form-control-sm"
-            [min]="1000" [max]="9999"  #cropYear="ngModel" [class.is-invalid]="card.cropYear < 1000 || card.cropYear > 9999" />
-        <br />
         <i class="far fa-circle fa-xs mr-2"></i>
         <b>Wet Date:</b>
         <br />
@@ -113,7 +114,12 @@
                   *ngIf="editing && !card.commoditiesFull()"
                   size="sm" mdbWavesEffect><i class="fa fa-plus" aria-hidden="true"></i></button>
         </span>
-        <h4><i class="fas fa-seedling ml-1"></i> Commodities</h4>
+        <div class="d-inline-flex">
+          <h4><i class="fas fa-seedling ml-1"></i> Commodities</h4>
+        </div>
+        <div class="d-inline-flex ml-2">
+          | Total Acres: <i>{{totalAcres}}</i>
+        </div>
         <table mdbTable *ngIf="card" class="table">
           <thead>
           <tr>
