@@ -36,6 +36,7 @@ import {OpenCardDataComponent} from './card/management/open/open-card-data.compo
 import {ExportCardDataComponent} from './card/management/export/export-card-data.component';
 import {AppAdminComponent} from './card/admin/app-admin.component';
 import { BackButtonComponent } from './navbar/back-button/back-button.component';
+import { AddChemicalEntryComponent } from './card/entry/open/add-chemical/add-chemical-entry.component';
 
 
 @NgModule({
@@ -64,7 +65,8 @@ import { BackButtonComponent } from './navbar/back-button/back-button.component'
     OpenCardDataComponent,
     ExportCardDataComponent,
     AppAdminComponent,
-    BackButtonComponent
+    BackButtonComponent,
+    AddChemicalEntryComponent
   ],
   imports: [
     BrowserModule,
