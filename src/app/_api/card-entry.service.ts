@@ -6,6 +6,7 @@ import {BasicDTO} from '../_dto/basicDTO';
 import {environment} from '../../environments/environment';
 import {TractorEntry} from '../_dto/card/tractor-entry';
 import {IrrigationEntry} from '../_dto/card/irrigation-entry';
+import {Chemicals} from '../_dto/card/chemicals';
 
 @Injectable({
   providedIn: 'root'
@@ -39,6 +40,13 @@ export class CardEntryService {
     return this.http.post<BasicDTO<null>>(
       environment.ApiUrl + '/data/entry/ranches/' + id + '/irrigation',
       irrigationEntry, this.httpOptions
+    );
+  }
+
+  public addChemicalData(id: string, chemicalEntry: Chemicals): Observable<BasicDTO<null>> {
+    return this.http.post<BasicDTO<null>>(
+      environment.ApiUrl + '/data/entry/ranches/' + id + '/chemical',
+      chemicalEntry, this.httpOptions
     );
   }
 

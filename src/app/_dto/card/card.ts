@@ -4,6 +4,11 @@ import {Commodities} from './commodities';
 import {Chemicals} from './chemicals';
 
 export class Card {
+  // Limits
+  readonly MAX_LIST_SIZE_BIG: number = 12;
+  readonly MAX_LIST_SIZE_SMALL: number = 3;
+
+
   // Card ID (used by database to identify specific card)
   id: string;
   // Is the card closed?
@@ -13,20 +18,25 @@ export class Card {
 
   /*
    ======== IMPORTANT: ==========
-   These are custom 'LimitedArrays' - when using push(), they will not add past the maximum allowed number of elements.
-   You can then use, for example, irrigation.isFull() to check if the array is already full and if so show an error to the user (and hide
-   the 'add' button).
+   These are private for a reason - please access using the getters below (for example, access 'irrigation' by using 'card.irrigationArray'
+   instead. These setters/getters prevent limit the size of the array. Additionally, you can check if the array is full by using
+   'card.irrigationFull()', which returns a boolean.
    */
   // Irrigation Data (filled out after card creation) | Max 12
-  irrigation: BigLimitedArray<IrrigationEntry> = new BigLimitedArray();
+  readonly irrigationMax = this.MAX_LIST_SIZE_BIG;
+  private irrigation: Array<IrrigationEntry> = new Array<IrrigationEntry>();
   // Tractor Data (filled out after card creation) | Max 12
-  tractor: BigLimitedArray<TractorEntry> = new BigLimitedArray();
+  readonly tractorMax = this.MAX_LIST_SIZE_BIG;
+  private tractor: Array<TractorEntry> = new Array<TractorEntry>();
   // Commodity Data (filled out on card creation) | Max 3
-  commodities: SmallLimitedArray<Commodities> = new SmallLimitedArray<Commodities>();
+  readonly commodityMax = this.MAX_LIST_SIZE_SMALL;
+  private commodities: Array<Commodities> = new Array<Commodities>();
   // Pre-plant Chemicals (filled out on card creation) | Max 3
-  preChemicals: SmallLimitedArray<Chemicals> = new SmallLimitedArray<Chemicals>();
+  readonly preChemicalsMax = this.MAX_LIST_SIZE_SMALL;
+  private preChemicals: Array<Chemicals> = new Array<Chemicals>();
   // Post-plant Chemicals (filled out after card creation) | Max 12
-  postChemicals: BigLimitedArray<Chemicals> = new BigLimitedArray<Chemicals>();
+  readonly postChemicalsMax = this.MAX_LIST_SIZE_BIG;
+  private postChemicals: Array<Chemicals> = new Array<Chemicals>();
 
   // Name of the ranch
   ranchName: string;
@@ -101,32 +111,105 @@ export class Card {
 
     return this;
   }
-}
 
 
 
+  // =======================
+  // Getters and Setters
+  // =======================
 
-export class LimitedArray<T> extends Array<T> {
-  max: number;
+  get irrigationArray(): Array<IrrigationEntry> {
+    if (this.irrigation.length > this.irrigationMax) {
+      this.irrigation = this.irrigation.slice(0, this.irrigationMax);
+    }
+    return this.irrigation;
+  }
 
-  push = (...value: T[]): number => {
-    if (this.length + value.length > this.max) {
-      return this.length;
+  set irrigationArray(value: Array<IrrigationEntry>) {
+    if (value.length > this.irrigationMax) {
+      this.irrigation = value.slice(0, this.irrigationMax);
     } else {
-      value.forEach(v => super.push(v));
-      return this.length;
+      this.irrigation = value;
     }
   }
 
-  isFull(): boolean {
-    return this.length >= this.max;
+  irrigationFull(): boolean {
+    return this.irrigation.length >= this.irrigationMax;
   }
-}
 
-export class BigLimitedArray<T> extends LimitedArray<T> {
-  max = 12;
-}
+  get tractorArray(): Array<TractorEntry> {
+    if (this.tractor.length > this.tractorMax) {
+      this.tractor = this.tractor.slice(0, this.tractorMax);
+    }
+    return this.tractor;
+  }
 
-export class SmallLimitedArray<T> extends LimitedArray<T> {
-  max = 3;
+  set tractorArray(value: Array<TractorEntry>) {
+    if (value.length > this.tractorMax) {
+      this.tractor = value.slice(0, this.tractorMax);
+    } else {
+      this.tractor = value;
+    }
+  }
+
+  tractorFull(): boolean {
+    return this.tractor.length >= this.tractorMax;
+  }
+
+  get commodityArray(): Array<Commodities> {
+    if (this.commodities.length > this.commodityMax) {
+      this.commodities = this.commodities.slice(0, this.commodityMax);
+    }
+    return this.commodities;
+  }
+
+  set commodityArray(value: Array<Commodities>) {
+    if (value.length > this.commodityMax) {
+      this.commodities = value.slice(0, this.commodityMax);
+    } else {
+      this.commodities = value;
+    }
+  }
+
+  commoditiesFull(): boolean {
+    return this.commodities.length >= this.commodityMax;
+  }
+
+  get preChemicalArray(): Array<Chemicals> {
+    if (this.preChemicals.length > this.preChemicalsMax) {
+      this.preChemicals = this.preChemicals.slice(0, this.preChemicalsMax);
+    }
+    return this.preChemicals;
+  }
+
+  set preChemicalArray(value: Array<Chemicals>) {
+    if (value.length > this.preChemicalsMax) {
+      this.preChemicals = value.slice(0, this.preChemicalsMax);
+    } else {
+      this.preChemicals = value;
+    }
+  }
+
+  preChemicalsFull(): boolean {
+    return this.preChemicals.length >= this.preChemicalsMax;
+  }
+
+  get postChemicalArray(): Array<Chemicals> {
+    if (this.postChemicals.length > this.postChemicalsMax) {
+      this.postChemicals = this.postChemicals.slice(0, this.postChemicalsMax);
+    }
+    return this.postChemicals;
+  }
+
+  set postChemicalArray(value: Array<Chemicals>) {
+    if (value.length > this.postChemicalsMax) {
+      this.postChemicals = value.slice(0, this.postChemicalsMax);
+    } else {
+      this.postChemicals = value;
+    }
+  }
+
+  postChemicalsFull(): boolean {
+    return this.postChemicals.length >= this.postChemicalsMax;
+  }
 }

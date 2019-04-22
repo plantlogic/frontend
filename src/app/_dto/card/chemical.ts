@@ -4,7 +4,7 @@ export class Chemical {
   // The rate, as a float - e.g. 2.31
   rate: number;
   // The unit in which the rate is measured
-  unit: ChemicalUnit;
+  unit: ChemicalUnit | string = 'Gallons';
 }
 
 export enum ChemicalUnit {
