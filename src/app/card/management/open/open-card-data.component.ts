@@ -14,6 +14,9 @@ import {ModalDirective} from 'angular-bootstrap-md';
 import {NgModel} from '@angular/forms';
 import {TractorEntry} from '../../../_dto/card/tractor-entry';
 import {IrrigationEntry} from '../../../_dto/card/irrigation-entry';
+import {Chemical, ChemicalUnit} from '../../../_dto/card/chemical';
+import {Chemicals} from '../../../_dto/card/chemicals';
+import {Commodities} from '../../../_dto/card/commodities';
 
 @Component({
   selector: 'app-open-card',
@@ -28,6 +31,7 @@ export class OpenCardDataComponent implements OnInit {
   card: Card;
   editable: boolean;
   editing = false;
+  rateUnits: Array<string>;
 
   @ViewChild('ranchName') public ranchName: NgModel;
   @ViewChild('cropYear') public cropYear: NgModel;
@@ -50,6 +54,7 @@ export class OpenCardDataComponent implements OnInit {
     this.titleService.setTitle('View Card');
     this.loadCardData();
     this.editable = this.auth.hasPermission(PlRole.DATA_EDIT);
+    this.rateUnits = this.initRateUnits();
   }
 
   private loadCardData() {
@@ -169,6 +174,8 @@ export class OpenCardDataComponent implements OnInit {
   }
 
   private saveChanges(): void {
+    console.log(this.card.irrigationArray);
+
     if (this.ranchName.invalid || (this.card.cropYear < 1000 || this.card.cropYear > 9999)) {
       AlertService.newBasicAlert('There are some invalid values - please fix before saving.', true);
     } else {
@@ -188,8 +195,8 @@ export class OpenCardDataComponent implements OnInit {
       this.card.harvestDate = (new Date(this.card.harvestDate)).valueOf();
       this.card.thinDate = (new Date(this.card.thinDate)).valueOf();
       this.card.wetDate = (new Date(this.card.wetDate)).valueOf();
-      this.card.tractor.map(x => x.workDate = (new Date(x.workDate).valueOf()));
-      this.card.irrigation.map(x => x.workDate = (new Date(x.workDate).valueOf()));
+      this.card.tractorArray.map(x => x.workDate = (new Date(x.workDate).valueOf()));
+      this.card.irrigationArray.map(x => x.workDate = (new Date(x.workDate).valueOf()));
 
       newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
         this.cardEdit.updateCard(this.card).subscribe(data => {
@@ -212,25 +219,39 @@ export class OpenCardDataComponent implements OnInit {
 
 
 
-  private tractorDatePickr(i: number): FlatpickrOptions {
+  private datePickr(workDate: number): FlatpickrOptions {
     return {
       dateFormat: 'm-d-Y',
-      defaultDate: new Date(this.card.tractor[i].workDate)
-    };
-  }
-
-  private irrigationDatePickr(i: number): FlatpickrOptions {
-    return {
-      dateFormat: 'm-d-Y',
-      defaultDate: new Date(this.card.irrigation[i].workDate)
+      defaultDate: new Date(workDate)
     };
   }
 
   private addTractorData(): void {
-    this.card.tractor.push(new TractorEntry());
+    this.card.tractorArray.push(new TractorEntry());
   }
 
   private addIrrigationData(): void {
-    this.card.irrigation.push(new IrrigationEntry());
+    this.card.irrigationArray.push(new IrrigationEntry());
+  }
+
+  private addPreChemicals(): void {
+    this.card.preChemicalArray.push(new Chemicals());
+  }
+
+  private addPostChemicals(): void {
+    this.card.postChemicalArray.push(new Chemicals());
+  }
+
+  private addCommodities(): void {
+    this.card.commodityArray.push(new Commodities());
+  }
+
+  private newChemical(): Chemical {
+    return new Chemical();
+  }
+
+  initRateUnits(): Array<string> {
+    const keys = Object.keys(ChemicalUnit);
+    return keys.slice(keys.length / 2);
   }
 }
