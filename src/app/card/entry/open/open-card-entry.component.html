@@ -26,7 +26,8 @@
     <hr />
     <div class="row">
       <div class="col-md-4">
-        <button type="button" class="btn btn-success float-right ml-1" routerLink="./add/chemical">
+        <button *ngIf="!card.postChemicalsFull()" type="button" class="btn btn-success float-right ml-1"
+                routerLink="./add/chemical">
           <span class="d-md-none">+ </span>
           <span class="d-none d-md-inline-block">Add </span>
           <i class="fas fa-angle-double-right ml-1"></i>
@@ -97,7 +98,8 @@
 
 
       <div class="col-md-4">
-        <button type="button" class="btn btn-warning float-right ml-1" routerLink="./add/tractor">
+        <button *ngIf="!card.tractorFull()" type="button" class="btn btn-warning float-right ml-1"
+                routerLink="./add/tractor">
           <span class="d-md-none">+ </span>
           <span class="d-none d-md-inline-block">Add </span>
           <i class="fas fa-tractor ml-1"></i>
@@ -147,7 +149,8 @@
 
 
       <div class="col-md-4">
-        <button type="button" class="btn btn-primary ml-1 float-right" routerLink="./add/irrigation">
+        <button *ngIf="!card.irrigationFull()" type="button" class="btn btn-primary ml-1 float-right"
+                routerLink="./add/irrigation">
           <span class="d-md-none">+ </span>
           <span class="d-none d-md-inline-block">Add </span>
           <i class="fas fa-tint ml-1"></i>
