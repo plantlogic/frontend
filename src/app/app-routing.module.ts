@@ -20,6 +20,7 @@ import {CardManagementComponent} from './card/management/card-management.compone
 import {OpenCardDataComponent} from './card/management/open/open-card-data.component';
 import {ExportCardDataComponent} from './card/management/export/export-card-data.component';
 import {AppAdminComponent} from './card/admin/app-admin.component';
+import {AddChemicalEntryComponent} from './card/entry/open/add-chemical/add-chemical-entry.component';
 
 
 const routes: Routes = [
@@ -117,6 +118,15 @@ const routes: Routes = [
   {
     path: 'entry/o/:id/add/tractor',
     component: AddTractorEntryComponent,
+    canActivate: [RoleGuard],
+    data: {
+      parent: '../../',
+      role: [PlRole.DATA_ENTRY]
+    }
+  },
+  {
+    path: 'entry/o/:id/add/chemical',
+    component: AddChemicalEntryComponent,
     canActivate: [RoleGuard],
     data: {
       parent: '../../',
