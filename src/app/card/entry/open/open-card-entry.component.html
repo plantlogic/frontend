@@ -2,7 +2,7 @@
   <h2 *ngIf="!card">Loading...</h2>
   <div *ngIf="card" >
     <div class="row justify-content-left">
-      <div class="col-md">
+      <div class="col-sm">
         <h5>
           <b>Ranch:</b>
           <i> {{card.ranchName}}</i>
@@ -12,9 +12,15 @@
           <i> {{card.lotNumber}}</i>
         </h5>
       </div>
+      <div class="col-sm">
+        <h5>
+          <b>Acres:</b>
+          <i> {{card.totalAcres}}</i>
+        </h5>
+      </div>
       <div class="col-md">
         <h5><b>Commodities:</b></h5>
-        <i> {{commodities}}</i>
+        <i> {{card.commodityString}}</i>
       </div>
     </div>
     <hr />
