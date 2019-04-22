@@ -38,85 +38,49 @@
         <div mdbCollapse #chemicalTable="bs-collapse">
           <div class="row justify-content-center mt-3">
             <div class="col-sm">
-              <div *ngIf="card.preChemicalArray && card.preChemicalArray.length > 0">
+              <div *ngIf="card.preChemicalArray && card.preChemicalArray.length > 0" class="my-2">
                 <h5>Pre-Plant</h5>
-                <table mdbTable class="table">
-                  <thead>
-                  <tr>
-                    <th scope="col" class="small">Date</th>
-                    <th scope="col" class="small">Fertilizer</th>
-                    <th scope="col" class="small">Chemical</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                    <tr mdbTableCol *ngFor="let p of card.preChemicalArray; let i = index">
-                      <td>
-                        <div>
-                          {{p.date | date:'shortDate'}}
-                        </div>
-                      </td>
-                      <td class="cap-max-form-width">
-                        <div *ngIf="p.fertilizer">
-                          {{p.fertilizer.name}}
-                          <span class="text-info">
-                            {{p.fertilizer.rate}}
-                            {{p.fertilizer.unit}}
-                          </span>
-                        </div>
-                      </td>
-                      <td class="cap-max-form-width">
-                        <div *ngIf="p.chemical">
-                          {{p.chemical.name}}
-                          <span class="text-info">
-                            {{p.chemical.rate}}
-                            {{p.chemical.unit}}
-                          </span>
-                        </div>
-                      </td>
-                      <td>
-                    </tr>
-                  </tbody>
-                </table>
+                <div class="col-sm border" *ngFor="let p of card.preChemicalArray">
+                  <b>Date:</b> {{p.date | date:'shortDate'}}
+                  <div *ngIf="p.fertilizer">
+                    <b>Fertilizer:</b>
+                    {{p.fertilizer.name}}
+                    <span class="text-info">
+                      {{p.fertilizer.rate}}
+                      {{p.fertilizer.unit}}
+                    </span>
+                  </div>
+                  <div *ngIf="p.chemical">
+                    <b>Chemical:</b>
+                    {{p.chemical.name}}
+                    <span class="text-info">
+                      {{p.chemical.rate}}
+                      {{p.chemical.unit}}
+                    </span>
+                  </div>
+                </div>
               </div>
-              <div *ngIf="card.postChemicalArray && card.postChemicalArray.length > 0">
+              <div *ngIf="card.postChemicalArray && card.postChemicalArray.length > 0" class="my-2">
                 <h5>Post-Plant</h5>
-                <table mdbTable class="table">
-                  <thead>
-                  <tr>
-                    <th scope="col" class="small">Date</th>
-                    <th scope="col" class="small">Fertilizer</th>
-                    <th scope="col" class="small">Chemical</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                    <tr mdbTableCol *ngFor="let p of card.postChemicalArray; let i = index">
-                      <td>
-                        <div>
-                          {{p.date | date:'shortDate'}}
-                        </div>
-                      </td>
-                      <td class="cap-max-form-width">
-                        <div *ngIf="p.fertilizer">
-                          {{p.fertilizer.name}}
-                          <span class="text-info">
-                            {{p.fertilizer.rate}}
-                            {{p.fertilizer.unit}}
-                          </span>
-                        </div>
-                      </td>
-                      <td class="cap-max-form-width">
-                        <div *ngIf="p.chemical">
-                          {{p.chemical.name}}
-                          <span class="text-info">
-                            {{p.chemical.rate}}
-                            {{p.chemical.unit}}
-                          </span>
-                        </div>
-                      </td>
-                      <td>
-                    </tr>
-                  </tbody>
-                </table>
+                <div class="col-sm border" *ngFor="let p of card.postChemicalArray">
+                  <b>Date:</b> {{p.date | date:'shortDate'}}
+                  <div *ngIf="p.fertilizer">
+                    <b>Fertilizer:</b>
+                    {{p.fertilizer.name}}
+                    <span class="text-info">
+                      {{p.fertilizer.rate}}
+                      {{p.fertilizer.unit}}
+                    </span>
+                  </div>
+                  <div *ngIf="p.chemical">
+                    <b>Chemical:</b>
+                    {{p.chemical.name}}
+                    <span class="text-info">
+                      {{p.chemical.rate}}
+                      {{p.chemical.unit}}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -150,20 +114,22 @@
               <b>Work Done:</b> {{p.workDone}}
               <br />
               <b>Operator:</b> {{p.operator}}
-              <br />
-              <b>Fertilizer:</b>
-              {{p.fertilizer.name}}
-              <span class="text-info">
-                            {{p.fertilizer.rate}}
-                {{p.fertilizer.unit}}
-              </span>
-              <br />
-              <b>Chemical:</b>
-              {{p.chemical.name}}
-              <span class="text-info">
-                            {{p.chemical.rate}}
-                {{p.chemical.unit}}
-              </span>
+              <div *ngIf="p.fertilizer">
+                <b>Fertilizer:</b>
+                {{p.fertilizer.name}}
+                <span class="text-info">
+                      {{p.fertilizer.rate}}
+                  {{p.fertilizer.unit}}
+                    </span>
+              </div>
+              <div *ngIf="p.chemical">
+                <b>Chemical:</b>
+                {{p.chemical.name}}
+                <span class="text-info">
+                      {{p.chemical.rate}}
+                  {{p.chemical.unit}}
+                    </span>
+              </div>
             </div>
           </div>
         </div>
@@ -192,27 +158,25 @@
         <br />
         <div mdbCollapse #irrigationTable="bs-collapse">
           <div class="row justify-content-center mt-3">
-            <div class="col-sm border">
-              <div class="row justify-content-center mt-3">
-                <div class="col-sm border" *ngFor="let p of card.irrigationArray">
-                  <b>Date:</b> {{p.workDate | date:'shortDate'}}
-                  <br />
-                  <b>Method:</b> {{p.method}}
-                  <br />
-                  <b>Fertilizer:</b>
-                  {{p.fertilizer.name}}
-                  <span class="text-info">
-                            {{p.fertilizer.rate}}
-                    {{p.fertilizer.unit}}
-              </span>
-                  <br />
-                  <b>Chemical:</b>
-                  {{p.chemical.name}}
-                  <span class="text-info">
-                            {{p.chemical.rate}}
-                    {{p.chemical.unit}}
-              </span>
-                </div>
+            <div class="col-sm border" *ngFor="let p of card.irrigationArray">
+              <b>Date:</b> {{p.workDate | date:'shortDate'}}
+              <br />
+              <b>Method:</b> {{p.method}}
+              <div *ngIf="p.fertilizer">
+                <b>Fertilizer:</b>
+                {{p.fertilizer.name}}
+                <span class="text-info">
+                  {{p.fertilizer.rate}}
+                  {{p.fertilizer.unit}}
+                </span>
+              </div>
+              <div *ngIf="p.chemical">
+                <b>Chemical:</b>
+                {{p.chemical.name}}
+                <span class="text-info">
+                  {{p.chemical.rate}}
+                  {{p.chemical.unit}}
+                </span>
               </div>
             </div>
           </div>
@@ -237,22 +201,18 @@
         <br />
         <div mdbCollapse #commodityTable="bs-collapse">
           <div class="row justify-content-center mt-3">
-            <div class="col-sm border">
-              <div class="row justify-content-center mt-3">
-                <div class="col-sm border" *ngFor="let p of card.commodityArray">
-                  <b>Commodity:</b> {{p.commodity}}
-                  <br />
-                  <b>Variety:</b> {{p.variety}}
-                  <br />
-                  <b>Bed Type:</b> {{p.bedType}}
-                  <br />
-                  <b>Bed Count:</b> {{p.bedCount}}
-                  <br />
-                  <b>Acres:</b> {{p.cropAcres}}
-                  <br />
-                  <b>Seed Lot #:</b> {{p.seedLotNumber}}
-                </div>
-              </div>
+            <div class="col-sm border" *ngFor="let p of card.commodityArray">
+              <b>Commodity:</b> {{p.commodity}}
+              <br />
+              <b>Variety:</b> {{p.variety}}
+              <br />
+              <b>Bed Type:</b> {{p.bedType}}
+              <br />
+              <b>Bed Count:</b> {{p.bedCount}}
+              <br />
+              <b>Acres:</b> {{p.cropAcres}}
+              <br />
+              <b>Seed Lot #:</b> {{p.seedLotNumber}}
             </div>
           </div>
         </div>
@@ -274,30 +234,26 @@
         <br />
         <div mdbCollapse #cardInfo="bs-collapse">
           <div class="row justify-content-center mt-3">
-            <div class="col-sm border">
-              <div class="row justify-content-center mt-3">
-                <div class="col-sm">
-                  <b>Ranch Name:</b> {{card.ranchName}}
-                  <br />
-                  <b>Ranch Manager:</b> {{card.ranchManagerName}}
-                  <br />
-                  <b>Crop Year:</b> {{card.cropYear}}
-                </div>
-                <div class="col-sm">
-                  <b>Lot #:</b> {{card.lotNumber}}
-                  <br />
-                  <b>Field ID:</b> {{card.fieldID}}
-                  <br />
-                  <b>Shipped ID:</b> {{card.shipperID}}
-                </div>
-                <div class="col-sm">
-                  <b>Wet Date:</b> {{card.wetDate | date:'shortDate'}}
-                  <br />
-                  <b>Thin Date:</b> {{card.thinDate | date:'shortDate'}}
-                  <br />
-                  <b>Hoe Date:</b> {{card.hoeDate | date:'shortDate'}}
-                </div>
-              </div>
+            <div class="col-sm">
+              <b>Ranch Name:</b> {{card.ranchName}}
+              <br />
+              <b>Ranch Manager:</b> {{card.ranchManagerName}}
+              <br />
+              <b>Crop Year:</b> {{card.cropYear}}
+            </div>
+            <div class="col-sm">
+              <b>Lot #:</b> {{card.lotNumber}}
+              <br />
+              <b>Field ID:</b> {{card.fieldID}}
+              <br />
+              <b>Shipped ID:</b> {{card.shipperID}}
+            </div>
+            <div class="col-sm">
+              <b>Wet Date:</b> {{card.wetDate | date:'shortDate'}}
+              <br />
+              <b>Thin Date:</b> {{card.thinDate | date:'shortDate'}}
+              <br />
+              <b>Hoe Date:</b> {{card.hoeDate | date:'shortDate'}}
             </div>
           </div>
         </div>
