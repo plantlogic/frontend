@@ -59,14 +59,14 @@ export class AddChemicalEntryComponent implements OnInit {
     return keys.slice(keys.length / 2);
   }
 
-  private datePickr(workDate: number): FlatpickrOptions {
+  datePickr(workDate: number): FlatpickrOptions {
     return {
       dateFormat: 'm-d-Y',
       defaultDate: new Date()
     };
   }
 
-  private newChemical(): Chemical {
+  newChemical(): Chemical {
     return new Chemical();
   }
 }
