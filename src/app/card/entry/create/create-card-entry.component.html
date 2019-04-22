@@ -1,100 +1,139 @@
 <div class="jumbotron p-3">
-  <p align="right">* required</p>
-  <form [formGroup]="form">
+  <div class="row">
+    <div class="col-md m-3">
+      <input class="form-control" type="text" placeholder="Ranch Name" [(ngModel)]="card.ranchName"
+             #ranchName="ngModel" required="required" minlength="1"
+             [class.is-invalid]="submitAttempted && ranchName.invalid" />
+      <input class="form-control" type="text" placeholder="Lot Number" [(ngModel)]="card.lotNumber" />
+    </div>
 
-      <!--Value: {{ form.value | json}}-->
 
-      <div class="form-group">
-        <label for="ranchNameInput" class="control-label">Ranch *</label>
-        <select id="ranch" class="browser-default custom-select"  formControlName="ranch" id="ranchNameInput"
-        [class.is-invalid]="this.submitAttempted && this.form.get('ranch').invalid" required>
-          <option default disabled value="Select">Select</option>
-          <option [ngValue]="ranch" *ngFor="let ranch of ranchList">{{ranch}}</option>
-        </select>
-        <div class="invalid-feedback" role="alert">Please Select a Ranch</div>
+
+
+
+    <div class="d-inline-block d-md-none w-100">
+      <hr />
+    </div>
+
+    <div class="col-md my-3">
+      <div class="mb-5 align-text-bottom">
+        <span class="float-right">
+          <span class="mr-2">{{card.commodityArray.length}}/{{card.commodityMax}}</span>
+          <button type="button" color="primary" (click)="addCommodities()" mdbBtn floating="true"
+                  *ngIf="!card.commoditiesFull()"
+                  size="lg" mdbWavesEffect><i class="fa fa-plus" aria-hidden="true"></i></button>
+        </span>
+        <h5>Commodities</h5>
       </div>
-
-      <div class="form-group">
-        <label for="lotNumberInput">Lot Number *</label>
-        <input type="text" name="lotNumberInput" class="browser-default custom-select" formControlName="lotNumber"
-        class="form-control" id="lotNumberInput" [class.is-invalid]="this.submitAttempted && this.form.get('lotNumber').invalid" required>
-        <div class="invalid-feedback" role="alert">Enter a valid lot number</div>
+      <div class="col-sm border p-2 text-right" *ngFor="let p of card.commodityArray; let i = index">
+        <div>
+          <input type="text" [(ngModel)]="p.commodity" class="form-control"
+                 placeholder="Commodity" />
+          <input type="text" [(ngModel)]="p.variety" class="form-control"
+                 placeholder="Variety" />
+          <input type="number" [(ngModel)]="p.bedType" class="form-control"
+                 placeholder="Bed Type" />
+          <input type="text" [(ngModel)]="p.bedCount" class="form-control"
+                 placeholder="Bed Count" />
+          <input type="text" [(ngModel)]="p.cropAcres" class="form-control"
+                 placeholder="Crop Acres" />
+          <input type="text" [(ngModel)]="p.seedLotNumber" class="form-control"
+                 placeholder="Seed Lot #" />
+        </div>
+        <hr />
+        <button type="button" color="danger" (click)="card.commodityArray.splice(i, 1)" size="md"
+                mdbBtn floating="true" mdbWavesEffect>Delete <i class="ml-1 fa fa-trash" aria-hidden="true"></i></button>
       </div>
+    </div>
 
-      <div class="form-group">
-        <label for="commodityInput" class="control-label">Commodity *</label>
-        <select class="browser-default custom-select" formControlName="commodity" (change)="changeCommodity($event.target.value)"
-        [class.is-invalid]="this.submitAttempted && this.form.get('commodity').invalid" id="commodityInput" required>
-          <option *ngFor ="let com of commodityList">{{com.commodity}} </option>
-        </select>
-        <div class="invalid-feedback" role="alert">Please Select a commodity</div>
+
+
+
+    <div class="d-inline-block d-md-none w-100">
+      <hr />
+    </div>
+
+    <div class="col-md my-3">
+      <div class="mb-5 align-text-bottom">
+        <span class="float-right">
+          <span class="mr-2">{{card.preChemicalArray.length}}/{{card.preChemicalsMax}}</span>
+          <button type="button" color="primary" (click)="addPreChemicals()" mdbBtn floating="true"
+                  *ngIf="!card.preChemicalsFull()"
+                  size="lg" mdbWavesEffect><i class="fa fa-plus" aria-hidden="true"></i></button>
+        </span>
+        <h5>Pre-Plant Chem</h5>
       </div>
-
-      <div class="form-group">
-        <label for="varietyInput" class="control-label">Variety</label>
-        <select class="browser-default custom-select" formControlName="variety" id="varietyInput">
-          <option *ngFor ="let v of variety">{{v}} </option>
-        </select>
+      <div class="col-sm border p-2 text-right" *ngFor="let p of card.preChemicalArray; let i = index">
+        <b>Date:</b>
+        <ng2-flatpickr placeholder="Select Date" class="w-20" [config]="datePickr(p.date)" [(ngModel)]="p.date">
+        </ng2-flatpickr>
+        <b>Chemical:</b>
+        <div>
+          <div *ngIf="!p.chemical">
+            <button type="button" color="success" (click)="p.chemical = newChemical()" mdbBtn floating="true"
+                    size="lg" mdbWavesEffect><i class="fa fa-plus mr-1" aria-hidden="true"></i></button>
+          </div>
+          <div *ngIf="p.chemical">
+            <div class="row px-2">
+              <input type="text" [(ngModel)]="p.chemical.name" class="form-control"
+                     placeholder="Fertilizer" />
+              <div class="form-inline m-0">
+                <input type="number" [(ngModel)]="p.chemical.rate" class="form-control"
+                       placeholder="Rate" />
+                <select class="form-control" [(ngModel)]="p.chemical.unit" >
+                  <option *ngFor="let r of rateUnits">{{r}}</option>
+                </select>
+                <button type="button" color="warning" (click)="p.chemical = undefined" mdbBtn
+                        floating="true" size="md" mdbWavesEffect>
+                  <i class="fa fa-times" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <b>Fertilizer:</b>
+        <div>
+          <div *ngIf="!p.fertilizer">
+            <button type="button" color="success" (click)="p.fertilizer = newChemical()" mdbBtn floating="true"
+                    size="lg" mdbWavesEffect><i class="fa fa-plus mr-1" aria-hidden="true"></i></button>
+          </div>
+          <div *ngIf="p.fertilizer">
+            <div class="row px-2">
+              <input type="text" [(ngModel)]="p.fertilizer.name" class="form-control"
+                     placeholder="Fertilizer" />
+              <div class="form-inline m-0">
+                <input type="number" [(ngModel)]="p.fertilizer.rate" class="form-control"
+                       placeholder="Rate" />
+                <select class="form-control" [(ngModel)]="p.fertilizer.unit" >
+                  <option *ngFor="let r of rateUnits">{{r}}</option>
+                </select>
+                <button type="button" color="warning" (click)="p.fertilizer = undefined" mdbBtn
+                        floating="true" mdbWavesEffect size="md">
+                  <i class="fa fa-times" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr />
+        <button type="button" color="danger" (click)="card.preChemicalArray.splice(i, 1)" size="md"
+                mdbBtn floating="true" mdbWavesEffect>Delete <i class="ml-1 fa fa-trash" aria-hidden="true"></i></button>
       </div>
+    </div>
 
-      <div class="form-group">
-        <label for="cropAcresInput">Crop Acre Size</label>
-        <input id="cropAcres" type="number" name="cropAcres" formControlName="cropAcres" class="form-control"
-        [class.is-invalid]="this.submitAttempted && this.form.get('cropAcres').invalid " min="0"
-        id="cropAcresInput">
-        <div class="invalid-feedback" role="alert">Enter a valid acre size</div>
-      </div>
 
-      <div class="form-group">
-          <label>Seed Lot Number</label>
-          <input type="number" name="seedLotNumber" formControlName="seedLotNumber" class="form-control"
-          [class.is-invalid]="this.submitAttempted && this.form.get('seedLotNumber').invalid" min="0">
-          <div class="invalid-feedback" role="alert">Enter a valid number</div>
-      </div>
+    <div class="d-inline-block d-md-none w-100">
+      <hr />
+    </div>
 
-      <div class="form-group">
-        <label>Bed Count</label>
-        <input type="number" name="bedCount" formControlName="bedCount" class="form-control"
-        [class.is-invalid]="this.submitAttempted && this.form.get('bedCount').invalid" min="0">
-        <div class="invalid-feedback" role="alert">Enter a valid number</div>
-      </div>
 
-      <div class="form-group">
-          <label for="bedTypeInput" class="control-label">Bed Type</label>
-          <select class="browser-default custom-select" formControlName="bedType"
-          [class.is-invalid]="this.submitAttempted && this.form.get('bedType').invalid" id="bedTypeInput">
-          <option selected value='0'>Select</option>
-          <option>40</option>
-          <option>80</option>
-        </select>
-        <div class="invalid-feedback" role="alert">Please Select a valid bed type.</div>
-      </div>
+    <div class="col-md m-3">
+      <input class="form-control" type="number" placeholder="Crop Year" [(ngModel)]="card.cropYear"
+             [min]="1000" [max]="9999" #cropYear="ngModel"
+             [class.is-invalid]="submitAttempted && (card.cropYear < 1000 || card.cropYear > 9999)" />
+    </div>
+  </div>
 
-      <div class="form-group">
-          <label for="pmInput" class="control-label">Prep Material</label>
-            <select class="browser-default custom-select" formControlName="prepMaterial"
-            [class.is-invalid]="this.submitAttempted && this.form.get('prepMaterial').invalid" id="pmInput">
-              <option default value="Select">Select</option>
-              <option *ngFor ="let pm of prepMaterial"  [ngValue]="pm">{{pm}} </option>
-            </select>
-          <div class="invalid-feedback" role="alert">Please Select a Prep Material</div>
-      </div>
 
-      <div class="form-group">
-        <label for="pmRateInput">Prep Material Rate (in gallons)</label>
-        <input id="pmRateInput" type="number" name="pmRateInput" formControlName="prepMaterialRate" class="form-control"
-        [class.is-invalid]="this.submitAttempted && this.form.get('pmRateInput').invalid" min="0"
-        id="pmRateInput">
-        <div class="invalid-feedback" role="alert">Enter a valid rate.</div>
-      </div>
-
-      <div class="form-group">
-        <label for="cropYearInput" class="control-label">Crop Year *</label>
-        <input type="number" name="cropYear" formControlName="cropYear" class="form-control" id="cropYearInput"
-        [class.is-invalid]="this.submitAttempted && this.form.get('cropYear').invalid" required min="0">
-        <div class="invalid-feedback" role="alert">Please Enter a Year</div>
-      </div>
-
-      <button  mdbBtn color="primary" (click)="submit()">Create</button>
-  </form>
+  <button mdbBtn type="submit" color="primary" (click)="submit()">Create</button>
 </div>

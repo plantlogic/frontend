@@ -1,12 +1,16 @@
 import { CardEntryService } from './../../../_api/card-entry.service';
-import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
+import {FormGroup, FormBuilder, Validators, FormControl, NgModel} from '@angular/forms';
 import { TitleService } from '../../../_interact/title.service';
 import { AlertService } from '../../../_interact/alert/alert.service';
-import { Component, OnInit, EventEmitter } from '@angular/core';
+import {Component, OnInit, EventEmitter, ViewChild} from '@angular/core';
 import {Alert} from '../../../_interact/alert/alert';
 import { Card } from '../../../_dto/card/card';
 import { AuthService } from 'src/app/_auth/auth.service';
 import {NavService} from '../../../_interact/nav.service';
+import {Chemicals} from '../../../_dto/card/chemicals';
+import {Commodities} from '../../../_dto/card/commodities';
+import {FlatpickrOptions} from 'ng2-flatpickr';
+import {Chemical, ChemicalUnit} from '../../../_dto/card/chemical';
 
 @Component({
   selector: 'app-create-card',
@@ -17,77 +21,62 @@ export class CreateCardEntryComponent implements OnInit {
   constructor(private titleService: TitleService, private fb: FormBuilder,
               private cardEntryService: CardEntryService, private auth: AuthService, private nav: NavService) { }
 
-  form: FormGroup;
-  newCard: Card = new Card();
+  @ViewChild('ranchName') public ranchName: NgModel;
+  @ViewChild('cropYear') public cropYear: NgModel;
+  card: Card = new Card();
   submitAttempted = false;
-  ranchList: Array<any> = [ 'Ranch1', 'Ranch2'];
-  commodityList: Array<any> = [ { commodity: 'Select' },
-  { commodity: 'Lettuce', variety: ['Select', 'Lettuce v1', 'Lettuce v2'] },
-  { commodity: 'Strawberry', variety: ['Select', 'Strawberry v1', 'Strawberry v2'] },
-  { commodity: 'Broccoli', variety: ['Select', 'Broccoli v1', ' Broccoli v2', 'Broccoli v3'] },
-  { commodity: 'Tomato', variety: ['Select', 'Tomato v1', 'Tomato v2', 'Tomato v3'] },
-  ];
-
-  variety: Array<any>;
-  prepMaterial: Array<any> = ['Lorsban', 'Diaznon', 'Kerb', 'Dacthal'];
-
-  time = new Date();
-
-  changeCommodity(count) {
-    this.variety = this.commodityList.find(con => con.commodity === count).variety;
-  }
+  rateUnits: Array<string>;
 
   ngOnInit() {
     this.titleService.setTitle('Create Card');
-    this.form = this.fb.group({
-      ranch: ['', [ Validators.required, Validators.minLength(1)]],
-      lotNumber: ['', [ Validators.required, Validators.minLength(1)]],
-      cropAcres: ['', [ Validators.min(0), Validators.max(100)]],
-      cropYear: [this.time.getFullYear(), [ Validators.required, Validators.min(0), Validators.max(9999)]],
-      commodity: ['', [ Validators.required, Validators.min(1)]],
-      variety: ['', [ Validators.required]],
-      seedLotNumber: ['', [ Validators.min(1)]],
-      bedType: ['', [ Validators.min(0), Validators.max(80)]],
-      bedCount: ['', [ Validators.min(0), Validators.max(100)]],
-      prepMaterial: ['', [ Validators.min(1)]],
-      prepMaterialRate: ['', [ Validators.min(0.1), Validators.max(100)]]
-    });
-    this.form.valueChanges.subscribe(console.log);
+    this.card.ranchManagerName = this.auth.getName();
+    this.rateUnits = this.initRateUnits();
   }
 
   submit() {
-    if ( this.form.invalid) {
-        this.submitAttempted = true;
+    if (this.ranchName.invalid || this.cropYear.invalid) {
+      this.submitAttempted = true;
+      AlertService.newBasicAlert('There are some invalid fields - please fix and try again.', true);
     } else {
       this.submitAttempted = false;
-      this.newCard.ranchManagerName = this.auth.getName();
-      this.newCard.ranchName = this.form.get('ranch').value;
-      this.newCard.cropYear = this.form.get('cropYear').value;
-      this.newCard.commodity.push(this.form.get('commodity').value);
-      this.newCard.variety.push(this.form.get('variety').value);
-      this.newCard.seedLotNumber.push(this.form.get('seedLotNumber').value);
-      this.newCard.bedCount.push(this.form.get('bedCount').value);
-      this.newCard.cropAcres.push(this.form.get('cropAcres').value);
-      this.newCard.lotNumber = this.form.get('lotNumber').value;
-      this.newCard.bedType = this.form.get('bedType').value;
-      /*
-      -------Need to add the following to card model-----
-      this.newCard.prepMaterial = this.form.get('prepMaterial').value;
-      this.newCard.prepMaterialRate = this.form.get('prepMaterialRate').value
-      */
-      this.cardEntryService.createCard(this.newCard).subscribe(
+      this.cardEntryService.createCard(this.card).subscribe(
         data => {
           if (data.success) {
-            AlertService.newBasicAlert('Success!', false);
+            AlertService.newBasicAlert('Card saved successfully!', false);
             this.nav.goBack();
           } else if (!data.success) {
             AlertService.newBasicAlert('Error: ' + data.error, true);
           }
         },
         failure => {
-          AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again', true);
+          AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
         }
       );
     }
+  }
+
+
+  private addCommodities(): void {
+    this.card.commodityArray.push(new Commodities());
+  }
+
+  private addPreChemicals(): void {
+    this.card.preChemicalArray.push(new Chemicals());
+  }
+
+  private datePickr(workDate: number): FlatpickrOptions {
+    return {
+      dateFormat: 'm-d-Y',
+      defaultDate: new Date()
+    };
+  }
+
+  private newChemical(): Chemical {
+    return new Chemical();
+  }
+
+  initRateUnits(): Array<string> {
+    const keys = Object.keys(ChemicalUnit);
+    return keys.slice(keys.length / 2);
   }
 }
