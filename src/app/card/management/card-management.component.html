@@ -52,7 +52,7 @@
               <td>{{p.fieldID}}</td>
               <td>{{p.ranchName}}</td>
               <td>{{p.lotNumber}}</td>
-              <td>{{prettifyCommodities(p.commodityArray)}}</td>
+              <td>{{p.commodityString}}</td>
               <td>{{p.lastUpdated | date:'longDate'}}</td>
               <td>
                 <h5 *ngIf="p.closed">

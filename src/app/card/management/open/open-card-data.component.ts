@@ -32,7 +32,6 @@ export class OpenCardDataComponent implements OnInit {
   editable: boolean;
   editing = false;
   rateUnits: Array<string>;
-  totalAcres: number;
 
   @ViewChild('ranchName') public ranchName: NgModel;
   @ViewChild('cropYear') public cropYear: NgModel;
@@ -78,7 +77,7 @@ export class OpenCardDataComponent implements OnInit {
               this.wetDatePickr.defaultDate = new Date(this.card.wetDate);
             }
 
-            this.totalAcres = this.card.commodityArray.map(v => v.cropAcres).reduce((v, a) => v + a);
+            this.card.initTotalAcres();
           } else if (!data.success) {
             AlertService.newBasicAlert('Error: ' + data.error, true);
             this.nav.goBack();

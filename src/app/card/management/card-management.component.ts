@@ -33,6 +33,7 @@ export class CardManagementComponent implements OnInit {
       data => {
         if (data.success) {
           this.cards = data.data.map(c => (new Card()).copyConstructor(c));
+          this.cards.forEach(c => c.initCommodityString());
           this.tableService.setDataSource(this.cards);
           this.cards = this.tableService.getDataSource();
           this.previous = this.tableService.getDataSource();
@@ -58,15 +59,6 @@ export class CardManagementComponent implements OnInit {
       this.filter.toLowerCase();
       this.cards = this.tableService.searchLocalDataBy(this.filter.toLowerCase());
       this.tableService.setDataSource(prev);
-    }
-  }
-
-
-  public prettifyCommodities(arr: Array<Commodities>): string {
-    if (arr) {
-      return arr.map(v => v.commodity).join(', ');
-    } else {
-      return '';
     }
   }
 

@@ -62,7 +62,12 @@ export class Card {
   cropYear: number = new Date().getFullYear();
 
 
-
+  // =======================
+  // Cached Helper Values
+  // =======================
+  // These have to be set using the init() methods
+  commodityString: string;
+  totalAcres: number;
 
 
 
@@ -211,5 +216,21 @@ export class Card {
 
   postChemicalsFull(): boolean {
     return this.postChemicals.length >= this.postChemicalsMax;
+  }
+
+  initCommodityString(): void {
+    if (this.commodityArray) {
+      this.commodityString = this.commodityArray.map(v => v.commodity).join(', ');
+    } else {
+      this.commodityString = '';
+    }
+  }
+
+  initTotalAcres(): void {
+    if (this.commodityArray) {
+      this.totalAcres = this.commodityArray.map(v => v.cropAcres).reduce((v, a) => v + a);
+    } else {
+      this.totalAcres = 0;
+    }
   }
 }

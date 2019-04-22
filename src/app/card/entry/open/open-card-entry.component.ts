@@ -19,7 +19,6 @@ export class OpenCardEntryComponent implements OnInit {
               private nav: NavService, private route: ActivatedRoute) { }
 
   card: Card;
-  commodities: string;
 
   ngOnInit() {
     this.titleService.setTitle('View Card');
@@ -31,9 +30,8 @@ export class OpenCardEntryComponent implements OnInit {
       data => {
         if (data.success) {
           this.card = (new Card()).copyConstructor(data.data);
-          if (this.card.commodityArray) {
-            this.commodities = this.card.commodityArray.map(v => v.commodity).join(', ');
-          }
+          this.card.initCommodityString();
+          this.card.initTotalAcres();
         } else if (!data.success) {
           AlertService.newBasicAlert('Error: ' + data.error, true);
           this.nav.goBack();

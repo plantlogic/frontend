@@ -1,8 +1,8 @@
 <div class="jumbotron p-3">
   <h2 *ngIf="!card">Loading...</h2>
   <div *ngIf="card" >
-    <div class="row justify-content-right">
-      <div class="col-md">
+    <div class="row justify-content-left">
+      <div class="col-sm">
         <h5>
           <b>Ranch:</b>
           <i> {{card.ranchName}}</i>
@@ -11,75 +11,299 @@
           <b>Lot #:</b>
           <i> {{card.lotNumber}}</i>
         </h5>
+      </div>
+      <div class="col-sm">
+        <h5>
+          <b>Acres:</b>
+          <i> {{card.totalAcres}}</i>
+        </h5>
+      </div>
+      <div class="col-md">
         <h5><b>Commodities:</b></h5>
-        <i> {{commodities}}</i>
+        <i> {{card.commodityString}}</i>
       </div>
-      <div class="d-inline-block d-md-none w-100">
-        <hr />
-      </div>
-      <div class="col-xs">
+    </div>
+    <hr />
+    <div class="row">
+      <div class="col-md">
         <button type="button" class="btn btn-success float-right ml-1" routerLink="./add/chemical">
           <span class="d-md-none">+ </span>
           <span class="d-none d-md-inline-block">Add </span>
           <i class="fas fa-angle-double-right ml-1"></i>
         </button>
+        <a (click)="chemicalTable.toggle()" class="text-primary">
+          <h4><i class="fas fa-caret-down mr-1"></i> Applied</h4>
+        </a>
+        <br />
+        <div mdbCollapse #chemicalTable="bs-collapse">
+          <div class="row justify-content-center mt-3">
+            <div class="col-sm">
+              <div *ngIf="card.preChemicalArray && card.preChemicalArray.length > 0">
+                <h5>Pre-Plant</h5>
+                <table mdbTable class="table">
+                  <thead>
+                  <tr>
+                    <th scope="col" class="small">Date</th>
+                    <th scope="col" class="small">Fertilizer</th>
+                    <th scope="col" class="small">Chemical</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                    <tr mdbTableCol *ngFor="let p of card.preChemicalArray; let i = index">
+                      <td>
+                        <div>
+                          {{p.date | date:'shortDate'}}
+                        </div>
+                      </td>
+                      <td class="cap-max-form-width">
+                        <div *ngIf="p.fertilizer">
+                          {{p.fertilizer.name}}
+                          <span class="text-info">
+                            {{p.fertilizer.rate}}
+                            {{p.fertilizer.unit}}
+                          </span>
+                        </div>
+                      </td>
+                      <td class="cap-max-form-width">
+                        <div *ngIf="p.chemical">
+                          {{p.chemical.name}}
+                          <span class="text-info">
+                            {{p.chemical.rate}}
+                            {{p.chemical.unit}}
+                          </span>
+                        </div>
+                      </td>
+                      <td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div *ngIf="card.postChemicalArray && card.postChemicalArray.length > 0">
+                <h5>Post-Plant</h5>
+                <table mdbTable class="table">
+                  <thead>
+                  <tr>
+                    <th scope="col" class="small">Date</th>
+                    <th scope="col" class="small">Fertilizer</th>
+                    <th scope="col" class="small">Chemical</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                    <tr mdbTableCol *ngFor="let p of card.postChemicalArray; let i = index">
+                      <td>
+                        <div>
+                          {{p.date | date:'shortDate'}}
+                        </div>
+                      </td>
+                      <td class="cap-max-form-width">
+                        <div *ngIf="p.fertilizer">
+                          {{p.fertilizer.name}}
+                          <span class="text-info">
+                            {{p.fertilizer.rate}}
+                            {{p.fertilizer.unit}}
+                          </span>
+                        </div>
+                      </td>
+                      <td class="cap-max-form-width">
+                        <div *ngIf="p.chemical">
+                          {{p.chemical.name}}
+                          <span class="text-info">
+                            {{p.chemical.rate}}
+                            {{p.chemical.unit}}
+                          </span>
+                        </div>
+                      </td>
+                      <td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="d-inline-block d-md-none w-100">
+        <hr />
+      </div>
+
+
+
+
+      <div class="col-md">
         <button type="button" class="btn btn-warning float-right ml-1" routerLink="./add/tractor">
           <span class="d-md-none">+ </span>
           <span class="d-none d-md-inline-block">Add </span>
           <i class="fas fa-tractor ml-1"></i>
         </button>
+        <a (click)="tractorTable.toggle()" class="text-primary">
+          <h4><i class="fas fa-caret-down mr-1"></i> Tractor</h4>
+        </a>
+        <br />
+        <div mdbCollapse #tractorTable="bs-collapse">
+          <div class="row justify-content-center mt-3">
+            <div class="col-sm border" *ngFor="let p of card.tractorArray">
+              <b>Date:</b> {{p.workDate | date:'shortDate'}}
+              <br />
+              <b>Work Done:</b> {{p.workDone}}
+              <br />
+              <b>Operator:</b> {{p.operator}}
+              <br />
+              <b>Fertilizer:</b>
+              {{p.fertilizer.name}}
+              <span class="text-info">
+                            {{p.fertilizer.rate}}
+                {{p.fertilizer.unit}}
+              </span>
+              <br />
+              <b>Chemical:</b>
+              {{p.chemical.name}}
+              <span class="text-info">
+                            {{p.chemical.rate}}
+                {{p.chemical.unit}}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+      <div class="d-inline-block d-md-none w-100">
+        <hr />
+      </div>
+
+
+
+
+
+      <div class="col-md">
         <button type="button" class="btn btn-primary ml-1 float-right" routerLink="./add/irrigation">
           <span class="d-md-none">+ </span>
           <span class="d-none d-md-inline-block">Add </span>
           <i class="fas fa-tint ml-1"></i>
         </button>
+        <a (click)="irrigationTable.toggle()" class="text-primary">
+          <h4><i class="fas fa-caret-down mr-1"></i> Irrigation</h4>
+        </a>
+        <br />
+        <div mdbCollapse #irrigationTable="bs-collapse">
+          <div class="row justify-content-center mt-3">
+            <div class="col-sm border">
+              <div class="row justify-content-center mt-3">
+                <div class="col-sm border" *ngFor="let p of card.irrigationArray">
+                  <b>Date:</b> {{p.workDate | date:'shortDate'}}
+                  <br />
+                  <b>Method:</b> {{p.method}}
+                  <br />
+                  <b>Fertilizer:</b>
+                  {{p.fertilizer.name}}
+                  <span class="text-info">
+                            {{p.fertilizer.rate}}
+                    {{p.fertilizer.unit}}
+              </span>
+                  <br />
+                  <b>Chemical:</b>
+                  {{p.chemical.name}}
+                  <span class="text-info">
+                            {{p.chemical.rate}}
+                    {{p.chemical.unit}}
+              </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+
+
+
+
+      <div class="d-inline-block d-md-none w-100">
+        <hr />
+      </div>
+
+
+
+
+
       <div class="col-md">
-        <button mdbBtn color="light" class="waves-light float-right" type="button" (click)="info.toggle()" mdbWavesEffect>
-          More Info <i class="fas fa-caret-down ml-1"></i>
-        </button>
-      </div>
-    </div>
-    <div mdbCollapse #info="bs-collapse">
-      <div class="row justify-content-center mt-3">
-        <div class="col-sm border">
-          <i class="far fa-circle fa-xs mr-2"></i>
-          <b>Ranch Name:</b>
-          <i> {{card.ranchName}}</i>
-          <br />
-          <i class="far fa-circle fa-xs mr-2"></i>
-          <b>Field ID:</b>
-          <i> {{card.fieldID}}</i>
-          <br />
-          <i class="far fa-circle fa-xs mr-2"></i>
-          <b>Ranch Manager:</b>
-          <i> {{card.ranchManagerName}}</i>
-          <br />
-          <i class="far fa-circle fa-xs mr-2"></i>
-          <b>Lot #:</b>
-          <i> {{card.lotNumber}}</i>
-        </div>
-        <div class="col-sm border">
-
-        </div>
-        <div class="col-sm border">
-
-        </div>
-        <div class="col-sm border">
-          <i class="far fa-circle fa-xs mr-2"></i>
-          <b>Wet Date:</b>
-          <i> {{card.wetDate | date:'shortDate'}}</i>
-          <br />
-          <i class="far fa-circle fa-xs mr-2"></i>
-          <b>Thin Date:</b>
-          <i> {{card.thinDate | date:'shortDate'}}</i>
-          <br />
-          <i class="far fa-circle fa-xs mr-2"></i>
-          <b>Hoe Date:</b>
-          <i> {{card.hoeDate | date:'shortDate'}}</i>
+        <a (click)="commodityTable.toggle()" class="text-primary">
+          <h4><i class="fas fa-caret-down mr-1"></i> Commodities</h4>
+        </a>
+        <br />
+        <div mdbCollapse #commodityTable="bs-collapse">
+          <div class="row justify-content-center mt-3">
+            <div class="col-sm border">
+              <div class="row justify-content-center mt-3">
+                <div class="col-sm border" *ngFor="let p of card.commodityArray">
+                  <b>Commodity:</b> {{p.commodity}}
+                  <br />
+                  <b>Variety:</b> {{p.variety}}
+                  <br />
+                  <b>Bed Type:</b> {{p.bedType}}
+                  <br />
+                  <b>Bed Count:</b> {{p.bedCount}}
+                  <br />
+                  <b>Acres:</b> {{p.cropAcres}}
+                  <br />
+                  <b>Seed Lot #:</b> {{p.seedLotNumber}}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+
+
+      <div class="d-inline-block d-md-none w-100">
+        <hr />
+      </div>
+
+
+
+
+
+      <div class="col-md">
+        <a (click)="cardInfo.toggle()" class="text-primary">
+          <h4><i class="fas fa-caret-down mr-1"></i> More Info</h4>
+        </a>
+        <br />
+        <div mdbCollapse #cardInfo="bs-collapse">
+          <div class="row justify-content-center mt-3">
+            <div class="col-sm border">
+              <div class="row justify-content-center mt-3">
+                <div class="col-sm">
+                  <b>Ranch Name:</b> {{card.ranchName}}
+                  <br />
+                  <b>Ranch Manager:</b> {{card.ranchManagerName}}
+                  <br />
+                  <b>Crop Year:</b> {{card.cropYear}}
+                </div>
+                <div class="col-sm">
+                  <b>Lot #:</b> {{card.lotNumber}}
+                  <br />
+                  <b>Field ID:</b> {{card.fieldID}}
+                  <br />
+                  <b>Shipped ID:</b> {{card.shipperID}}
+                </div>
+                <div class="col-sm">
+                  <b>Wet Date:</b> {{card.wetDate | date:'shortDate'}}
+                  <br />
+                  <b>Thin Date:</b> {{card.thinDate | date:'shortDate'}}
+                  <br />
+                  <b>Hoe Date:</b> {{card.hoeDate | date:'shortDate'}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
   </div>
 </div>
 
