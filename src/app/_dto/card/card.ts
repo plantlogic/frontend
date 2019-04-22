@@ -62,7 +62,10 @@ export class Card {
   cropYear: number = new Date().getFullYear();
 
 
-
+  // =======================
+  // Cached Helper Values
+  // =======================
+  commodityString: string;
 
 
 
@@ -211,5 +214,11 @@ export class Card {
 
   postChemicalsFull(): boolean {
     return this.postChemicals.length >= this.postChemicalsMax;
+  }
+
+  initCommodityString(): void {
+    if (this.commodityArray) {
+      this.commodityString = this.commodityArray.map(v => v.commodity).join(', ');
+    }
   }
 }

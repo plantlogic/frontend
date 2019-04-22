@@ -30,7 +30,8 @@ export class EntryDashboardComponent implements OnInit {
     this.cardService.getMyCards().subscribe(
       data => {
         if (data.success) {
-          this.cards = data.data;
+          this.cards = data.data.map(c => (new Card()).copyConstructor(c));
+          this.cards.forEach(c => c.initCommodityString());
           this.tableService.setDataSource(this.cards);
           this.cards = this.tableService.getDataSource();
           this.previous = this.tableService.getDataSource();
