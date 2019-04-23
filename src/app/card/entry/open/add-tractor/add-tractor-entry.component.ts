@@ -7,6 +7,7 @@ import { CardEntryService } from 'src/app/_api/card-entry.service';
 import { AlertService } from 'src/app/_interact/alert/alert.service';
 import {FlatpickrOptions} from 'ng2-flatpickr';
 import {NavService} from '../../../../_interact/nav.service';
+import { Chemical, ChemicalUnit } from 'src/app/_dto/card/chemical';
 
 @Component({
   selector: 'app-add-tractor',
@@ -21,18 +22,27 @@ export class AddTractorEntryComponent implements OnInit {
   tractorEntryForm: FormGroup;
   submitAttempted = false;
   fertilizer: Array<any> = ['Lorsban', 'Diaznon', 'Kerb', 'Dacthal'];
+  chemical: Array<any> = ['chem1', 'chem2'];
   tractorEntery: TractorEntry = new TractorEntry();
+  chemEntry: Chemical = new Chemical();
+  ferEntry: Chemical = new Chemical();
   cardId: string;
+  rateUnits: Array<string>;
 
   ngOnInit() {
     this.titleService.setTitle('Tractor');
+    this.rateUnits = this.initRateUnits();
     this.tractorEntryForm = this.fb.group({
       workDate: [Date.now(), [ Validators.required] ],
       workDone: ['', [ Validators.required, Validators.minLength(1)]],
       operator: ['', [ Validators.required, Validators.minLength(1)]],
-      fertilizer: ['', [ Validators.required]],
-      gallons: ['', [ Validators.required, Validators.min(0.1), Validators.max(999.9)]]
-    });
+      fertilizerName: ['', []],
+      fertilizerRate: ['', []],
+      fertilizerUnit: ['', []],
+      chemicalName: ['', []],
+      chemicalRate: ['', []],
+      chemicalUnit: ['', []]
+      });
     this.route.params.subscribe(data => this.cardId = data.id);
     this.tractorEntryForm.valueChanges.subscribe(console.log);
     console.log(this.cardId);
@@ -42,17 +52,30 @@ export class AddTractorEntryComponent implements OnInit {
     if ( this.tractorEntryForm.get('workDate').invalid ||
         this.tractorEntryForm.get('workDone').invalid ||
         this.tractorEntryForm.get('operator').invalid ||
-        this.tractorEntryForm.get('fertilizer').invalid ||
-        this.tractorEntryForm.get('gallons').invalid) {
+        this.tractorEntryForm.get('fertilizerName').invalid ||
+        this.tractorEntryForm.get('fertilizerRate').invalid ||
+        this.tractorEntryForm.get('fertilizerUnit').invalid ||
+        this.tractorEntryForm.get('chemicalName').invalid ||
+        this.tractorEntryForm.get('chemicalRate').invalid ||
+        this.tractorEntryForm.get('chemicalUnit').invalid) {
         this.submitAttempted = true;
     } else {
       this.submitAttempted = false;
       console.log('success');
-      this.tractorEntery.fertilizer = this.tractorEntryForm.get('fertilizer').value;
-      this.tractorEntery.gallons = this.tractorEntryForm.get('gallons').value;
-      this.tractorEntery.workDone = this.tractorEntryForm.get('workDone').value;
       this.tractorEntery.workDate = (new Date(this.tractorEntryForm.get('workDate').value)).valueOf();
+      this.tractorEntery.workDone = this.tractorEntryForm.get('workDone').value;
       this.tractorEntery.operator = this.tractorEntryForm.get('operator').value;
+
+      this.chemEntry.name = this.tractorEntryForm.get('chemicalName').value;
+      this.chemEntry.rate = this.tractorEntryForm.get('chemicalRate').value;
+      this.chemEntry.unit = this.tractorEntryForm.get('chemicalUnit').value;
+
+      this.ferEntry.name = this.tractorEntryForm.get('fertilizerName').value;
+      this.ferEntry.rate = this.tractorEntryForm.get('fertilizerRate').value;
+      this.ferEntry.unit = this.tractorEntryForm.get('fertilizerUnit').value;
+
+      this.tractorEntery.chemical = this.chemEntry;
+      this.tractorEntery.fertilizer = this.ferEntry;
 
       this.cardEntryService.addTractorData(this.cardId, this.tractorEntery).subscribe(
         data => {
@@ -68,6 +91,11 @@ export class AddTractorEntryComponent implements OnInit {
         }
       );
     }
+  }
+
+  initRateUnits(): Array<string> {
+    const keys = Object.keys(ChemicalUnit);
+    return keys.slice(keys.length / 2);
   }
 
 }
