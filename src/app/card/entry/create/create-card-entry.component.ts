@@ -21,7 +21,7 @@ import {CommonFormDataService} from '../../../_api/common-form-data.service';
 export class CreateCardEntryComponent implements OnInit {
   constructor(private titleService: TitleService, private fb: FormBuilder,
               private cardEntryService: CardEntryService, private auth: AuthService, private nav: NavService,
-              private common: CommonFormDataService) { }
+              public common: CommonFormDataService) { }
 
   @ViewChild('ranchName') public ranchName: NgModel;
   @ViewChild('cropYear') public cropYear: NgModel;

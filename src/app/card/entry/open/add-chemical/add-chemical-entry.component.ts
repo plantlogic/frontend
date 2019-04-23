@@ -20,7 +20,7 @@ export class AddChemicalEntryComponent implements OnInit {
 
   constructor(private titleService: TitleService, private fb: FormBuilder, private route: ActivatedRoute,
               private cardEntryService: CardEntryService, private auth: AuthService, private nav: NavService,
-              private common: CommonFormDataService) { }
+              public common: CommonFormDataService) { }
 
   chem: Chemicals = new Chemicals();
   submitAttempted = false;
