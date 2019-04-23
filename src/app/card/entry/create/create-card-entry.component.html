@@ -42,8 +42,8 @@
             <option [value]="undefined" disabled selected>Bed Count</option>
             <option *ngFor="let r of common.getValues('bedCounts')">{{r}}</option>
           </select>
-          <input type="text" [(ngModel)]="p.cropAcres" class="form-control"
-                 placeholder="Crop Acres" />
+          <input type="number" [(ngModel)]="p.cropAcres" class="form-control"
+                 placeholder="Crop Acres" pattern="\d+(\.\d+)?" />
           <input type="text" [(ngModel)]="p.seedLotNumber" class="form-control"
                  placeholder="Seed Lot #" />
         </div>
@@ -88,7 +88,7 @@
               </select>
               <div class="form-inline m-0">
                 <input type="number" [(ngModel)]="p.chemical.rate" class="form-control"
-                       placeholder="Rate" />
+                       placeholder="Rate" pattern="\d+(\.\d+)?" />
                 <select class="form-control" [(ngModel)]="p.chemical.unit" >
                   <option *ngFor="let r of rateUnits">{{r}}</option>
                 </select>
@@ -114,7 +114,7 @@
               </select>
               <div class="form-inline m-0">
                 <input type="number" [(ngModel)]="p.fertilizer.rate" class="form-control"
-                       placeholder="Rate" />
+                       placeholder="Rate" pattern="\d+(\.\d+)?" />
                 <select class="form-control" [(ngModel)]="p.fertilizer.unit" >
                   <option *ngFor="let r of rateUnits">{{r}}</option>
                 </select>
@@ -140,7 +140,7 @@
 
     <div class="col-md m-3">
       <input class="form-control" type="number" placeholder="Crop Year" [(ngModel)]="card.cropYear"
-             [min]="1000" [max]="9999" #cropYear="ngModel"
+             [min]="1000" [max]="9999" #cropYear="ngModel" pattern="\d*"
              [class.is-invalid]="submitAttempted && (card.cropYear < 1000 || card.cropYear > 9999)" />
     </div>
   </div>

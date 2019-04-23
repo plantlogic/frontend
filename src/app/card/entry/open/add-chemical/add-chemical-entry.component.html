@@ -19,7 +19,7 @@
               <option *ngFor="let r of common.getValues('chemicals')">{{r}}</option>
             </select>
             <div class="form-inline m-0">
-              <input type="number" [(ngModel)]="chem.chemical.rate" class="form-control"
+              <input type="number" [(ngModel)]="chem.chemical.rate" class="form-control" pattern="\d+(\.\d+)?"
                      placeholder="Rate" />
               <select class="form-control" [(ngModel)]="chem.chemical.unit" >
                 <option *ngFor="let r of rateUnits">{{r}}</option>
@@ -47,7 +47,7 @@
               <option *ngFor="let r of common.getValues('fertilizers')">{{r}}</option>
             </select>
             <div class="form-inline m-0">
-              <input type="number" [(ngModel)]="chem.fertilizer.rate" class="form-control"
+              <input type="number" [(ngModel)]="chem.fertilizer.rate" class="form-control" pattern="\d+(\.\d+)?"
                      placeholder="Rate" />
               <select class="form-control" [(ngModel)]="chem.fertilizer.unit" >
                 <option *ngFor="let r of rateUnits">{{r}}</option>
