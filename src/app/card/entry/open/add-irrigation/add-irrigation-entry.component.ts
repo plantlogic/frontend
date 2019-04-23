@@ -49,7 +49,7 @@ export class AddIrrigationEntryComponent implements OnInit {
       this.submitAttempted = false;
       console.log('success');
       this.irrigationEntry.fertilizer = this.irrigationEntryForm.get('fertilizer').value;
-      this.irrigationEntry.gallons = this.irrigationEntryForm.get('gallons').value;
+      // this.irrigationEntry.gallons = this.irrigationEntryForm.get('gallons').value;
       this.irrigationEntry.method = this.irrigationEntryForm.get('method').value;
       this.irrigationEntry.workDate = (new Date(this.irrigationEntryForm.get('workDate').value)).valueOf();
 
