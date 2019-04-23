@@ -9,6 +9,7 @@ import {Chemicals} from '../../../../_dto/card/chemicals';
 import {Chemical, ChemicalUnit} from '../../../../_dto/card/chemical';
 import {FlatpickrOptions} from 'ng2-flatpickr';
 import {ActivatedRoute} from '@angular/router';
+import {CommonFormDataService} from '../../../../_api/common-form-data.service';
 
 @Component({
   selector: 'app-add-chemical',
@@ -18,7 +19,8 @@ import {ActivatedRoute} from '@angular/router';
 export class AddChemicalEntryComponent implements OnInit {
 
   constructor(private titleService: TitleService, private fb: FormBuilder, private route: ActivatedRoute,
-              private cardEntryService: CardEntryService, private auth: AuthService, private nav: NavService) { }
+              private cardEntryService: CardEntryService, private auth: AuthService, private nav: NavService,
+              public common: CommonFormDataService) { }
 
   chem: Chemicals = new Chemicals();
   submitAttempted = false;
@@ -37,7 +39,7 @@ export class AddChemicalEntryComponent implements OnInit {
       this.submitAttempted = true;
     } else { */
       this.submitAttempted = false;
-
+      this.chem.date = (new Date(this.chem.date)).valueOf();
       this.cardEntryService.addChemicalData(this.cardId, this.chem).subscribe(
         data => {
           if (data.success) {
