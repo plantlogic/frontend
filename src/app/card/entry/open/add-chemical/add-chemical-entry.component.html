@@ -4,6 +4,8 @@
       <b>Date:</b>
       <ng2-flatpickr placeholder="Select Date" class="w-20" [config]="datePickr(chem.date)" [(ngModel)]="chem.date">
       </ng2-flatpickr>
+    </div>
+    <div class="col">
       <b>Chemical:</b>
       <div>
         <div *ngIf="!chem.chemical">
@@ -12,8 +14,10 @@
         </div>
         <div *ngIf="chem.chemical">
           <div class="row px-2">
-            <input type="text" [(ngModel)]="chem.chemical.name" class="form-control"
-                   placeholder="Fertilizer" />
+            <select class="form-control" [(ngModel)]="chem.chemical.name">
+              <option [value]="undefined" disabled selected>Chemical</option>
+              <option *ngFor="let r of common.getValues('chemicals')">{{r}}</option>
+            </select>
             <div class="form-inline m-0">
               <input type="number" [(ngModel)]="chem.chemical.rate" class="form-control"
                      placeholder="Rate" />
@@ -28,6 +32,8 @@
           </div>
         </div>
       </div>
+    </div>
+    <div class="col">
       <b>Fertilizer:</b>
       <div>
         <div *ngIf="!chem.fertilizer">
@@ -36,8 +42,10 @@
         </div>
         <div *ngIf="chem.fertilizer">
           <div class="row px-2">
-            <input type="text" [(ngModel)]="chem.fertilizer.name" class="form-control"
-                   placeholder="Fertilizer" />
+            <select class="form-control" [(ngModel)]="chem.fertilizer.name">
+              <option [value]="undefined" disabled selected>Fertilizer</option>
+              <option *ngFor="let r of common.getValues('fertilizers')">{{r}}</option>
+            </select>
             <div class="form-inline m-0">
               <input type="number" [(ngModel)]="chem.fertilizer.rate" class="form-control"
                      placeholder="Rate" />

@@ -1,7 +1,7 @@
 <div class="jumbotron p-3">
   <h2 *ngIf="!common">Loading...</h2>
   <div class="row" *ngIf="common">
-    <div class="col-lg-4 border p-3" *ngFor="let k of keys">
+    <div class="col-lg-4 border p-3" *ngFor="let k of getSimpleTables()">
       <h4>{{getName(k)}}</h4>
       <table mdbTable class="table">
         <thead>
