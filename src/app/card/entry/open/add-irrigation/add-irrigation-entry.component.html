@@ -1,20 +1,20 @@
 <div class="jumbotron p-3">
     <form [formGroup]="irrigationEntryForm">
-      <div class="form-group">
-        <label for="workDateInput" class="control-label">Work Date</label>
-        <ng2-flatpickr placeholder="Work Date" id="workDate" formControlName="workDate" id="workDateInput"
-                       [config]="flatpickrOptions">
-        </ng2-flatpickr>
-        <div class="invalid-feedback" role="alert">Please enter date.</div>
-      </div>
+          <div class="form-group">
+            <label for="workDateInput" class="control-label">Work Date</label>
+            <ng2-flatpickr placeholder="Work Date" id="workDate" formControlName="workDate" id="workDateInput"
+                          [config]="flatpickrOptions">
+            </ng2-flatpickr>
+            <div class="invalid-feedback" role="alert">Please enter date.</div>
+          </div>
 
-        <div class="form-group">
-          <label for="methodInput" class="control-label">Method:</label>
-          <br>
-          <input type="text" class="browser-default" formControlName="method" id="methodInput"
-          [class.is-invalid]="this.submitAttempted && this.irrigationEntryForm.get('method').invalid" required>
-          <div class="invalid-feedback" role="alert">Please enter a method.</div>
-        </div>
+          <div class="form-group">
+            <label for="methodInput" class="control-label">Method:</label>
+            <br>
+            <input type="text" class="browser-default" formControlName="method" id="methodInput"
+            [class.is-invalid]="this.submitAttempted && this.irrigationEntryForm.get('method').invalid" required>
+            <div class="invalid-feedback" role="alert">Please enter a method.</div>
+          </div>
 
         <hr>
         <div class="form-group">
@@ -35,10 +35,33 @@
         </div>
 
         <div class="form-group">
+            <label for="fertilizerUnit" class="control-label">Unit</label>
+            <select class="browser-default custom-select" formControlName="fertilizerUnit">
+              <option *ngFor="let r of rateUnits">{{r}}</option>
+            </select>
+        </div>
+
+        <hr>
+        <div class="form-group">
+          <label for="fertilizerName" class="control-label">Fertilizer</label>
+          <select class="browser-default custom-select" formControlName="fertilizerName" id="fertilizerInput"
+            [class.is-invalid]="this.submitAttempted && this.irrigationEntryForm.get('fertilizerName').invalid">
+              <option *ngFor ="let fz of fertilizer" [ngValue]="fz">{{fz}} </option>
+            </select>
+          <div class="invalid-feedback" role="alert">Please select a fertilizer.</div>
+        </div>
+
+        <div class="form-group">
+          <label for="fertilizerRate" class="control-label">Rate</label>
+          <input type="number" class="custom-select" formControlName="fertilizerRate" id="fertilizerRateInput"
+          [class.is-invalid]="this.submitAttempted && this.irrigationEntryForm.get('fertilizerRate').invalid" min="1">
+          <div class="invalid-feedback" role="alert">Please enter a valid amount.</div>
+        </div>
+
+        <div class="form-group">
           <label for="fertilizerUnit" class="control-label">Unit</label>
           <select class="browser-default custom-select" formControlName="fertilizerUnit">
             <option *ngFor="let r of rateUnits">{{r}}</option>
-            <option></option>
           </select>
         </div>
         <hr>
@@ -63,7 +86,6 @@
           <label for="chemicalUnit" class="control-label">Unit</label>
           <select class="browser-default custom-select" formControlName="chemicalUnit">
             <option *ngFor="let r of rateUnits">{{r}}</option>
-            <option></option>
           </select>
         </div>
 

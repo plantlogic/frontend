@@ -34,8 +34,8 @@ export class AddTractorEntryComponent implements OnInit {
     this.rateUnits = this.initRateUnits();
     this.tractorEntryForm = this.fb.group({
       workDate: [Date.now(), [ Validators.required] ],
-      workDone: ['', [ Validators.required, Validators.minLength(1)]],
-      operator: ['', [ Validators.required, Validators.minLength(1)]],
+      workDone: ['', [ Validators.required]],
+      operator: ['', [ Validators.required]],
       fertilizerName: ['', []],
       fertilizerRate: ['', []],
       fertilizerUnit: ['', []],
