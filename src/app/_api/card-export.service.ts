@@ -17,7 +17,7 @@ export class CardExportService {
   public exampleGenerate(): void {
     // ^ We could specify method input such as date range and then pass that as parameters to the server
 
-    this.http.get<BasicDTO<Card[]>>(environment.ApiUrl + '/data/view/ranches', this.httpOptions).subscribe(
+    /* this.http.get<BasicDTO<Card[]>>(environment.ApiUrl + '/data/view/ranches', this.httpOptions).subscribe(
       data => {
         // If data is successful retrieved
         if (data.success) {
@@ -91,7 +91,7 @@ export class CardExportService {
         // Show connection error
         AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
       }
-    );
+    ); */
   }
 
   // Helper - generates the CSV and invokes the file download

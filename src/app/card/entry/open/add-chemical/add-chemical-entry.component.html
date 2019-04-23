@@ -1,3 +1,58 @@
-<p>
-  add-chemical works!
-</p>
+<div class="jumbotron p-3">
+  <div class="row">
+    <div class="col">
+      <b>Date:</b>
+      <ng2-flatpickr placeholder="Select Date" class="w-20" [config]="datePickr(chem.date)" [(ngModel)]="chem.date">
+      </ng2-flatpickr>
+      <b>Chemical:</b>
+      <div>
+        <div *ngIf="!chem.chemical">
+          <button type="button" color="success" (click)="chem.chemical = newChemical()" mdbBtn floating="true"
+                  size="lg" mdbWavesEffect><i class="fa fa-plus mr-1" aria-hidden="true"></i></button>
+        </div>
+        <div *ngIf="chem.chemical">
+          <div class="row px-2">
+            <input type="text" [(ngModel)]="chem.chemical.name" class="form-control"
+                   placeholder="Fertilizer" />
+            <div class="form-inline m-0">
+              <input type="number" [(ngModel)]="chem.chemical.rate" class="form-control"
+                     placeholder="Rate" />
+              <select class="form-control" [(ngModel)]="chem.chemical.unit" >
+                <option *ngFor="let r of rateUnits">{{r}}</option>
+              </select>
+              <button type="button" color="warning" (click)="chem.chemical = undefined" mdbBtn
+                      floating="true" size="md" mdbWavesEffect>
+                <i class="fa fa-times" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <b>Fertilizer:</b>
+      <div>
+        <div *ngIf="!chem.fertilizer">
+          <button type="button" color="success" (click)="chem.fertilizer = newChemical()" mdbBtn floating="true"
+                  size="lg" mdbWavesEffect><i class="fa fa-plus mr-1" aria-hidden="true"></i></button>
+        </div>
+        <div *ngIf="chem.fertilizer">
+          <div class="row px-2">
+            <input type="text" [(ngModel)]="chem.fertilizer.name" class="form-control"
+                   placeholder="Fertilizer" />
+            <div class="form-inline m-0">
+              <input type="number" [(ngModel)]="chem.fertilizer.rate" class="form-control"
+                     placeholder="Rate" />
+              <select class="form-control" [(ngModel)]="chem.fertilizer.unit" >
+                <option *ngFor="let r of rateUnits">{{r}}</option>
+              </select>
+              <button type="button" color="warning" (click)="chem.fertilizer = undefined" mdbBtn
+                      floating="true" mdbWavesEffect size="md">
+                <i class="fa fa-times" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button  mdbBtn color="primary" (click)="submit()">Add</button>
+</div>
