@@ -11,6 +11,7 @@ import {Chemicals} from '../../../_dto/card/chemicals';
 import {Commodities} from '../../../_dto/card/commodities';
 import {FlatpickrOptions} from 'ng2-flatpickr';
 import {Chemical, ChemicalUnit} from '../../../_dto/card/chemical';
+import {CommonFormDataService} from '../../../_api/common-form-data.service';
 
 @Component({
   selector: 'app-create-card',
@@ -19,7 +20,8 @@ import {Chemical, ChemicalUnit} from '../../../_dto/card/chemical';
 })
 export class CreateCardEntryComponent implements OnInit {
   constructor(private titleService: TitleService, private fb: FormBuilder,
-              private cardEntryService: CardEntryService, private auth: AuthService, private nav: NavService) { }
+              private cardEntryService: CardEntryService, private auth: AuthService, private nav: NavService,
+              private common: CommonFormDataService) { }
 
   @ViewChild('ranchName') public ranchName: NgModel;
   @ViewChild('cropYear') public cropYear: NgModel;

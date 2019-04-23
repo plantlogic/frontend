@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TitleService } from 'src/app/_interact/title.service';
-import {CommonData, CommonDataService} from '../../_api/common-data.service';
+import {CommonData, CommonDataService, CommonLookup} from '../../_api/common-data.service';
 import {AlertService} from '../../_interact/alert/alert.service';
 import { BehaviorSubject } from 'rxjs';
 
@@ -15,36 +15,6 @@ export class AppAdminComponent implements OnInit {
   entries = {};
   keys: Array<string> = new Array<string>();
   commodities = {};
-  lookup = {
-    ranches: {
-      name: 'Ranches',
-      type: 'text'
-    },
-    fertilizers: {
-      name: 'Fertilizers',
-      type: 'text'
-    },
-    chemicals: {
-      name: 'Chemicals',
-      type: 'text'
-    },
-    tractorOperators: {
-      name: 'Tractor Operators',
-      type: 'text'
-    },
-    bedTypes: {
-      name: 'Bed Types',
-      type: 'number'
-    },
-    bedCounts: {
-      name: 'Bed Counts',
-      type: 'number'
-    },
-    commodities: {
-      name: 'Commodities',
-      type: 'text'
-    }
-  };
 
   ngOnInit() {
     this.titleService.setTitle('Administration');
@@ -53,10 +23,10 @@ export class AppAdminComponent implements OnInit {
       if (data.success) {
         data.data.forEach(a => {
           // Simple Tables
-          if (this.lookup[a.key].type === 'text' || this.lookup[a.key].type === 'number') {
+          if (CommonLookup[a.key].type === 'text' || CommonLookup[a.key].type === 'number') {
             this.common[a.key] = [];
             this.entries[a.key] = '';
-            if (a.values) {
+            if (a.values && a.values.length > 0) {
               (a.values as Array<string>).forEach(v => this.common[a.key].push(v));
             }
             this.keys.push(a.key);
@@ -74,21 +44,26 @@ export class AppAdminComponent implements OnInit {
 
 
   private getSimpleTables(): Array<string> {
-    return this.keys.filter(v => this.lookup[v].type === 'text' || this.lookup[v].type === 'number');
+    return this.keys.filter(v => CommonLookup[v].type === 'text' || CommonLookup[v].type === 'number');
   }
 
 
+  /* private getHashTables(): Array<string> {
+
+  } */
+
+
   private getName(key: string): string {
-    if (this.lookup[key] && this.lookup[key].name) {
-      return this.lookup[key].name;
+    if (CommonLookup[key] && CommonLookup[key].name) {
+      return CommonLookup[key].name;
     } else {
       return key;
     }
   }
 
   private getType(key: string): string {
-    if (this.lookup[key] && this.lookup[key].type) {
-      return this.lookup[key].type;
+    if (CommonLookup[key] && CommonLookup[key].type) {
+      return CommonLookup[key].type;
     } else {
       return 'text';
     }
