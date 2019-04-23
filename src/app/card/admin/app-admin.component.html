@@ -1,81 +1,47 @@
-<h1>For Adding/Removing Common Data</h1>
 <div class="jumbotron p-3">
-  <div class="row">
-    <div class="col-md">
-    <h3>Ranch Data</h3>
-      <table mdbTable hover="true" small="true">
-          <thead class="orange white-text">
-            <tr>
-              <th *ngFor="let head of headElementsRanch" scope="col">{{head}} </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr mdbTableCol *ngFor="let ranch of ranchList">
-              <td>{{ranch.name}}</td>
-              <td>{{ranch.manager}}</td>
-              <td><button type="button" class="btn btn-sm btn-danger">Remove</button></td>
-            </tr>
-          </tbody>
-        </table>
-        <button type="button" class="btn btn-success">Add Ranch</button>
-      </div> <!--End of first col-->
-
-      <div class="col-md">
-      <h3>Chemical Data</h3>
-      <table mdbTable hover="true" small="true">
-          <thead class="orange white-text">
-            <tr>
-              <th *ngFor="let head of headElementsChem" scope="col">{{head}} </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr mdbTableCol *ngFor="let chem of chemicalList">
-              <td>{{chem.name}}</td>
-              <td><button type="button" class="btn btn-sm btn-danger">Remove</button></td>
-            </tr>
-          </tbody>
-        </table>
-        <button type="button" class="btn btn-success">Add Checmical</button>
-      </div><!--End of first col-->
-  </div> <!--End of first row-->
-
-  <div class="row">
-    <div class="col-md">
-    <h3>Commodity & Variety Data</h3>
-      <table mdbTable hover="true" small="true">
-          <thead class="orange white-text">
-            <tr>
-              <th *ngFor="let head of headElementsComm" scope="col">{{head}} </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr mdbTableCol *ngFor="let comm of commodityList">
-              <td>{{comm.seedLot}}</td>
-              <td>{{comm.commodity}}</td>
-              <td>{{comm.variety}}</td>
-              <td><button type="button" class="btn btn-sm btn-danger">Remove</button></td>
-            </tr>
-          </tbody>
-        </table>
-        <button type="button" class="btn btn-success">Add Commodity</button>
-    </div><!--End of first Col-->
-
-    <div class="col-md">
-        <h3>Fertilizer Data</h3>
-        <table mdbTable hover="true" small="true">
-            <thead class="orange white-text">
-              <tr>
-                <th *ngFor="let head of headElementsF" scope="col">{{head}} </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr mdbTableCol *ngFor="let f of fertilizerList">
-                <td>{{f.name}}</td>
-                <td><button type="button" class="btn btn-sm btn-danger">Remove</button></td>
-              </tr>
-            </tbody>
-          </table>
-          <button type="button" class="btn btn-success">Add Fertlizer</button>
-        </div><!--End of second col-->
-  </div><!--End of second Row-->
-</div> <!--End of Jumbotron-->
+  <h2 *ngIf="!common">Loading...</h2>
+  <div class="row" *ngIf="common">
+    <div class="col-lg-4 border p-3" *ngFor="let k of keys">
+      <h4>{{getName(k)}}</h4>
+      <table mdbTable class="table">
+        <thead>
+        <tr>
+          <th scope="col" class="small">Name</th>
+          <th scope="col" class="small">Options</th>
+        </tr>
+        </thead>
+        <tbody>
+          <tr mdbTableCol *ngFor="let c of common[k]; let i = index">
+            <td>
+              {{c}}
+            </td>
+            <td>
+              <button type="button" color="danger" (click)="removeElement(k, common[k], i)" mdbBtn class="float-right"
+                      size="sm" floating="true" mdbWavesEffect>
+                <i class="fa fa-trash" aria-hidden="true"></i>
+              </button>
+              <button type="button" color="light" (click)="shiftDown(k, common[k], i)" mdbBtn class="float-right"
+                      size="sm" floating="true" mdbWavesEffect [disabled]="i >= common[k].length - 1">
+                <i class="fa fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <button type="button" color="light" (click)="shiftUp(k, common[k], i)" mdbBtn class="float-right"
+                      size="sm" floating="true" mdbWavesEffect [disabled]="i <= 0" >
+                <i class="fa fa-chevron-up" aria-hidden="true"></i>
+              </button>
+            </td>
+          </tr>
+          <tr mdbTableCol>
+            <td>
+              <input [type]="getType(k)" [(ngModel)]="entries[k]" class="form-control"
+                     (keyup.enter)="addElement(k, common[k], entries[k])" />
+            </td>
+            <td>
+              <button type="button" color="primary" (click)="addElement(k, common[k], entries[k])" mdbBtn class="float-right"
+                      size="sm" floating="true" mdbWavesEffect><i class="fa fa-plus" aria-hidden="true"></i></button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

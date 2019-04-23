@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { TitleService } from 'src/app/_interact/title.service';
+import {CommonData, CommonDataService} from '../../_api/common-data.service';
+import {AlertService} from '../../_interact/alert/alert.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-admin',
@@ -7,55 +10,127 @@ import { TitleService } from 'src/app/_interact/title.service';
   styleUrls: ['./app-admin.component.scss']
 })
 export class AppAdminComponent implements OnInit {
-  editing: boolean;
-  ranchList: Array<any> = [
-    { id: '123', name: 'Ranch 1', manager: 'Manager 1'},
-    { id: '456', name: 'Ranch 2', manager: 'Manager 2'},
-    { id: '789', name: 'Ranch 3', manager: 'Manager 3'},
-    { id: '1011', name: 'Ranch 4', manager: 'Manager 4'},
-    { id: '1213', name: 'Ranch 5', manger: 'Manger 5'}
-  ];
-
-  headElementsRanch: Array<any> = ['Ranch', 'Ranch Manager', 'Remove'];
-
-  chemicalList: Array<any> = [
-    {name: 'chemical 1'},
-    {name: 'chemical 2'},
-    {name: 'chemical 3'},
-    {name: 'chemical 4'},
-    {name: 'chemical 5'},
-    {name: 'chemical 6'}
-  ];
-
-  headElementsChem: Array<any> = ['Checmical', 'Remove'];
-
-  commodityList: Array<any> = [
-    { seedLot: '123', commodity: 'Lettuce', variety: 'Lettuce 1'},
-    { seedLot: '456', commodity: 'Lettuce', variety: 'Lettuce 2'},
-    { seedLot: '789', commodity: 'Strawberry', variety: 'Stawberry 3'},
-    { seedLot: '1011', commodity: 'Tomatoe', variety: 'Tomatoe 4'},
-    { seedLot: '1213', commodity: 'Tomatoe', variety: 'Tomatoe 5'}
-  ];
-
-  headElementsComm: Array<any> = ['Seed Lot', 'Commodity', 'Variety', 'Remove'];
-
-  fertilizerList: Array<any> = [
-    {name: 'fertilizer 1'},
-    {name: 'fertilizer 2'},
-    {name: 'fertilizer 3'},
-    {name: 'fertilizer 4'},
-    {name: 'fertilizer 5'},
-    {name: 'fertilizer 6'}
-  ];
-  headElementsF: Array<any> = ['Fertilizer', 'Remove'];
-
-  constructor(private titleService: TitleService) { }
+  constructor(private titleService: TitleService, private commonData: CommonDataService) { }
+  common = {};
+  entries = {};
+  keys: Array<string> = new Array<string>();
+  commodities = {};
+  lookup = {
+    ranches: {
+      name: 'Ranches',
+      type: 'text'
+    },
+    fertilizers: {
+      name: 'Fertilizers',
+      type: 'text'
+    },
+    chemicals: {
+      name: 'Chemicals',
+      type: 'text'
+    },
+    tractorOperators: {
+      name: 'Tractor Operators',
+      type: 'text'
+    },
+    bedTypes: {
+      name: 'Bed Types',
+      type: 'number'
+    },
+    bedCounts: {
+      name: 'Bed Counts',
+      type: 'number'
+    },
+    commodities: {
+      name: 'Commodities',
+      type: 'text'
+    }
+  };
 
   ngOnInit() {
-    this.titleService.setTitle('Common Data Management');
+    this.titleService.setTitle('Administration');
+
+    this.commonData.getAllData().subscribe(data => {
+      if (data.success) {
+        data.data.forEach(a => {
+          if (a.key === 'commodities') {
+            // ignore
+          } else {
+            this.common[a.key] = [];
+            this.entries[a.key] = '';
+            if (a.values) {
+              (a.values as Array<string>).forEach(v => this.common[a.key].push(v));
+            }
+            this.keys.push(a.key);
+          }
+        });
+      } else if (!data.success) {
+        AlertService.newBasicAlert('Error: ' + data.error, true);
+      }
+    }, failure => {
+      AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
+    });
   }
 
-  removeRanch(id: number) {
 
+  private getName(key: string): string {
+    if (this.lookup[key] && this.lookup[key].name) {
+      return this.lookup[key].name;
+    } else {
+      return key;
+    }
+  }
+
+  private getType(key: string): string {
+    if (this.lookup[key] && this.lookup[key].type) {
+      return this.lookup[key].type;
+    } else {
+      return 'text';
+    }
+  }
+
+
+  private removeElement(key: string, arr: Array<string>, index: number): void {
+    arr.splice(index, 1);
+
+    this.publishChange(key, arr);
+  }
+
+  private shiftUp(key: string, arr: Array<string>, index: number): void {
+    const copy = arr[index - 1];
+    arr[index - 1] = arr[index];
+    arr[index] = copy;
+
+    this.publishChange(key, arr);
+  }
+
+  private shiftDown(key: string, arr: Array<string>, index: number): void {
+    const copy = arr[index + 1];
+    arr[index + 1] = arr[index];
+    arr[index] = copy;
+
+    this.publishChange(key, arr);
+  }
+
+  private addElement(key: string, arr: Array<string>, value: string): void {
+    if (value) {
+      arr.push(value);
+      this.entries[key] = '';
+
+      this.publishChange(key, arr);
+    }
+  }
+
+  private publishChange(key: string, arr: Array<string>): void {
+    const val: CommonData = new CommonData();
+    val.key = key;
+    val.values = arr;
+
+    this.commonData.updateByKey(val).subscribe(data => {
+      if (!data.success) {
+        AlertService.newBasicAlert('There was a client error saving the change: ' + data.error, true, 10);
+      }
+    }, failure => {
+      AlertService.newBasicAlert('THere was a connection error while saving the changes: ' + failure.message + ' (Try Again)', true, 10);
+    });
   }
 }

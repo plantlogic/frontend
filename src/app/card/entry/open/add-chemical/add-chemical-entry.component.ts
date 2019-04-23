@@ -26,7 +26,7 @@ export class AddChemicalEntryComponent implements OnInit {
   cardId: string;
 
   ngOnInit() {
-    this.titleService.setTitle('Create Card');
+    this.titleService.setTitle('Applied');
     this.rateUnits = this.initRateUnits();
     this.route.params.subscribe(data => this.cardId = data.id);
   }
