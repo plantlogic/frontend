@@ -1,32 +1,37 @@
 <div class="jumbotron p-3">
     <form [formGroup]="tractorEntryForm">
+      <div class="row">
+        <div class="col-md">
         <div class="form-group">
-            <label for="workDateInput" class="control-label">Work Date</label>
+            <label for="workDateInput" class="browser-default control-label">Work Date</label>
             <ng2-flatpickr placeholder="Work Date" id="workDate" formControlName="workDate"
                            [config]="flatpickrOptions" id="workDateInput">
             </ng2-flatpickr>
             <div class="invalid-feedback" role="alert">Please enter date.</div>
           </div>
-
+        </div>
+        <div class="col-md">
         <div class="form-group">
-          <label for="workDoneInput" class="control-label">Work Done</label>
-          <input type="text" class="browser-default custom-select" formControlName="workDone" id="workDoneInput"
+          <label for="workDoneInput" class="browser-default control-label">Work Done</label><br>
+          <input type="text" class="browser-default" formControlName="workDone" id="workDoneInput"
           [class.is-invalid]="this.submitAttempted && this.tractorEntryForm.get('workDone').invalid" required>
           <div class="invalid-feedback" role="alert">Please enter work done.</div>
         </div>
-
+      </div>
+      <div class="col-md">
         <div class="form-group">
-          <label for="operatorInput" class="control-label">Operator</label>
-          <input type="text" class="browser-default custom-select" formControlName="operator" id="operatorInput"
+          <label for="operatorInput" class="browser-default control-label">Operator</label><br>
+          <input type="text" class="browser-default" formControlName="operator" id="operatorInput"
           [class.is-invalid]="this.submitAttempted && this.tractorEntryForm.get('operator').invalid" required>
           <div class="invalid-feedback" role="alert">Please enter an operator.</div>
         </div>
+      </div>
+      </div>
         <hr>
         <div class="form-group">
           <label for="fertilizerName" class="control-label">Fertilizer</label>
           <select class="browser-default custom-select" formControlName="fertilizerName" id="fertilizerInput"
             [class.is-invalid]="this.submitAttempted && this.tractorEntryForm.get('fertilizerName').invalid">
-              <option default disabled value="Select">Select</option>
               <option *ngFor ="let fz of fertilizer" [ngValue]="fz">{{fz}} </option>
             </select>
           <div class="invalid-feedback" role="alert">Please select a fertilizer.</div>
@@ -34,8 +39,8 @@
 
         <div class="form-group">
           <label for="fertilizerRate" class="control-label">Rate</label>
-          <input type="number" class="browser-default custom-select" formControlName="fertilizerRate" id="fertilizerRateInput"
-          [class.is-invalid]="this.submitAttempted && this.tractorEntryForm.get('fertilizerRate').invalid" min="0.1">
+          <input type="number" class="custom-select" formControlName="fertilizerRate" id="fertilizerRateInput"
+          [class.is-invalid]="this.submitAttempted && this.tractorEntryForm.get('fertilizerRate').invalid" min="1">
           <div class="invalid-feedback" role="alert">Please enter a valid amount.</div>
         </div>
 
@@ -43,7 +48,6 @@
           <label for="fertilizerUnit" class="control-label">Unit</label>
           <select class="browser-default custom-select" formControlName="fertilizerUnit">
             <option *ngFor="let r of rateUnits">{{r}}</option>
-            <option></option>
           </select>
         </div>
         <hr>
@@ -68,7 +72,6 @@
           <label for="chemicalUnit" class="control-label">Unit</label>
           <select class="browser-default custom-select" formControlName="chemicalUnit">
             <option *ngFor="let r of rateUnits">{{r}}</option>
-            <option></option>
           </select>
         </div>
 
