@@ -52,15 +52,16 @@ export class AppAdminComponent implements OnInit {
     this.commonData.getAllData().subscribe(data => {
       if (data.success) {
         data.data.forEach(a => {
-          if (a.key === 'commodities') {
-            // ignore
-          } else {
+          // Simple Tables
+          if (this.lookup[a.key].type === 'text' || this.lookup[a.key].type === 'number') {
             this.common[a.key] = [];
             this.entries[a.key] = '';
             if (a.values) {
               (a.values as Array<string>).forEach(v => this.common[a.key].push(v));
             }
             this.keys.push(a.key);
+          } else {
+            // Complex
           }
         });
       } else if (!data.success) {
@@ -69,6 +70,11 @@ export class AppAdminComponent implements OnInit {
     }, failure => {
       AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
     });
+  }
+
+
+  private getSimpleTables(): Array<string> {
+    return this.keys.filter(v => this.lookup[v].type === 'text' || this.lookup[v].type === 'number');
   }
 
 
