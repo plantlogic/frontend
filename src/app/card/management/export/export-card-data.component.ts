@@ -13,7 +13,7 @@ import { TitleService } from '../../../_interact/title.service';
 export class ExportCardDataComponent implements OnInit {
 
   constructor(private titleService: TitleService, private fb: FormBuilder, private cardExport: CardExportService,
-    public commonData: CommonFormDataService) { }
+   public commonData: CommonFormDataService) { }
 
   flatpickrOptions: FlatpickrOptions = { dateFormat: 'm-d-Y', defaultDate: new Date(Date.now())};
   flatpickrOptions2: FlatpickrOptions = { dateFormat: 'm-d-Y'};
@@ -22,9 +22,9 @@ export class ExportCardDataComponent implements OnInit {
   disabled = false;
   ShowFilter = false;
   limitSelection = false;
-  commodities: Array = [];
-  selectedItemsRanch: Array = [];
-  selectedItemsCommodity: Array = [];
+  commodities: Array<any> = [];
+  selectedItemsRanch: Array<any> = [];
+  selectedItemsCommodity: Array<any> = [];
   dropdownSettings: any = {};
 
 
@@ -64,14 +64,4 @@ export class ExportCardDataComponent implements OnInit {
     this.ShowFilter = !this.ShowFilter;
     this.dropdownSettings = Object.assign({}, this.dropdownSettings, { allowSearchFilter: this.ShowFilter });
   }
-
-  handleLimitSelection() {
-    if (this.limitSelection) {
-      this.dropdownSettings = Object.assign({}, this.dropdownSettings, { limitSelection: 2 });
-    } else {
-      this.dropdownSettings = Object.assign({}, this.dropdownSettings, { limitSelection: null });
-    }
-  }
-
-
 }

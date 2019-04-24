@@ -27,16 +27,16 @@
     </div>
     <div class="col-3 mt-4">
       <form [formGroup]="myFormCommodity">
-          <ng-multiselect-dropdown
-            name="commodity"
-            [placeholder]="'Select Commodity'"
-            [data]="commodities"
-            formControlName="commodity"
-            [disabled]="disabled"
-            [settings]="dropdownSettings"
-            (onSelect)="onItemSelect($event)">
-          </ng-multiselect-dropdown>
-        </form>
+        <ng-multiselect-dropdown
+          name="commodity"
+          [placeholder]="'Select Commodity'"
+          [data]="commodities"
+          formControlName="commodity"
+          [disabled]="disabled"
+          [settings]="dropdownSettings"
+          (onSelect)="onItemSelect($event)">
+        </ng-multiselect-dropdown>
+      </form>
     </div>
+  </div>
 </div>
-
