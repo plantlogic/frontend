@@ -12,27 +12,31 @@
                       [config]="flatpickrOptions2">
       </ng2-flatpickr>
     </div>
-    <form [formGroup]="myFormRanch">
-      <ng-multiselect-dropdown
-          name="ranch"
-          [placeholder]="'Select Ranch'"
-          [data]="ranches"
-          formControlName="ranch"
-          [disabled]="disabled"
-          [settings]="dropdownSettings"
-          (onSelect)="onItemSelect($event)">
-      </ng-multiselect-dropdown>
-    </form>
-    <form [formGroup]="myFormCommodity">
-      <ng-multiselect-dropdown
-        name="commodity"
-        [placeholder]="'Select Commodity'"
-        [data]="commodities"
-        formControlName="commodity"
-        [disabled]="disabled"
-        [settings]="dropdownSettings"
-        (onSelect)="onItemSelect($event)">
-      </ng-multiselect-dropdown>
-    </form>
+    <div class="col-3 mt-4">
+      <form [formGroup]="myFormRanch">
+        <ng-multiselect-dropdown
+            name="ranch"
+            [placeholder]="'Select Ranch'"
+            [data]="commonData.getValues('ranches')"
+            formControlName="ranch"
+            [disabled]="disabled"
+            [settings]="dropdownSettings"
+            (onSelect)="onItemSelect($event)">
+        </ng-multiselect-dropdown>
+      </form>
+    </div>
+    <div class="col-3 mt-4">
+      <form [formGroup]="myFormCommodity">
+          <ng-multiselect-dropdown
+            name="commodity"
+            [placeholder]="'Select Commodity'"
+            [data]="commodities"
+            formControlName="commodity"
+            [disabled]="disabled"
+            [settings]="dropdownSettings"
+            (onSelect)="onItemSelect($event)">
+          </ng-multiselect-dropdown>
+        </form>
+    </div>
 </div>
 
