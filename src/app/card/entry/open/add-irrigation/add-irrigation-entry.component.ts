@@ -45,7 +45,6 @@ export class AddIrrigationEntryComponent implements OnInit {
     });
     this.route.params.subscribe(data => this.cardId = data.id);
     this.irrigationEntryForm.valueChanges.subscribe(console.log);
-    console.log(this.cardId);
   }
 
   submit() {
