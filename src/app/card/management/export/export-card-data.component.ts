@@ -27,24 +27,21 @@ export class ExportCardDataComponent implements OnInit {
   selectedItemsCommodity: Array<any> = [];
   dropdownSettings: any = {};
 
-
   ngOnInit() {
     this.titleService.setTitle('Export Data');
-
     this.commodities = [
       {item_id: 1, item_text: 'Lettuce'},
       {item_id: 2, item_text: 'Strawberry'},
       {item_id: 3, item_text: 'Broccoli'},
       {item_id: 4, item_text: 'Tomato'}
     ];
-
     this.dropdownSettings = {
       singleSelection: false,
       idField: 'item_id',
       textField: 'item_text',
       selectAllText: 'Select All',
       unSelectAllText: 'UnSelect All',
-      itemsShowLimit: 3,
+      itemsShowLimit: 5,
       allowSearchFilter: this.ShowFilter
     };
     this.myFormRanch = this.fb.group({
