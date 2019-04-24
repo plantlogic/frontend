@@ -39,16 +39,16 @@ export class ExportCardDataComponent implements OnInit {
     ];
 
     this.dropdownSettings = {
-        singleSelection: false,
-        idField: 'item_id',
-        textField: 'item_text',
-        selectAllText: 'Select All',
-        unSelectAllText: 'UnSelect All',
-        itemsShowLimit: 3,
-        allowSearchFilter: this.ShowFilter
+      singleSelection: false,
+      idField: 'item_id',
+      textField: 'item_text',
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      itemsShowLimit: 3,
+      allowSearchFilter: this.ShowFilter
     };
     this.myFormRanch = this.fb.group({
-        ranch: [this.selectedItemsRanch],
+      ranch: [this.selectedItemsRanch],
     });
     this.myFormCommodity = this.fb.group({
       commodity: [this.selectedItemsCommodity]
@@ -58,19 +58,19 @@ export class ExportCardDataComponent implements OnInit {
     console.log('onItemSelect', item);
   }
   onSelectAll(items: any) {
-      console.log('onSelectAll', items);
+    console.log('onSelectAll', items);
   }
   toogleShowFilter() {
-      this.ShowFilter = !this.ShowFilter;
-      this.dropdownSettings = Object.assign({}, this.dropdownSettings, { allowSearchFilter: this.ShowFilter });
+    this.ShowFilter = !this.ShowFilter;
+    this.dropdownSettings = Object.assign({}, this.dropdownSettings, { allowSearchFilter: this.ShowFilter });
   }
 
   handleLimitSelection() {
-      if (this.limitSelection) {
-          this.dropdownSettings = Object.assign({}, this.dropdownSettings, { limitSelection: 2 });
-      } else {
-          this.dropdownSettings = Object.assign({}, this.dropdownSettings, { limitSelection: null });
-      }
+    if (this.limitSelection) {
+      this.dropdownSettings = Object.assign({}, this.dropdownSettings, { limitSelection: 2 });
+    } else {
+      this.dropdownSettings = Object.assign({}, this.dropdownSettings, { limitSelection: null });
+    }
   }
 
 
