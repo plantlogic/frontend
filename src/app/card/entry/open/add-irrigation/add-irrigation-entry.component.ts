@@ -5,8 +5,8 @@ import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { CardEntryService } from 'src/app/_api/card-entry.service';
 import { AlertService } from 'src/app/_interact/alert/alert.service';
 import { ActivatedRoute } from '@angular/router';
-import {FlatpickrOptions} from 'ng2-flatpickr';
-import {NavService} from '../../../../_interact/nav.service';
+import { FlatpickrOptions } from 'ng2-flatpickr';
+import { NavService } from '../../../../_interact/nav.service';
 import { Chemical, ChemicalUnit } from 'src/app/_dto/card/chemical';
 
 @Component({
@@ -33,6 +33,7 @@ export class AddIrrigationEntryComponent implements OnInit {
 
   ngOnInit() {
     this.titleService.setTitle('Irrigation');
+    this.rateUnits = this.initRateUnits();
     this.irrigationEntryForm = this.fb.group({      workDate: [Date.now(), [ Validators.required] ],
       method: ['', [ Validators.required, Validators.minLength(1)]],
       fertilizerName: ['', []],
