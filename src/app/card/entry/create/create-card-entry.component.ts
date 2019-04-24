@@ -41,6 +41,7 @@ export class CreateCardEntryComponent implements OnInit {
       AlertService.newBasicAlert('There are some invalid fields - please fix and try again.', true);
     } else {
       this.submitAttempted = false;
+      this.card.preChemicalArray.forEach(v => v.date = (new Date(v.date)).valueOf());
       this.cardEntryService.createCard(this.card).subscribe(
         data => {
           if (data.success) {
