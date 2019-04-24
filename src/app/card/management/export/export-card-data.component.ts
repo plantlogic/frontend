@@ -15,13 +15,17 @@ export class ExportCardDataComponent implements OnInit {
 
   flatpickrOptions: FlatpickrOptions = { dateFormat: 'm-d-Y', defaultDate: new Date(Date.now())};
   flatpickrOptions2: FlatpickrOptions = { dateFormat: 'm-d-Y'};
-  myForm: FormGroup;        disabled = false;
+  myFormRanch: FormGroup;
+  myFormCommodity: FormGroup;
+  disabled = false;
   ShowFilter = false;
   limitSelection = false;
   ranches: Array = [];
-  selectedItems: Array = [];
-  dropdownSettings: any = {};
   commodities: Array = [];
+  selectedItemsRanch: Array = [];
+  selectedItemsCommodity: Array = [];
+  dropdownSettings: any = {};
+
 
   ngOnInit() {
     this.titleService.setTitle('Export Data');
@@ -34,6 +38,13 @@ export class ExportCardDataComponent implements OnInit {
       { item_id: 6, item_text: 'Toro' }
     ];
 
+    this.commodities = [
+      {item_id: 1, item_text: 'Lettuce'},
+      {item_id: 2, item_text: 'Strawberry'},
+      {item_id: 3, item_text: 'Broccoli'},
+      {item_id: 4, item_text: 'Tomato'}
+    ];
+
     this.dropdownSettings = {
         singleSelection: false,
         idField: 'item_id',
@@ -43,8 +54,11 @@ export class ExportCardDataComponent implements OnInit {
         itemsShowLimit: 3,
         allowSearchFilter: this.ShowFilter
     };
-    this.myForm = this.fb.group({
-        ranch: [this.selectedItems]
+    this.myFormRanch = this.fb.group({
+        ranch: [this.selectedItemsRanch],
+    });
+    this.myFormCommodity = this.fb.group({
+      commodity: [this.selectedItemsCommodity]
     });
   }
   onItemSelect(item: any) {
