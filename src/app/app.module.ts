@@ -11,6 +11,7 @@ import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { AutosizeModule } from 'ngx-autosize';
 import { Ng2FlatpickrModule } from 'ng2-flatpickr';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 import { HomeComponent } from './home/home.component';
 import { NavbarComponent } from './navbar/navbar.component';
@@ -78,6 +79,7 @@ import { AddChemicalEntryComponent } from './card/entry/open/add-chemical/add-ch
     Ng2FlatpickrModule,
     AutosizeModule,
     LoadingBarHttpClientModule,
+    NgMultiSelectDropDownModule.forRoot(),
     MDBBootstrapModule.forRoot()
   ],
   providers: [
