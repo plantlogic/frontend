@@ -12,22 +12,25 @@
                       [config]="flatpickrOptions2">
       </ng2-flatpickr>
     </div>
-    <div class="col-3">
-      <label for="ranchNameInput" class="control-label">Ranch Name</label>
-      <select id="ranch" class="browser-default custom-select">
-        <option [ngValue]="ranch" *ngFor="let ranch of ranchList">{{ranch}}</option>
-      </select>
-    </div>
-    <div class="col-3">
-      <label for="commodityInput" class="control-label">Commodity</label>
-      <select class="browser-default custom-select">
-        <option *ngFor ="let com of commodityList">{{com.commodity}} </option>
-      </select>
-      </div>
-    </div>
-    <div class="col d-none d-md-inline-block mt-2">
-      <button type="button" class="float-right" color="primary" name="addCard" (click)="generateExampleCard()"
-              mdbBtn floating="true" size="sm" mdbWavesEffect>Example Generate/Save Button</button>
-    </div>
+    <form [formGroup]="myForm">
+      <ng-multiselect-dropdown
+          name="ranch"
+          [placeholder]="'Select Ranch'"
+          [data]="ranches"
+          formControlName="ranch"
+          [disabled]="disabled"
+          [settings]="dropdownSettings"
+          (onSelect)="onItemSelect($event)">
+      </ng-multiselect-dropdown>
+      <ng-multiselect-dropdown
+        name="city"
+        [placeholder]="'Select Commodity'"
+        [data]="cities"
+        formControlName="city"
+        [disabled]="disabled"
+        [settings]="dropdownSettings"
+        (onSelect)="onItemSelect($event)">
+      </ng-multiselect-dropdown>
+   </form>
 </div>
 
