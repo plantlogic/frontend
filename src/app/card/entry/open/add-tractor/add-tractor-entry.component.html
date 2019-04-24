@@ -8,73 +8,79 @@
                            [config]="flatpickrOptions" id="workDateInput">
             </ng2-flatpickr>
             <div class="invalid-feedback" role="alert">Please enter date.</div>
-          </div>
-        </div>
-        <div class="col-md">
-        <div class="form-group">
-          <label for="workDoneInput" class="browser-default control-label">Work Done</label><br>
-          <input type="text" class="browser-default" formControlName="workDone" id="workDoneInput"
-          [class.is-invalid]="this.submitAttempted && this.tractorEntryForm.get('workDone').invalid" required>
-          <div class="invalid-feedback" role="alert">Please enter work done.</div>
         </div>
       </div>
+
       <div class="col-md">
-        <div class="form-group">
-          <label for="operatorInput" class="browser-default control-label">Operator</label><br>
-          <input type="text" class="browser-default" formControlName="operator" id="operatorInput"
+      <div class="form-group">
+        <label for="methodInput" class="control-label">Work Done</label>
+        <br>
+        <input type="text" class="form-control browser-default" formControlName="workDone" id="methodInput"
+        [class.is-invalid]="this.submitAttempted && this.tractorEntryForm.get('workDone').invalid" required>
+        <div class="invalid-feedback" role="alert">Please enter work done.</div>
+      </div>
+      </div>
+
+      <div class="col-md">
+      <div class="form-group">
+          <label for="operatorInput" class="control-label">Operator</label><br>
+          <input type="text" class="browser-default form-control" formControlName="operator" id="operatorInput"
           [class.is-invalid]="this.submitAttempted && this.tractorEntryForm.get('operator').invalid" required>
           <div class="invalid-feedback" role="alert">Please enter an operator.</div>
-        </div>
       </div>
       </div>
-        <hr>
-        <div class="form-group">
-          <label for="fertilizerName" class="control-label">Fertilizer</label>
-          <select class="browser-default custom-select" formControlName="fertilizerName" id="fertilizerInput"
-            [class.is-invalid]="this.submitAttempted && this.tractorEntryForm.get('fertilizerName').invalid">
-              <option *ngFor ="let fz of fertilizer" [ngValue]="fz">{{fz}} </option>
-            </select>
-          <div class="invalid-feedback" role="alert">Please select a fertilizer.</div>
-        </div>
 
-        <div class="form-group">
-          <label for="fertilizerRate" class="control-label">Rate</label>
-          <input type="number" class="custom-select" formControlName="fertilizerRate" id="fertilizerRateInput"
-          [class.is-invalid]="this.submitAttempted && this.tractorEntryForm.get('fertilizerRate').invalid" min="1">
-          <div class="invalid-feedback" role="alert">Please enter a valid amount.</div>
-        </div>
+    </div> <!--End Required Section-->
+    <hr>
 
-        <div class="form-group">
-          <label for="fertilizerUnit" class="control-label">Unit</label>
-          <select class="browser-default custom-select" formControlName="fertilizerUnit">
-            <option *ngFor="let r of rateUnits">{{r}}</option>
-          </select>
-        </div>
-        <hr>
-        <div class="form-group">
-          <label for="chemicalName" class="control-label">Chemical</label>
-          <select class="browser-default custom-select" formControlName="chemicalName" id="chemInput"
-            [class.is-invalid]="this.submitAttempted && this.tractorEntryForm.get('chemicalName').invalid">
-              <option default disabled value="Select">Select</option>
-              <option *ngFor ="let chem of chemical" [ngValue]="chem">{{chem}} </option>
-            </select>
-          <div class="invalid-feedback" role="alert">Please select a chemical.</div>
-        </div>
+    <div class="form-group">
+      <label for="fertilizerName" class="control-label">Fertilizer</label>
+      <select class="browser-default form-control" formControlName="fertilizerName" id="fertilizerInput"
+      [class.is-invalid]="this.submitAttempted && this.tractorEntryForm.get('fertilizerName').invalid">
+        <option *ngFor ="let fz of fertilizer" [ngValue]="fz">{{fz}} </option>
+      </select>
+      <div class="invalid-feedback" role="alert">Please select a fertilizer.</div>
+    </div>
 
-        <div class="form-group">
-          <label for="chemicalRate" class="control-label">Rate</label>
-          <input type="number" class="browser-default custom-select" formControlName="chemicalRate" id="chemicalrRateInput"
-          [class.is-invalid]="this.submitAttempted && this.tractorEntryForm.get('chemicalRate').invalid" min="0.1">
-          <div class="invalid-feedback" role="alert">Please enter a valid amount.</div>
-        </div>
+    <div class="form-group">
+      <label for="fertilizerRate" class="control-label">Rate</label>
+      <input type="number" class="browser-default form-control" formControlName="fertilizerRate" id="fertilizerRateInput"
+      [class.is-invalid]="this.submitAttempted && this.tractorEntryForm.get('fertilizerRate').invalid" min="1">
+      <div class="invalid-feedback" role="alert">Please enter a valid amount.</div>
+    </div>
 
-        <div class="form-group">
-          <label for="chemicalUnit" class="control-label">Unit</label>
-          <select class="browser-default custom-select" formControlName="chemicalUnit">
-            <option *ngFor="let r of rateUnits">{{r}}</option>
-          </select>
-        </div>
+    <div class="form-group">
+      <label for="fertilizerUnit" class="control-label">Unit</label>
+      <select class="browser-default form-control" formControlName="fertilizerUnit">
+        <option *ngFor="let r of rateUnits">{{r}}</option>
+      </select>
+    </div>
+    <hr>
 
-        <button  mdbBtn color="primary" (click)="submit()">Add</button>
+    <div class="form-group">
+      <label for="chemicalName" class="control-label">Chemical</label>
+      <select class="browser-default form-control" formControlName="chemicalName" id="chemInput"
+      [class.is-invalid]="this.submitAttempted && this.tractorEntryForm.get('chemicalName').invalid">
+        <option default disabled value="Select">Select</option>
+        <option *ngFor ="let chem of chemical" [ngValue]="chem">{{chem}} </option>
+      </select>
+      <div class="invalid-feedback" role="alert">Please select a chemical.</div>
+    </div>
+
+    <div class="form-group">
+     <label for="chemicalRate" class="control-label">Rate</label>
+     <input type="number" class="browser-default form-control" formControlName="chemicalRate" id="chemicalrRateInput"
+     [class.is-invalid]="this.submitAttempted && this.tractorEntryForm.get('chemicalRate').invalid" min="0.1">
+     <div class="invalid-feedback" role="alert">Please enter a valid amount.</div>
+    </div>
+
+    <div class="form-group">
+      <label for="chemicalUnit" class="control-label">Unit</label>
+      <select class="browser-default form-control" formControlName="chemicalUnit">
+        <option *ngFor="let r of rateUnits">{{r}}</option>
+      </select>
+    </div>
+
+      <button  mdbBtn color="primary" (click)="submit()">Add</button>
     </form>
 </div>

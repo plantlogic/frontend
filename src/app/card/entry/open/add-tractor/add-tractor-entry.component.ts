@@ -5,8 +5,8 @@ import { TitleService } from 'src/app/_interact/title.service';
 import { ActivatedRoute } from '@angular/router';
 import { CardEntryService } from 'src/app/_api/card-entry.service';
 import { AlertService } from 'src/app/_interact/alert/alert.service';
-import {FlatpickrOptions} from 'ng2-flatpickr';
-import {NavService} from '../../../../_interact/nav.service';
+import { FlatpickrOptions } from 'ng2-flatpickr';
+import { NavService } from '../../../../_interact/nav.service';
 import { Chemical, ChemicalUnit } from 'src/app/_dto/card/chemical';
 
 @Component({
@@ -34,13 +34,13 @@ export class AddTractorEntryComponent implements OnInit {
     this.rateUnits = this.initRateUnits();
     this.tractorEntryForm = this.fb.group({
       workDate: [Date.now(), [ Validators.required] ],
-      workDone: ['', [ Validators.required]],
-      operator: ['', [ Validators.required]],
+      workDone: ['', [ Validators.required, Validators.minLength(1)]],
+      operator: ['', [ Validators.required, Validators.minLength(1)]],
       fertilizerName: ['', []],
-      fertilizerRate: ['', []],
+      fertilizerRate: ['', [ Validators.min(0), Validators.max(1000) ]],
       fertilizerUnit: ['', []],
       chemicalName: ['', []],
-      chemicalRate: ['', []],
+      chemicalRate: ['', [ Validators.min(0), Validators.max(1000) ]],
       chemicalUnit: ['', []]
       });
     this.route.params.subscribe(data => this.cardId = data.id);
@@ -59,6 +59,7 @@ export class AddTractorEntryComponent implements OnInit {
         this.tractorEntryForm.get('chemicalRate').invalid ||
         this.tractorEntryForm.get('chemicalUnit').invalid) {
         this.submitAttempted = true;
+        console.log('error');
     } else {
       this.submitAttempted = false;
       console.log('success');
