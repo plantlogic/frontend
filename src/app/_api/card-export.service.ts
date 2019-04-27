@@ -5,6 +5,7 @@ import { AlertService } from '../_interact/alert/alert.service';
 import {BasicDTO} from '../_dto/basicDTO';
 import {Card} from '../_dto/card/card';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
+import { post } from 'selenium-webdriver/http';
 
 @Injectable({
   providedIn: 'root'
@@ -17,67 +18,104 @@ export class CardExportService {
   public exampleGenerate(): void {
     // ^ We could specify method input such as date range and then pass that as parameters to the server
 
-    /* this.http.get<BasicDTO<Card[]>>(environment.ApiUrl + '/data/view/ranches', this.httpOptions).subscribe(
+    this.http.get<BasicDTO<Card[]>>(environment.ApiUrl + '/data/view/ranches', this.httpOptions).subscribe(
       data => {
         // If data is successful retrieved
         if (data.success) {
+          console.log("Successful Subscription");
           // Format is [x][y]: [x] is a row and [y] is a column. Commas and newlines will automatically be added.
           const table: Array<Array<string>> = [];
           // Add column labels
-          table.push(['Field ID', 'Ranch Name', 'Ranch Manager', 'Lot Number', 'Total Acres',
-                      'Bed Type', 'Lorsban Rate', 'Diaznon Rate', 'Kerb Rate', 'Dacthal Rate',
-                      'Wet Date', 'Thin Date', 'Hoe Date', 'Harvest Date',
-                      '']);
-
+          table.push(['Field ID', 'Ranch Name', 'Ranch Manager', 'Lot Number', 'Shipper ID',
+                      'Wet Date', 'Thin Date', 'Hoe Date', 'Harvest Date','',
+                      //Irrigation Data, 12 total
+                      'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','', 'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','',
+                      'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','', 'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','',
+                      'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','', 'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','',
+                      'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','', 'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','',
+                      'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','', 'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','',
+                      'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','', 'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','',
+                      //Tractor Data, 12 total
+                      'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','',
+                      'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','',
+                      'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','',
+                      'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','',
+                      'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','',
+                      'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','',
+                      //Commodity Data, 3 Total
+                      'Commodity', 'Crop Acres', 'Bed Type', 'Bed Count', 'SeedLotNumber', 'Variety','',
+                      'Commodity', 'Crop Acres', 'Bed Type', 'Bed Count', 'SeedLotNumber', 'Variety','',
+                      'Commodity', 'Crop Acres', 'Bed Type', 'Bed Count', 'SeedLotNumber', 'Variety','',
+                      //Preplant, 3 total
+                      'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit',
+                      'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit',
+                      'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit',
+                      //Postplant, 3 total
+                      'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit',
+                      'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit',
+                      'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit'
+          ]);
+          var dataLine: Array<string> = [];
           // Take our data and put it in the table.
           data.data.forEach(x => {
-            // Push simple data
-              table.push(
-                [String(x.fieldID), x.ranchName, x.ranchManagerName, x.lotNumber,
-                 String(x.totalAcres), String(x.bedType), String(x.lorsbanRate), String(x.diaznonRate),
-                 String(x.kerbRate), String(x.dacthalRate), String(x.wetDate), String(x.thinDate),
-                 String(x.hoeDate), String(x.harvestDate)]
+              // Push simple data
+              console.log(x);
+              dataLine.push(
+                String(x.fieldID), x.ranchName, x.ranchManagerName, x.lotNumber, x.shipperID,
+                String(x.wetDate), String(x.thinDate), String(x.hoeDate), String(x.harvestDate)
               );
-
-              // Pushing headers for irrigation data
-              table.push(['', 'Irrigation Data']);
-              table.push(['', 'Date', 'Method', 'Fertilizer', 'Gallons', '',
-                      'Date', 'Method', 'Fertilizer', 'Gallons', '',
-                      'Date', 'Method', 'Fertilizer', 'Gallons', '',
-                      'Date', 'Method', 'Fertilizer', 'Gallons', '',
-                      'Date', 'Method', 'Fertilizer', 'Gallons', '',
-                      'Date', 'Method', 'Fertilizer', 'Gallons', '',
-                      'Date', 'Method', 'Fertilizer', 'Gallons', ''
-              ]);
-
+              console.log(x.commodities);
+              console.log(x.tractorArray);
+              console.log(x.commodityArray);
+              console.log(x.preChemicalArray);
+              console.log(x.postChemicalArray);
+              /*
               // Retrieve data from nested irrigation data objects and insert into table
-              x.irrigationArray.forEach(y => {
-                table.push(['', String(y.workDate), y.method, y.fertilizer, String(y.gallons)]);
+              if(x.irrigationArray === null){
+                console.log("it empty");
+              }
+              else{ x.irrigationArray.forEach(y => {
+                dataLine.push('', String(y.workDate), y.method, 
+                              y.chemical.name, String(y.chemical.rate), String(y.chemical.unit), 
+                              y.fertilizer.name, String(y.fertilizer.rate), String(y.fertilizer.unit));
               });
-
-              // Blank line for seperation of irrigation and tractor data
-              table.push([]);
-
-              // Push headers for tractor data
-              table.push(['', 'Tractor Data']);
-              table.push(['', 'Date', 'Done', 'Operator', 'Fertilizer', 'Gallons', '',
-                          'Date', 'Done', 'Operator', 'Fertilizer', 'Gallons', '',
-                          'Date', 'Done', 'Operator', 'Fertilizer', 'Gallons', '',
-                          'Date', 'Done', 'Operator', 'Fertilizer', 'Gallons', '',
-                          'Date', 'Done', 'Operator', 'Fertilizer', 'Gallons', '',
-                          'Date', 'Done', 'Operator', 'Fertilizer', 'Gallons', '',
-                          'Date', 'Done', 'Operator', 'Fertilizer', 'Gallons', '',
-              ]);
-
+              }
               // Retrieve data from nested tractor data objects and insert into table
-              x.tractorArray.forEach(z => {
-                table.push(['', String(z.workDate), z.workDone, z.operator, z.fertilizer, String(z.gallons)]);
+              if(x.tractorArray === null){
+                console.log("its empty");
+              }
+              else{x.tractorArray.forEach(z => {
+                dataLine.push('', String(z.workDate), z.workDone, z.operator,
+                              z.chemical.name, String(z.chemical.rate), String(z.chemical.unit),
+                              z.fertilizer.name, String(z.fertilizer.rate), String(z.fertilizer.unit));
               });
-
-              // Blank spaces to signal new planter card
-              table.push([]); table.push([]);
-            }
-          );
+              }
+              if(x.commodityArray === null){
+                console.log("ok");
+              }
+              else{x.commodityArray.forEach(c => {
+                dataLine.push('', c.commodity, String(c.cropAcres), String(c.bedType),
+                              String(c.bedCount), String(c.seedLotNumber), c.variety);
+              });
+              }
+              if(x.preChemicalArray === null){
+                console.log("fucked");
+              }
+              else{x.preChemicalArray.forEach(preC => {
+                dataLine.push('', String(preC.date), preC.chemical.name, String(preC.chemical.rate), String(preC.chemical.unit),
+                               preC.fertilizer.name, String(preC.fertilizer.rate), String(preC.fertilizer.unit));
+              });}
+              if(x.postChemicalArray === null){
+                console.log("ok");
+              }
+              else{x.postChemicalArray.forEach(postC => {
+                dataLine.push('', String(postC.date), postC.chemical.name, String(postC.chemical.rate), String(postC.chemical.unit),
+                              postC.fertilizer.name, String(postC.fertilizer.rate), String(postC.fertilizer.unit));
+              });}
+              table.push(dataLine);
+              dataLine = [];
+              */
+          });
 
           // Initiate generation and download
           this.generateAndDownload(table, 'example-generated-card');
@@ -91,7 +129,7 @@ export class CardExportService {
         // Show connection error
         AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
       }
-    ); */
+    ); 
   }
 
   // Helper - generates the CSV and invokes the file download
