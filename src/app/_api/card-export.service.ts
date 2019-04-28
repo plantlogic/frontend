@@ -22,49 +22,49 @@ export class CardExportService {
       data => {
         // If data is successful retrieved
         if (data.success) {
-          console.log("Successful Subscription");
+          console.log('Successful Subscription');
           // Format is [x][y]: [x] is a row and [y] is a column. Commas and newlines will automatically be added.
           const table: Array<Array<string>> = [];
           // Add column labels
           table.push(['Field ID', 'Ranch Name', 'Ranch Manager', 'Lot Number', 'Shipper ID',
-                      'Wet Date', 'Thin Date', 'Hoe Date', 'Harvest Date','',
-                      //Irrigation Data, 12 total
-                      'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','', 'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','',
-                      'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','', 'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','',
-                      'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','', 'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','',
-                      'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','', 'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','',
-                      'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','', 'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','',
-                      'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','', 'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','',
-                      //Tractor Data, 12 total
-                      'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','',
-                      'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','',
-                      'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','',
-                      'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','',
-                      'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','',
-                      'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','',
-                      //Commodity Data, 3 Total
-                      'Commodity', 'Crop Acres', 'Bed Type', 'Bed Count', 'SeedLotNumber', 'Variety','',
-                      'Commodity', 'Crop Acres', 'Bed Type', 'Bed Count', 'SeedLotNumber', 'Variety','',
-                      'Commodity', 'Crop Acres', 'Bed Type', 'Bed Count', 'SeedLotNumber', 'Variety','',
-                      //Preplant, 3 total
+                      'Wet Date', 'Thin Date', 'Hoe Date', 'Harvest Date', '',
+                      // Irrigation Data, 12 total
+                      'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '', 'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '', 'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '', 'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '', 'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '', 'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '', 'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      // Tractor Data, 12 total
+                      'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      // Commodity Data, 3 Total
+                      'Commodity', 'Crop Acres', 'Bed Type', 'Bed Count', 'SeedLotNumber', 'Variety', '',
+                      'Commodity', 'Crop Acres', 'Bed Type', 'Bed Count', 'SeedLotNumber', 'Variety', '',
+                      'Commodity', 'Crop Acres', 'Bed Type', 'Bed Count', 'SeedLotNumber', 'Variety', '',
+                      // Preplant, 3 total
                       'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit',
                       'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit',
                       'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit',
-                      //Postplant, 3 total
+                      // Postplant, 3 total
                       'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit',
                       'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit',
                       'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit'
           ]);
-          var dataLine: Array<string> = [];
+          let dataLine: Array<string> = [];
           // Take our data and put it in the table.
           data.data.forEach(x => {
+              x = (new Card()).copyConstructor(x);
               // Push simple data
               console.log(x);
               dataLine.push(
                 String(x.fieldID), x.ranchName, x.ranchManagerName, x.lotNumber, x.shipperID,
                 String(x.wetDate), String(x.thinDate), String(x.hoeDate), String(x.harvestDate)
               );
-              console.log(x.commodities);
               console.log(x.tractorArray);
               console.log(x.commodityArray);
               console.log(x.preChemicalArray);
@@ -75,8 +75,8 @@ export class CardExportService {
                 console.log("it empty");
               }
               else{ x.irrigationArray.forEach(y => {
-                dataLine.push('', String(y.workDate), y.method, 
-                              y.chemical.name, String(y.chemical.rate), String(y.chemical.unit), 
+                dataLine.push('', String(y.workDate), y.method,
+                              y.chemical.name, String(y.chemical.rate), String(y.chemical.unit),
                               y.fertilizer.name, String(y.fertilizer.rate), String(y.fertilizer.unit));
               });
               }
@@ -129,7 +129,7 @@ export class CardExportService {
         // Show connection error
         AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
       }
-    ); 
+    );
   }
 
   // Helper - generates the CSV and invokes the file download
