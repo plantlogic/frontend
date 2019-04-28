@@ -28,6 +28,20 @@ export class CardExportService {
           // Format is [x][y]: [x] is a row and [y] is a column. Commas and newlines will automatically be added.
           const table: Array<Array<string>> = [];
           // Add column labels
+          table.push(['', '', '', '', '',
+                      '', '', '', '', '',
+                      '1st', 'Irrigation','','','','','','','', '2nd','Irrigation','','','','','','','','3rd','Irrigation','','','','','','','',
+                      '4th', 'Irrigation','','','','','','','', '5th','Irrigation','','','','','','','','6th','Irrigation','','','','','','','',
+                      '7th', 'Irrigation','','','','','','','', '8th','Irrigation','','','','','','','','9th','Irrigation','','','','','','','',
+                      '10th', 'Irrigation','','','','','','','', '11th','Irrigation','','','','','','','','12th','Irrigation','','','','','','','',
+                      '1st', 'Tractor','','','','','','','', '', '2nd','Tractor','','','','','','','','', '3rd','Tractor','','','','','','','','',
+                      '4th', 'Tractor','','','','','','','', '', '5th','Tractor','','','','','','','','', '6th','Tractor','','','','','','','','',
+                      '7th', 'Tractor','','','','','','','','', '8th','Tractor','','','','','','','','', '9th','Tractor','','','','','','','','',
+                      '10th', 'Tractor','','','','','','','','', '11th','Tractor','','','','','','','','', '12th','Tractor','','','','','','','','',
+                      '1st', 'Commodity','','','','','', '2nd','Commodity','','','','','', '3rd','Commodity','','','','','',
+                      '1st','Pre Plant','','','','','','','2nd','Pre Plant','','','','','','','3rd','Pre Plant','','','','','','',
+                      '1st','At Plant','','','','','','','2nd','At Plant','','','','','','','3rd','At Plant','','','','','','',
+          ]);
           table.push(['Field ID', 'Ranch Name', 'Ranch Manager', 'Lot Number', 'Shipper ID',
                       'Wet Date', 'Thin Date', 'Hoe Date', 'Harvest Date', '',
                       // Irrigation Data, 12 total
