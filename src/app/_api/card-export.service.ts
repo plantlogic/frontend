@@ -6,6 +6,8 @@ import {BasicDTO} from '../_dto/basicDTO';
 import {Card} from '../_dto/card/card';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { post } from 'selenium-webdriver/http';
+import { callbackify } from 'util';
+import { ElementFinder } from 'protractor';
 
 @Injectable({
   providedIn: 'root'
@@ -47,74 +49,200 @@ export class CardExportService {
                       'Commodity', 'Crop Acres', 'Bed Type', 'Bed Count', 'SeedLotNumber', 'Variety', '',
                       'Commodity', 'Crop Acres', 'Bed Type', 'Bed Count', 'SeedLotNumber', 'Variety', '',
                       // Preplant, 3 total
-                      'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit',
-                      'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit',
-                      'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit',
+                      'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','',
+                      'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','',
+                      'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','',
                       // Postplant, 3 total
-                      'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit',
-                      'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit',
-                      'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit'
+                      'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','',
+                      'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','',
+                      'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit',''
           ]);
           let dataLine: Array<string> = [];
+          let pushCounter = 0;
           // Take our data and put it in the table.
           data.data.forEach(x => {
               x = (new Card()).copyConstructor(x);
               // Push simple data
-              console.log(x);
               dataLine.push(
                 String(x.fieldID), x.ranchName, x.ranchManagerName, x.lotNumber, x.shipperID,
                 String(x.wetDate), String(x.thinDate), String(x.hoeDate), String(x.harvestDate)
               );
-              console.log(x.tractorArray);
-              console.log(x.commodityArray);
-              console.log(x.preChemicalArray);
-              console.log(x.postChemicalArray);
-              /*
+              
               // Retrieve data from nested irrigation data objects and insert into table
-              if(x.irrigationArray === null){
-                console.log("it empty");
+              if(!x.irrigationArray.length){
+                dataLine.push('','','','','','','','','');dataLine.push('','','','','','','','','');dataLine.push('','','','','','','','','');
+                dataLine.push('','','','','','','','','');dataLine.push('','','','','','','','','');dataLine.push('','','','','','','','','');
+                dataLine.push('','','','','','','','','');dataLine.push('','','','','','','','','');dataLine.push('','','','','','','','','');
+                dataLine.push('','','','','','','','','');dataLine.push('','','','','','','','','');dataLine.push('','','','','','','','','');
               }
-              else{ x.irrigationArray.forEach(y => {
-                dataLine.push('', String(y.workDate), y.method,
-                              y.chemical.name, String(y.chemical.rate), String(y.chemical.unit),
-                              y.fertilizer.name, String(y.fertilizer.rate), String(y.fertilizer.unit));
-              });
-              }
+              else{
+                x.irrigationArray.forEach(y => {
+                  if(!y.chemical){
+                    if(!y.fertilizer){
+                      dataLine.push('', String(y.workDate), y.method, "", "", "", "", "", "");
+                    }
+                    else{
+                      dataLine.push('', String(y.workDate), y.method, "","","", y.fertilizer.name, String(y.fertilizer.rate), String(y.fertilizer.unit));
+                    }
+                  }
+                  else if(!y.fertilizer){
+                    if(!y.chemical){
+                      dataLine.push('', String(y.workDate), y.method, "", "", "", "", "", "");
+                    }
+                    else{
+                      dataLine.push('', String(y.workDate), y.method, y.chemical.name, String(y.chemical.rate), String(y.chemical.unit), "", "", "");
+                    }
+                  }
+
+                  else{
+                     dataLine.push('', String(y.workDate), y.method, y.chemical.name, String(y.chemical.rate), String(y.chemical.unit),
+                                   y.fertilizer.name, String(y.fertilizer.rate), String(y.fertilizer.unit));
+                  }
+                  pushCounter+=1;
+                });
+                if(pushCounter<12){
+                  while(pushCounter<12){
+                    dataLine.push('','','','','','','','','');
+                    pushCounter+=1;
+                  }
+                }
+                pushCounter=0;
+              } 
               // Retrieve data from nested tractor data objects and insert into table
-              if(x.tractorArray === null){
-                console.log("its empty");
+              console.log(x.tractorArray);
+              if(!x.tractorArray.length){
+                dataLine.push('','','','','','','','','','');dataLine.push('','','','','','','','','','');dataLine.push('','','','','','','','','','');
+                dataLine.push('','','','','','','','','','');dataLine.push('','','','','','','','','','');dataLine.push('','','','','','','','','','');
+                dataLine.push('','','','','','','','','','');dataLine.push('','','','','','','','','','');dataLine.push('','','','','','','','','','');
+                dataLine.push('','','','','','','','','','');dataLine.push('','','','','','','','','','');dataLine.push('','','','','','','','','','');
               }
-              else{x.tractorArray.forEach(z => {
-                dataLine.push('', String(z.workDate), z.workDone, z.operator,
-                              z.chemical.name, String(z.chemical.rate), String(z.chemical.unit),
-                              z.fertilizer.name, String(z.fertilizer.rate), String(z.fertilizer.unit));
-              });
+              else{
+                x.tractorArray.forEach(z => {
+                  if(!z.chemical){
+                    if(!z.fertilizer){
+                      dataLine.push('', String(z.workDate), z.workDone, z.operator, "", "", "", "", "", "");
+                    }
+                    else{
+                      dataLine.push('', String(z.workDate), z.workDone, z.operator, "","","", z.fertilizer.name, String(z.fertilizer.rate), String(z.fertilizer.unit));
+                    }
+                  }
+                  else if(!z.fertilizer){
+                    if(!z.chemical){
+                      dataLine.push('', String(z.workDate), z.workDone, z.operator, "", "", "", "", "", "");
+                    }
+                    else{
+                      dataLine.push('', String(z.workDate), z.workDone, z.operator, z.chemical.name, String(z.chemical.rate), String(z.chemical.unit), "", "", "");
+                    }
+                  }
+
+                  else{
+                     dataLine.push('', String(z.workDate), z.workDone, z.operator, z.chemical.name, String(z.chemical.rate), String(z.chemical.unit),
+                                   z.fertilizer.name, String(z.fertilizer.rate), String(z.fertilizer.unit));
+                  }
+                  pushCounter+=1;
+                });
+                if(pushCounter<12){
+                  while(pushCounter<12){
+                    dataLine.push('','','','','','','','','','');
+                    pushCounter+=1;
+                  }
+                }
+                pushCounter=0;
               }
-              if(x.commodityArray === null){
-                console.log("ok");
+    
+              if(!x.commodityArray.length){
+                dataLine.push('','','','','','','');dataLine.push('','','','','','','');dataLine.push('','','','','','','');
               }
-              else{x.commodityArray.forEach(c => {
-                dataLine.push('', c.commodity, String(c.cropAcres), String(c.bedType),
-                              String(c.bedCount), String(c.seedLotNumber), c.variety);
-              });
+              else{
+                x.commodityArray.forEach(c => {
+                  dataLine.push('', c.commodity, String(c.cropAcres), String(c.bedType),
+                                String(c.bedCount), String(c.seedLotNumber), c.variety);
+                  pushCounter+=1;
+                });
+                if(pushCounter<3){
+                  while(pushCounter<3){
+                    dataLine.push('','','','','','','');
+                    pushCounter+=1;
+                  }
+                }
+                pushCounter=0;
               }
-              if(x.preChemicalArray === null){
-                console.log("fucked");
+              
+              if(!x.preChemicalArray.length){
+                dataLine.push('', '', '', '', '', '', '', '');dataLine.push('', '', '', '', '', '', '', '');dataLine.push('', '', '', '', '', '', '', '');
               }
-              else{x.preChemicalArray.forEach(preC => {
-                dataLine.push('', String(preC.date), preC.chemical.name, String(preC.chemical.rate), String(preC.chemical.unit),
-                               preC.fertilizer.name, String(preC.fertilizer.rate), String(preC.fertilizer.unit));
-              });}
-              if(x.postChemicalArray === null){
-                console.log("ok");
+              else{
+                x.preChemicalArray.forEach(preC => {
+                  if(!preC.chemical){
+                    if(!preC.fertilizer){
+                      dataLine.push('', String(preC.date), '', '', '', '', '', '');
+                    }
+                    else{
+                      dataLine.push('', String(preC.date), '','','', preC.fertilizer.name, String(preC.fertilizer.rate), String(preC.fertilizer.unit));
+                    }
+                  }
+                  else if(!preC.fertilizer){
+                    if(!preC.chemical){
+                      dataLine.push('', String(preC.date), '', '', '', '', '', '');
+                    }
+                    else{
+                      dataLine.push('', String(preC.date), preC.chemical.name, String(preC.chemical.rate), String(preC.chemical.unit), '', '', '');
+                    }
+                  }
+
+                  else{
+                     dataLine.push('', String(preC.date), preC.chemical.name, String(preC.chemical.rate), String(preC.chemical.unit),
+                                   preC.fertilizer.name, String(preC.fertilizer.rate), String(preC.fertilizer.unit));
+                  }
+                  pushCounter+=1;
+                });
+                if(pushCounter<3){
+                  while(pushCounter<3){
+                    dataLine.push('', '', '', '', '', '', '', '');
+                    pushCounter+=1;
+                  }
+                }
+                pushCounter=0;
               }
-              else{x.postChemicalArray.forEach(postC => {
-                dataLine.push('', String(postC.date), postC.chemical.name, String(postC.chemical.rate), String(postC.chemical.unit),
-                              postC.fertilizer.name, String(postC.fertilizer.rate), String(postC.fertilizer.unit));
-              });}
+
+              if(!x.postChemicalArray.length){
+                dataLine.push('', '', '', '', '', '', '', '');dataLine.push('', '', '', '', '', '', '', '');dataLine.push('', '', '', '', '', '', '', '');
+              }
+              else{
+                x.postChemicalArray.forEach(postC => {
+                  if(!postC.chemical){
+                    if(!postC.fertilizer){
+                      dataLine.push('', String(postC.date), '', '', '', '', '', '');
+                    }
+                    else{
+                      dataLine.push('', String(postC.date), '','','', postC.fertilizer.name, String(postC.fertilizer.rate), String(postC.fertilizer.unit));
+                    }
+                  }
+                  else if(!postC.fertilizer){
+                    if(!postC.chemical){
+                      dataLine.push('', String(postC.date), '', '', '', '', '', '');
+                    }
+                    else{
+                      dataLine.push('', String(postC.date), postC.chemical.name, String(postC.chemical.rate), String(postC.chemical.unit), '', '', '');
+                    }
+                  }
+                  else{
+                     dataLine.push('', String(postC.date), postC.chemical.name, String(postC.chemical.rate), String(postC.chemical.unit),
+                                   postC.fertilizer.name, String(postC.fertilizer.rate), String(postC.fertilizer.unit));
+                  }
+                  pushCounter+=1;
+                });
+                if(pushCounter<3){
+                  while(pushCounter<3){
+                    dataLine.push('', '', '', '', '', '', '', '');
+                    pushCounter+=1;
+                  }
+                }
+                pushCounter=0;
+              }
+
               table.push(dataLine);
               dataLine = [];
-              */
           });
 
           // Initiate generation and download
