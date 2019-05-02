@@ -66,7 +66,7 @@ export class AddUserComponent implements OnInit {
       this.userService.addUser(user).subscribe(
         data => {
           if (data.success) {
-            if (this.manualPassword) {
+            if (!this.manualPassword) {
               AlertService.newBasicAlert('User created successfully! Their temporary password was emailed to them.', false);
             } else {
               AlertService.newBasicAlert('User created successfully!', false);
