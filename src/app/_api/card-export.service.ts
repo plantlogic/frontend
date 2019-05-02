@@ -30,17 +30,17 @@ export class CardExportService {
           // Add column labels
           table.push(['', '', '', '', '',
                       '', '', '', '', '',
-                      '1st', 'Irrigation','','','','','','','', '2nd','Irrigation','','','','','','','','3rd','Irrigation','','','','','','','',
-                      '4th', 'Irrigation','','','','','','','', '5th','Irrigation','','','','','','','','6th','Irrigation','','','','','','','',
-                      '7th', 'Irrigation','','','','','','','', '8th','Irrigation','','','','','','','','9th','Irrigation','','','','','','','',
-                      '10th', 'Irrigation','','','','','','','', '11th','Irrigation','','','','','','','','12th','Irrigation','','','','','','','',
-                      '1st', 'Tractor','','','','','','','', '', '2nd','Tractor','','','','','','','','', '3rd','Tractor','','','','','','','','',
-                      '4th', 'Tractor','','','','','','','', '', '5th','Tractor','','','','','','','','', '6th','Tractor','','','','','','','','',
-                      '7th', 'Tractor','','','','','','','','', '8th','Tractor','','','','','','','','', '9th','Tractor','','','','','','','','',
-                      '10th', 'Tractor','','','','','','','','', '11th','Tractor','','','','','','','','', '12th','Tractor','','','','','','','','',
-                      '1st', 'Commodity','','','','','', '2nd','Commodity','','','','','', '3rd','Commodity','','','','','',
-                      '1st','Pre Plant','','','','','','','2nd','Pre Plant','','','','','','','3rd','Pre Plant','','','','','','',
-                      '1st','At Plant','','','','','','','2nd','At Plant','','','','','','','3rd','At Plant','','','','','','',
+                      '1st', 'Irrigation', '', '', '', '', '', '', '', '2nd', 'Irrigation', '', '', '', '', '', '', '', '3rd', 'Irrigation', '', '', '', '', '', '', '',
+                      '4th', 'Irrigation', '', '', '', '', '', '', '', '5th', 'Irrigation', '', '', '', '', '', '', '', '6th', 'Irrigation', '', '', '', '', '', '', '',
+                      '7th', 'Irrigation', '', '', '', '', '', '', '', '8th', 'Irrigation', '', '', '', '', '', '', '', '9th', 'Irrigation', '', '', '', '', '', '', '',
+                      '10th', 'Irrigation', '', '', '', '', '', '', '', '11th', 'Irrigation', '', '', '', '', '', '', '', '12th', 'Irrigation', '', '', '', '', '', '', '',
+                      '1st', 'Tractor', '', '', '', '', '', '', '', '', '2nd', 'Tractor', '', '', '', '', '', '', '', '', '3rd', 'Tractor', '', '', '', '', '', '', '', '',
+                      '4th', 'Tractor', '', '', '', '', '', '', '', '', '5th', 'Tractor', '', '', '', '', '', '', '', '', '6th', 'Tractor', '', '', '', '', '', '', '', '',
+                      '7th', 'Tractor', '', '', '', '', '', '', '', '', '8th', 'Tractor', '', '', '', '', '', '', '', '', '9th', 'Tractor', '', '', '', '', '', '', '', '',
+                      '10th', 'Tractor', '', '', '', '', '', '', '', '', '11th', 'Tractor', '', '', '', '', '', '', '', '', '12th', 'Tractor', '', '', '', '', '', '', '', '',
+                      '1st', 'Commodity', '', '', '', '', '', '2nd', 'Commodity', '', '', '', '', '', '3rd', 'Commodity', '', '', '', '', '',
+                      '1st', 'Pre Plant', '', '', '', '', '', '', '2nd', 'Pre Plant', '', '', '', '', '', '', '3rd', 'Pre Plant', '', '', '', '', '', '',
+                      '1st', 'At Plant', '', '', '', '', '', '', '2nd', 'At Plant', '', '', '', '', '', '', '3rd', 'At Plant', '', '', '', '', '', '',
           ]);
           table.push(['Field ID', 'Ranch Name', 'Ranch Manager', 'Lot Number', 'Shipper ID',
                       'Wet Date', 'Thin Date', 'Hoe Date', 'Harvest Date', '',
@@ -63,13 +63,13 @@ export class CardExportService {
                       'Commodity', 'Crop Acres', 'Bed Type', 'Bed Count', 'SeedLotNumber', 'Variety', '',
                       'Commodity', 'Crop Acres', 'Bed Type', 'Bed Count', 'SeedLotNumber', 'Variety', '',
                       // Preplant, 3 total
-                      'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','',
-                      'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','',
-                      'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','',
+                      'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
                       // Postplant, 3 total
-                      'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','',
-                      'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit','',
-                      'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit',''
+                      'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', ''
           ]);
           let dataLine: Array<string> = [];
           let pushCounter = 0;
@@ -84,10 +84,10 @@ export class CardExportService {
               
               // Retrieve data from nested irrigation data objects and insert into table
               if(!x.irrigationArray.length){
-                dataLine.push('','','','','','','','','');dataLine.push('','','','','','','','','');dataLine.push('','','','','','','','','');
-                dataLine.push('','','','','','','','','');dataLine.push('','','','','','','','','');dataLine.push('','','','','','','','','');
-                dataLine.push('','','','','','','','','');dataLine.push('','','','','','','','','');dataLine.push('','','','','','','','','');
-                dataLine.push('','','','','','','','','');dataLine.push('','','','','','','','','');dataLine.push('','','','','','','','','');
+                dataLine.push('', '', '', '', '', '', '', '', '');dataLine.push('', '', '', '', '', '', '', '', '');dataLine.push('', '', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '', '');dataLine.push('', '', '', '', '', '', '', '', '');dataLine.push('', '', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '', '');dataLine.push('', '', '', '', '', '', '', '', '');dataLine.push('', '', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '', '');dataLine.push('', '', '', '', '', '', '', '', '');dataLine.push('', '', '', '', '', '', '', '', '');
               }
               else{
                 x.irrigationArray.forEach(y => {
@@ -116,7 +116,7 @@ export class CardExportService {
                 });
                 if(pushCounter<12){
                   while(pushCounter<12){
-                    dataLine.push('','','','','','','','','');
+                    dataLine.push('', '', '', '', '', '', '', '', '');
                     pushCounter+=1;
                   }
                 }
@@ -125,10 +125,10 @@ export class CardExportService {
               // Retrieve data from nested tractor data objects and insert into table
               console.log(x.tractorArray);
               if(!x.tractorArray.length){
-                dataLine.push('','','','','','','','','','');dataLine.push('','','','','','','','','','');dataLine.push('','','','','','','','','','');
-                dataLine.push('','','','','','','','','','');dataLine.push('','','','','','','','','','');dataLine.push('','','','','','','','','','');
-                dataLine.push('','','','','','','','','','');dataLine.push('','','','','','','','','','');dataLine.push('','','','','','','','','','');
-                dataLine.push('','','','','','','','','','');dataLine.push('','','','','','','','','','');dataLine.push('','','','','','','','','','');
+                dataLine.push('', '', '', '', '', '', '', '', '', '');dataLine.push('', '', '', '', '', '', '', '', '', '');dataLine.push('', '', '', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '', '', '');dataLine.push('', '', '', '', '', '', '', '', '', '');dataLine.push('', '', '', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '', '', '');dataLine.push('', '', '', '', '', '', '', '', '', '');dataLine.push('', '', '', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '', '', '');dataLine.push('', '', '', '', '', '', '', '', '', '');dataLine.push('', '', '', '', '', '', '', '', '', '');
               }
               else{
                 x.tractorArray.forEach(z => {
@@ -157,7 +157,7 @@ export class CardExportService {
                 });
                 if(pushCounter<12){
                   while(pushCounter<12){
-                    dataLine.push('','','','','','','','','','');
+                    dataLine.push('', '', '', '', '', '', '', '', '', '');
                     pushCounter+=1;
                   }
                 }
@@ -165,7 +165,7 @@ export class CardExportService {
               }
     
               if(!x.commodityArray.length){
-                dataLine.push('','','','','','','');dataLine.push('','','','','','','');dataLine.push('','','','','','','');
+                dataLine.push('', '', '', '', '', '', '');dataLine.push('', '', '', '', '', '', '');dataLine.push('', '', '', '', '', '', '');
               }
               else{
                 x.commodityArray.forEach(c => {
@@ -175,7 +175,7 @@ export class CardExportService {
                 });
                 if(pushCounter<3){
                   while(pushCounter<3){
-                    dataLine.push('','','','','','','');
+                    dataLine.push('', '', '', '', '', '', '');
                     pushCounter+=1;
                   }
                 }
@@ -192,7 +192,7 @@ export class CardExportService {
                       dataLine.push('', String(preC.date), '', '', '', '', '', '');
                     }
                     else{
-                      dataLine.push('', String(preC.date), '','','', preC.fertilizer.name, String(preC.fertilizer.rate), String(preC.fertilizer.unit));
+                      dataLine.push('', String(preC.date), '', '', '', preC.fertilizer.name, String(preC.fertilizer.rate), String(preC.fertilizer.unit));
                     }
                   }
                   else if(!preC.fertilizer){
@@ -229,7 +229,7 @@ export class CardExportService {
                       dataLine.push('', String(postC.date), '', '', '', '', '', '');
                     }
                     else{
-                      dataLine.push('', String(postC.date), '','','', postC.fertilizer.name, String(postC.fertilizer.rate), String(postC.fertilizer.unit));
+                      dataLine.push('', String(postC.date), '', '', '', postC.fertilizer.name, String(postC.fertilizer.rate), String(postC.fertilizer.unit));
                     }
                   }
                   else if(!postC.fertilizer){
