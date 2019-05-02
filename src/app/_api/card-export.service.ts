@@ -263,8 +263,10 @@ export class CardExportService {
                 pushCounter = 0;
               }
 
-              if( !x.postChemicalArray.length) {
-                dataLine.push('', '', '', '', '', '', '', '');dataLine.push('', '', '', '', '', '', '', '');dataLine.push('', '', '', '', '', '', '', '');
+              if (!x.postChemicalArray.length) {
+                dataLine.push('', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '');
               } else {
                 x.postChemicalArray.forEach(postC => {
                   if (!postC.chemical) {
