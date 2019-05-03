@@ -61,4 +61,7 @@ export class ExportCardDataComponent implements OnInit {
     this.ShowFilter = !this.ShowFilter;
     this.dropdownSettings = Object.assign({}, this.dropdownSettings, { allowSearchFilter: this.ShowFilter });
   }
+  generateExampleCard(): void {
+    this.cardExport.exampleGenerate();
+  }
 }
