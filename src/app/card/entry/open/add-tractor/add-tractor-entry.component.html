@@ -37,7 +37,8 @@
       <label for="fertilizerName" class="control-label">Fertilizer</label>
       <select class="browser-default form-control" formControlName="fertilizerName" id="fertilizerInput"
       [class.is-invalid]="this.submitAttempted && this.tractorEntryForm.get('fertilizerName').invalid">
-        <option *ngFor ="let fz of fertilizer" [ngValue]="fz">{{fz}} </option>
+        <option [value]="undefined" disabled selected>Fertilizer</option>
+        <option *ngFor="let f of common.getValues('fertilizers')">{{f}}</option>
       </select>
       <div class="invalid-feedback" role="alert">Please select a fertilizer.</div>
     </div>
@@ -45,13 +46,14 @@
     <div class="form-group">
       <label for="fertilizerRate" class="control-label">Rate</label>
       <input type="number" class="browser-default form-control" formControlName="fertilizerRate" id="fertilizerRateInput"
-      [class.is-invalid]="this.submitAttempted && this.tractorEntryForm.get('fertilizerRate').invalid" min="1">
+      [class.is-invalid]="this.submitAttempted && this.tractorEntryForm.get('fertilizerRate').invalid" pattern="\d+(\.\d+)?">
       <div class="invalid-feedback" role="alert">Please enter a valid amount.</div>
     </div>
 
     <div class="form-group">
       <label for="fertilizerUnit" class="control-label">Unit</label>
       <select class="browser-default form-control" formControlName="fertilizerUnit">
+        <option default selected>Select</option>
         <option *ngFor="let r of rateUnits">{{r}}</option>
       </select>
     </div>
@@ -61,8 +63,8 @@
       <label for="chemicalName" class="control-label">Chemical</label>
       <select class="browser-default form-control" formControlName="chemicalName" id="chemInput"
       [class.is-invalid]="this.submitAttempted && this.tractorEntryForm.get('chemicalName').invalid">
-        <option default disabled value="Select">Select</option>
-        <option *ngFor ="let chem of chemical" [ngValue]="chem">{{chem}} </option>
+        <option [value]="undefined" disabled selected>Chemical</option>
+        <option *ngFor="let c of common.getValues('chemicals')">{{c}}</option>
       </select>
       <div class="invalid-feedback" role="alert">Please select a chemical.</div>
     </div>
@@ -70,13 +72,14 @@
     <div class="form-group">
      <label for="chemicalRate" class="control-label">Rate</label>
      <input type="number" class="browser-default form-control" formControlName="chemicalRate" id="chemicalrRateInput"
-     [class.is-invalid]="this.submitAttempted && this.tractorEntryForm.get('chemicalRate').invalid" min="0.1">
+     [class.is-invalid]="this.submitAttempted && this.tractorEntryForm.get('chemicalRate').invalid" pattern="\d+(\.\d+)?">
      <div class="invalid-feedback" role="alert">Please enter a valid amount.</div>
     </div>
 
     <div class="form-group">
       <label for="chemicalUnit" class="control-label">Unit</label>
       <select class="browser-default form-control" formControlName="chemicalUnit">
+        <option default selected>Select</option>
         <option *ngFor="let r of rateUnits">{{r}}</option>
       </select>
     </div>

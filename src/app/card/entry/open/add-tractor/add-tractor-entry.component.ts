@@ -8,6 +8,7 @@ import { AlertService } from 'src/app/_interact/alert/alert.service';
 import { FlatpickrOptions } from 'ng2-flatpickr';
 import { NavService } from '../../../../_interact/nav.service';
 import { Chemical, ChemicalUnit } from 'src/app/_dto/card/chemical';
+import {CommonFormDataService} from '../../../../_api/common-form-data.service';
 
 @Component({
   selector: 'app-add-tractor',
@@ -16,7 +17,8 @@ import { Chemical, ChemicalUnit } from 'src/app/_dto/card/chemical';
 })
 export class AddTractorEntryComponent implements OnInit {
   constructor(private titleService: TitleService, private fb: FormBuilder, private nav: NavService,
-              private route: ActivatedRoute, private cardEntryService: CardEntryService) { }
+              private route: ActivatedRoute, private cardEntryService: CardEntryService,
+              public common: CommonFormDataService) { }
 
   flatpickrOptions: FlatpickrOptions = { dateFormat: 'm-d-Y', defaultDate: new Date(Date.now())};
   tractorEntryForm: FormGroup;

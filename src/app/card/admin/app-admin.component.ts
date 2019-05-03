@@ -111,7 +111,7 @@ export class AppAdminComponent implements OnInit {
         AlertService.newBasicAlert('There was a client error saving the change: ' + data.error, true, 10);
       }
     }, failure => {
-      AlertService.newBasicAlert('THere was a connection error while saving the changes: ' + failure.message + ' (Try Again)', true, 10);
+      AlertService.newBasicAlert('There was a connection error while saving the changes: ' + failure.message + ' (Try Again)', true, 10);
     });
   }
 }
