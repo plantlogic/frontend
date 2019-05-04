@@ -8,6 +8,8 @@ import { ActivatedRoute } from '@angular/router';
 import { FlatpickrOptions } from 'ng2-flatpickr';
 import { NavService } from '../../../../_interact/nav.service';
 import { Chemical, ChemicalUnit } from 'src/app/_dto/card/chemical';
+import {CommonFormDataService} from '../../../../_api/common-form-data.service';
+
 
 @Component({
   selector: 'app-add-irrigation',
@@ -18,13 +20,11 @@ export class AddIrrigationEntryComponent implements OnInit {
 
   constructor(private titleService: TitleService, private fb: FormBuilder,
               private cardEntryService: CardEntryService, private nav: NavService,
-              private route: ActivatedRoute) { }
+              private route: ActivatedRoute, public common: CommonFormDataService) { }
 
   flatpickrOptions: FlatpickrOptions = { dateFormat: 'm-d-Y', defaultDate: new Date(Date.now())};
   irrigationEntryForm: FormGroup;
   submitAttempted = false;
-  fertilizer: Array<any> = ['Lorsban', 'Diaznon', 'Kerb', 'Dacthal'];
-  chemical: Array<any> = ['chem1', 'chem2'];
   irrigationEntry: IrrigationEntry = new IrrigationEntry();
   chemEntry: Chemical = new Chemical();
   ferEntry: Chemical = new Chemical();
