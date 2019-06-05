@@ -1,11 +1,12 @@
-import { PlRole } from '../../../_dto/user/pl-role.enum';
-import { AlertService } from '../../../_interact/alert/alert.service';
-import { UserService } from '../../../_api/user.service';
-import { Component, OnInit } from '@angular/core';
-import { TitleService } from '../../../_interact/title.service';
-import { FormGroup, FormBuilder, FormArray, Validators, AbstractControl } from '@angular/forms';
-import { User } from '../../../_dto/user/user';
+import {PlRole} from '../../../_dto/user/pl-role.enum';
+import {AlertService} from '../../../_interact/alert/alert.service';
+import {UserService} from '../../../_api/user.service';
+import {Component, OnInit} from '@angular/core';
+import {TitleService} from '../../../_interact/title.service';
+import {AbstractControl, FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {User} from '../../../_dto/user/user';
 import {Router} from '@angular/router';
+import {CommonFormDataService} from '../../../_api/common-form-data.service';
 
 @Component({
   selector: 'app-add-user',
@@ -19,14 +20,23 @@ export class AddUserComponent implements OnInit {
   roleList: Array<string>;
   manualPassword = false;
 
+  multiselectSettings = {
+    singleSelection: false,
+    selectAllText: 'Select All',
+    unSelectAllText: 'Unselect All',
+    itemsShowLimit: 5,
+    allowSearchFilter: true
+  };
+
   constructor(private titleService: TitleService, private fb: FormBuilder, private userService: UserService,
-              private router: Router) {
+              private router: Router, public commonData: CommonFormDataService) {
 
     this.form = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(4)]],
       password: ['', [Validators.required, Validators.minLength(4)]],
       email: ['', [Validators.required, Validators.email]],
       realname: ['', Validators.required],
+      ranchAccess: [],
       roles: this.fb.array(this.initRoleBoolArray())
     });
 
@@ -56,11 +66,21 @@ export class AddUserComponent implements OnInit {
 
       let user: User;
       if (this.manualPassword) {
-        user = (new User())
-          .passConstruct(this.form.value.password, this.form.value.username, this.form.value.realname, this.getSelectedRoles());
+        user = (new User()).passConstruct(
+          this.form.value.password,
+          this.form.value.username,
+          this.form.value.realname,
+          this.form.value.ranchAccess,
+          this.getSelectedRoles()
+        );
       } else {
-        user = (new User())
-          .emailConstruct(this.form.value.email, this.form.value.username, this.form.value.realname, this.getSelectedRoles());
+        user = (new User()).emailConstruct(
+          this.form.value.email,
+          this.form.value.username,
+          this.form.value.realname,
+          this.form.value.ranchAccess,
+          this.getSelectedRoles()
+        );
       }
 
       this.userService.addUser(user).subscribe(
@@ -102,5 +122,9 @@ export class AddUserComponent implements OnInit {
     return Object.keys(this.plRole)
       .filter((d, ind) => this.form.get('roles').value[ind])
       .map(key => PlRole[key]);
+  }
+
+  hasEntryPerms(): boolean {
+    return this.getSelectedRoles().includes(PlRole[PlRole.DATA_ENTRY.toString()]);
   }
 }

@@ -25,7 +25,15 @@ export class ExportCardDataComponent implements OnInit {
   commodities: Array<any> = [];
   selectedItemsRanch: Array<any> = [];
   selectedItemsCommodity: Array<any> = [];
-  dropdownSettings: any = {};
+  dropdownSettings = {
+    singleSelection: false,
+    idField: 'item_id',
+    textField: 'item_text',
+    selectAllText: 'Select All',
+    unSelectAllText: 'Unselect All',
+    itemsShowLimit: 5,
+    allowSearchFilter: this.ShowFilter
+  };
 
   ngOnInit() {
     this.titleService.setTitle('Export Data');
@@ -35,15 +43,6 @@ export class ExportCardDataComponent implements OnInit {
       {item_id: 3, item_text: 'Broccoli'},
       {item_id: 4, item_text: 'Tomato'}
     ];
-    this.dropdownSettings = {
-      singleSelection: false,
-      idField: 'item_id',
-      textField: 'item_text',
-      selectAllText: 'Select All',
-      unSelectAllText: 'UnSelect All',
-      itemsShowLimit: 5,
-      allowSearchFilter: this.ShowFilter
-    };
     this.myFormRanch = this.fb.group({
       ranch: [this.selectedItemsRanch],
     });
