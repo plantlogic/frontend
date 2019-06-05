@@ -61,6 +61,7 @@ export class EditUserComponent implements OnInit {
               this.form.get('username').setValue(this.user.username);
               this.form.get('email').setValue(this.user.email);
               this.form.get('realname').setValue(this.user.realName);
+              this.form.get('ranchAccess').setValue(this.user.ranchAccess);
               this.form.get('roles').setValue(this.setSelectedRoles());
 
               if (!this.user.email) {
