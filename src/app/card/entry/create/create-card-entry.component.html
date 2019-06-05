@@ -4,7 +4,7 @@
       <select class="form-control" [(ngModel)]="card.ranchName"
               #ranchName="ngModel" required="required" [class.is-invalid]="submitAttempted && ranchName.invalid">
         <option [value]="undefined" disabled selected>Ranch Name</option>
-        <option *ngFor="let r of ranches">{{r}}</option>
+        <option *ngFor="let r of getRanches()">{{r}}</option>
       </select>
       <input class="form-control" type="text" placeholder="Lot Number" [(ngModel)]="card.lotNumber" />
     </div>
