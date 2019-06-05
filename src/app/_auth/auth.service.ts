@@ -1,9 +1,9 @@
-import { Router } from '@angular/router';
-import { AlertService } from '../_interact/alert/alert.service';
-import { BasicDTO } from '../_dto/basicDTO';
-import { environment } from '../../environments/environment';
+import {Router} from '@angular/router';
+import {AlertService} from '../_interact/alert/alert.service';
+import {BasicDTO} from '../_dto/basicDTO';
+import {environment} from '../../environments/environment';
 import {EventEmitter, Injectable} from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import decode from 'jwt-decode';
 import {Alert} from '../_interact/alert/alert';
@@ -336,6 +336,16 @@ export class AuthService {
       return user.username;
     } else {
       return '<No_Username>';
+    }
+  }
+
+  public getRanchAccess(): Array<string> {
+    const user: User = this.getParsedTokenUser();
+
+    if (user && user.ranchAccess) {
+      return user.ranchAccess;
+    } else {
+      return [];
     }
   }
 

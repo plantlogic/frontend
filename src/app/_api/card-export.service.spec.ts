@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { CardExportService } from './card-export.service';
+import {CardExportService} from './card-export.service';
 
 describe('CardExportService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));

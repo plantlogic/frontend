@@ -1,7 +1,7 @@
-import { AuthService } from '../../../_auth/auth.service';
+import {AuthService} from '../../../_auth/auth.service';
 import {Component, EventEmitter, OnInit} from '@angular/core';
-import { TitleService } from '../../../_interact/title.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {TitleService} from '../../../_interact/title.service';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AlertService} from '../../../_interact/alert/alert.service';
 import {Router} from '@angular/router';
 import {Alert} from '../../../_interact/alert/alert';

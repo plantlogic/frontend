@@ -1,4 +1,4 @@
-import { Chemical } from './chemical';
+import {Chemical} from './chemical';
 
 describe('Chemical', () => {
   it('should create an instance', () => {

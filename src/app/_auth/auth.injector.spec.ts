@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { AuthInjector } from './auth.injector';
+import {AuthInjector} from './auth.injector';
 
 describe('AuthInjector', () => {
   beforeEach(() => TestBed.configureTestingModule({}));

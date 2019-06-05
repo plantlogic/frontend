@@ -1,6 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { CloseCardEntryComponent } from './close-card-entry.component';
+import {CloseCardEntryComponent} from './close-card-entry.component';
 
 describe('CloseCardEntryComponent', () => {
   let component: CloseCardEntryComponent;

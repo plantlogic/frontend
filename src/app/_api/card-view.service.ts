@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {BasicDTO} from '../_dto/basicDTO';
 import {Card} from '../_dto/card/card';

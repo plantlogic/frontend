@@ -2,7 +2,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AlertService} from '../../../_interact/alert/alert.service';
 import {AuthService} from '../../../_auth/auth.service';
-import { ModalDirective } from 'angular-bootstrap-md';
+import {ModalDirective} from 'angular-bootstrap-md';
 
 @Component({
   selector: 'app-forgot-password',

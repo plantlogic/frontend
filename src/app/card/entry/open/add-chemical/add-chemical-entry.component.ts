@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {AlertService} from '../../../../_interact/alert/alert.service';
 import {TitleService} from '../../../../_interact/title.service';
 import {FormBuilder} from '@angular/forms';

@@ -1,7 +1,7 @@
-import { AuthService } from './../_auth/auth.service';
-import { Component, OnInit } from '@angular/core';
-import { TitleService } from '../_interact/title.service';
-import { PlRole } from '../_dto/user/pl-role.enum';
+import {AuthService} from './../_auth/auth.service';
+import {Component, OnInit} from '@angular/core';
+import {TitleService} from '../_interact/title.service';
+import {PlRole} from '../_dto/user/pl-role.enum';
 import {Router} from '@angular/router';
 import {NavService} from '../_interact/nav.service';
 

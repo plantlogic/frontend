@@ -1,4 +1,4 @@
-import { IrrigationEntry } from './irrigation-entry';
+import {IrrigationEntry} from './irrigation-entry';
 
 describe('IrrigationEntry', () => {
   it('should create an instance', () => {

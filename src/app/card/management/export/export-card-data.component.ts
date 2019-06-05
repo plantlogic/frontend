@@ -1,9 +1,9 @@
-import { CommonFormDataService } from './../../../_api/common-form-data.service';
-import { Component, OnInit } from '@angular/core';
+import {CommonFormDataService} from './../../../_api/common-form-data.service';
+import {Component, OnInit} from '@angular/core';
 import {CardExportService} from '../../../_api/card-export.service';
 import {FlatpickrOptions} from 'ng2-flatpickr';
-import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
-import { TitleService } from '../../../_interact/title.service';
+import {FormBuilder, FormGroup} from '@angular/forms';
+import {TitleService} from '../../../_interact/title.service';
 
 @Component({
   selector: 'app-export',

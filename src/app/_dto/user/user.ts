@@ -1,4 +1,4 @@
-import { PlRole } from './pl-role.enum';
+import {PlRole} from './pl-role.enum';
 
 export class User {
   email: string;

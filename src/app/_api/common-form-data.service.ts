@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {CommonDataService, CommonLookup} from './common-data.service';
 
 @Injectable({

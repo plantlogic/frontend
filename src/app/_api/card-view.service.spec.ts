@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { CardViewService } from './card-view.service';
+import {CardViewService} from './card-view.service';
 
 describe('CardViewService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));

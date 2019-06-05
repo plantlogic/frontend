@@ -1,8 +1,6 @@
 import {Injectable} from '@angular/core';
-import {Location} from '@angular/common';
-import {ActivatedRoute, ActivatedRouteSnapshot, CanActivate, Router} from '@angular/router';
+import {ActivatedRouteSnapshot, CanActivate, Router} from '@angular/router';
 import {AuthService} from './auth.service';
-import {PlRole} from '../_dto/user/pl-role.enum';
 
 @Injectable({
   providedIn: 'root'

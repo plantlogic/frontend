@@ -1,4 +1,4 @@
-import { BasicDTO } from './basicDTO';
+import {BasicDTO} from './basicDTO';
 
 describe('Dto', () => {
   it('should create an instance', () => {

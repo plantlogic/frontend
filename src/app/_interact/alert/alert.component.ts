@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import { AlertService } from './alert.service';
+import {AlertService} from './alert.service';
 import {ModalDirective} from 'angular-bootstrap-md';
 import {Alert} from './alert';
 

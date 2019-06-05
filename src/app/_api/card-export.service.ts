@@ -1,13 +1,10 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import FileDownload from 'js-file-download';
-import { environment } from '../../environments/environment';
-import { AlertService } from '../_interact/alert/alert.service';
+import {environment} from '../../environments/environment';
+import {AlertService} from '../_interact/alert/alert.service';
 import {BasicDTO} from '../_dto/basicDTO';
 import {Card} from '../_dto/card/card';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import { post } from 'selenium-webdriver/http';
-import { callbackify } from 'util';
-import { ElementFinder } from 'protractor';
 
 @Injectable({
   providedIn: 'root'

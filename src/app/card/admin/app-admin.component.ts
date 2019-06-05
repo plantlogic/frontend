@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { TitleService } from 'src/app/_interact/title.service';
+import {Component, OnInit} from '@angular/core';
+import {TitleService} from 'src/app/_interact/title.service';
 import {CommonData, CommonDataService, CommonLookup} from '../../_api/common-data.service';
 import {AlertService} from '../../_interact/alert/alert.service';
-import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-admin',

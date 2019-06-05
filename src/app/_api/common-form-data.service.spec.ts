@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { CommonFormDataService } from './common-form-data.service';
+import {CommonFormDataService} from './common-form-data.service';
 
 describe('CommonFormDataService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));

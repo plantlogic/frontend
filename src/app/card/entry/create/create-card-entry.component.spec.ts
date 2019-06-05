@@ -1,6 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { CreateCardEntryComponent } from './create-card-entry.component';
+import {CreateCardEntryComponent} from './create-card-entry.component';
 
 describe('CreateCardEntryComponent', () => {
   let component: CreateCardEntryComponent;

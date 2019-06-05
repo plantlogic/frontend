@@ -1,11 +1,10 @@
-import { CardEntryService } from './../../../_api/card-entry.service';
-import {FormGroup, FormBuilder, Validators, FormControl, NgModel} from '@angular/forms';
-import { TitleService } from '../../../_interact/title.service';
-import { AlertService } from '../../../_interact/alert/alert.service';
-import {Component, OnInit, EventEmitter, ViewChild} from '@angular/core';
-import {Alert} from '../../../_interact/alert/alert';
-import { Card } from '../../../_dto/card/card';
-import { AuthService } from 'src/app/_auth/auth.service';
+import {CardEntryService} from './../../../_api/card-entry.service';
+import {FormBuilder, NgModel} from '@angular/forms';
+import {TitleService} from '../../../_interact/title.service';
+import {AlertService} from '../../../_interact/alert/alert.service';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {Card} from '../../../_dto/card/card';
+import {AuthService} from 'src/app/_auth/auth.service';
 import {NavService} from '../../../_interact/nav.service';
 import {Chemicals} from '../../../_dto/card/chemicals';
 import {Commodities} from '../../../_dto/card/commodities';
@@ -27,12 +26,14 @@ export class CreateCardEntryComponent implements OnInit {
   @ViewChild('cropYear') public cropYear: NgModel;
   card: Card = new Card();
   submitAttempted = false;
-  rateUnits: Array<string>;
+  rateUnits: Array<string> = [];
+  ranches: Array<string> = [];
 
   ngOnInit() {
     this.titleService.setTitle('Create Card');
     this.card.ranchManagerName = this.auth.getName();
     this.rateUnits = this.initRateUnits();
+    this.ranches = this.initRanches();
   }
 
   submit() {
@@ -81,5 +82,10 @@ export class CreateCardEntryComponent implements OnInit {
   initRateUnits(): Array<string> {
     const keys = Object.keys(ChemicalUnit);
     return keys.slice(keys.length / 2);
+  }
+
+  initRanches(): Array<string> {
+    return this.common.getValues('ranches')
+      .filter(r => this.auth.getRanchAccess().includes(r));
   }
 }
