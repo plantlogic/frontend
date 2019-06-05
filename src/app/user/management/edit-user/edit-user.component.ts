@@ -17,7 +17,7 @@ import {CommonFormDataService} from '../../../_api/common-form-data.service';
 })
 export class EditUserComponent implements OnInit {
   form: FormGroup;
-  user: User;
+  user: User = new User();
   submitAttempted = false;
   plRole = PlRole;
   roleList: Array<string>;
@@ -40,7 +40,7 @@ export class EditUserComponent implements OnInit {
       username: ['', [Validators.required, Validators.minLength(4)]],
       password: [''],
       email: ['', [Validators.required, Validators.email]],
-      realname: ['', Validators.required],
+      realname: ['', [Validators.required]],
       ranchAccess: [],
       roles: this.fb.array(this.initRoleBoolArray())
     });

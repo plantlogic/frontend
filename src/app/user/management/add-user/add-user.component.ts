@@ -35,7 +35,7 @@ export class AddUserComponent implements OnInit {
       username: ['', [Validators.required, Validators.minLength(4)]],
       password: ['', [Validators.required, Validators.minLength(4)]],
       email: ['', [Validators.required, Validators.email]],
-      realname: ['', Validators.required],
+      realname: ['', [Validators.required]],
       ranchAccess: [],
       roles: this.fb.array(this.initRoleBoolArray())
     });

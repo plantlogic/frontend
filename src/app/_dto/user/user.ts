@@ -7,7 +7,7 @@ export class User {
   password: string;
   passwordUpdated: string;
   ranchAccess: string[];
-  permissions: PlRole[];
+  permissions: PlRole[] = [];
   passwordReset: boolean;
   initialUsername: string;
 
