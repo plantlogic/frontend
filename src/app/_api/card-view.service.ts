@@ -21,18 +21,4 @@ export class CardViewService {
   public getCardById(id: string): Observable<BasicDTO<Card>> {
     return this.http.get<BasicDTO<Card>>(environment.ApiUrl + '/data/view/ranches/' + id, this.httpOptions);
   }
-
-  public getCardsByRanchManager(ranchManagerName: string): Observable<BasicDTO<Card[]>> {
-    return this.http.get<BasicDTO<Card[]>>(
-      environment.ApiUrl + '/data/view/ranches/ranchManager/' + ranchManagerName,
-      this.httpOptions
-    );
-  }
-
-  public getCardsByRanchName(ranchName: string): Observable<BasicDTO<Card[]>> {
-    return this.http.get<BasicDTO<Card[]>>(
-      environment.ApiUrl + '/data/view/ranches/ranchName/' + ranchName,
-      this.httpOptions
-    );
-  }
 }
