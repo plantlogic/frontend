@@ -1,4 +1,4 @@
-import { PlRole } from './pl-role.enum';
+import {PlRole} from './pl-role.enum';
 
 export class User {
   email: string;
@@ -6,24 +6,27 @@ export class User {
   realName: string;
   password: string;
   passwordUpdated: string;
-  permissions: PlRole[];
+  ranchAccess: string[];
+  permissions: PlRole[] = [];
   passwordReset: boolean;
   initialUsername: string;
 
   // For sending
-  emailConstruct(email: string, username: string, realName: string, permissions: PlRole[]): User {
+  emailConstruct(email: string, username: string, realName: string, ranchAccess: string[], permissions: PlRole[]): User {
     this.email = email;
     this.username = username;
     this.realName = realName;
+    this.ranchAccess = ranchAccess;
     this.permissions = permissions;
 
     return this;
   }
 
-  passConstruct(password: string, username: string, realName: string, permissions: PlRole[]): User {
+  passConstruct(password: string, username: string, realName: string, ranchAccess: string[], permissions: PlRole[]): User {
     this.password = password;
     this.username = username;
     this.realName = realName;
+    this.ranchAccess = ranchAccess;
     this.permissions = permissions;
 
     return this;
@@ -46,6 +49,7 @@ export class User {
     this.email = user.email;
     this.username = user.username;
     this.realName = user.realName;
+    this.ranchAccess = user.ranchAccess;
     this.permissions = user.permissions;
     this.passwordReset = user.passwordReset;
   }

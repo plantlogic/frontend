@@ -72,8 +72,17 @@
                 </div>
               </div>
             </div>
-            <div class="col-sm">
-              Ranch Access
+            <div class="col-sm" *ngIf="hasEntryPerms()">
+              <div class="form-group">
+                <label for="ranchAccessSelector">Entry Access</label>
+                <ng-multiselect-dropdown
+                  id="ranchAccessSelector"
+                  formControlName="ranchAccess"
+                  [placeholder]="'Select Ranches'"
+                  [data]="commonData.getValues('ranches')"
+                  [settings]="multiselectSettings">
+                </ng-multiselect-dropdown>
+              </div>
             </div>
           </div>
         </div>

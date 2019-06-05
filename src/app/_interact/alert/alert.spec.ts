@@ -1,4 +1,4 @@
-import { Alert } from './alert';
+import {Alert} from './alert';
 
 describe('Alert', () => {
   it('should create an instance', () => {

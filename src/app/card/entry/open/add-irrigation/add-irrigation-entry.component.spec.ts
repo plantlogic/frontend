@@ -1,6 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { AddIrrigationEntryComponent } from './add-irrigation-entry.component';
+import {AddIrrigationEntryComponent} from './add-irrigation-entry.component';
 
 describe('AddIrrigationEntryComponent', () => {
   let component: AddIrrigationEntryComponent;

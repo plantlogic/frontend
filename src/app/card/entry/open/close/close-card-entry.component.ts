@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {AlertService} from '../../../../_interact/alert/alert.service';
 import {Card} from '../../../../_dto/card/card';
 import {TitleService} from '../../../../_interact/title.service';
 import {CardEntryService} from '../../../../_api/card-entry.service';
-import {NavService} from '../../../../_interact/nav.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {FlatpickrOptions} from 'ng2-flatpickr';

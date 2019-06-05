@@ -1,6 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { EntryDashboardComponent } from './entry-dashboard.component';
+import {EntryDashboardComponent} from './entry-dashboard.component';
 
 describe('EntryDashboardComponent', () => {
   let component: EntryDashboardComponent;

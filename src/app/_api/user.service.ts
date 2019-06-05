@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { environment } from '../../environments/environment';
-import { BasicDTO } from '../_dto/basicDTO';
-import { User } from '../_dto/user/user';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {environment} from '../../environments/environment';
+import {BasicDTO} from '../_dto/basicDTO';
+import {User} from '../_dto/user/user';
 import {Observable} from 'rxjs';
 
 @Injectable({

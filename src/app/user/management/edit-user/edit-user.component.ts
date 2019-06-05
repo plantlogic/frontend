@@ -8,6 +8,7 @@ import {User} from '../../../_dto/user/user';
 import {AlertService} from '../../../_interact/alert/alert.service';
 import {AuthService} from '../../../_auth/auth.service';
 import {Alert} from '../../../_interact/alert/alert';
+import {CommonFormDataService} from '../../../_api/common-form-data.service';
 
 @Component({
   selector: 'app-edit-user',
@@ -16,21 +17,31 @@ import {Alert} from '../../../_interact/alert/alert';
 })
 export class EditUserComponent implements OnInit {
   form: FormGroup;
-  user: User;
+  user: User = new User();
   submitAttempted = false;
   plRole = PlRole;
   roleList: Array<string>;
   manualPassword = false;
   hadEmail: boolean;
 
+  multiselectSettings = {
+    singleSelection: false,
+    selectAllText: 'Select All',
+    unSelectAllText: 'Unselect All',
+    itemsShowLimit: 5,
+    allowSearchFilter: true
+  };
+
   constructor(private titleService: TitleService, private fb: FormBuilder, private userService: UserService,
-              private router: Router, private route: ActivatedRoute, private auth: AuthService) {
+              private router: Router, private route: ActivatedRoute, private auth: AuthService,
+              public commonData: CommonFormDataService) {
 
     this.form = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(4)]],
       password: [''],
       email: ['', [Validators.required, Validators.email]],
-      realname: ['', Validators.required],
+      realname: ['', [Validators.required]],
+      ranchAccess: [],
       roles: this.fb.array(this.initRoleBoolArray())
     });
 
@@ -50,6 +61,7 @@ export class EditUserComponent implements OnInit {
               this.form.get('username').setValue(this.user.username);
               this.form.get('email').setValue(this.user.email);
               this.form.get('realname').setValue(this.user.realName);
+              this.form.get('ranchAccess').setValue(this.user.ranchAccess);
               this.form.get('roles').setValue(this.setSelectedRoles());
 
               if (!this.user.email) {
@@ -95,6 +107,7 @@ export class EditUserComponent implements OnInit {
       this.user.email = this.form.value.email;
       this.user.password = this.form.value.password;
       this.user.realName = this.form.value.realname;
+      this.user.ranchAccess = this.form.value.ranchAccess;
       this.user.permissions = this.getSelectedRoles();
 
       this.userService.editUser(this.user).subscribe(
@@ -169,6 +182,10 @@ export class EditUserComponent implements OnInit {
     return Object.keys(this.plRole)
       .filter((d, ind) => this.form.get('roles').value[ind])
       .map(key => PlRole[key]);
+  }
+
+  hasEntryPerms(): boolean {
+    return this.getSelectedRoles().includes(PlRole[PlRole.DATA_ENTRY.toString()]);
   }
 
   editSelfAlert(prefixMessage: string): void {

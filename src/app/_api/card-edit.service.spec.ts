@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { CardEditService } from './card-edit.service';
+import {CardEditService} from './card-edit.service';
 
 describe('CardEditService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));

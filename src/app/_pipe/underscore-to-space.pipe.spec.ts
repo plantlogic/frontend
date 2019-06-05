@@ -1,4 +1,4 @@
-import { UnderscoreToSpace } from './underscore-to-space';
+import {UnderscoreToSpace} from './underscore-to-space';
 
 describe('UnderscoreToSpace', () => {
   it('create an instance', () => {

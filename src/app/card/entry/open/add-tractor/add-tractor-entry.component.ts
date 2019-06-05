@@ -1,13 +1,13 @@
-import { TractorEntry } from './../../../../_dto/card/tractor-entry';
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { TitleService } from 'src/app/_interact/title.service';
-import { ActivatedRoute } from '@angular/router';
-import { CardEntryService } from 'src/app/_api/card-entry.service';
-import { AlertService } from 'src/app/_interact/alert/alert.service';
-import { FlatpickrOptions } from 'ng2-flatpickr';
-import { NavService } from '../../../../_interact/nav.service';
-import { Chemical, ChemicalUnit } from 'src/app/_dto/card/chemical';
+import {TractorEntry} from './../../../../_dto/card/tractor-entry';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {TitleService} from 'src/app/_interact/title.service';
+import {ActivatedRoute} from '@angular/router';
+import {CardEntryService} from 'src/app/_api/card-entry.service';
+import {AlertService} from 'src/app/_interact/alert/alert.service';
+import {FlatpickrOptions} from 'ng2-flatpickr';
+import {NavService} from '../../../../_interact/nav.service';
+import {Chemical, ChemicalUnit} from 'src/app/_dto/card/chemical';
 import {CommonFormDataService} from '../../../../_api/common-form-data.service';
 
 @Component({

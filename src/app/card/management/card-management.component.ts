@@ -1,12 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Card} from '../../_dto/card/card';
 import {AlertService} from '../../_interact/alert/alert.service';
 import {TitleService} from '../../_interact/title.service';
 import {CardViewService} from '../../_api/card-view.service';
 import {MdbTableService} from 'angular-bootstrap-md';
-import {Router} from '@angular/router';
 import {NavService} from '../../_interact/nav.service';
-import {Commodities} from '../../_dto/card/commodities';
 
 @Component({
   selector: 'app-management',

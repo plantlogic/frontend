@@ -1,6 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { LoginRedirectComponent } from './login-redirect.component';
+import {LoginRedirectComponent} from './login-redirect.component';
 
 describe('LoginRedirectComponent', () => {
   let component: LoginRedirectComponent;

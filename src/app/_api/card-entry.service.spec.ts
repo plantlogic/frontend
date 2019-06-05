@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { CardEntryService } from './card-entry.service';
+import {CardEntryService} from './card-entry.service';
 
 describe('CardEntryService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));

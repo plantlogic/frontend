@@ -10,7 +10,6 @@ import {AuthService} from '../../../_auth/auth.service';
 import {PlRole} from '../../../_dto/user/pl-role.enum';
 import {Alert} from '../../../_interact/alert/alert';
 import {FlatpickrOptions} from 'ng2-flatpickr';
-import {ModalDirective} from 'angular-bootstrap-md';
 import {NgModel} from '@angular/forms';
 import {TractorEntry} from '../../../_dto/card/tractor-entry';
 import {IrrigationEntry} from '../../../_dto/card/irrigation-entry';
