@@ -27,13 +27,11 @@ export class CreateCardEntryComponent implements OnInit {
   card: Card = new Card();
   submitAttempted = false;
   rateUnits: Array<string> = [];
-  ranches: Array<string> = [];
 
   ngOnInit() {
     this.titleService.setTitle('Create Card');
     this.card.ranchManagerName = this.auth.getName();
     this.rateUnits = this.initRateUnits();
-    this.ranches = this.initRanches();
   }
 
   submit() {
@@ -84,7 +82,7 @@ export class CreateCardEntryComponent implements OnInit {
     return keys.slice(keys.length / 2);
   }
 
-  initRanches(): Array<string> {
+  getRanches(): Array<string> {
     return this.common.getValues('ranches')
       .filter(r => this.auth.getRanchAccess().includes(r));
   }
