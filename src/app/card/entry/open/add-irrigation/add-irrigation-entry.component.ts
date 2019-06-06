@@ -1,7 +1,6 @@
 import {IrrigationEntry} from './../../../../_dto/card/irrigation-entry';
 import {Component, OnInit} from '@angular/core';
 import {TitleService} from 'src/app/_interact/title.service';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {CardEntryService} from 'src/app/_api/card-entry.service';
 import {AlertService} from 'src/app/_interact/alert/alert.service';
 import {ActivatedRoute} from '@angular/router';
@@ -9,7 +8,6 @@ import {FlatpickrOptions} from 'ng2-flatpickr';
 import {NavService} from '../../../../_interact/nav.service';
 import {Chemical, ChemicalUnit} from 'src/app/_dto/card/chemical';
 import {CommonFormDataService} from '../../../../_api/common-form-data.service';
-import {TractorEntry} from '../../../../_dto/card/tractor-entry';
 
 
 @Component({
