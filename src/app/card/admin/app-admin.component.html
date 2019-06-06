@@ -3,28 +3,28 @@
   <div class="row" *ngIf="common">
     <div class="col-lg-4 border p-3" *ngFor="let k of getSimpleTables()">
       <h4>{{getName(k)}}</h4>
-      <table mdbTable class="table">
+      <table mdbTable class="table table-sm" small="true">
         <thead>
-        <tr>
-          <th scope="col" class="small">Name</th>
-          <th scope="col" class="small">Options</th>
-        </tr>
+          <tr>
+            <th scope="col" class="small">Name</th>
+            <th scope="col" class="small minOptWidth">Options</th>
+          </tr>
         </thead>
         <tbody>
           <tr mdbTableCol *ngFor="let c of common[k]; let i = index">
             <td>
               {{c}}
             </td>
-            <td>
-              <button type="button" color="danger" (click)="removeElement(k, common[k], i)" mdbBtn class="float-right"
+            <td class="minOptWidth">
+              <button type="button" color="danger" (click)="removeElement(k, common[k], common[k], i)" mdbBtn class="float-right"
                       size="sm" floating="true" mdbWavesEffect>
                 <i class="fa fa-trash" aria-hidden="true"></i>
               </button>
-              <button type="button" color="light" (click)="shiftDown(k, common[k], i)" mdbBtn class="float-right"
+              <button type="button" color="light" (click)="shiftDown(k, common[k], common[k], i)" mdbBtn class="float-right"
                       size="sm" floating="true" mdbWavesEffect [disabled]="i >= common[k].length - 1">
                 <i class="fa fa-chevron-down" aria-hidden="true"></i>
               </button>
-              <button type="button" color="light" (click)="shiftUp(k, common[k], i)" mdbBtn class="float-right"
+              <button type="button" color="light" (click)="shiftUp(k, common[k], common[k], i)" mdbBtn class="float-right"
                       size="sm" floating="true" mdbWavesEffect [disabled]="i <= 0" >
                 <i class="fa fa-chevron-up" aria-hidden="true"></i>
               </button>
@@ -33,13 +33,68 @@
           <tr mdbTableCol>
             <td>
               <input [type]="getType(k)" [(ngModel)]="entries[k]" class="form-control"
-                     (keyup.enter)="addElement(k, common[k], entries[k])" />
+                     (keyup.enter)="addElement(k, common[k], common[k], entries[k])" />
             </td>
             <td>
-              <button type="button" color="primary" (click)="addElement(k, common[k], entries[k])" mdbBtn class="float-right"
+              <button type="button" color="primary" (click)="addElement(k, common[k], common[k], entries[k])" mdbBtn
                       size="sm" floating="true" mdbWavesEffect><i class="fa fa-plus" aria-hidden="true"></i></button>
             </td>
           </tr>
+        </tbody>
+      </table>
+    </div>
+
+
+    <div class="col-lg-8 border p-3" *ngFor="let k of getHashTables()">
+      <h4>{{getName(k)}}</h4>
+      <table mdbTable class="table table-sm" small="true">
+        <thead>
+        <tr>
+          <th scope="col" class="small">Name</th>
+          <th scope="col" class="small">Varieties</th>
+          <th scope="col" class="small">Options</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr mdbTableCol *ngFor="let c of getKeys(common[k]); let i = index">
+          <td>
+            <b>{{c}}</b>
+          </td>
+          <td>
+            <span class="badge badge-pill badge-light" *ngFor="let v of common[k][c]; let j = index">
+              {{v}}
+              <i class="fas fa-times ml-1" (click)="removeElement(k, common[k], common[k][c], j)"></i>
+            </span>
+            <div class="form-group row">
+              <input type="text" [(ngModel)]="entries[k]['varieties'][c]" class="form-control-sm"
+                (keyup.enter)="addElement(k, common[k], common[k][c], entries[k]['varieties'][c])" />
+              <button type="button" color="primary" mdbBtn size="sm" floating="true" mdbWavesEffect
+                (click)="addElement(k, common[k], common[k][c], entries[k]['varieties'][c])">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+              </button>
+            </div>
+          </td>
+          <td>
+            <button type="button" color="danger"  mdbBtn class="float-right" size="sm" floating="true" mdbWavesEffect
+              (click)="popHashCategory(k, common[k], common[k], c)">
+              <i class="fa fa-trash" aria-hidden="true"></i>
+            </button>
+          </td>
+        </tr>
+        <tr mdbTableCol>
+          <td>
+            <input [type]="getType(k)" [(ngModel)]="entries[k]['category']" class="form-control"
+              (keyup.enter)="addHashCategory(k, common[k], common[k], entries[k]['category'])"/>
+          </td>
+          <td>
+            <button type="button" color="primary" mdbBtn size="sm" floating="true" mdbWavesEffect
+              (click)="addHashCategory(k, common[k], common[k], entries[k]['category'])">
+              <i class="fa fa-plus" aria-hidden="true"></i>
+            </button>
+          </td>
+          <td>
+          </td>
+        </tr>
         </tbody>
       </table>
     </div>
