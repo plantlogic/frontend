@@ -22,12 +22,12 @@ export class CommonFormDataService {
               if (a.values && a.values.length > 0) {
                 (a.values as Array<string>).forEach(v => CommonFormDataService.common[a.key].push(v));
               }
-            } else {
-              // Complex
+            } else if (CommonLookup[a.key].type === 'hashTable') {
+              CommonFormDataService.common[a.key] = a.values;
             }
-
-            return CommonFormDataService.common[key];
           });
+
+          return CommonFormDataService.common[key];
         } else {
           CommonFormDataService.timestamp = undefined;
           return this.getValues(key);
@@ -39,5 +39,13 @@ export class CommonFormDataService {
     } else {
       return CommonFormDataService.common[key];
     }
+  }
+
+  public getMapKeys(key: string): Array<string> {
+    return Object.keys(this.getValues(key));
+  }
+
+  public getMapValues(key: string, mapKey: string): Array<string> {
+    return this.getValues(key)[mapKey];
   }
 }

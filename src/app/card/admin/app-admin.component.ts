@@ -11,6 +11,7 @@ import {AlertService} from '../../_interact/alert/alert.service';
 export class AppAdminComponent implements OnInit {
   constructor(private titleService: TitleService, private commonData: CommonDataService) { }
   common = {};
+  emptyEntries = undefined;
   entries = {};
   keys: Array<string> = new Array<string>();
   commodities = {};
@@ -21,18 +22,29 @@ export class AppAdminComponent implements OnInit {
     this.commonData.getAllData().subscribe(data => {
       if (data.success) {
         data.data.forEach(a => {
-          // Simple Tables
           if (CommonLookup[a.key].type === 'text' || CommonLookup[a.key].type === 'number') {
-            this.common[a.key] = [];
+            // Simple Tables
             this.entries[a.key] = '';
+
+            this.common[a.key] = [];
             if (a.values && a.values.length > 0) {
               (a.values as Array<string>).forEach(v => this.common[a.key].push(v));
             }
-            this.keys.push(a.key);
-          } else {
-            // Complex
+          } else if (CommonLookup[a.key].type === 'hashTable') {
+            // Hash Table
+            this.entries[a.key] = {
+              category: '',
+              varieties: {}
+            };
+            Object.keys(a.values).forEach(v => this.entries[a.key].varieties[v] = '');
+
+            this.common[a.key] = a.values;
           }
+
+          this.keys.push(a.key);
         });
+
+        this.emptyEntries = JSON.parse(JSON.stringify(this.entries));
       } else if (!data.success) {
         AlertService.newBasicAlert('Error: ' + data.error, true);
       }
@@ -47,9 +59,9 @@ export class AppAdminComponent implements OnInit {
   }
 
 
-  /* private getHashTables(): Array<string> {
-
-  } */
+  private getHashTables(): Array<string> {
+    return this.keys.filter(v => CommonLookup[v].type === 'hashTable');
+  }
 
 
   private getName(key: string): string {
@@ -68,42 +80,71 @@ export class AppAdminComponent implements OnInit {
     }
   }
 
-
-  private removeElement(key: string, arr: Array<string>, index: number): void {
-    arr.splice(index, 1);
-
-    this.publishChange(key, arr);
+  private getKeys(o: any): Array<string> {
+    return Object.keys(o).sort();
   }
 
-  private shiftUp(key: string, arr: Array<string>, index: number): void {
+
+  private removeElement(key: string, pub: any, arr: Array<string>, index: number): void {
+    arr.splice(index, 1);
+
+    this.publishChange(key, pub);
+  }
+
+  private shiftUp(key: string, pub: any, arr: Array<string>, index: number): void {
     const copy = arr[index - 1];
     arr[index - 1] = arr[index];
     arr[index] = copy;
 
-    this.publishChange(key, arr);
+    this.publishChange(key, pub);
   }
 
-  private shiftDown(key: string, arr: Array<string>, index: number): void {
+  private shiftDown(key: string, pub: any, arr: Array<string>, index: number): void {
     const copy = arr[index + 1];
     arr[index + 1] = arr[index];
     arr[index] = copy;
 
-    this.publishChange(key, arr);
+    this.publishChange(key, pub);
   }
 
-  private addElement(key: string, arr: Array<string>, value: string): void {
+  private addElement(key: string, pub: any, arr: Array<string>, value: string, sort: boolean = false): void {
     if (value) {
       arr.push(value);
-      this.entries[key] = '';
 
-      this.publishChange(key, arr);
+      if (sort) {
+        arr.sort();
+      }
+
+      this.publishChange(key, pub);
+      this.clearEntries();
     }
   }
 
-  private publishChange(key: string, arr: Array<string>): void {
+  private addHashCategory(key: string, pub: any, obj: any, value: string): void {
+    if (value && !obj[value]) {
+      obj[value] = new Array<string>();
+
+      this.publishChange(key, pub);
+      this.clearEntries();
+    }
+  }
+
+  private popHashCategory(key: string, pub: any, obj: any, value: string): void {
+    if (value) {
+      delete obj[value];
+
+      this.publishChange(key, pub);
+    }
+  }
+
+  private clearEntries(): void {
+    this.entries = JSON.parse(JSON.stringify(this.emptyEntries));
+  }
+
+  private publishChange(key: string, pub: any): void {
     const val: CommonData = new CommonData();
     val.key = key;
-    val.values = arr;
+    val.values = pub;
 
     this.commonData.updateByKey(val).subscribe(data => {
       if (!data.success) {

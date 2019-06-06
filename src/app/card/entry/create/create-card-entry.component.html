@@ -29,10 +29,14 @@
       </div>
       <div class="col-sm border p-2 text-right" *ngFor="let p of card.commodityArray; let i = index">
         <div>
-          <input type="text" [(ngModel)]="p.commodity" class="form-control"
-                 placeholder="Commodity" />
-          <input type="text" [(ngModel)]="p.variety" class="form-control"
-                 placeholder="Variety" />
+          <select class="form-control" [(ngModel)]="p.commodity" id="commodityInput" (ngModelChange)="p.variety = undefined">
+            <option [value]="undefined" disabled selected>Commodity</option>
+            <option *ngFor="let r of common.getMapKeys('commodities')">{{r}}</option>
+          </select>
+          <select class="form-control" [(ngModel)]="p.variety" id="varietyInput">
+            <option [value]="undefined" disabled selected>Variety</option>
+            <option *ngFor="let r of common.getMapValues('commodities', p.commodity)">{{r}}</option>
+          </select>
           <select class="form-control" [(ngModel)]="p.bedType">
             <option [value]="undefined" disabled selected>Bed Type</option>
             <option *ngFor="let r of common.getValues('bedTypes')">{{r}}</option>
