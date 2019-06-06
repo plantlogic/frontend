@@ -61,15 +61,17 @@
             <b>{{c}}</b>
           </td>
           <td>
-            <span class="badge badge-pill badge-light" *ngFor="let v of common[k][c]; let j = index">
-              {{v}}
-              <i class="fas fa-times ml-1" (click)="removeElement(k, common[k], common[k][c], j)"></i>
-            </span>
+            <h6>
+              <span class="badge badge-light m-1" *ngFor="let v of common[k][c]; let j = index">
+                {{v}}
+                <i class="fas fa-times ml-1" (click)="removeElement(k, common[k], common[k][c], j)"></i>
+              </span>
+            </h6>
             <div class="form-group row">
-              <input type="text" [(ngModel)]="entries[k]['varieties'][c]" class="form-control-sm"
-                (keyup.enter)="addElement(k, common[k], common[k][c], entries[k]['varieties'][c])" />
+              <input type="text" [(ngModel)]="entries[k]['varieties'][c]" class=""
+                (keyup.enter)="addElement(k, common[k], common[k][c], entries[k]['varieties'][c], true)" />
               <button type="button" color="primary" mdbBtn size="sm" floating="true" mdbWavesEffect
-                (click)="addElement(k, common[k], common[k][c], entries[k]['varieties'][c])">
+                (click)="addElement(k, common[k], common[k][c], entries[k]['varieties'][c], true)">
                 <i class="fa fa-plus" aria-hidden="true"></i>
               </button>
             </div>

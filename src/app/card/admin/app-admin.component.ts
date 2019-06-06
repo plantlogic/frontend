@@ -81,7 +81,7 @@ export class AppAdminComponent implements OnInit {
   }
 
   private getKeys(o: any): Array<string> {
-    return Object.keys(o);
+    return Object.keys(o).sort();
   }
 
 
@@ -107,9 +107,13 @@ export class AppAdminComponent implements OnInit {
     this.publishChange(key, pub);
   }
 
-  private addElement(key: string, pub: any, arr: Array<string>, value: string): void {
+  private addElement(key: string, pub: any, arr: Array<string>, value: string, sort: boolean = false): void {
     if (value) {
       arr.push(value);
+
+      if (sort) {
+        arr.sort();
+      }
 
       this.publishChange(key, pub);
       this.clearEntries();
