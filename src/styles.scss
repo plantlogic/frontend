@@ -12,3 +12,8 @@ $fa-font-path: "../node_modules/@fortawesome/fontawesome-free/webfonts";
 *:focus {
   outline: none !important;
 }
+
+/* Disable accidental double-tap to zoom behavior on mobile browsers */
+* {
+  touch-action: manipulation;
+}

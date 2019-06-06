@@ -47,7 +47,7 @@
             <option *ngFor="let r of common.getValues('bedCounts')">{{r}}</option>
           </select>
           <input type="number" [(ngModel)]="p.cropAcres" class="form-control"
-                 placeholder="Crop Acres" pattern="\d+(\.\d+)?" />
+                 placeholder="Crop Acres" pattern="\d*" />
           <input type="text" [(ngModel)]="p.seedLotNumber" class="form-control"
                  placeholder="Seed Lot #" />
         </div>
@@ -92,7 +92,7 @@
               </select>
               <div class="form-inline m-0">
                 <input type="number" [(ngModel)]="p.chemical.rate" class="form-control"
-                       placeholder="Rate" pattern="\d+(\.\d+)?" />
+                       placeholder="Rate" pattern="\d*" />
                 <select class="form-control" [(ngModel)]="p.chemical.unit" >
                   <option *ngFor="let r of rateUnits">{{r}}</option>
                 </select>
@@ -118,7 +118,7 @@
               </select>
               <div class="form-inline m-0">
                 <input type="number" [(ngModel)]="p.fertilizer.rate" class="form-control"
-                       placeholder="Rate" pattern="\d+(\.\d+)?" />
+                       placeholder="Rate" pattern="\d*" />
                 <select class="form-control" [(ngModel)]="p.fertilizer.unit" >
                   <option *ngFor="let r of rateUnits">{{r}}</option>
                 </select>
