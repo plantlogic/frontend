@@ -22,7 +22,7 @@ export class CommonFormDataService {
               if (a.values && a.values.length > 0) {
                 (a.values as Array<string>).forEach(v => CommonFormDataService.common[a.key].push(v));
               }
-            } else {
+            } else if (CommonLookup[a.key].type === 'hashTable') {
               CommonFormDataService.common[a.key] = a.values;
             }
           });
