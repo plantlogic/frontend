@@ -6,6 +6,7 @@ import {AlertService} from '../../_interact/alert/alert.service';
 import {User} from '../../_dto/user/user';
 import {MdbTableService} from 'angular-bootstrap-md';
 import {Alert} from '../../_interact/alert/alert';
+import {PlRoleLookup} from '../../_dto/user/pl-role.enum';
 
 @Component({
   selector: 'app-user-management',
@@ -19,6 +20,7 @@ export class UserManagementComponent implements OnInit {
   users: User[];
   filter: string;
   previous: string;
+  PlRoleLookup = PlRoleLookup;
 
   ngOnInit() {
     this.titleService.setTitle('User Management');

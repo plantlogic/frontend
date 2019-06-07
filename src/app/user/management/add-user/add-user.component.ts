@@ -1,4 +1,4 @@
-import {PlRole} from '../../../_dto/user/pl-role.enum';
+import {PlRole, PlRoleLookup} from '../../../_dto/user/pl-role.enum';
 import {AlertService} from '../../../_interact/alert/alert.service';
 import {UserService} from '../../../_api/user.service';
 import {Component, OnInit} from '@angular/core';
@@ -15,6 +15,7 @@ import {CommonFormDataService} from '../../../_api/common-form-data.service';
 })
 export class AddUserComponent implements OnInit {
   form: FormGroup;
+  PlRoleLookup = PlRoleLookup;
   submitAttempted = false;
   plRole = PlRole;
   roleList: Array<string>;

@@ -45,7 +45,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr mdbTableCol *ngFor="let p of users; let i = index" class="animated fadeIn" [style.animation-delay]="this.min((30*i), 1000)+ 'ms'">
+          <tr mdbTableCol *ngFor="let p of users; let i = index" class="animated fadeIn" [style.animation-delay]="min((30*i), 1000)+ 'ms'">
             <th scope="row">{{p.username}}</th>
             <td>{{p.realName}}</td>
             <td class="d-none d-md-table-cell">
@@ -60,11 +60,8 @@
                 <div *ngIf="!p.passwordReset" class="mt-1">User Has No Permissions</div>
               </div>
               <div *ngFor="let r of p.permissions; let i = index">
-                <span class="badge mr-1"
-                [class.badge-success]="r == 'DATA_ENTRY'" [class.badge-info]="r == 'DATA_VIEW'"
-                [class.badge-primary]="r == 'DATA_EDIT'" [class.badge-danger]="r == 'USER_MANAGEMENT'"
-                [class.badge-warning]="r == 'APP_ADMIN'">
-                  {{r | underscoreToSpace | titlecase}}
+                <span class="badge mr-1" [ngClass]="PlRoleLookup[r]['style']" [mdbTooltip]="PlRoleLookup[r]['description']">
+                  {{r.toString() | underscoreToSpace | titlecase}}
                 </span>
               </div>
             </td>
@@ -72,7 +69,7 @@
               <button type="button" color="amber" [routerLink]="['/userManagement/editUser', p.username]"
                       alt="Edit User" class="mr-1 mb-1" mdbBtn floating="true" size="sm"
                       mdbWavesEffect>Edit <i class="ml-1 fa fa-edit" aria-hidden="true"></i></button>
-              <button type="button" color="danger" alt="Delete User" (click)="this.deleteUser(p.username)"
+              <button type="button" color="danger" alt="Delete User" (click)="deleteUser(p.username)"
               mdbBtn floating="true" size="sm" mdbWavesEffect>Delete <i class="ml-1 fa fa-trash" aria-hidden="true"></i></button>
             </td>
           </tr>
