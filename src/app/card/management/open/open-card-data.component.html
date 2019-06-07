@@ -94,6 +94,8 @@
         <ng2-flatpickr [placeholder]="editing ? 'Harvest Date' : ''" id="harvestDate"
                        [config]="harvestDatePickr" [(ngModel)]="card.harvestDate" *ngIf="editing">
         </ng2-flatpickr>
+        <br />
+        <b>Date Created:</b> {{card.dateCreated | date:'shortDate'}}
       </div>
     </div>
     <div class="row mt-4">
