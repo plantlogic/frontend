@@ -14,14 +14,11 @@ export class CardExportService {
   private httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'})};
 
 
-  public exampleGenerate(): void {
-    // ^ We could specify method input such as date range and then pass that as parameters to the server
-
+  public generateExport(from: number, to: number, ranches: Array<string>, commodities: Array<string>, includeUnharvested: boolean): void {
     this.http.get<BasicDTO<Card[]>>(environment.ApiUrl + '/data/view/ranches', this.httpOptions).subscribe(
       data => {
         // If data is successful retrieved
         if (data.success) {
-          console.log('Successful Subscription');
           // Format is [x][y]: [x] is a row and [y] is a column. Commas and newlines will automatically be added.
           const table: Array<Array<string>> = [];
           // Add column labels
@@ -104,9 +101,36 @@ export class CardExportService {
           ]);
           let dataLine: Array<string> = [];
           let pushCounter = 0;
-          // Take our data and put it in the table.
-          data.data.forEach(x => {
-              x = (new Card()).copyConstructor(x);
+          // Take our data
+          data.data
+            // Convert into real card
+            .map(x => (new Card()).copyConstructor(x))
+            // Filter it to match user filters
+            .filter(x => {
+              // If card doesn't contain any of our selected ranches
+              if (!x.ranchName || !ranches.includes(x.ranchName)) {
+                return false;
+              }
+
+              // If card doesn't contain any of our selected commodities
+              if (!x.commodityArray.map(c => commodities.includes(c.commodity)).some(c => c)) {
+                return false;
+              }
+
+              // If we're including open cards
+              if (includeUnharvested && (!x.harvestDate || !x.closed)) {
+                return true;
+              }
+
+              // If the harvest date is outside the requested date range
+              if (!x.harvestDate || from > (new Date(x.harvestDate)).valueOf() || to < (new Date(x.harvestDate)).valueOf()) {
+                return false;
+              }
+
+              return true;
+            })
+            // Put in the table
+            .forEach(x => {
               // Push simple data
               dataLine.push(
                 String(x.fieldID), x.ranchName, x.ranchManagerName, x.lotNumber, x.shipperID,
@@ -301,7 +325,7 @@ export class CardExportService {
           });
 
           // Initiate generation and download
-          this.generateAndDownload(table, 'example-generated-card');
+          this.generateAndDownload(table, environment.AppName + '-export');
 
         } else {
           // Show server error

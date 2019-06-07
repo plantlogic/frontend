@@ -1,46 +1,48 @@
 <div class="jumbotron p-3">
-  <div class="row">
+  <h5 *ngIf="loading">Scanning all cards for ranch names and commodities... Should be done in a moment.</h5>
+  <h5 *ngIf="generating">Generating the CSV... Should be done in a moment.</h5>
+  <div class="row" *ngIf="!(loading || generating)">
     <div class="col-3">
-      <label for="workDateInput" class="control-label">From Work Date</label>
-      <ng2-flatpickr placeholder="Work Date" id="workFromDate"
-                      [config]="flatpickrOptions">
+      <label for="harvestFromDate" class="control-label">From Harvest Date</label>
+      <ng2-flatpickr placeholder="Select Date" id="harvestFromDate" [config]="flatpickrOptions" [(ngModel)]="fromDate">
       </ng2-flatpickr>
     </div>
     <div class="col-3">
-      <label for="workDateInput" class="control-label">To Work Date</label>
-      <ng2-flatpickr placeholder="Work Date" id="workToDate"
-                      [config]="flatpickrOptions2">
+      <label for="harvestToDate" class="control-label">To Harvest Date</label>
+      <ng2-flatpickr placeholder="Select Date" id="harvestToDate" [config]="flatpickrOptions" [(ngModel)]="toDate">
       </ng2-flatpickr>
     </div>
     <div class="col-3 mt-4">
-      <form [formGroup]="myFormRanch">
-        <ng-multiselect-dropdown
-            name="ranch"
-            [placeholder]="'Select Ranch'"
-            [data]="commonData.getValues('ranches')"
-            formControlName="ranch"
-            [disabled]="disabled"
-            [settings]="dropdownSettings"
-            (onSelect)="onItemSelect($event)">
-        </ng-multiselect-dropdown>
-      </form>
+      <ng-multiselect-dropdown *ngIf="!loading"
+          [placeholder]="'Select Ranch'"
+          [data]="ranchList"
+          [(ngModel)]="selectedRanches"
+          [settings]="multiselectSettings">
+      </ng-multiselect-dropdown>
     </div>
     <div class="col-3 mt-4">
-      <form [formGroup]="myFormCommodity">
-        <ng-multiselect-dropdown
-          name="commodity"
-          [placeholder]="'Select Commodity'"
-          [data]="commodities"
-          formControlName="commodity"
-          [disabled]="disabled"
-          [settings]="dropdownSettings"
-          (onSelect)="onItemSelect($event)">
-        </ng-multiselect-dropdown>
-      </form>
+      <ng-multiselect-dropdown *ngIf="!loading"
+        [placeholder]="'Select Commodities'"
+        [data]="commodityList"
+        [(ngModel)]="selectedCommodities"
+        [settings]="multiselectSettings">
+      </ng-multiselect-dropdown>
     </div>
     <div class="col d-none d-md-inline-block mt-2">
-      <button type="button" class="float-right" color="primary" name="addCard" (click)="generateExampleCard()"
-              mdbBtn floating="true" size="sm" mdbWavesEffect>Example Generate/Save Button</button>
+      <button type="button" class="float-right" color="primary" name="addCard" (click)="generate()"
+              mdbBtn floating="true" size="sm" mdbWavesEffect>Generate & Save</button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <div class="form-inline">
+        <div class="form-group">
+          <input type="checkbox" class="form-check" [(ngModel)]="includeUnharvested" id="includeUnharvested" />
+        </div>
+        <div class="form-group ml-2">
+          <label for="includeUnharvested">Include Open Cards (Not Yet Harvested)</label>
+        </div>
+      </div>
     </div>
   </div>
 </div>
