@@ -52,12 +52,10 @@
                   class="form-check form-check-inline" name="roleSelector" id="roleSelector">
                   <input class="form-check-input" type="checkbox" name="{{i}}" id="{{i}}" [formControlName]="i">
                   <label for="{{i}}">
-                    <span class="badge"
-                    [class.badge-success]="roleList[i] == 'DATA_ENTRY'" [class.badge-info]="roleList[i] == 'DATA_VIEW'"
-                    [class.badge-primary]="roleList[i] == 'DATA_EDIT'" [class.badge-danger]="roleList[i] == 'USER_MANAGEMENT'"
-                    [class.badge-warning]="roleList[i] == 'APP_ADMIN'">
-                      {{roleList[i] | underscoreToSpace | titlecase}}
-                    </span>
+                      <span class="badge mr-1" [ngClass]="PlRoleLookup[roleList[i]]['style']"
+                            [mdbTooltip]="PlRoleLookup[roleList[i]]['description']">
+                        {{roleList[i].toString() | underscoreToSpace | titlecase}}
+                      </span>
                   </label>
                 </div>
               </div>
@@ -81,7 +79,7 @@
   </form>
   <div class="row">
     <div class="col">
-      <div class="float-right my-2 alert alert-info">
+      <div class="float-right my-2 alert alert-info" mdbTooltip="Force the user to use a specific password.">
         <label for="manualPassword" class="mr-2">Manual Password</label>
         <input type="checkbox" [(ngModel)]="manualPassword" id="manualPassword">
       </div>

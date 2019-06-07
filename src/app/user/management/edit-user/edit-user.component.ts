@@ -1,6 +1,6 @@
 import {Component, EventEmitter, OnInit} from '@angular/core';
 import {AbstractControl, FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {PlRole} from '../../../_dto/user/pl-role.enum';
+import {PlRole, PlRoleLookup} from '../../../_dto/user/pl-role.enum';
 import {TitleService} from '../../../_interact/title.service';
 import {UserService} from '../../../_api/user.service';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -17,6 +17,7 @@ import {CommonFormDataService} from '../../../_api/common-form-data.service';
 })
 export class EditUserComponent implements OnInit {
   form: FormGroup;
+  PlRoleLookup = PlRoleLookup;
   user: User = new User();
   submitAttempted = false;
   plRole = PlRole;
