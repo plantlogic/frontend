@@ -13,6 +13,8 @@ export class Card {
   id: string;
   // Is the card closed?
   closed: boolean;
+  // The date the card was created
+  dateCreated: number;
   // The date the card was last updated
   lastUpdated: number;
 
@@ -79,6 +81,7 @@ export class Card {
   public copyConstructor(card: Card): Card {
     this.id = card.id;
     this.closed = card.closed;
+    this.dateCreated = card.dateCreated;
     this.lastUpdated = card.lastUpdated;
 
     if (card.irrigation) {
