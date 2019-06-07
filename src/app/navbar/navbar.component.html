@@ -18,7 +18,7 @@
           <a class="nav-link waves-light" mdbWavesEffect>Entry</a>
         </li>
         <li class="nav-item p-2" routerLinkActive="active" routerLink="/manage"
-            *ngIf="hasRole(role.DATA_VIEW) || hasRole(role.DATA_ENTRY)">
+            *ngIf="hasRole(role.DATA_VIEW) || (hasRole(role.DATA_ENTRY) && hasRole(role.DATA_EDIT))">
           <a class="nav-link waves-light" mdbWavesEffect>Data</a>
         </li>
         <li class="nav-item p-2" routerLinkActive="active" routerLink="/userManagement" *ngIf="hasRole(role.USER_MANAGEMENT)">

@@ -1,4 +1,18 @@
-<br />
-<div class="jumbotron">
-    <h1 class="display-4">Welcome!</h1>
+<div class="jumbotron p-3">
+  <div *ngIf="message" class="alert alert-info" role="alert">
+    <h5>{{message}}</h5>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <h2>Col 1</h2>
+    </div>
+    <div class="col-md-6">
+      <h2>Col 2</h2>
+    </div>
+  </div>
+
+  <div class="w-100 my-2">
+    <hr />
+  </div>
 </div>
