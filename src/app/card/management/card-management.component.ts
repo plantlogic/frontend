@@ -5,6 +5,8 @@ import {TitleService} from '../../_interact/title.service';
 import {CardViewService} from '../../_api/card-view.service';
 import {MdbTableService} from 'angular-bootstrap-md';
 import {NavService} from '../../_interact/nav.service';
+import {AuthService} from '../../_auth/auth.service';
+import {PlRole} from '../../_dto/user/pl-role.enum';
 
 @Component({
   selector: 'app-management',
@@ -13,7 +15,7 @@ import {NavService} from '../../_interact/nav.service';
 })
 export class CardManagementComponent implements OnInit {
   constructor(private titleService: TitleService, private cardService: CardViewService, private tableService: MdbTableService,
-              private nav: NavService) { }
+              private nav: NavService, private auth: AuthService) { }
 
   cards: Card[] = [];
   filter: string;
@@ -63,5 +65,9 @@ export class CardManagementComponent implements OnInit {
   // Used for animation
   public min(x: number, y: number): number {
     return Math.min(x, y);
+  }
+
+  hasViewPermission(): boolean {
+    return this.auth.hasPermission(PlRole.DATA_VIEW);
   }
 }

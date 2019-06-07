@@ -4,6 +4,10 @@ import {CardExportService} from '../../../_api/card-export.service';
 import {FlatpickrOptions} from 'ng2-flatpickr';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {TitleService} from '../../../_interact/title.service';
+import {Card} from '../../../_dto/card/card';
+import {AlertService} from '../../../_interact/alert/alert.service';
+import {CardViewService} from '../../../_api/card-view.service';
+import {NavService} from '../../../_interact/nav.service';
 
 @Component({
   selector: 'app-export',
@@ -12,55 +16,71 @@ import {TitleService} from '../../../_interact/title.service';
 })
 export class ExportCardDataComponent implements OnInit {
 
-  constructor(private titleService: TitleService, private fb: FormBuilder, private cardExport: CardExportService,
-              public commonData: CommonFormDataService) { }
+  constructor(private titleService: TitleService, private cardExport: CardExportService, public cardService: CardViewService,
+              private nav: NavService) {}
+
+  loading = true;
+  generating = false;
+
+  fromDate: number = Date.now();
+  toDate: number = Date.now();
+  includeUnharvested = false;
+
+  ranchList: Array<string> = [];
+  selectedRanches: Array<string> = [];
+  commodityList: Array<string> = [];
+  selectedCommodities: Array<string> = [];
 
   flatpickrOptions: FlatpickrOptions = { dateFormat: 'm-d-Y', defaultDate: new Date(Date.now())};
-  flatpickrOptions2: FlatpickrOptions = { dateFormat: 'm-d-Y'};
-  myFormRanch: FormGroup;
-  myFormCommodity: FormGroup;
-  disabled = false;
-  ShowFilter = false;
-  limitSelection = false;
-  commodities: Array<any> = [];
-  selectedItemsRanch: Array<any> = [];
-  selectedItemsCommodity: Array<any> = [];
-  dropdownSettings = {
+  multiselectSettings = {
     singleSelection: false,
-    idField: 'item_id',
-    textField: 'item_text',
     selectAllText: 'Select All',
     unSelectAllText: 'Unselect All',
     itemsShowLimit: 5,
-    allowSearchFilter: this.ShowFilter
+    allowSearchFilter: true
   };
 
   ngOnInit() {
     this.titleService.setTitle('Export Data');
-    this.commodities = [
-      {item_id: 1, item_text: 'Lettuce'},
-      {item_id: 2, item_text: 'Strawberry'},
-      {item_id: 3, item_text: 'Broccoli'},
-      {item_id: 4, item_text: 'Tomato'}
-    ];
-    this.myFormRanch = this.fb.group({
-      ranch: [this.selectedItemsRanch],
-    });
-    this.myFormCommodity = this.fb.group({
-      commodity: [this.selectedItemsCommodity]
-    });
+
+    this.cardService.getAllCards().subscribe(
+      data => {
+        if (data.success) {
+          data.data.map(c => (new Card()).copyConstructor(c)).forEach(c => {
+            // Get all ranch names
+            if (!this.ranchList.includes(c.ranchName)) {
+              this.ranchList.push(c.ranchName);
+            }
+
+            // Get all commodities
+            c.commodityArray.forEach(v => {
+              if (!this.commodityList.includes(v.commodity)) {
+                this.commodityList.push(v.commodity);
+              }
+            });
+          });
+
+          this.ranchList.sort();
+          this.commodityList.sort();
+
+          this.loading = false;
+        } else if (!data.success) {
+          AlertService.newBasicAlert('Error: ' + data.error, true);
+          this.nav.goBack();
+        }
+      },
+      failure => {
+        AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
+        this.nav.goBack();
+      });
   }
-  onItemSelect(item: any) {
-    console.log('onItemSelect', item);
-  }
-  onSelectAll(items: any) {
-    console.log('onSelectAll', items);
-  }
-  toogleShowFilter() {
-    this.ShowFilter = !this.ShowFilter;
-    this.dropdownSettings = Object.assign({}, this.dropdownSettings, { allowSearchFilter: this.ShowFilter });
-  }
-  generateExampleCard(): void {
-    this.cardExport.exampleGenerate();
+
+  generate(): void {
+    this.generating = true;
+    this.fromDate = (new Date(this.fromDate)).valueOf();
+    this.toDate = (new Date(this.toDate)).valueOf();
+
+    this.cardExport.generateExport(this.fromDate, this.toDate, this.ranchList, this.commodityList, this.includeUnharvested);
+    this.generating = false;
   }
 }
