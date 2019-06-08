@@ -3,16 +3,57 @@
     <h5>{{message}}</h5>
   </div>
 
+  <div class="w-100" *ngIf="message">
+    <hr />
+  </div>
+
   <div class="row">
-    <div class="col-md-6">
-      <h2>Col 1</h2>
+    <div class="col">
+      <div class="media">
+        <img class="align-self-center" src="/assets/images/logo.svg" width="100"/>
+        <div class="media-body">
+          <br />
+          <span class="display-4 ml-3">Welcome to {{appname}}!</span>
+          <br />
+        </div>
+      </div>
     </div>
-    <div class="col-md-6">
-      <h2>Col 2</h2>
+
+    <div class="w-100" *ngIf="dataEntryElements">
+      <hr />
+    </div>
+
+    <div class="col-md-6" *ngIf="dataEntryElements">
+      <span class="h2 ml-1 font-weight-light">Your Currently Open Cards: <i>{{cardCount}}</i></span>
+      <div class="mt-2">
+        <button type="button" color="success" routerLink="/entry" name="addCard"
+                mdbBtn size="lg">View Open Cards <i class="fas fa-external-link-alt ml-1"></i></button>
+        <button type="button" color="primary" routerLink="/entry/create" name="addCard"
+                mdbBtn size="lg">Create New Card <i class="fa fa-plus ml-1" aria-hidden="true"></i></button>
+      </div>
+    </div>
+
+    <div class="w-100" *ngIf="dataViewElements">
+      <hr />
+    </div>
+
+    <div class="col-md-6" *ngIf="dataViewElements">
+      <span class="h2 ml-1 font-weight-light"># of Cards Harvested</span> (in the last 6 months)
+      <canvas #cardHarvestedChartRef>{{cardHarvestedChart}}</canvas>
+    </div>
+    <div class="col-md-6" *ngIf="dataViewElements">
+      <span class="h2 ml-1 font-weight-light">Commodities in Open Cards</span>
+      <canvas #openCommoditiesChartRef>{{openCommoditiesChart}}</canvas>
+    </div>
+
+    <div class="w-100" *ngIf="userManagementElements">
+      <hr />
+    </div>
+
+    <div class="col-md-6" *ngIf="userManagementElements">
+      <span class="h2 ml-1 font-weight-light"># of Registered Users: <i>{{userCount}}</i></span>
+
     </div>
   </div>
 
-  <div class="w-100 my-2">
-    <hr />
-  </div>
 </div>
