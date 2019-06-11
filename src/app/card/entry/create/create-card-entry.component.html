@@ -29,7 +29,8 @@
       </div>
       <div class="col-sm border p-2 text-right" *ngFor="let p of card.commodityArray; let i = index">
         <div>
-          <select class="form-control" [(ngModel)]="p.commodity" id="commodityInput" (ngModelChange)="p.variety = undefined">
+          <select class="form-control" [(ngModel)]="p.commodity" id="commodityInput" (ngModelChange)="p.variety = undefined"
+                  required="required" #commodityName="ngModel" [class.is-invalid]="submitAttempted && commodityName.invalid">
             <option [value]="undefined" disabled selected>Commodity</option>
             <option *ngFor="let r of common.getMapKeys('commodities')">{{r}}</option>
           </select>

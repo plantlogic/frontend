@@ -53,7 +53,7 @@ export class ExportCardDataComponent implements OnInit {
             }
 
             // Get all commodities
-            c.commodityArray.forEach(v => {
+            c.commodityArray.filter(v => v.commodity).forEach(v => {
               if (!this.commodityList.includes(v.commodity)) {
                 this.commodityList.push(v.commodity);
               }
