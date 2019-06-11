@@ -43,12 +43,10 @@
             <option *ngFor="let r of common.getValues('bedTypes')">{{r}}</option>
           </select>
           <!-- <label for="bedCountInput" class="control-label small">Bed Count:</label> -->
-          <select class="form-control"  id="bedCountInput">
-            <option [value]="undefined" disabled selected>Bed Count</option>
-            <option *ngFor="let r of common.getValues('bedCounts')">{{r}}</option>
-          </select>
+          <input type="number" [(ngModel)]="p.bedCount" class="form-control"
+                 placeholder="Bed Count" />
           <input type="number" [(ngModel)]="p.cropAcres" class="form-control"
-                 placeholder="Crop Acres" pattern="\d*" />
+                 placeholder="Crop Acres" />
           <input type="text" [(ngModel)]="p.seedLotNumber" class="form-control"
                  placeholder="Seed Lot #" />
         </div>
