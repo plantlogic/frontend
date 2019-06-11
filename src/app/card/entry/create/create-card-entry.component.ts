@@ -35,7 +35,8 @@ export class CreateCardEntryComponent implements OnInit {
   }
 
   submit() {
-    if (this.ranchName.invalid || this.cropYear.invalid || this.card.commodityArray.every(c => c.commodity && true)) {
+    if (this.ranchName.invalid || this.cropYear.invalid ||
+      this.card.commodityArray.some(c => c.commodity === undefined || c.commodity === '')) {
       this.submitAttempted = true;
       AlertService.newBasicAlert('There are some invalid fields - please fix and try again.', true);
     } else {
