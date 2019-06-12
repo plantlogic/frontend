@@ -59,10 +59,6 @@ export const CommonLookup = {
       name: 'Bed Types',
       type: 'number'
     },
-    bedCounts: {
-      name: 'Bed Counts',
-      type: 'number'
-    },
     commodities: {
       name: 'Commodities',
       type: 'hashTable'
