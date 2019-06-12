@@ -50,6 +50,13 @@ export class CardEntryService {
     );
   }
 
+  public addWetThinHoeData(id: string, card: Card): Observable<BasicDTO<null>> {
+    return this.http.post<BasicDTO<null>>(
+      environment.ApiUrl + '/data/entry/ranches/' + id + '/wet.thin.hoe',
+      card, this.httpOptions
+    );
+  }
+
   public closeCard(card: Card): Observable<BasicDTO<null>> {
     return this.http.put<BasicDTO<null>>(
       environment.ApiUrl + '/data/entry/ranches/' + card.id + '/close',

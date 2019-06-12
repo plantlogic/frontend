@@ -249,11 +249,26 @@
               <b>Shipped ID:</b> {{card.shipperID}}
             </div>
             <div class="col-sm">
-              <b>Wet Date:</b> {{card.wetDate | date:'shortDate'}}
+              <b>Wet Date: </b>
+              <span *ngIf="card.wetDate">{{card.wetDate | date:'shortDate'}}</span>
+              <ng2-flatpickr placeholder="Select Date" class="w-20"
+                             [config]="datePickr" [(ngModel)]="card.wetDate" *ngIf="!card.wetDate"
+                             (ngModelChange)="saveDates()">
+              </ng2-flatpickr>
               <br />
-              <b>Thin Date:</b> {{card.thinDate | date:'shortDate'}}
+              <b>Thin Date:</b>
+              <span *ngIf="card.thinDate">{{card.thinDate | date:'shortDate'}}</span>
+              <ng2-flatpickr placeholder="Select Date" class="w-20"
+                             [config]="datePickr" [(ngModel)]="card.thinDate" *ngIf="!card.thinDate"
+                             (ngModelChange)="saveDates()">
+              </ng2-flatpickr>
               <br />
-              <b>Hoe Date:</b> {{card.hoeDate | date:'shortDate'}}
+              <b>Hoe Date:</b>
+              <span *ngIf="card.hoeDate">{{card.hoeDate | date:'shortDate'}}</span>
+              <ng2-flatpickr placeholder="Select Date" class="w-20"
+                             [config]="datePickr" [(ngModel)]="card.hoeDate" *ngIf="!card.hoeDate"
+                             (ngModelChange)="saveDates()">
+              </ng2-flatpickr>
               <br />
               <b>Date Created:</b> {{card.dateCreated | date:'shortDate'}}
             </div>

@@ -6,6 +6,7 @@ import {CardEntryService} from '../../../_api/card-entry.service';
 import {CollapseComponent} from 'angular-bootstrap-md';
 import {NavService} from '../../../_interact/nav.service';
 import {ActivatedRoute} from '@angular/router';
+import {FlatpickrOptions} from 'ng2-flatpickr';
 
 @Component({
   selector: 'app-open-card-entry',
@@ -19,6 +20,9 @@ export class OpenCardEntryComponent implements OnInit {
               private nav: NavService, private route: ActivatedRoute) { }
 
   card: Card;
+  datePickr: FlatpickrOptions = {
+    dateFormat: 'm-d-Y'
+  };
 
   ngOnInit() {
     this.titleService.setTitle('View Card');
@@ -42,5 +46,9 @@ export class OpenCardEntryComponent implements OnInit {
         this.nav.goBack();
       }
     );
+  }
+
+  private saveDates(): void {
+    this.cardService.addWetThinHoeData(this.card.id, this.card).subscribe();
   }
 }
