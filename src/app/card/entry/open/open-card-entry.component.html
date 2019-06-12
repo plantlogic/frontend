@@ -250,23 +250,23 @@
             </div>
             <div class="col-sm">
               <b>Wet Date: </b>
-              <span *ngIf="card.wetDate">{{card.wetDate | date:'shortDate'}}</span>
+              <span *ngIf="wetDateSet">{{card.wetDate | date:'shortDate'}}</span>
               <ng2-flatpickr placeholder="Select Date" class="w-20"
-                             [config]="datePickr" [(ngModel)]="card.wetDate" *ngIf="!card.wetDate"
+                             [config]="datePickr" [(ngModel)]="card.wetDate" *ngIf="!wetDateSet"
                              (ngModelChange)="saveDates()">
               </ng2-flatpickr>
               <br />
               <b>Thin Date:</b>
-              <span *ngIf="card.thinDate">{{card.thinDate | date:'shortDate'}}</span>
+              <span *ngIf="thinDateSet">{{card.thinDate | date:'shortDate'}}</span>
               <ng2-flatpickr placeholder="Select Date" class="w-20"
-                             [config]="datePickr" [(ngModel)]="card.thinDate" *ngIf="!card.thinDate"
+                             [config]="datePickr" [(ngModel)]="card.thinDate" *ngIf="!thinDateSet"
                              (ngModelChange)="saveDates()">
               </ng2-flatpickr>
               <br />
               <b>Hoe Date:</b>
-              <span *ngIf="card.hoeDate">{{card.hoeDate | date:'shortDate'}}</span>
+              <span *ngIf="hoeDateSet">{{card.hoeDate | date:'shortDate'}}</span>
               <ng2-flatpickr placeholder="Select Date" class="w-20"
-                             [config]="datePickr" [(ngModel)]="card.hoeDate" *ngIf="!card.hoeDate"
+                             [config]="datePickr" [(ngModel)]="card.hoeDate" *ngIf="!hoeDateSet"
                              (ngModelChange)="saveDates()">
               </ng2-flatpickr>
               <br />

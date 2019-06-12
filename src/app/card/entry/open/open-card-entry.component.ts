@@ -20,9 +20,13 @@ export class OpenCardEntryComponent implements OnInit {
               private nav: NavService, private route: ActivatedRoute) { }
 
   card: Card;
+
   datePickr: FlatpickrOptions = {
     dateFormat: 'm-d-Y'
   };
+  wetDateSet: boolean;
+  thinDateSet: boolean;
+  hoeDateSet: boolean;
 
   ngOnInit() {
     this.titleService.setTitle('View Card');
@@ -36,6 +40,10 @@ export class OpenCardEntryComponent implements OnInit {
           this.card = (new Card()).copyConstructor(data.data);
           this.card.initCommodityString();
           this.card.initTotalAcres();
+
+          this.wetDateSet = (this.card.wetDate && true);
+          this.thinDateSet = (this.card.thinDate && true);
+          this.hoeDateSet = (this.card.hoeDate && true);
         } else if (!data.success) {
           AlertService.newBasicAlert('Error: ' + data.error, true);
           this.nav.goBack();
@@ -49,6 +57,16 @@ export class OpenCardEntryComponent implements OnInit {
   }
 
   private saveDates(): void {
+    if (this.card.wetDate) {
+      this.card.wetDate = (new Date(this.card.wetDate)).valueOf();
+    }
+    if (this.card.thinDate) {
+      this.card.thinDate = (new Date(this.card.thinDate)).valueOf();
+    }
+    if (this.card.hoeDate) {
+      this.card.hoeDate = (new Date(this.card.hoeDate)).valueOf();
+    }
+
     this.cardService.addWetThinHoeData(this.card.id, this.card).subscribe();
   }
 }
