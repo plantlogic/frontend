@@ -67,7 +67,7 @@ export class CardManagementComponent implements OnInit {
     this.cardEdit.updateCard(c).subscribe(data => {
       if (data.success) {
         AlertService.newBasicAlert('Change saved successfully!', false);
-        this.loadCardData();
+        // this.loadCardData();
       } else {
         AlertService.newBasicAlert('Error: ' + data.error, true);
       }
