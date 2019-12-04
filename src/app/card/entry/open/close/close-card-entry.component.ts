@@ -41,7 +41,7 @@ export class CloseCardEntryComponent implements OnInit {
       this.cardService.closeCard(this.card).subscribe(
         data => {
           if (data.success) {
-            AlertService.newBasicAlert('Card closed successfully!', false);
+            AlertService.newBasicAlert('Card set as harvested!', false);
             this.router.navigateByUrl('/entry');
           } else if (!data.success) {
             AlertService.newBasicAlert('Error: ' + data.error, true);

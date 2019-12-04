@@ -125,8 +125,8 @@ export class OpenCardDataComponent implements OnInit {
       newAlert.message = 'This will reopen a closed card, allowing it to be edited again. Continue?';
       newAlert.actionName = 'Reopen';
     } else {
-      newAlert.title = 'Close Card';
-      newAlert.message = 'This will close the card, removing it from the "entry" tab. Continue?';
+      newAlert.title = 'Set Card as Harvested';
+      newAlert.message = 'This will mark the card as "Harvested", removing it from the "entry" tab. Continue?';
       newAlert.actionName = 'Close Card';
     }
     newAlert.actionClosesAlert = true;
@@ -175,7 +175,7 @@ export class OpenCardDataComponent implements OnInit {
   }
 
   private saveChanges(): void {
-    console.log(this.card.irrigationArray);
+    console.log(this.card);
 
     if (this.ranchName.invalid || (this.card.cropYear < 1000 || this.card.cropYear > 9999)) {
       AlertService.newBasicAlert('There are some invalid values - please fix before saving.', true);
@@ -198,6 +198,9 @@ export class OpenCardDataComponent implements OnInit {
       this.card.wetDate = (new Date(this.card.wetDate)).valueOf();
       this.card.tractorArray.map(x => x.workDate = (new Date(x.workDate).valueOf()));
       this.card.irrigationArray.map(x => x.workDate = (new Date(x.workDate).valueOf()));
+
+      // Remove all whitespace from card.lotNumber
+      this.card.lotNumber = this.card.lotNumber.replace(/\s/g, "");
 
       newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
         this.cardEdit.updateCard(this.card).subscribe(data => {
@@ -222,7 +225,8 @@ export class OpenCardDataComponent implements OnInit {
 
   private datePickr(workDate: number): FlatpickrOptions {
     return {
-      dateFormat: 'm-d-Y',
+      enableTime: true,
+      dateFormat: 'm-d-Y H:i',
       defaultDate: new Date(workDate)
     };
   }

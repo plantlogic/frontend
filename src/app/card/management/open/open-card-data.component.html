@@ -22,11 +22,7 @@
         <button *ngIf="card && editable && editing" type="button" class="btn btn-success mt-n2 float-right" (click)="saveChanges()">
           <span>Save <i class="fas fa-save ml-1"></i></span>
         </button>
-        <button *ngIf="card && editable" type="button" class="btn mt-n2 float-right" (click)="toggleCard()"
-                [class.btn-light]="card.closed" [class.btn-primary]="!card.closed">
-          <span *ngIf="card.closed">Reopen <i class="fas fa-upload ml-1"></i></span>
-          <span *ngIf="!card.closed">Close <i class="fas fa-check ml-1"></i></span>
-        </button>
+        
       </div>
     </div>
     <div class="row justify-content-center mt-3">
@@ -538,7 +534,11 @@
     </div>
   </div>
 </div>
-
+<button *ngIf="card && editable" type="button" class="btn mt-n2 float-right" (click)="toggleCard()"
+                [class.btn-light]="card.closed" [class.btn-primary]="!card.closed">
+          <span *ngIf="card.closed">Reopen <i class="fas fa-upload ml-1"></i></span>
+          <span *ngIf="!card.closed">Harvested <i class="fas fa-check ml-1"></i></span>
+        </button>
 <button *ngIf="card && editable" type="button" class="btn btn-danger mt-n2 float-right" (click)="deleteCard()">
   <span>Delete </span>
   <i class="fas fa-trash ml-1"></i>

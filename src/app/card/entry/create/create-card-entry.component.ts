@@ -2,7 +2,7 @@ import {CardEntryService} from './../../../_api/card-entry.service';
 import {FormBuilder, NgModel} from '@angular/forms';
 import {TitleService} from '../../../_interact/title.service';
 import {AlertService} from '../../../_interact/alert/alert.service';
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild, Input} from '@angular/core';
 import {Card} from '../../../_dto/card/card';
 import {AuthService} from 'src/app/_auth/auth.service';
 import {NavService} from '../../../_interact/nav.service';
@@ -11,6 +11,7 @@ import {Commodities} from '../../../_dto/card/commodities';
 import {FlatpickrOptions} from 'ng2-flatpickr';
 import {Chemical, ChemicalUnit} from '../../../_dto/card/chemical';
 import {CommonFormDataService} from '../../../_api/common-form-data.service';
+import { componentNeedsResolution } from '@angular/core/src/metadata/resource_loading';
 
 @Component({
   selector: 'app-create-card',
@@ -23,7 +24,8 @@ export class CreateCardEntryComponent implements OnInit {
               public common: CommonFormDataService) { }
 
   @ViewChild('ranchName') public ranchName: NgModel;
-  @ViewChild('cropYear') public cropYear: NgModel;
+  @ViewChild('cropYear') public cropYear: NgModel;  
+
   card: Card = new Card();
   submitAttempted = false;
   rateUnits: Array<string> = [];
@@ -31,6 +33,7 @@ export class CreateCardEntryComponent implements OnInit {
   ngOnInit() {
     this.titleService.setTitle('Create Card');
     this.card.ranchManagerName = this.auth.getName();
+    this.card.lotNumber = ""; // Two way binding requires value to be initialized or an error occurs
     this.rateUnits = this.initRateUnits();
   }
 
@@ -41,9 +44,14 @@ export class CreateCardEntryComponent implements OnInit {
       AlertService.newBasicAlert('There are some invalid fields - please fix and try again.', true);
     } else {
       this.submitAttempted = false;
+
+      // Replace all whitespace found in lot number
+      this.card.lotNumber = this.card.lotNumber.replace(/\s/g, "");
+
       this.card.preChemicalArray.forEach(v => v.date = (new Date(v.date)).valueOf());
       this.cardEntryService.createCard(this.card).subscribe(
         data => {
+          console.log(data);
           if (data.success) {
             AlertService.newBasicAlert('Card saved successfully!', false);
             this.nav.goBack();
@@ -69,7 +77,8 @@ export class CreateCardEntryComponent implements OnInit {
 
   private datePickr(workDate: number): FlatpickrOptions {
     return {
-      dateFormat: 'm-d-Y',
+      enableTime: true,
+      dateFormat: 'm-d-Y H:i',
       defaultDate: new Date()
     };
   }

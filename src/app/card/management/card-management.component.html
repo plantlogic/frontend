@@ -49,6 +49,7 @@
           </thead>
           <tbody>
             <tr mdbTableCol *ngFor="let p of cards; let i = index" class="animated fadeIn" [style.animation-delay]="this.min((30*i), 1000)+ 'ms'">
+              <!-- <td> <input type="number" [(ngModel)]="p.fieldID" class="form-control" placeholder="Field ID" /> </td> -->
               <td>{{p.fieldID}}</td>
               <td>{{p.ranchName}}</td>
               <td>{{p.lotNumber}}</td>
