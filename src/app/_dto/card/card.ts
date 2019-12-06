@@ -125,7 +125,6 @@ export class Card {
   // =======================
   // Getters and Setters
   // =======================
-
   get irrigationArray(): Array<IrrigationEntry> {
     if (this.irrigation.length > this.irrigationMax) {
       this.irrigation = this.irrigation.slice(0, this.irrigationMax);

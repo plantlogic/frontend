@@ -17,6 +17,7 @@ export class CardExportService {
   public generateExport(from: number, to: number, ranches: Array<string>, commodities: Array<string>, includeUnharvested: boolean): void {
     this.http.get<BasicDTO<Card[]>>(environment.ApiUrl + '/data/view/ranches', this.httpOptions).subscribe(
       data => {
+        console.log(data);
         // If data is successful retrieved
         if (data.success) {
           // Format is [x][y]: [x] is a row and [y] is a column. Commas and newlines will automatically be added.
@@ -91,13 +92,13 @@ export class CardExportService {
                       'Commodity', 'Crop Acres', 'Bed Type', 'Bed Count', 'SeedLotNumber', 'Variety', '',
                       'Commodity', 'Crop Acres', 'Bed Type', 'Bed Count', 'SeedLotNumber', 'Variety', '',
                       // Preplant, 3 total
-                      'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
                       // Postplant, 3 total
-                      'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', ''
+                      'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', ''
           ]);
           let dataLine: Array<string> = [];
           let pushCounter = 0;
@@ -249,27 +250,28 @@ export class CardExportService {
                 pushCounter = 0;
               }
               if (!x.preChemicalArray.length) {
-                dataLine.push('', '', '', '', '', '', '', '');
-                dataLine.push('', '', '', '', '', '', '', '');
-                dataLine.push('', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '', '');
               } else {
                 x.preChemicalArray.forEach(preC => {
+                  const dt = this.separateDateTime(preC.date);
                   if (!preC.chemical) {
                     if (!preC.fertilizer) {
-                      dataLine.push('', String(preC.date), '', '', '', '', '', '');
+                      dataLine.push('', dt.date, dt.time, '', '', '', '', '', '');
                     } else {
-                      dataLine.push('', String(preC.date), '', '', '', preC.fertilizer.name,
+                      dataLine.push('', dt.date, dt.time, '', '', preC.fertilizer.name,
                                     String(preC.fertilizer.rate), String(preC.fertilizer.unit));
                     }
                   } else if (!preC.fertilizer) {
                     if (!preC.chemical) {
-                      dataLine.push('', String(preC.date), '', '', '', '', '', '');
+                      dataLine.push('', dt.date, dt.time, '', '', '', '', '', '');
                     } else {
-                      dataLine.push('', String(preC.date), preC.chemical.name, String(preC.chemical.rate),
+                      dataLine.push('', dt.date, dt.time, preC.chemical.name, String(preC.chemical.rate),
                                     String(preC.chemical.unit), '', '', '');
                     }
                   } else {
-                     dataLine.push('', String(preC.date), preC.chemical.name,
+                     dataLine.push('', dt.date, dt.time, preC.chemical.name,
                                    String(preC.chemical.rate), String(preC.chemical.unit),
                                    preC.fertilizer.name, String(preC.fertilizer.rate), String(preC.fertilizer.unit));
                   }
@@ -277,7 +279,7 @@ export class CardExportService {
                 });
                 if (pushCounter < 3) {
                   while (pushCounter < 3) {
-                    dataLine.push('', '', '', '', '', '', '', '');
+                    dataLine.push('', '', '', '', '', '', '', '', '');
                     pushCounter += 1;
                   }
                 }
@@ -285,27 +287,28 @@ export class CardExportService {
               }
 
               if (!x.postChemicalArray.length) {
-                dataLine.push('', '', '', '', '', '', '', '');
-                dataLine.push('', '', '', '', '', '', '', '');
-                dataLine.push('', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '', '');
               } else {
                 x.postChemicalArray.forEach(postC => {
+                  const dt = this.separateDateTime(postC.date);
                   if (!postC.chemical) {
                     if (!postC.fertilizer) {
-                      dataLine.push('', String(postC.date), '', '', '', '', '', '');
+                      dataLine.push('', dt.date, dt.time, '', '', '', '', '', '');
                     } else {
-                      dataLine.push('', String(postC.date), '', '', '', postC.fertilizer.name,
+                      dataLine.push('', dt.date, dt.time, '', '', '', postC.fertilizer.name,
                                     String(postC.fertilizer.rate), String(postC.fertilizer.unit));
                     }
                   } else if (!postC.fertilizer) {
                     if (!postC.chemical) {
-                      dataLine.push('', String(postC.date), '', '', '', '', '', '');
+                      dataLine.push('', dt.date, dt.time, '', '', '', '', '', '');
                     } else {
-                      dataLine.push('', String(postC.date), postC.chemical.name,
+                      dataLine.push('', dt.date, dt.time, postC.chemical.name,
                                     String(postC.chemical.rate), String(postC.chemical.unit), '', '', '');
                     }
                   } else {
-                     dataLine.push('', String(postC.date), postC.chemical.name,
+                     dataLine.push('', dt.date, dt.time, postC.chemical.name,
                                    String(postC.chemical.rate), String(postC.chemical.unit),
                                    postC.fertilizer.name, String(postC.fertilizer.rate), String(postC.fertilizer.unit));
                   }
@@ -313,7 +316,7 @@ export class CardExportService {
                 });
                 if (pushCounter < 3) {
                   while (pushCounter < 3) {
-                    dataLine.push('', '', '', '', '', '', '', '');
+                    dataLine.push('', '', '', '', '', '', '', '', '');
                     pushCounter += 1;
                   }
                 }
@@ -337,6 +340,14 @@ export class CardExportService {
         AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
       }
     );
+  }
+
+  private separateDateTime(dt: number) {
+    const dateTime = new Date(String(dt));
+    return {
+      date: dateTime.toDateString(),
+      time: dateTime.toTimeString()
+    };
   }
 
   // Helper - generates the CSV and invokes the file download

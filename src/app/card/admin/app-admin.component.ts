@@ -80,8 +80,8 @@ export class AppAdminComponent implements OnInit {
     }
   }
 
-  private getKeys(o: any): Array<string> {
-    return Object.keys(o).sort();
+  private getKeys(o: any): Array<any> {
+    return Object.keys(o);
   }
 
 
@@ -89,6 +89,23 @@ export class AppAdminComponent implements OnInit {
     arr.splice(index, 1);
 
     this.publishChange(key, pub);
+  }
+
+  private updateElement(key: string, pub: any, arr: Array<string>, index: number, newValue: any): void {
+    arr[index] = newValue;
+    this.publishChange(key, pub);
+  }
+
+  private updateHashElement(key: string, pub: any, arr: Array<string>, index: number, newKey: string): void {
+    const oldKey = Object.keys(arr)[index];
+    if (oldKey !== newKey) {
+      const oldValue = arr[oldKey];
+      arr[newKey] = oldValue;
+      // delete old key
+      delete arr[oldKey];
+      this.publishChange(key, pub);
+      this.clearEntries();
+    }
   }
 
   private shiftUp(key: string, pub: any, arr: Array<string>, index: number): void {
@@ -129,7 +146,8 @@ export class AppAdminComponent implements OnInit {
     }
   }
 
-  private popHashCategory(key: string, pub: any, obj: any, value: string): void {
+  private popHashCategory(key: string, pub: any, obj: any, index: number): void {
+    const value = Object.keys(obj)[index];
     if (value) {
       delete obj[value];
 
