@@ -80,8 +80,8 @@ export class AppAdminComponent implements OnInit {
     }
   }
 
-  private getKeys(o: any): Array<string> {
-    return Object.keys(o).sort();
+  private getKeys(o: any): Array<Object> {
+    return Object.keys(o);
   }
 
 
@@ -89,6 +89,37 @@ export class AppAdminComponent implements OnInit {
     arr.splice(index, 1);
 
     this.publishChange(key, pub);
+  }
+
+  private updateElement(key: string, pub: any, arr: Array<string>, index: number, newValue: any): void {
+    arr[index] = newValue;
+    this.publishChange(key, pub);
+  }
+
+  private updateHashElement(key: string, pub: any, arr: Array<string>, index: number, newKey: string): void {
+    console.log("Would update commodity (Hashtable)");
+    console.log("Key");
+    console.log(key);
+    console.log("pub");
+    console.log(pub);
+    console.log("arr");
+    console.log(arr);
+    console.log("index");
+    console.log(index);
+    console.log("Object.keys(arr)[index]");
+    console.log(Object.keys(arr)[index])
+    console.log("newValue (key)");
+    console.log(newKey);
+
+    let oldKey = Object.keys(arr)[index];
+    if(oldKey !== newKey) {
+      let oldValue = arr[oldKey];
+      arr[newKey] = oldValue;
+      //delete old key
+      delete arr[oldKey];
+      this.publishChange(key, pub);
+      this.clearEntries();
+    }
   }
 
   private shiftUp(key: string, pub: any, arr: Array<string>, index: number): void {
@@ -129,7 +160,8 @@ export class AppAdminComponent implements OnInit {
     }
   }
 
-  private popHashCategory(key: string, pub: any, obj: any, value: string): void {
+  private popHashCategory(key: string, pub: any, obj: any, index: number): void {
+    let value = Object.keys(obj)[index];
     if (value) {
       delete obj[value];
 
