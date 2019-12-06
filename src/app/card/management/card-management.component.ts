@@ -62,8 +62,6 @@ export class CardManagementComponent implements OnInit {
   }
 
   private updateFieldId(c: Card): void {
-    console.log(c);
-    console.log("updating Field Id");
     this.cardEdit.updateCard(c).subscribe(data => {
       if (data.success) {
         AlertService.newBasicAlert('Change saved successfully!', false);

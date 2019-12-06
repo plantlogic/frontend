@@ -24,7 +24,7 @@ export class CreateCardEntryComponent implements OnInit {
               public common: CommonFormDataService) { }
 
   @ViewChild('ranchName') public ranchName: NgModel;
-  @ViewChild('cropYear') public cropYear: NgModel;  
+  @ViewChild('cropYear') public cropYear: NgModel;
 
   card: Card = new Card();
   submitAttempted = false;
@@ -33,7 +33,7 @@ export class CreateCardEntryComponent implements OnInit {
   ngOnInit() {
     this.titleService.setTitle('Create Card');
     this.card.ranchManagerName = this.auth.getName();
-    this.card.lotNumber = ""; // Two way binding requires value to be initialized or an error occurs
+    this.card.lotNumber = '';
     this.rateUnits = this.initRateUnits();
   }
 
@@ -46,7 +46,7 @@ export class CreateCardEntryComponent implements OnInit {
       this.submitAttempted = false;
 
       // Replace all whitespace found in lot number
-      this.card.lotNumber = this.card.lotNumber.replace(/\s/g, "");
+      this.card.lotNumber = this.card.lotNumber.replace(/\s/g, '');
 
       this.card.preChemicalArray.forEach(v => v.date = (new Date(v.date)).valueOf());
       this.cardEntryService.createCard(this.card).subscribe(

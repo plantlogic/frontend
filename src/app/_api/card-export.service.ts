@@ -255,10 +255,10 @@ export class CardExportService {
                 dataLine.push('', '', '', '', '', '', '', '', '');
               } else {
                 x.preChemicalArray.forEach(preC => {
-                  let dt = this.separateDateTime(preC.date);
+                  const dt = this.separateDateTime(preC.date);
                   if (!preC.chemical) {
                     if (!preC.fertilizer) {
-                      dataLine.push('', dt.date, dt.time,'', '', '', '', '', '');
+                      dataLine.push('', dt.date, dt.time, '', '', '', '', '', '');
                     } else {
                       dataLine.push('', dt.date, dt.time, '', '', preC.fertilizer.name,
                                     String(preC.fertilizer.rate), String(preC.fertilizer.unit));
@@ -292,7 +292,7 @@ export class CardExportService {
                 dataLine.push('', '', '', '', '', '', '', '', '');
               } else {
                 x.postChemicalArray.forEach(postC => {
-                  let dt = this.separateDateTime(postC.date);
+                  const dt = this.separateDateTime(postC.date);
                   if (!postC.chemical) {
                     if (!postC.fertilizer) {
                       dataLine.push('', dt.date, dt.time, '', '', '', '', '', '');
@@ -343,7 +343,7 @@ export class CardExportService {
   }
 
   private separateDateTime(dt: number) {
-    let dateTime = new Date(String(dt));
+    const dateTime = new Date(String(dt));
     return {
       date: dateTime.toDateString(),
       time: dateTime.toTimeString()

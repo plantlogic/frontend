@@ -80,7 +80,7 @@ export class AppAdminComponent implements OnInit {
     }
   }
 
-  private getKeys(o: any): Array<Object> {
+  private getKeys(o: any): Array<any> {
     return Object.keys(o);
   }
 
@@ -97,25 +97,11 @@ export class AppAdminComponent implements OnInit {
   }
 
   private updateHashElement(key: string, pub: any, arr: Array<string>, index: number, newKey: string): void {
-    console.log("Would update commodity (Hashtable)");
-    console.log("Key");
-    console.log(key);
-    console.log("pub");
-    console.log(pub);
-    console.log("arr");
-    console.log(arr);
-    console.log("index");
-    console.log(index);
-    console.log("Object.keys(arr)[index]");
-    console.log(Object.keys(arr)[index])
-    console.log("newValue (key)");
-    console.log(newKey);
-
-    let oldKey = Object.keys(arr)[index];
-    if(oldKey !== newKey) {
-      let oldValue = arr[oldKey];
+    const oldKey = Object.keys(arr)[index];
+    if (oldKey !== newKey) {
+      const oldValue = arr[oldKey];
       arr[newKey] = oldValue;
-      //delete old key
+      // delete old key
       delete arr[oldKey];
       this.publishChange(key, pub);
       this.clearEntries();
@@ -161,7 +147,7 @@ export class AppAdminComponent implements OnInit {
   }
 
   private popHashCategory(key: string, pub: any, obj: any, index: number): void {
-    let value = Object.keys(obj)[index];
+    const value = Object.keys(obj)[index];
     if (value) {
       delete obj[value];
 

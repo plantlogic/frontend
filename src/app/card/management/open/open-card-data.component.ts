@@ -200,7 +200,7 @@ export class OpenCardDataComponent implements OnInit {
       this.card.irrigationArray.map(x => x.workDate = (new Date(x.workDate).valueOf()));
 
       // Remove all whitespace from card.lotNumber
-      this.card.lotNumber = this.card.lotNumber.replace(/\s/g, "");
+      this.card.lotNumber = this.card.lotNumber.replace(/\s/g, '');
 
       newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
         this.cardEdit.updateCard(this.card).subscribe(data => {
