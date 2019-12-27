@@ -9,7 +9,7 @@ import {NavService} from '../../../_interact/nav.service';
 import {Chemicals} from '../../../_dto/card/chemicals';
 import {Commodities} from '../../../_dto/card/commodities';
 import {FlatpickrOptions} from 'ng2-flatpickr';
-import {Chemical, ChemicalUnit} from '../../../_dto/card/chemical';
+import {Chemical} from '../../../_dto/card/chemical';
 import {CommonFormDataService} from '../../../_api/common-form-data.service';
 import { componentNeedsResolution } from '@angular/core/src/metadata/resource_loading';
 
@@ -28,13 +28,11 @@ export class CreateCardEntryComponent implements OnInit {
 
   card: Card = new Card();
   submitAttempted = false;
-  rateUnits: Array<string> = [];
 
   ngOnInit() {
     this.titleService.setTitle('Create Card');
     this.card.ranchManagerName = this.auth.getName();
     this.card.lotNumber = '';
-    this.rateUnits = this.initRateUnits();
   }
 
   submit() {
@@ -88,8 +86,7 @@ export class CreateCardEntryComponent implements OnInit {
   }
 
   initRateUnits(): Array<string> {
-    const keys = Object.keys(ChemicalUnit);
-    return keys.slice(keys.length / 2);
+    return this.common.getValues('chemicalRateUnits');
   }
 
   getRanches(): Array<string> {

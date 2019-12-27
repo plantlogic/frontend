@@ -51,6 +51,10 @@ export const CommonLookup = {
       name: 'Chemicals',
       type: 'text'
     },
+    chemicalRateUnits: {
+      name: 'Chemical Rate Units',
+      type: 'text'
+    },
     tractorOperators: {
       name: 'Tractor Operators',
       type: 'text'

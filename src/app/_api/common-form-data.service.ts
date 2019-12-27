@@ -11,7 +11,7 @@ export class CommonFormDataService {
   constructor(private commonService: CommonDataService) {}
 
   public getValues(key: string): Array<string> {
-    if (!CommonFormDataService.timestamp || CommonFormDataService.timestamp < Date.now() - (1000 * 60 * 30)) {
+    if (!CommonFormDataService.timestamp || CommonFormDataService.timestamp < Date.now() - (1000 * 1 * 30)) {
       CommonFormDataService.timestamp = Date.now();
       this.commonService.getAllData().subscribe(data => {
         if (data.success) {

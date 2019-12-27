@@ -6,7 +6,7 @@ import {CardEntryService} from '../../../../_api/card-entry.service';
 import {AuthService} from '../../../../_auth/auth.service';
 import {NavService} from '../../../../_interact/nav.service';
 import {Chemicals} from '../../../../_dto/card/chemicals';
-import {Chemical, ChemicalUnit} from '../../../../_dto/card/chemical';
+import {Chemical} from '../../../../_dto/card/chemical';
 import {FlatpickrOptions} from 'ng2-flatpickr';
 import {ActivatedRoute} from '@angular/router';
 import {CommonFormDataService} from '../../../../_api/common-form-data.service';
@@ -57,8 +57,7 @@ export class AddChemicalEntryComponent implements OnInit {
   }
 
   initRateUnits(): Array<string> {
-    const keys = Object.keys(ChemicalUnit);
-    return keys.slice(keys.length / 2);
+    return this.common.getValues('chemicalRateUnits');
   }
 
   datePickr(workDate: number): FlatpickrOptions {
