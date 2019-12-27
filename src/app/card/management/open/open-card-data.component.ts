@@ -31,7 +31,6 @@ export class OpenCardDataComponent implements OnInit {
   card: Card;
   editable: boolean;
   editing = false;
-  rateUnits: Array<string>;
 
   @ViewChild('ranchName') public ranchName: NgModel;
   @ViewChild('cropYear') public cropYear: NgModel;
@@ -54,7 +53,6 @@ export class OpenCardDataComponent implements OnInit {
     this.titleService.setTitle('View Card');
     this.loadCardData();
     this.editable = this.auth.hasPermission(PlRole.DATA_EDIT);
-    this.rateUnits = this.initRateUnits();
   }
 
   private loadCardData() {
