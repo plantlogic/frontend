@@ -6,7 +6,7 @@ import {CardEntryService} from 'src/app/_api/card-entry.service';
 import {AlertService} from 'src/app/_interact/alert/alert.service';
 import {FlatpickrOptions} from 'ng2-flatpickr';
 import {NavService} from '../../../../_interact/nav.service';
-import {Chemical, ChemicalUnit} from 'src/app/_dto/card/chemical';
+import {Chemical} from 'src/app/_dto/card/chemical';
 import {CommonFormDataService} from '../../../../_api/common-form-data.service';
 
 @Component({
@@ -50,8 +50,7 @@ export class AddTractorEntryComponent implements OnInit {
   }
 
   initRateUnits(): Array<string> {
-    const keys = Object.keys(ChemicalUnit);
-    return keys.slice(keys.length / 2);
+    return this.common.getValues('chemicalRateUnits');
   }
 
   datePickr(): FlatpickrOptions {

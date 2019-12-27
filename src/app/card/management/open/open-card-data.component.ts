@@ -13,9 +13,10 @@ import {FlatpickrOptions} from 'ng2-flatpickr';
 import {NgModel} from '@angular/forms';
 import {TractorEntry} from '../../../_dto/card/tractor-entry';
 import {IrrigationEntry} from '../../../_dto/card/irrigation-entry';
-import {Chemical, ChemicalUnit} from '../../../_dto/card/chemical';
+import {Chemical} from '../../../_dto/card/chemical';
 import {Chemicals} from '../../../_dto/card/chemicals';
 import {Commodities} from '../../../_dto/card/commodities';
+import {CommonFormDataService} from 'src/app/_api/common-form-data.service';
 
 @Component({
   selector: 'app-open-card',
@@ -25,12 +26,11 @@ import {Commodities} from '../../../_dto/card/commodities';
 export class OpenCardDataComponent implements OnInit {
 
   constructor(private titleService: TitleService, private cardView: CardViewService, private cardEdit: CardEditService,
-              private nav: NavService, private route: ActivatedRoute, private auth: AuthService) { }
+              private nav: NavService, private route: ActivatedRoute, private auth: AuthService, public common: CommonFormDataService) { }
 
   card: Card;
   editable: boolean;
   editing = false;
-  rateUnits: Array<string>;
 
   @ViewChild('ranchName') public ranchName: NgModel;
   @ViewChild('cropYear') public cropYear: NgModel;
@@ -53,7 +53,6 @@ export class OpenCardDataComponent implements OnInit {
     this.titleService.setTitle('View Card');
     this.loadCardData();
     this.editable = this.auth.hasPermission(PlRole.DATA_EDIT);
-    this.rateUnits = this.initRateUnits();
   }
 
   private loadCardData() {
@@ -256,7 +255,6 @@ export class OpenCardDataComponent implements OnInit {
   }
 
   initRateUnits(): Array<string> {
-    const keys = Object.keys(ChemicalUnit);
-    return keys.slice(keys.length / 2);
+    return this.common.getValues('chemicalRateUnits');
   }
 }
