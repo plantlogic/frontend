@@ -94,6 +94,15 @@
         <b>Date Created:</b> {{card.dateCreated | date:'shortDate'}}
       </div>
     </div>
+    <div class="col-md">
+      <br/>
+      <div class="d-inline-flex"><h4><i class="fas fa-comments ml-1"></i> Comment</h4></div><br />
+        <textarea type="text" [(ngModel)]="card.comment" [disabled]="!editing" class="form-control form-control-sm"
+                  [placeholder]="editing ? 'Enter Any Comments' : ''" maxlength="200" autosize>
+        </textarea>
+        <br />
+        <div class="w-100 my-2"><hr /></div>
+    </div>
     <div class="row mt-4">
       <div class="col-md">
         <span class="float-right">
@@ -157,13 +166,7 @@
         </table>
       </div>
 
-
-
-
-      <div class="w-100 my-2">
-        <hr />
-      </div>
-
+      <div class="w-100 my-2"><hr /></div>
 
       <div class="col-md">
         <span class="float-right">

@@ -50,7 +50,8 @@ export class Card {
   lotNumber: string;
   //
   shipperID: string;
-
+  //
+  comment: string;
   //
   wetDate: number;
   //
@@ -59,7 +60,6 @@ export class Card {
   hoeDate: number;
   //
   harvestDate: number;
-
   //
   cropYear: number = new Date().getFullYear();
 
@@ -109,14 +109,12 @@ export class Card {
     this.ranchManagerName = card.ranchManagerName;
     this.lotNumber = card.lotNumber;
     this.shipperID = card.shipperID;
-
+    this.comment = card.comment;
     this.wetDate = card.wetDate;
     this.thinDate = card.thinDate;
     this.hoeDate = card.hoeDate;
     this.harvestDate = card.harvestDate;
-
     this.cropYear = card.cropYear;
-
     return this;
   }
 
@@ -222,7 +220,7 @@ export class Card {
 
   initCommodityString(): void {
     if (this.commodityArray) {
-      this.commodityString = this.commodityArray.map(v => v.commodity).join(', ');
+      this.commodityString = this.commodityArray.map(v => v.commodity).sort().join(', ');
     } else {
       this.commodityString = '';
     }
