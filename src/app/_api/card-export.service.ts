@@ -324,7 +324,7 @@ export class CardExportService {
                 pushCounter = 0;
               }
 
-              if(!x.comment) {
+              if (!x.comment) {
                 dataLine.push('', '');
               } else {
                 dataLine.push('', x.comment);
