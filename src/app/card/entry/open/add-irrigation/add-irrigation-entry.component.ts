@@ -22,13 +22,11 @@ export class AddIrrigationEntryComponent implements OnInit {
 
   irrigation: IrrigationEntry = new IrrigationEntry();
   submitAttempted = false;
-  rateUnits: Array<string>;
   cardId: string;
 
 
   ngOnInit() {
     this.titleService.setTitle('Irrigation');
-    this.rateUnits = this.initRateUnits();
     this.route.params.subscribe(data => this.cardId = data.id);
   }
 
@@ -52,6 +50,10 @@ export class AddIrrigationEntryComponent implements OnInit {
 
   initRateUnits(): Array<string> {
     return this.common.getValues('chemicalRateUnits');
+  }
+
+  initIrrigationMethods(): Array<string> {
+    return this.common.getValues('irrigationMethod');
   }
 
   datePickr(): FlatpickrOptions {

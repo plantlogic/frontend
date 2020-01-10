@@ -89,6 +89,7 @@
                 <input type="number" [(ngModel)]="p.chemical.rate" class="form-control"
                        placeholder="Rate" pattern="\d*" />
                 <select class="form-control" [(ngModel)]="p.chemical.unit">
+                  <option [value]="undefined" disabled selected>Rate Unit</option>
                   <option *ngFor="let r of initRateUnits()">{{r}}</option>
                 </select>
                 <button type="button" color="warning" (click)="p.chemical = undefined" mdbBtn
@@ -115,6 +116,7 @@
                 <input type="number" [(ngModel)]="p.fertilizer.rate" class="form-control"
                        placeholder="Rate" pattern="\d*" />
                 <select class="form-control" [(ngModel)]="p.fertilizer.unit" >
+                  <option [value]="undefined" disabled selected>Rate Unit</option>
                   <option *ngFor="let r of initRateUnits()">{{r}}</option>
                 </select>
                 <button type="button" color="warning" (click)="p.fertilizer = undefined" mdbBtn

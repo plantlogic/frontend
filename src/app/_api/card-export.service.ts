@@ -23,8 +23,7 @@ export class CardExportService {
           // Format is [x][y]: [x] is a row and [y] is a column. Commas and newlines will automatically be added.
           const table: Array<Array<string>> = [];
           // Add column labels
-          table.push(['', '', '', '', '',
-                      '', '', '', '', '',
+          table.push(['', '', '', '', '', '', '', '', '', '',
                       '1st', 'Irrigation', '', '', '', '', '', '', '',
                       '2nd', 'Irrigation', '', '', '', '', '', '', '',
                       '3rd', 'Irrigation', '', '', '', '', '', '', '',
@@ -52,11 +51,11 @@ export class CardExportService {
                       '1st', 'Commodity', '', '', '', '', '',
                       '2nd', 'Commodity', '', '', '', '', '',
                       '3rd', 'Commodity', '', '', '', '', '',
-                      '1st', 'Pre Plant', '', '', '', '', '', '',
-                      '2nd', 'Pre Plant', '', '', '', '', '', '',
-                      '3rd', 'Pre Plant', '', '', '', '', '', '',
-                      '1st', 'At Plant', '', '', '', '', '', '',
-                      '2nd', 'At Plant', '', '', '', '', '', '',
+                      '1st', 'Pre Plant', '', '', '', '', '', '', '',
+                      '2nd', 'Pre Plant', '', '', '', '', '', '', '',
+                      '3rd', 'Pre Plant', '', '', '', '', '', '', '',
+                      '1st', 'At Plant', '', '', '', '', '', '', '',
+                      '2nd', 'At Plant', '', '', '', '', '', '', '',
                       '3rd', 'At Plant', '', '', '', '', '', '',
           ]);
           table.push(['Field ID', 'Ranch Name', 'Ranch Manager', 'Lot Number', 'Shipper ID',
@@ -98,7 +97,9 @@ export class CardExportService {
                       // Postplant, 3 total
                       'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
                       'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', ''
+                      'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      // Comments, 1 total
+                      'Comments'
           ]);
           let dataLine: Array<string> = [];
           let pushCounter = 0;
@@ -321,6 +322,12 @@ export class CardExportService {
                   }
                 }
                 pushCounter = 0;
+              }
+
+              if (!x.comment) {
+                dataLine.push('', '');
+              } else {
+                dataLine.push('', x.comment);
               }
 
               table.push(dataLine);

@@ -24,12 +24,10 @@ export class AddChemicalEntryComponent implements OnInit {
 
   chem: Chemicals = new Chemicals();
   submitAttempted = false;
-  rateUnits: Array<string>;
   cardId: string;
 
   ngOnInit() {
     this.titleService.setTitle('Applied');
-    this.rateUnits = this.initRateUnits();
     this.route.params.subscribe(data => this.cardId = data.id);
   }
 

@@ -21,13 +21,11 @@ export class AddTractorEntryComponent implements OnInit {
 
   tractor: TractorEntry = new TractorEntry();
   submitAttempted = false;
-  rateUnits: Array<string>;
   cardId: string;
 
 
   ngOnInit() {
     this.titleService.setTitle('Tractor');
-    this.rateUnits = this.initRateUnits();
     this.route.params.subscribe(data => this.cardId = data.id);
   }
 
@@ -51,6 +49,10 @@ export class AddTractorEntryComponent implements OnInit {
 
   initRateUnits(): Array<string> {
     return this.common.getValues('chemicalRateUnits');
+  }
+
+  initTractorWork(): Array<string> {
+    return this.common.getValues('tractorWork');
   }
 
   datePickr(): FlatpickrOptions {

@@ -7,7 +7,6 @@ export class TractorEntry {
   workDone: string;
   // The name of who operated the tractor
   operator: string;
-
   // Any fertilizer applied by tractor
   fertilizer: Chemical;
   // Any chemical applied by tractor

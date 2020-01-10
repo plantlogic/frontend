@@ -42,7 +42,8 @@
             </div>
             <div class="form-group">
               <select class="form-control" [(ngModel)]="chem.chemical.unit" >
-                <option *ngFor="let r of rateUnits">{{r}}</option>
+                <option [value]="undefined" disabled selected>Rate Unit</option>
+                <option *ngFor="let r of initRateUnits()">{{r}}</option>
               </select>
             </div>
           </div>
@@ -85,7 +86,8 @@
             </div>
             <div class="form-group">
               <select class="form-control" [(ngModel)]="chem.fertilizer.unit" >
-                <option *ngFor="let r of rateUnits">{{r}}</option>
+                <option [value]="undefined" disabled selected>Rate Unit</option>
+                <option *ngFor="let r of initRateUnits()">{{r}}</option>
               </select>
             </div>
           </div>
