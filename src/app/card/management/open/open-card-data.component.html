@@ -29,8 +29,9 @@
       <div class="col-sm border p-4">
         <b>Ranch Name:</b>
         <br />
-        <input type="text" [(ngModel)]="card.ranchName" [disabled]="!editing" class="form-control form-control-sm"
-          #ranchName="ngModel" [required]="true" minlength="1" [class.is-invalid]="ranchName.invalid" />
+        <select class="form-control" [(ngModel)]="card.ranchName" [disabled]="!editing" #ranchName="ngModel" required="required" [class.is-invalid]="ranchName.invalid">
+          <option *ngFor="let r of getRanches()">{{r}}</option>
+        </select>
         <br />
         <b>Ranch Manager:</b>
         <br />
@@ -132,18 +133,22 @@
           <tbody>
           <tr mdbTableCol *ngFor="let p of card.commodityArray; let i = index">
             <td>
-                <textarea type="text" [(ngModel)]="p.commodity" [disabled]="!editing" class="form-control form-control-sm"
-                          [placeholder]="editing ? 'Enter Commodity' : ''" autosize>
-                </textarea>
+              <select class="form-control" [(ngModel)]="p.commodity" id="commodityInput" (ngModelChange)="p.variety = undefined" #commodityName="ngModel" [disabled]="!editing">
+                <option *ngIf="!p.commodity" [value]="undefined" disabled selected>Select Commodity</option>
+                <option *ngFor="let r of common.getMapKeys('commodities')">{{r}}</option>
+              </select>
             </td>
             <td>
-                <textarea type="text" [(ngModel)]="p.variety" [disabled]="!editing" class="form-control form-control-sm"
-                          [placeholder]="editing ? 'Enter Variety' : ''" autosize>
-                </textarea>
+              <select class="form-control form-control-sm" [(ngModel)]="p.variety" [disabled]="!editing" id="varietyInput">
+                <option *ngIf="!p.variety" [value]="undefined" disabled selected>Select Variety</option>
+                <option *ngFor="let r of common.getMapValues('commodities', p.commodity)">{{r}}</option>
+              </select>
             </td>
             <td>
-              <input type="number" [(ngModel)]="p.bedType" [disabled]="!editing" class="form-control form-control-sm"
-                     [placeholder]="editing ? 'Enter Bed Type' : ''" />
+              <select class="form-control form-control-sm" [(ngModel)]="p.bedType" [disabled]="!editing">
+                <option *ngIf="!p.bedType" [value]="undefined" disabled selected>Select Bed Type</option>
+                <option *ngFor="let r of common.getValues('bedTypes')">{{r}}</option>
+              </select>
             </td>
             <td>
               <input type="number" [(ngModel)]="p.bedCount" [disabled]="!editing" class="form-control form-control-sm"
@@ -202,12 +207,15 @@
               </div>
               <div *ngIf="p.fertilizer">
                 <div class="row px-2">
-                  <input type="text" [(ngModel)]="p.fertilizer.name" [disabled]="!editing" class="form-control form-control-sm"
-                         [placeholder]="editing ? 'Name' : ''" />
+                  <select class="form-control" [(ngModel)]="p.fertilizer.name" [disabled]="!editing" class="form-control form-control-sm">
+                    <option *ngIf="!p.fertilizer.name" [value]="undefined" disabled selected>Select Fertilizer</option>
+                    <option *ngFor="let r of initFertilizers()">{{r}}</option>
+                  </select>
                   <div class="form-inline m-0">
                     <input type="number" [(ngModel)]="p.fertilizer.rate" [disabled]="!editing" class="form-control form-control-sm"
                            [placeholder]="editing ? 'Rate' : ''" />
                     <select class="form-control form-control-sm" [disabled]="!editing" [(ngModel)]="p.fertilizer.unit">
+                      <option *ngIf="!p.fertilizer.unit" [value]="undefined" disabled selected>Select Unit Rate</option>
                       <option *ngFor="let r of initRateUnits()">{{r}}</option>
                     </select>
                     <button *ngIf="editing" type="button" color="danger" (click)="p.fertilizer = undefined" mdbBtn
@@ -225,12 +233,15 @@
               </div>
               <div *ngIf="p.chemical">
                 <div class="row px-2">
-                  <input type="text" [(ngModel)]="p.chemical.name" [disabled]="!editing" class="form-control form-control-sm"
-                         [placeholder]="editing ? 'Name' : ''" />
+                  <select class="form-control" [(ngModel)]="p.chemical.name" [disabled]="!editing" class="form-control form-control-sm">
+                    <option *ngIf="!p.chemical.name" [value]="undefined" disabled selected>Select Chemical</option>
+                    <option *ngFor="let r of initChemicals()">{{r}}</option>
+                  </select>
                   <div class="form-inline m-0">
                     <input type="number" [(ngModel)]="p.chemical.rate" [disabled]="!editing" class="form-control form-control-sm"
                            [placeholder]="editing ? 'Rate' : ''" />
                     <select class="form-control form-control-sm" [disabled]="!editing" [(ngModel)]="p.chemical.unit" >
+                      <option *ngIf="!p.chemical.unit" [value]="undefined" disabled selected>Select Unit Rate</option>
                       <option *ngFor="let r of initRateUnits()">{{r}}</option>
                     </select>
                     <button *ngIf="editing" type="button" color="danger" (click)="p.chemical = undefined" mdbBtn
@@ -289,13 +300,16 @@
               </div>
               <div *ngIf="p.fertilizer">
                 <div class="row px-2">
-                  <input type="text" [(ngModel)]="p.fertilizer.name" [disabled]="!editing" class="form-control form-control-sm"
-                         [placeholder]="editing ? 'Name' : ''" />
+                  <select class="form-control" [(ngModel)]="p.fertilizer.name" [disabled]="!editing" class="form-control form-control-sm">
+                    <option *ngIf="!p.fertilizer.name" [value]="undefined" disabled selected>Select Fertilizer</option>
+                    <option *ngFor="let r of initFertilizers()">{{r}}</option>
+                  </select>
                   <div class="form-inline m-0">
                     <input type="number" [(ngModel)]="p.fertilizer.rate" [disabled]="!editing" class="form-control form-control-sm"
                            [placeholder]="editing ? 'Rate' : ''" />
                     <select class="form-control form-control-sm" [disabled]="!editing" [(ngModel)]="p.fertilizer.unit">
-                      <option *ngFor="let r of rateUnits">{{r}}</option>
+                      <option *ngIf="!p.fertilizer.unit" [value]="undefined" disabled selected>Select Unit Rate</option>
+                      <option *ngFor="let r of initRateUnits()">{{r}}</option>
                     </select>
                     <button *ngIf="editing" type="button" color="danger" (click)="p.fertilizer = undefined" mdbBtn
                             floating="true" size="sm" mdbWavesEffect>
@@ -312,13 +326,16 @@
               </div>
               <div *ngIf="p.chemical">
                 <div class="row px-2">
-                  <input type="text" [(ngModel)]="p.chemical.name" [disabled]="!editing" class="form-control form-control-sm"
-                         [placeholder]="editing ? 'Name' : ''" />
+                  <select class="form-control" [(ngModel)]="p.chemical.name" [disabled]="!editing" class="form-control form-control-sm">
+                    <option *ngIf="!p.chemical.name" [value]="undefined" disabled selected>Select Chemical</option>
+                    <option *ngFor="let r of initChemicals()">{{r}}</option>
+                  </select>
                   <div class="form-inline m-0">
                     <input type="number" [(ngModel)]="p.chemical.rate" [disabled]="!editing" class="form-control form-control-sm"
                            [placeholder]="editing ? 'Rate' : ''" />
                     <select class="form-control form-control-sm" [disabled]="!editing" [(ngModel)]="p.chemical.unit" >
-                      <option *ngFor="let r of rateUnits">{{r}}</option>
+                      <option *ngIf="!p.chemical.unit" [value]="undefined" disabled selected>Select Unit Rate</option>
+                      <option *ngFor="let r of initRateUnits()">{{r}}</option>
                     </select>
                     <button *ngIf="editing" type="button" color="danger" (click)="p.chemical = undefined" mdbBtn
                             floating="true" size="sm" mdbWavesEffect>
@@ -372,9 +389,10 @@
               </ng2-flatpickr>
             </td>
             <td class="cap-min-form-width">
-              <textarea type="text" [(ngModel)]="p.method" [disabled]="!editing" class="form-control form-control-sm"
-                [placeholder]="editing ? 'Enter Method' : ''" autosize>
-              </textarea>
+              <select class="form-control form-control-sm" [disabled]="!editing" [(ngModel)]="p.method" >
+                <option *ngIf="!p.method" [value]="undefined" disabled selected>Select Irrigation Method</option>
+                <option *ngFor="let r of initIrrigationMethods()">{{r}}</option>
+              </select>
             </td>
             <td class="cap-max-form-width">
               <div *ngIf="!p.fertilizer && editing">
@@ -383,13 +401,16 @@
               </div>
               <div *ngIf="p.fertilizer">
                 <div class="row px-2">
-                  <input type="text" [(ngModel)]="p.fertilizer.name" [disabled]="!editing" class="form-control form-control-sm"
-                         [placeholder]="editing ? 'Name' : ''" />
+                  <select class="form-control" [(ngModel)]="p.fertilizer.name" [disabled]="!editing" class="form-control form-control-sm">
+                    <option *ngIf="!p.fertilizer.name" [value]="undefined" disabled selected>Select Fertilizer</option>
+                    <option *ngFor="let r of initFertilizers()">{{r}}</option>
+                  </select>
                   <div class="form-inline m-0">
                     <input type="number" [(ngModel)]="p.fertilizer.rate" [disabled]="!editing" class="form-control form-control-sm"
                            [placeholder]="editing ? 'Rate' : ''" />
                     <select class="form-control form-control-sm" [disabled]="!editing" [(ngModel)]="p.fertilizer.unit">
-                      <option *ngFor="let r of rateUnits">{{r}}</option>
+                      <option *ngIf="!p.fertilizer.unit" [value]="undefined" disabled selected>Select Unit Rate</option>
+                      <option *ngFor="let r of initRateUnits()">{{r}}</option>
                     </select>
                     <button *ngIf="editing" type="button" color="danger" (click)="p.fertilizer = undefined" mdbBtn
                             floating="true" size="sm" mdbWavesEffect>
@@ -406,13 +427,16 @@
               </div>
               <div *ngIf="p.chemical">
                 <div class="row px-2">
-                  <input type="text" [(ngModel)]="p.chemical.name" [disabled]="!editing" class="form-control form-control-sm"
-                         [placeholder]="editing ? 'Name' : ''" />
+                  <select class="form-control" [(ngModel)]="p.chemical.name" [disabled]="!editing" class="form-control form-control-sm">
+                    <option *ngIf="!p.chemical.name" [value]="undefined" disabled selected>Select Chemical</option>
+                    <option *ngFor="let r of initChemicals()">{{r}}</option>
+                  </select>
                   <div class="form-inline m-0">
                     <input type="number" [(ngModel)]="p.chemical.rate" [disabled]="!editing" class="form-control form-control-sm"
                            [placeholder]="editing ? 'Rate' : ''" />
                     <select class="form-control form-control-sm" [disabled]="!editing" [(ngModel)]="p.chemical.unit" >
-                      <option *ngFor="let r of rateUnits">{{r}}</option>
+                      <option *ngIf="!p.chemical.unit" [value]="undefined" disabled selected>Select Unit Rate</option>
+                      <option *ngFor="let r of initRateUnits()">{{r}}</option>
                     </select>
                     <button *ngIf="editing" type="button" color="danger" (click)="p.chemical = undefined" mdbBtn
                             floating="true" size="sm" mdbWavesEffect>
@@ -466,14 +490,16 @@
               </ng2-flatpickr>
             </td>
             <td class="cap-min-form-width">
-              <textarea type="text" [(ngModel)]="p.workDone" [disabled]="!editing" class="form-control form-control-sm"
-                        [placeholder]="editing ? 'Enter Work Done' : ''" autosize>
-              </textarea>
+              <select class="form-control form-control-sm" [disabled]="!editing" [(ngModel)]="p.workDone" >
+                <option *ngIf="!p.workDone" [value]="undefined" disabled selected>Select Tractor Work</option>
+                <option *ngFor="let r of initTractorWork()">{{r}}</option>
+              </select>
             </td>
             <td class="cap-min-form-width">
-              <textarea type="text" [(ngModel)]="p.operator" [disabled]="!editing" class="form-control form-control-sm"
-                        [placeholder]="editing ? 'Enter Operator' : ''" autosize>
-              </textarea>
+              <select class="form-control form-control-sm" [disabled]="!editing" [(ngModel)]="p.operator">
+                <option *ngIf="!p.operator" [value]="undefined" disabled selected>Select Tractor Operator</option>
+                <option *ngFor="let r of initTractorOperators()">{{r}}</option>
+              </select>
             </td>
             <td class="cap-max-form-width">
               <div *ngIf="!p.fertilizer && editing">
@@ -482,13 +508,16 @@
               </div>
               <div *ngIf="p.fertilizer">
                 <div class="row px-2">
-                  <input type="text" [(ngModel)]="p.fertilizer.name" [disabled]="!editing" class="form-control form-control-sm"
-                         [placeholder]="editing ? 'Name' : ''" />
+                  <select class="form-control" [(ngModel)]="p.fertilizer.name" [disabled]="!editing" class="form-control form-control-sm">
+                    <option *ngIf="!p.fertilizer.name" [value]="undefined" disabled selected>Select Fertilizer</option>
+                    <option *ngFor="let r of initFertilizers()">{{r}}</option>
+                  </select>
                   <div class="form-inline m-0">
                     <input type="number" [(ngModel)]="p.fertilizer.rate" [disabled]="!editing" class="form-control form-control-sm"
                            [placeholder]="editing ? 'Rate' : ''" />
                     <select class="form-control form-control-sm" [disabled]="!editing" [(ngModel)]="p.fertilizer.unit">
-                      <option *ngFor="let r of rateUnits">{{r}}</option>
+                      <option *ngIf="!p.fertilizer.unit" [value]="undefined" disabled selected>Select Unit Rate</option>
+                      <option *ngFor="let r of initRateUnits()">{{r}}</option>
                     </select>
                     <button *ngIf="editing" type="button" color="danger" (click)="p.fertilizer = undefined" mdbBtn
                             floating="true" size="sm" mdbWavesEffect>
@@ -505,13 +534,16 @@
               </div>
               <div *ngIf="p.chemical">
                 <div class="row px-2">
-                  <input type="text" [(ngModel)]="p.chemical.name" [disabled]="!editing" class="form-control form-control-sm"
-                         [placeholder]="editing ? 'Name' : ''" />
+                  <select class="form-control" [(ngModel)]="p.chemical.name" [disabled]="!editing" class="form-control form-control-sm">
+                    <option *ngIf="!p.chemical.name" [value]="undefined" disabled selected>Select Chemical</option>
+                    <option *ngFor="let r of initChemicals()">{{r}}</option>
+                  </select>
                   <div class="form-inline m-0">
                     <input type="number" [(ngModel)]="p.chemical.rate" [disabled]="!editing" class="form-control form-control-sm"
                            [placeholder]="editing ? 'Rate' : ''" />
                     <select class="form-control form-control-sm" [disabled]="!editing" [(ngModel)]="p.chemical.unit">
-                      <option *ngFor="let r of rateUnits">{{r}}</option>
+                      <option *ngIf="!p.chemical.unit" [value]="undefined" disabled selected>Select Unit Rate</option>
+                      <option *ngFor="let r of initRateUnits()">{{r}}</option>
                     </select>
                     <button *ngIf="editing" type="button" color="danger" (click)="p.chemical = undefined" mdbBtn
                             floating="true" size="sm" mdbWavesEffect>

@@ -5,8 +5,10 @@
       <ng2-flatpickr placeholder="Select Date" class="w-20 float-right"
                      [config]="datePickr()" [(ngModel)]="irrigation.workDate">
       </ng2-flatpickr>
-      <input type="text" [(ngModel)]="irrigation.method" class="form-control"
-             placeholder="Method" />
+      <select class="form-control" [(ngModel)]="irrigation.method">
+        <option [value]="undefined" disabled selected>Irrigation Method</option>
+        <option *ngFor="let r of initIrrigationMethods()">{{r}}</option>
+      </select>
     </div>
 
 
@@ -44,7 +46,8 @@
             </div>
             <div class="form-group">
               <select class="form-control" [(ngModel)]="irrigation.chemical.unit" >
-                <option *ngFor="let r of rateUnits">{{r}}</option>
+                <option [value]="undefined" disabled selected>Rate Unit</option>
+                <option *ngFor="let r of initRateUnits()">{{r}}</option>
               </select>
             </div>
           </div>
@@ -87,7 +90,8 @@
             </div>
             <div class="form-group">
               <select class="form-control" [(ngModel)]="irrigation.fertilizer.unit" >
-                <option *ngFor="let r of rateUnits">{{r}}</option>
+                <option [value]="undefined" disabled selected>Rate Unit</option>
+                <option *ngFor="let r of initRateUnits()">{{r}}</option>
               </select>
             </div>
           </div>

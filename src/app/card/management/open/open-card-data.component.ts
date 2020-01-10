@@ -254,7 +254,32 @@ export class OpenCardDataComponent implements OnInit {
     return new Chemical();
   }
 
+  getRanches(): Array<string> {
+    return this.common.getValues('ranches')
+      .filter(r => this.auth.getRanchAccess().includes(r));
+  }
+
+  initChemicals(): Array<String> {
+    return this.common.getValues('chemicals');
+  }
+
+  initFertilizers(): Array<String> {
+    return this.common.getValues('fertilizers');
+  }
+
   initRateUnits(): Array<string> {
     return this.common.getValues('chemicalRateUnits');
+  }
+
+  initIrrigationMethods(): Array<string> {
+    return this.common.getValues('irrigationMethod');
+  }
+
+  initTractorOperators(): Array<String> {
+    return this.common.getValues('tractorOperators');
+  }
+
+  initTractorWork(): Array<String> {
+    return this.common.getValues('tractorWork');
   }
 }

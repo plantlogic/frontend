@@ -5,7 +5,6 @@ export class IrrigationEntry {
   workDate: number = Date.now();
   // The method	by which the work was performed
   method: string;
-
   // Any fertilizer applied with irrigation
   fertilizer: Chemical;
   // Any chemical applied with irrigation

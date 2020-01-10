@@ -55,8 +55,16 @@ export const CommonLookup = {
       name: 'Chemical Rate Units',
       type: 'text'
     },
+    irrigationMethod: {
+      name: 'Irrigation Method',
+      type: 'text'
+    },
     tractorOperators: {
       name: 'Tractor Operators',
+      type: 'text'
+    },
+    tractorWork: {
+      name: 'Tractor Work',
       type: 'text'
     },
     bedTypes: {
