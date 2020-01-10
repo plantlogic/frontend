@@ -51,7 +51,7 @@ export class AddTractorEntryComponent implements OnInit {
     return this.common.getValues('chemicalRateUnits');
   }
 
-  initTractorWork(): Array<String> {
+  initTractorWork(): Array<string> {
     return this.common.getValues('tractorWork');
   }
 

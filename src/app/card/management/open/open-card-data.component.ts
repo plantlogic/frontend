@@ -259,11 +259,11 @@ export class OpenCardDataComponent implements OnInit {
       .filter(r => this.auth.getRanchAccess().includes(r));
   }
 
-  initChemicals(): Array<String> {
+  initChemicals(): Array<string> {
     return this.common.getValues('chemicals');
   }
 
-  initFertilizers(): Array<String> {
+  initFertilizers(): Array<string> {
     return this.common.getValues('fertilizers');
   }
 
@@ -275,11 +275,11 @@ export class OpenCardDataComponent implements OnInit {
     return this.common.getValues('irrigationMethod');
   }
 
-  initTractorOperators(): Array<String> {
+  initTractorOperators(): Array<string> {
     return this.common.getValues('tractorOperators');
   }
 
-  initTractorWork(): Array<String> {
+  initTractorWork(): Array<string> {
     return this.common.getValues('tractorWork');
   }
 }
