@@ -90,7 +90,8 @@ export class CreateCardEntryComponent implements OnInit {
   }
 
   getRanches(): Array<string> {
-    return this.common.getValues('ranches')
-      .filter(r => this.auth.getRanchAccess().includes(r));
+    try {
+      return this.common.getValues('ranches').filter(r => this.auth.getRanchAccess().includes(r));
+    } catch (E) { }
   }
 }

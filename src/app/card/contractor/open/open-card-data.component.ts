@@ -23,7 +23,7 @@ import {CommonFormDataService} from 'src/app/_api/common-form-data.service';
   templateUrl: './open-card-data.component.html',
   styleUrls: ['./open-card-data.component.scss']
 })
-export class OpenCardDataComponent implements OnInit {
+export class OpenCardContractorComponent implements OnInit {
 
   constructor(private titleService: TitleService, private cardView: CardViewService, private cardEdit: CardEditService,
               private nav: NavService, private route: ActivatedRoute, private auth: AuthService, public common: CommonFormDataService) { }
@@ -52,7 +52,6 @@ export class OpenCardDataComponent implements OnInit {
     defaultDate: null
   };
 
-
   ngOnInit() {
     this.titleService.setTitle('View Card');
     this.loadCardData();
@@ -78,7 +77,6 @@ export class OpenCardDataComponent implements OnInit {
             if (this.card.wetDate) {
               this.wetDatePickr.defaultDate = new Date(this.card.wetDate);
             }
-
             this.card.initTotalAcres();
           } else if (!data.success) {
             AlertService.newBasicAlert('Error: ' + data.error, true);

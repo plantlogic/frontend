@@ -96,8 +96,10 @@ export class AppAdminComponent implements OnInit {
     this.publishChange(key, pub);
   }
 
-  private updateHashElement(key: string, pub: any, arr: Array<string>, index: number, newKey: string): void {
-    const oldKey = Object.keys(arr)[index];
+  private updateHashElement(key: string, pub: any, arr: Array<string>, index: number, oldKey: string): void {
+    const newKey = (document.getElementById('commodity' + index) as HTMLInputElement).value;
+
+    // const oldKey = Object.keys(arr)[index];
     if (oldKey !== newKey) {
       const oldValue = arr[oldKey];
       arr[newKey] = oldValue;

@@ -35,6 +35,9 @@ import {AddIrrigationEntryComponent} from './card/entry/open/add-irrigation/add-
 import {CardManagementComponent} from './card/management/card-management.component';
 import {OpenCardDataComponent} from './card/management/open/open-card-data.component';
 import {ExportCardDataComponent} from './card/management/export/export-card-data.component';
+import {CardContractorComponent} from './card/contractor/card-management.component';
+import {OpenCardContractorComponent} from './card/contractor/open/open-card-data.component';
+import {ExportCardContractorComponent} from './card/contractor/export/export-card-data.component';
 import {AppAdminComponent} from './card/admin/app-admin.component';
 import {BackButtonComponent} from './navbar/back-button/back-button.component';
 import {AddChemicalEntryComponent} from './card/entry/open/add-chemical/add-chemical-entry.component';
@@ -67,7 +70,10 @@ import {AddChemicalEntryComponent} from './card/entry/open/add-chemical/add-chem
     ExportCardDataComponent,
     AppAdminComponent,
     BackButtonComponent,
-    AddChemicalEntryComponent
+    AddChemicalEntryComponent,
+    CardContractorComponent,
+    OpenCardContractorComponent,
+    ExportCardContractorComponent
   ],
   imports: [
     BrowserModule,

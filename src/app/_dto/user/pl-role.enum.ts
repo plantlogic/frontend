@@ -3,7 +3,9 @@ export enum PlRole {
   DATA_VIEW,
   DATA_EDIT,
   APP_ADMIN,
-  USER_MANAGEMENT
+  USER_MANAGEMENT,
+  CONTRACTOR_VIEW,
+  CONTRACTOR_EDIT
 }
 
 export const PlRoleLookup = {
@@ -31,5 +33,17 @@ export const PlRoleLookup = {
   APP_ADMIN: {
     style: 'badge-warning',
     description: 'Allows the user to add and remove items from the shared dropdowns for the data entry forms.'
+  },
+  CONTRACTOR_VIEW: {
+    style: 'badge-light',
+    description: 'Allows the user to view all cards from all ranches via the "Contractor" tab. ' +
+      'If the user also has the "Contractor Edit" role, they will be able to edit all cards on this contractor page ' +
+      '(both closed and open, from all ranches) plus close/re-open and permanently delete any card.'
+  },
+  CONTRACTOR_EDIT: {
+    style: 'badge-dark',
+    description: 'Allows the user to edit any card they have access to via the contractor page. ' +
+      'Combined with just the "Data Entry" role (without the "Contractor View" role), the user will be able to edit only currently open ' +
+      'cards belonging to their assigned ranches. This is done from the "Contractor" tab of the application.'
   }
 };

@@ -19,6 +19,11 @@ import {CloseCardEntryComponent} from './card/entry/open/close/close-card-entry.
 import {CardManagementComponent} from './card/management/card-management.component';
 import {OpenCardDataComponent} from './card/management/open/open-card-data.component';
 import {ExportCardDataComponent} from './card/management/export/export-card-data.component';
+
+import {CardContractorComponent} from './card/contractor/card-management.component';
+import {OpenCardContractorComponent} from './card/contractor/open/open-card-data.component';
+import {ExportCardContractorComponent} from './card/contractor/export/export-card-data.component';
+
 import {AppAdminComponent} from './card/admin/app-admin.component';
 import {AddChemicalEntryComponent} from './card/entry/open/add-chemical/add-chemical-entry.component';
 
@@ -168,6 +173,34 @@ const routes: Routes = [
     data: {
       parent: '/manage',
       role: [PlRole.DATA_VIEW]
+    }
+  },
+
+  // Contractor Card Management
+  {
+    path: 'contractor',
+    component: CardContractorComponent,
+    canActivate: [RoleGuard],
+    data: {
+      role: [PlRole.CONTRACTOR_VIEW]
+    }
+  },
+  {
+    path: 'contractor/o/:id',
+    component: OpenCardContractorComponent,
+    canActivate: [RoleGuard],
+    data: {
+      parent: '/contractor',
+      role: [PlRole.CONTRACTOR_VIEW, PlRole.CONTRACTOR_EDIT]
+    }
+  },
+  {
+    path: 'contractor/export',
+    component: ExportCardContractorComponent,
+    canActivate: [RoleGuard],
+    data: {
+      parent: '/contractor',
+      role: [PlRole.CONTRACTOR_VIEW]
     }
   },
 
