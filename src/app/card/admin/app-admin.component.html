@@ -48,24 +48,33 @@
     </div>
 
 
-    <div class="col-lg-8 border p-3" *ngFor="let k of getHashTables()">
+    <div class="col-lg-12 border p-3" *ngFor="let k of getHashTables()">
       <h4>{{getName(k)}}</h4>
       <table mdbTable class="table table-sm" small="true">
         <thead>
         <tr>
-          <th scope="col" class="small">Name</th>
-          <th scope="col" class="small">Varieties</th>
-          <th scope="col" class="small">Options</th>
+          <th scope="col" class="small" width="25%">Name</th>
+          <th scope="col" class="small" width="25%">Variety Input</th>
+          <th scope="col" class="small" width="40%">Current Varieties</th>
+          <th scope="col" class="small" width="10%">Options</th>
         </tr>
         </thead>
         <tbody>
         <tr mdbTableCol *ngFor="let c of getKeys(common[k]); let i = index; ">
           <td>
-              <input [type]="getType(k)" [(ngModel)]="c" class="form-control form-control-sm" style="width: 10em; display:inline-block"/> 
+              <input [type]="getType(k)" [ngModel]="c" id="commodity{{i}}" class="form-control form-control-sm" style="width: 10em; display:inline-block"/> 
               <button type="button" color="success" (click)="updateHashElement(k, common[k], common[k], i, c)" class="mr-1 mb-1" mdbBtn floating="true" size="sm" style="display: inline-block;">
                     <i class="fas fa-check ml-1"></i>
               </button>
-            <!-- <b>{{c}}</b> -->
+          </td>
+          <td>
+            <div class="form-group row">
+              <input type="text" [(ngModel)]="entries[k]['varieties'][c]" (keyup.enter)="addElement(k, common[k], common[k][c], entries[k]['varieties'][c], true)" />
+              <button type="button" color="primary" mdbBtn size="sm" floating="true" mdbWavesEffect
+                (click)="addElement(k, common[k], common[k][c], entries[k]['varieties'][c], true)">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+              </button>
+            </div>
           </td>
           <td>
             <h6>
@@ -74,14 +83,6 @@
                 <i class="fas fa-times ml-1" (click)="removeElement(k, common[k], common[k][c], j)"></i>
               </span>
             </h6>
-            <div class="form-group row">
-              <input type="text" [(ngModel)]="entries[k]['varieties'][c]" class=""
-                (keyup.enter)="addElement(k, common[k], common[k][c], entries[k]['varieties'][c], true)" />
-              <button type="button" color="primary" mdbBtn size="sm" floating="true" mdbWavesEffect
-                (click)="addElement(k, common[k], common[k][c], entries[k]['varieties'][c], true)">
-                <i class="fa fa-plus" aria-hidden="true"></i>
-              </button>
-            </div>
           </td>
           <td>
             <button type="button" color="danger"  mdbBtn class="float-right" size="sm" floating="true" mdbWavesEffect

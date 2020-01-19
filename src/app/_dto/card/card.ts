@@ -2,6 +2,7 @@ import {IrrigationEntry} from './irrigation-entry';
 import {TractorEntry} from './tractor-entry';
 import {Commodities} from './commodities';
 import {Chemicals} from './chemicals';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 export class Card {
   // Limits
@@ -62,7 +63,10 @@ export class Card {
   harvestDate: number;
   //
   cropYear: number = new Date().getFullYear();
-
+  //
+  thinType: WorkType | string = 'Machine';
+  //
+  hoeType: WorkType | string = 'Machine';
 
   // =======================
   // Cached Helper Values
@@ -115,6 +119,8 @@ export class Card {
     this.hoeDate = card.hoeDate;
     this.harvestDate = card.harvestDate;
     this.cropYear = card.cropYear;
+    this.thinType = card.thinType;
+    this.hoeType = card.hoeType;
     return this;
   }
 
@@ -233,4 +239,7 @@ export class Card {
       this.totalAcres = 0;
     }
   }
+}
+export enum WorkType {
+  Hand, Machine
 }

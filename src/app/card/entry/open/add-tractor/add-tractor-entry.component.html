@@ -6,12 +6,12 @@
                      [config]="datePickr()" [(ngModel)]="tractor.workDate">
       </ng2-flatpickr>
       <select class="form-control" [(ngModel)]="tractor.workDone" >
-        <option [value]="undefined" disabled selected>Tractor Work</option>
-        <option *ngFor="let work of initTractorWork()">{{work}}</option>
+        <option *ngIf="!tractor.workDone" [value]="undefined" disabled selected>Select Tractor Work</option>
+        <option *ngFor="let work of initTractorWork()" [value]="work">{{work}}</option>
       </select>
       <select class="form-control" [(ngModel)]="tractor.operator">
-        <option [value]="undefined" disabled selected>Operator</option>
-        <option *ngFor="let r of common.getValues('tractorOperators')">{{r}}</option>
+        <option *ngIf="!tractor.operator" [value]="undefined" disabled selected>Select Operator</option>
+        <option *ngFor="let r of common.getValues('tractorOperators')" [value]="r">{{r}}</option>
       </select>
     </div>
 
@@ -40,8 +40,8 @@
       <div class="col-sm px-2 text-right" *ngIf="tractor.chemical">
         <div class="row px-2">
           <select class="form-control" [(ngModel)]="tractor.chemical.name">
-            <option [value]="undefined" disabled selected>Chemical</option>
-            <option *ngFor="let r of common.getValues('chemicals')">{{r}}</option>
+            <option *ngIf="!tractor.chemical.name" [value]="undefined" disabled selected>Select Chemical</option>
+            <option *ngFor="let r of common.getValues('chemicals')" [value]="r">{{r}}</option>
           </select>
           <div class="form-inline">
             <div class="form-group">
@@ -50,8 +50,8 @@
             </div>
             <div class="form-group">
               <select class="form-control" [(ngModel)]="tractor.chemical.unit" >
-                <option [value]="undefined" disabled selected>Rate Unit</option>
-                <option *ngFor="let r of initRateUnits()">{{r}}</option>
+                <option *ngIf="!tractor.chemical.unit" [value]="undefined" disabled selected>Select Rate Unit</option>
+                <option *ngFor="let r of initRateUnits()" [value]="r">{{r}}</option>
               </select>
             </div>
           </div>
@@ -84,8 +84,8 @@
       <div class="col-sm px-2 text-right" *ngIf="tractor.fertilizer">
         <div class="row px-2">
           <select class="form-control" [(ngModel)]="tractor.fertilizer.name">
-            <option [value]="undefined" disabled selected>Fertilizer</option>
-            <option *ngFor="let r of common.getValues('fertilizers')">{{r}}</option>
+            <option *ngIf="!tractor.fertilizer.name" [value]="undefined" disabled selected>Select Fertilizer</option>
+            <option *ngFor="let r of common.getValues('fertilizers')" [value]="r">{{r}}</option>
           </select>
           <div class="form-inline">
             <div class="form-group">
@@ -94,8 +94,8 @@
             </div>
             <div class="form-group">
               <select class="form-control" [(ngModel)]="tractor.fertilizer.unit" >
-                <option [value]="undefined" disabled selected>Rate Unit</option>
-                <option *ngFor="let r of initRateUnits()">{{r}}</option>
+                <option *ngIf="!tractor.fertilizer.unit" [value]="undefined" disabled selected>Select Rate Unit</option>
+                <option *ngFor="let r of initRateUnits()" [value]="r">{{r}}</option>
               </select>
             </div>
           </div>

@@ -23,7 +23,7 @@ export class CardExportService {
           // Format is [x][y]: [x] is a row and [y] is a column. Commas and newlines will automatically be added.
           const table: Array<Array<string>> = [];
           // Add column labels
-          table.push(['', '', '', '', '', '', '', '', '', '',
+          table.push(['', '', '', '', '', '', '', '', '', '', '', '',
                       '1st', 'Irrigation', '', '', '', '', '', '', '',
                       '2nd', 'Irrigation', '', '', '', '', '', '', '',
                       '3rd', 'Irrigation', '', '', '', '', '', '', '',
@@ -56,10 +56,19 @@ export class CardExportService {
                       '3rd', 'Pre Plant', '', '', '', '', '', '', '',
                       '1st', 'At Plant', '', '', '', '', '', '', '',
                       '2nd', 'At Plant', '', '', '', '', '', '', '',
-                      '3rd', 'At Plant', '', '', '', '', '', '',
+                      '3rd', 'At Plant', '', '', '', '', '', '', '',
+                      '4th', 'At Plant', '', '', '', '', '', '', '',
+                      '5th', 'At Plant', '', '', '', '', '', '', '',
+                      '6th', 'At Plant', '', '', '', '', '', '', '',
+                      '7th', 'At Plant', '', '', '', '', '', '', '',
+                      '8th', 'At Plant', '', '', '', '', '', '', '',
+                      '9th', 'At Plant', '', '', '', '', '', '', '',
+                      '10th', 'At Plant', '', '', '', '', '', '', '',
+                      '11th', 'At Plant', '', '', '', '', '', '', '',
+                      '12th', 'At Plant', '', '', '', '', '', '',
           ]);
           table.push(['Field ID', 'Ranch Name', 'Ranch Manager', 'Lot Number', 'Shipper ID',
-                      'Wet Date', 'Thin Date', 'Hoe Date', 'Harvest Date', '',
+                      'Wet Date', 'Thin Date', 'Thin Type', 'Hoe Date', 'Hoe Type', 'Harvest Date', '',
                       // Irrigation Data, 12 total
                       'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
                       'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
@@ -94,7 +103,16 @@ export class CardExportService {
                       'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
                       'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
                       'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      // Postplant, 3 total
+                      // Postplant, 12 total
+                      'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
                       'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
                       'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
                       'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
@@ -136,7 +154,7 @@ export class CardExportService {
               // Push simple data
               dataLine.push(
                 String(x.fieldID), x.ranchName, x.ranchManagerName, x.lotNumber, x.shipperID,
-                String(x.wetDate), String(x.thinDate), String(x.hoeDate), String(x.harvestDate)
+                String(x.wetDate), String(x.thinDate), String(x.thinType), String(x.hoeDate), String(x.hoeType), String(x.harvestDate)
               );
 
               // Retrieve data from nested irrigation data objects and insert into table
@@ -261,7 +279,7 @@ export class CardExportService {
                     if (!preC.fertilizer) {
                       dataLine.push('', dt.date, dt.time, '', '', '', '', '', '');
                     } else {
-                      dataLine.push('', dt.date, dt.time, '', '', preC.fertilizer.name,
+                      dataLine.push('', dt.date, dt.time, '', '', '', preC.fertilizer.name,
                                     String(preC.fertilizer.rate), String(preC.fertilizer.unit));
                     }
                   } else if (!preC.fertilizer) {
@@ -288,9 +306,9 @@ export class CardExportService {
               }
 
               if (!x.postChemicalArray.length) {
-                dataLine.push('', '', '', '', '', '', '', '', '');
-                dataLine.push('', '', '', '', '', '', '', '', '');
-                dataLine.push('', '', '', '', '', '', '', '', '');
+                for (let i = 0; i < 12; i++) {
+                  dataLine.push('', '', '', '', '', '', '', '', '');
+                }
               } else {
                 x.postChemicalArray.forEach(postC => {
                   const dt = this.separateDateTime(postC.date);
@@ -315,8 +333,8 @@ export class CardExportService {
                   }
                   pushCounter += 1;
                 });
-                if (pushCounter < 3) {
-                  while (pushCounter < 3) {
+                if (pushCounter < 12) {
+                  while (pushCounter < 12) {
                     dataLine.push('', '', '', '', '', '', '', '', '');
                     pushCounter += 1;
                   }

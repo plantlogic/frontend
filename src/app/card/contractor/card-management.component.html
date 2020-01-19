@@ -1,0 +1,104 @@
+<div class="jumbotron p-3">
+  <div class="row">
+    <div class="col d-none d-md-inline-block">
+      <form class="form-inline">
+        <input class="form-control mr-sm-2" name="filter" type="search" placeholder="Search" aria-label="Search"
+               [(ngModel)]="filter" (keyup)="filterItems()" mdbInput>
+      </form>
+    </div>
+    <div class="col d-none d-md-inline-block text-center">
+      <button type="button"color="primary" name="cardCount" outline="true" disabled
+              mdbBtn floating="true" size="sm">
+        <span *ngIf="!filter">Cards: </span>
+        <span *ngIf="filter">Search Results: </span>
+        <b>{{cards.length}}</b>
+      </button>
+    </div>
+    <div class="col d-none d-md-inline-block" *ngIf="hasViewPermission()">
+      <button type="button" class="float-right" color="primary" routerLink="/contractor/export" name="addCard"
+              mdbBtn floating="true" size="sm" mdbWavesEffect>Export Data</button>
+    </div>
+  </div>
+  <hr class="my-4">
+  <div class="row">
+      <div class="col">
+        <h2 *ngIf="!cards">Loading data...</h2>
+        <table mdbTable *ngIf="cards">
+          <thead class="text-nowrap">
+            <tr>
+              <th scope="col" class="small" [mdbTableSort]="cards" [sortBy]="'ranchName'">
+                Ranch <span class="d-none d-md-inline-block">Name</span> <i class="fa fa-sort ml-1"></i>
+              </th>
+              <th scope="col" class="small" [mdbTableSort]="cards" [sortBy]="'lotNumber'">
+                Lot # <i class="fa fa-sort ml-1"></i>
+              </th>
+              <th scope="col" class="small" [mdbTableSort]="cards" [sortBy]="'commodityString'">
+                Commodities <i class="fa fa-sort ml-1"></i>
+              </th>
+              <th scope="col" class="small" [mdbTableSort]="cards" [sortBy]="'hoeDate'">
+                Hoe Date <i class="fa fa-sort ml-1"></i>
+              </th>
+              <th scope="col" class="small" [mdbTableSort]="cards" [sortBy]="'thinDate'">
+                Thin Date <i class="fa fa-sort ml-1"></i>
+              </th>
+              <th scope="col" class="small">
+                Update
+              </th>
+              <th scope="col" class="small" [mdbTableSort]="cards" [sortBy]="'lastUpdated'">
+                Last Updated <i class="fa fa-sort ml-1"></i>
+              </th>
+              <th scope="col" class="small" [mdbTableSort]="cards" [sortBy]="'closed'">
+                State <i class="fa fa-sort ml-1"></i>
+              </th>
+              <th class="small" scope="col">Options</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr mdbTableCol *ngFor="let p of cards; let i = index" class="animated fadeIn" [style.animation-delay]="this.min((30*i), 1000)+ 'ms'">
+              <td>{{p.ranchName}}</td>
+              <td>{{p.lotNumber}}</td>
+              <td>{{p.commodityString}}</td>
+              <td>
+                <ng2-flatpickr placeholder="Select Date" class="w-20" [config]="hoeDateConfigs[p.id]" [(ngModel)]="p.hoeDate"></ng2-flatpickr>
+                <select class="form-control form-control-sm" [(ngModel)]="p.hoeType" [disabled]="!p.hoeDate">
+                  <option *ngIf="!p.hoeType" [value]="undefined" disabled selected>Select Hoe Type</option>
+                  <option *ngFor="let r of initWorkTypes()" [value]="r">{{r}}</option>
+                </select>
+              </td>
+              <td>
+                <ng2-flatpickr placeholder="Select Date" class="w-20" [config]="thinDateConfigs[p.id]" [(ngModel)]="p.thinDate"></ng2-flatpickr>
+                <select class="form-control form-control-sm" [(ngModel)]="p.thinType" [disabled]="!p.thinDate">
+                  <option *ngIf="!p.thinType" [value]="undefined" disabled selected>Select Thin Type</option>
+                  <option *ngFor="let r of initWorkTypes()" [value]="r">{{r}}</option>
+                </select>
+              </td>
+              <td>
+                <button type="button" color="success" (click)="updateCard(p)" class="mr-1 mb-1" mdbBtn floating="true" size="sm" style="display: inline-block;">
+                 <i class="fas fa-check ml-1"></i>
+                </button>
+              </td>
+              <td>{{p.lastUpdated | date:'longDate'}}</td>
+              <td>
+                <h5 *ngIf="p.closed">
+                  <span class="badge badge-light">
+                    Closed
+                  </span>
+                </h5>
+                <h5 *ngIf="!p.closed">
+                  <span class="badge badge-primary">
+                    Open
+                  </span>
+                </h5>
+              </td>
+              <td>
+                <button type="button" color="success" [routerLink]="['/contractor/o/', p.id]"
+                        alt="View Card" class="mr-1 mb-1" mdbBtn floating="true" size="sm">
+                  Open <i class="ml-1 fa fa-external-link-alt" aria-hidden="true"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+</div>

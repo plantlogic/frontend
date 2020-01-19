@@ -3,8 +3,8 @@
     <div class="col-md m-3">
       <select class="form-control" [(ngModel)]="card.ranchName"
               #ranchName="ngModel" required="required" [class.is-invalid]="submitAttempted && ranchName.invalid">
-        <option [value]="undefined" disabled selected>Ranch Name</option>
-        <option *ngFor="let r of getRanches()">{{r}}</option>
+        <option *ngIf="!card.ranchName" [value]="undefined" disabled selected>Select Ranch Name</option>
+        <option *ngFor="let r of getRanches()" [value]="r">{{r}}</option>
       </select>
       <input class="form-control" type="text" placeholder="Lot Number" [(ngModel)]="card.lotNumber" />
     </div>
@@ -27,16 +27,16 @@
         <div>
           <select class="form-control" [(ngModel)]="p.commodity" id="commodityInput" (ngModelChange)="p.variety = undefined"
                   required="required" #commodityName="ngModel" [class.is-invalid]="submitAttempted && commodityName.invalid">
-            <option [value]="undefined" disabled selected>Commodity</option>
-            <option *ngFor="let r of common.getMapKeys('commodities')">{{r}}</option>
+            <option *ngIf="!p.commodity" [value]="undefined" disabled selected>Select Commodity</option>
+            <option *ngFor="let c of common.getMapKeys('commodities')" [value]="c">{{c}}</option>
           </select>
           <select class="form-control" [(ngModel)]="p.variety" id="varietyInput">
-            <option [value]="undefined" disabled selected>Variety</option>
-            <option *ngFor="let r of common.getMapValues('commodities', p.commodity)">{{r}}</option>
+            <option *ngIf="!p.variety" [value]="undefined" disabled selected>Select Variety</option>
+            <option *ngFor="let v of common.getMapValues('commodities', p.commodity)" [value]="v">{{v}}</option>
           </select>
           <select class="form-control" [(ngModel)]="p.bedType">
-            <option [value]="undefined" disabled selected>Bed Type</option>
-            <option *ngFor="let r of common.getValues('bedTypes')">{{r}}</option>
+            <option *ngIf="!p.bedType" [value]="undefined" disabled selected>Select Bed Type</option>
+            <option *ngFor="let r of common.getValues('bedTypes')" [value]="r">{{r}}</option>
           </select>
           <!-- <label for="bedCountInput" class="control-label small">Bed Count:</label> -->
           <input type="number" [(ngModel)]="p.bedCount" class="form-control"
@@ -82,15 +82,15 @@
           <div *ngIf="p.chemical">
             <div class="row px-2">
               <select class="form-control" [(ngModel)]="p.chemical.name">
-                <option [value]="undefined" disabled selected>Chemical</option>
-                <option *ngFor="let r of common.getValues('chemicals')">{{r}}</option>
+                <option *ngIf="!p.chemical.name" [value]="undefined" disabled selected>Select Chemical</option>
+                <option *ngFor="let r of common.getValues('chemicals')" [value]="r">{{r}}</option>
               </select>
               <div class="form-inline m-0">
                 <input type="number" [(ngModel)]="p.chemical.rate" class="form-control"
                        placeholder="Rate" pattern="\d*" />
                 <select class="form-control" [(ngModel)]="p.chemical.unit">
-                  <option [value]="undefined" disabled selected>Rate Unit</option>
-                  <option *ngFor="let r of initRateUnits()">{{r}}</option>
+                  <option *ngIf="!p.chemical.unit" [value]="undefined" disabled selected>Select Rate Unit</option>
+                  <option *ngFor="let r of initRateUnits()" [value]="r">{{r}}</option>
                 </select>
                 <button type="button" color="warning" (click)="p.chemical = undefined" mdbBtn
                         floating="true" size="md" mdbWavesEffect>
@@ -109,15 +109,15 @@
           <div *ngIf="p.fertilizer">
             <div class="row px-2">
               <select class="form-control" [(ngModel)]="p.fertilizer.name">
-                <option [value]="undefined" disabled selected>Fertilizer</option>
-                <option *ngFor="let r of common.getValues('fertilizers')">{{r}}</option>
+                <option *ngIf="!p.fertilizer.name" [value]="undefined" disabled selected>Select Fertilizer</option>
+                <option *ngFor="let r of common.getValues('fertilizers')" [value]="r">{{r}}</option>
               </select>
               <div class="form-inline m-0">
                 <input type="number" [(ngModel)]="p.fertilizer.rate" class="form-control"
                        placeholder="Rate" pattern="\d*" />
                 <select class="form-control" [(ngModel)]="p.fertilizer.unit" >
-                  <option [value]="undefined" disabled selected>Rate Unit</option>
-                  <option *ngFor="let r of initRateUnits()">{{r}}</option>
+                  <option *ngIf="!p.fertilizer.unit" [value]="undefined" disabled selected>Select Rate Unit</option>
+                  <option *ngFor="let r of initRateUnits()" [value]="r">{{r}}</option>
                 </select>
                 <button type="button" color="warning" (click)="p.fertilizer = undefined" mdbBtn
                         floating="true" mdbWavesEffect size="md">
