@@ -19,7 +19,7 @@ export class CardContractorComponent implements OnInit {
   constructor(private titleService: TitleService, private cardService: CardViewService, private cardEdit: CardEditService,
               private tableService: MdbTableService, private nav: NavService, private auth: AuthService) { }
 
-  cards: Card[] = [];
+  cards: any[] = [];
   hoeDateConfigs = {};
   thinDateConfigs = {};
   filter: string;
@@ -77,6 +77,7 @@ export class CardContractorComponent implements OnInit {
   }
 
   private updateCard(c: Card): void {
+    console.log(c);
     if (c.hoeDate) {
       c.hoeDate = (new Date(c.hoeDate)).valueOf();
     }
