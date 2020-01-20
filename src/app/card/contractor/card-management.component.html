@@ -26,47 +26,47 @@
         <table mdbTable *ngIf="cards">
           <thead class="text-nowrap">
             <tr>
-              <th scope="col" class="small" [mdbTableSort]="cards" [sortBy]="'ranchName'">
-                Ranch <span class="d-none d-md-inline-block">Name</span> <i class="fa fa-sort ml-1"></i>
+              <th class="small" [mdbTableSort]="cards" [sortBy]="'ranchName'" style="width:12%;max-width:12%;">
+                <span>Ranch<span class="d-none d-md-inline-block"></span> <i class="fa fa-sort ml-1"></i></span>
               </th>
-              <th scope="col" class="small" [mdbTableSort]="cards" [sortBy]="'lotNumber'">
-                Lot # <i class="fa fa-sort ml-1"></i>
+              <th class="small" [mdbTableSort]="cards" [sortBy]="'lotNumber'" style="width:12%;max-width:12%;">
+                <span>Lot # <i class="fa fa-sort ml-1"></i></span>
               </th>
-              <th scope="col" class="small" [mdbTableSort]="cards" [sortBy]="'commodityString'">
-                Commodities <i class="fa fa-sort ml-1"></i>
+              <th class="small" [mdbTableSort]="cards" [sortBy]="'commodityString'" style="width:10%;max-width:10%;">
+                <span>Commodities <i class="fa fa-sort ml-1"></i></span>
               </th>
-              <th scope="col" class="small" [mdbTableSort]="cards" [sortBy]="'hoeDate'">
+              <th class="small" [mdbTableSort]="cards" [sortBy]="'hoeDate'" style="width:18%;max-width:15%;">
                 Hoe Date <i class="fa fa-sort ml-1"></i>
               </th>
-              <th scope="col" class="small" [mdbTableSort]="cards" [sortBy]="'thinDate'">
+              <th class="small" [mdbTableSort]="cards" [sortBy]="'thinDate'" style="width:18%;max-width:15%;">
                 Thin Date <i class="fa fa-sort ml-1"></i>
               </th>
-              <th scope="col" class="small">
+              <th class="small" style="width:5%;max-width:5%;">
                 Update
               </th>
-              <th scope="col" class="small" [mdbTableSort]="cards" [sortBy]="'lastUpdated'">
+              <th class="small" [mdbTableSort]="cards" [sortBy]="'lastUpdated'" style="width:10%;max-width:10%;">
                 Last Updated <i class="fa fa-sort ml-1"></i>
               </th>
-              <th scope="col" class="small" [mdbTableSort]="cards" [sortBy]="'closed'">
+              <th class="small" [mdbTableSort]="cards" [sortBy]="'closed'" style="width:8%;max-width:8%;">
                 State <i class="fa fa-sort ml-1"></i>
               </th>
-              <th class="small" scope="col">Options</th>
+              <th class="small" style="width:8%;max-width:8%;">Options</th>
             </tr>
           </thead>
           <tbody>
             <tr mdbTableCol *ngFor="let p of cards; let i = index" class="animated fadeIn" [style.animation-delay]="this.min((30*i), 1000)+ 'ms'">
-              <td>{{p.ranchName}}</td>
-              <td>{{p.lotNumber}}</td>
-              <td>{{p.commodityString}}</td>
+              <td class="hover">{{p.ranchName}}<span class="hover-text">{{p.ranchName}}</span></td>
+              <td class="hover">{{p.lotNumber}}<span class="hover-text">{{p.lotNumber}}</span></td>
+              <td class="hover">{{p.commodityString}} <span class="hover-text">{{p.commodityString}}</span></td>
               <td>
-                <ng2-flatpickr placeholder="Select Date" class="w-20" [config]="hoeDateConfigs[p.id]" [(ngModel)]="p.hoeDate"></ng2-flatpickr>
+                <ng2-flatpickr placeholder="Select Date" [config]="hoeDateConfigs[p.id]" [(ngModel)]="p.hoeDate"></ng2-flatpickr>
                 <select class="form-control form-control-sm" [(ngModel)]="p.hoeType" [disabled]="!p.hoeDate">
                   <option *ngIf="!p.hoeType" [value]="undefined" disabled selected>Select Hoe Type</option>
                   <option *ngFor="let r of initWorkTypes()" [value]="r">{{r}}</option>
                 </select>
               </td>
               <td>
-                <ng2-flatpickr placeholder="Select Date" class="w-20" [config]="thinDateConfigs[p.id]" [(ngModel)]="p.thinDate"></ng2-flatpickr>
+                <ng2-flatpickr placeholder="Select Date" [config]="thinDateConfigs[p.id]" [(ngModel)]="p.thinDate"></ng2-flatpickr>
                 <select class="form-control form-control-sm" [(ngModel)]="p.thinType" [disabled]="!p.thinDate">
                   <option *ngIf="!p.thinType" [value]="undefined" disabled selected>Select Thin Type</option>
                   <option *ngFor="let r of initWorkTypes()" [value]="r">{{r}}</option>
