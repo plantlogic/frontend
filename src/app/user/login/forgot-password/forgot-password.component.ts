@@ -13,7 +13,7 @@ export class ForgotPasswordComponent implements OnInit {
   form: FormGroup;
   error: string;
   isLoading = false;
-  @ViewChild('fpModal') fpModal: ModalDirective;
+  @ViewChild('fpModal', { static: true }) fpModal: ModalDirective;
 
   constructor(private fb: FormBuilder, private auth: AuthService) {
     this.form = this.fb.group({

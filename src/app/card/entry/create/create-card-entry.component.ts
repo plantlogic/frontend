@@ -11,7 +11,7 @@ import {Commodities} from '../../../_dto/card/commodities';
 import {FlatpickrOptions} from 'ng2-flatpickr';
 import {Chemical} from '../../../_dto/card/chemical';
 import {CommonFormDataService} from '../../../_api/common-form-data.service';
-import { componentNeedsResolution } from '@angular/core/src/metadata/resource_loading';
+// import { componentNeedsResolution } from '@angular/core/src/metadata/resource_loading';
 
 @Component({
   selector: 'app-create-card',
@@ -23,8 +23,8 @@ export class CreateCardEntryComponent implements OnInit {
               private cardEntryService: CardEntryService, private auth: AuthService, private nav: NavService,
               public common: CommonFormDataService) { }
 
-  @ViewChild('ranchName') public ranchName: NgModel;
-  @ViewChild('cropYear') public cropYear: NgModel;
+  @ViewChild('ranchName', { static: true }) public ranchName: NgModel;
+  @ViewChild('cropYear', { static: true }) public cropYear: NgModel;
 
   card: Card = new Card();
   submitAttempted = false;

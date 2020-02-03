@@ -32,8 +32,8 @@ export class OpenCardDataComponent implements OnInit {
   editable: boolean;
   editing = false;
 
-  @ViewChild('ranchName') public ranchName: NgModel;
-  @ViewChild('cropYear') public cropYear: NgModel;
+  @ViewChild('ranchName', { static: false }) public ranchName: NgModel;
+  @ViewChild('cropYear', { static: false }) public cropYear: NgModel;
 
   hoeDatePickr: FlatpickrOptions = {
     dateFormat: 'm-d-Y',

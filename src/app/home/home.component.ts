@@ -29,9 +29,9 @@ export class HomeComponent implements OnInit {
 
   dataViewElements = false;
   cardHarvestedChart: Chart;
-  @ViewChild('cardHarvestedChartRef') private cardHarvestedChartRef;
+  @ViewChild('cardHarvestedChartRef', { static: false }) private cardHarvestedChartRef;
   openCommoditiesChart: Chart;
-  @ViewChild('openCommoditiesChartRef') private openCommoditiesChartRef;
+  @ViewChild('openCommoditiesChartRef', { static: false }) private openCommoditiesChartRef;
 
   userManagementElements = false;
   userCount: number;
