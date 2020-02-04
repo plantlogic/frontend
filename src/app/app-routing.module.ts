@@ -22,7 +22,6 @@ import {ExportCardDataComponent} from './card/management/export/export-card-data
 
 import {CardContractorComponent} from './card/contractor/card-management.component';
 import {OpenCardContractorComponent} from './card/contractor/open/open-card-data.component';
-import {ExportCardContractorComponent} from './card/contractor/export/export-card-data.component';
 
 import {AppAdminComponent} from './card/admin/app-admin.component';
 import {AddChemicalEntryComponent} from './card/entry/open/add-chemical/add-chemical-entry.component';
@@ -192,15 +191,6 @@ const routes: Routes = [
     data: {
       parent: '/contractor',
       role: [PlRole.CONTRACTOR_VIEW, PlRole.CONTRACTOR_EDIT]
-    }
-  },
-  {
-    path: 'contractor/export',
-    component: ExportCardContractorComponent,
-    canActivate: [RoleGuard],
-    data: {
-      parent: '/contractor',
-      role: [PlRole.CONTRACTOR_VIEW]
     }
   },
 

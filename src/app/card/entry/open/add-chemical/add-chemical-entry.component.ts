@@ -22,7 +22,7 @@ export class AddChemicalEntryComponent implements OnInit {
               private cardEntryService: CardEntryService, private auth: AuthService, private nav: NavService,
               public common: CommonFormDataService) { }
 
-  chem: Chemicals = new Chemicals();
+  chem: Chemicals = new Chemicals(); // has date, chemical, and fertilizer
   submitAttempted = false;
   cardId: string;
 
@@ -33,25 +33,29 @@ export class AddChemicalEntryComponent implements OnInit {
 
 
   submit() {
-    /* if (false) {
-      this.submitAttempted = true;
-    } else { */
-      this.submitAttempted = false;
-      this.chem.date = (new Date(this.chem.date)).valueOf();
-      this.cardEntryService.addChemicalData(this.cardId, this.chem).subscribe(
-        data => {
-          if (data.success) {
-            AlertService.newBasicAlert('Saved successfully!', false);
-            this.nav.goBack();
-          } else if (!data.success) {
-            AlertService.newBasicAlert('Error: ' + data.error, true);
-          }
-        },
-        failure => {
-          AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
+    this.submitAttempted = false;
+    this.chem.date = (new Date(this.chem.date)).valueOf();
+    this.cardEntryService.addChemicalData(this.cardId, this.chem).subscribe(
+      data => {
+        if (data.success) {
+          AlertService.newBasicAlert('Saved successfully!', false);
+          this.nav.goBack();
+        } else if (!data.success) {
+          AlertService.newBasicAlert('Error: ' + data.error, true);
         }
-      );
-    // }
+      },
+      failure => {
+        AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
+      }
+    );
+  }
+
+  initChemicals(): Array<string> {
+    return this.common.getValues('chemicals');
+  }
+
+  initFertilizers(): Array<string> {
+    return this.common.getValues('fertilizers');
   }
 
   initRateUnits(): Array<string> {
@@ -66,6 +70,6 @@ export class AddChemicalEntryComponent implements OnInit {
   }
 
   newChemical(): Chemical {
-    return new Chemical();
+    return new Chemical();  // has name, rate, unit
   }
 }
