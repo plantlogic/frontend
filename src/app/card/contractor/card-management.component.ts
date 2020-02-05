@@ -41,8 +41,15 @@ export class CardContractorComponent implements OnInit {
           this.cards = data.data.map(c => (new Card()).copyConstructor(c));
           this.cards.forEach(c => {
             c.initCommodityString();
-            c.hoeDate = (c.hoeDate) ? c.hoeDate : '';
-            c.thinDate = (c.thinDate) ? c.thinDate : '';
+            // Modify hoe and thin dates to hold both their input value (val) and the value used to sort by (num)
+            c.hoeDate = {
+                val: c.hoeDate,
+                num: (c.hoeDate) ? new Date(c.hoeDate).valueOf() : ''
+            };
+            c.thinDate = {
+              val: c.thinDate,
+              num: (c.thinDate) ? new Date(c.thinDate).valueOf() : ''
+           };
           });
           this.tableService.setDataSource(this.cards);
           this.cards = this.tableService.getDataSource();
@@ -73,18 +80,19 @@ export class CardContractorComponent implements OnInit {
     }
   }
 
-  private updateCard(c: Card): void {
-    if (c.hoeDate) {
-      c.hoeDate = (new Date(c.hoeDate)).valueOf();
+  private updateCard(c: any): void {
+    // Revert hoe and thin dates to their normal forms
+    if (c.hoeDate.val) {
+      c.hoeDate = (new Date(c.hoeDate.val)).valueOf();
     } else {
       c.hoeDate = null;
     }
-    if (c.thinDate) {
-      c.thinDate = (new Date(c.thinDate)).valueOf();
+    if (c.thinDate.val) {
+      c.thinDate = (new Date(c.thinDate.val)).valueOf();
     } else {
       c.thinDate = null;
     }
-    this.cardEdit.updateCard(c).subscribe(data => {
+    this.cardEdit.updateCard(c as Card).subscribe(data => {
       if (data.success) {
         AlertService.newBasicAlert('Change saved successfully!', false);
         this.loadCardData();

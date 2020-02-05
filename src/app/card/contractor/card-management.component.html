@@ -42,10 +42,10 @@
               <th class="small" [mdbTableSort]="cards" [sortBy]="'commodityString'" style="width:12%;max-width:12%;">
                 <span>Commodities <i class="fa fa-sort ml-1"></i></span>
               </th>
-              <th class="small" [mdbTableSort]="cards" [sortBy]="'hoeDate'" style="width:15%;max-width:15%;">
+              <th class="small" [mdbTableSort]="cards" [sortBy]="'hoeDate.num'" style="width:15%;max-width:15%;">
                 Hoe Date <i class="fa fa-sort ml-1"></i>
               </th>
-              <th class="small" [mdbTableSort]="cards" [sortBy]="'thinDate'" style="width:15%;max-width:15%;">
+              <th class="small" [mdbTableSort]="cards" [sortBy]="'thinDate.num'" style="width:15%;max-width:15%;">
                 Thin Date <i class="fa fa-sort ml-1"></i>
               </th>
               <th class="small" style="width:10%;max-width:10%;">
@@ -69,15 +69,15 @@
                 <td class="hover">{{p.lotNumber}}<span class="hover-text">{{p.lotNumber}}</span></td>
                 <td class="hover">{{p.commodityString}} <span class="hover-text">{{p.commodityString}}</span></td>
                 <td>
-                  <input class="date" [ngModel]="p.hoeDate | date:'yyyy-MM-dd'" (ngModelChange)="p.hoeDate = fixDate($event)" type="date"/>
-                  <select class="form-control form-control-sm" [(ngModel)]="p.hoeType" [disabled]="!p.hoeDate">
+                  <input class="date" [ngModel]="p.hoeDate.val | date:'yyyy-MM-dd'" (ngModelChange)="p.hoeDate.val = fixDate($event)" type="date"/>
+                  <select class="form-control form-control-sm" [(ngModel)]="p.hoeType" [disabled]="!p.hoeDate.val">
                     <option *ngIf="!p.hoeType" [value]="undefined" disabled selected>Select Hoe Type</option>
                     <option *ngFor="let r of initWorkTypes()" [value]="r">{{r}}</option>
                   </select>
                 </td>
                 <td>
-                  <input class="date" [ngModel]="p.thinDate | date:'yyyy-MM-dd'" (ngModelChange)="p.thinDate = fixDate($event)" type="date"/>
-                  <select class="form-control form-control-sm" [(ngModel)]="p.thinType" [disabled]="!p.thinDate">
+                  <input class="date" [ngModel]="p.thinDate.val | date:'yyyy-MM-dd'" (ngModelChange)="p.thinDate.val = fixDate($event)" type="date"/>
+                  <select class="form-control form-control-sm" [(ngModel)]="p.thinType" [disabled]="!p.thinDate.val">
                     <option *ngIf="!p.thinType" [value]="undefined" disabled selected>Select Thin Type</option>
                     <option *ngFor="let r of initWorkTypes()" [value]="r">{{r}}</option>
                   </select>
