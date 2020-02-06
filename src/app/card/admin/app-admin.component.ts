@@ -53,16 +53,13 @@ export class AppAdminComponent implements OnInit {
     });
   }
 
-
   private getSimpleTables(): Array<string> {
     return this.keys.filter(v => CommonLookup[v].type === 'text' || CommonLookup[v].type === 'number');
   }
 
-
   private getHashTables(): Array<string> {
     return this.keys.filter(v => CommonLookup[v].type === 'hashTable');
   }
-
 
   private getName(key: string): string {
     if (CommonLookup[key] && CommonLookup[key].name) {
@@ -83,7 +80,6 @@ export class AppAdminComponent implements OnInit {
   private getKeys(o: any): Array<any> {
     return Object.keys(o);
   }
-
 
   private removeElement(key: string, pub: any, arr: Array<string>, index: number): void {
     arr.splice(index, 1);
@@ -148,13 +144,10 @@ export class AppAdminComponent implements OnInit {
     }
   }
 
-  private popHashCategory(key: string, pub: any, obj: any, index: number): void {
-    const value = Object.keys(obj)[index];
-    if (value) {
-      delete obj[value];
-
-      this.publishChange(key, pub);
-    }
+  private popHashCategory(key: string, pub: any, arr: Array<string>, index: number, keyToDelete: string): void {
+    delete arr[keyToDelete];
+    this.publishChange(key, pub);
+    this.clearEntries();
   }
 
   private clearEntries(): void {

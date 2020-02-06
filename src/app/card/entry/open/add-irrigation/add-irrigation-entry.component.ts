@@ -49,11 +49,27 @@ export class AddIrrigationEntryComponent implements OnInit {
   }
 
   initRateUnits(): Array<string> {
-    return this.common.getValues('chemicalRateUnits');
+    try {
+      return this.common.getValues('chemicalRateUnits').sort();
+    } catch { console.log('Error when initializing rate units'); }
   }
 
   initIrrigationMethods(): Array<string> {
-    return this.common.getValues('irrigationMethod');
+    try {
+      return this.common.getValues('irrigationMethod').sort();
+    } catch { console.log('Error when initializing irrigation methods'); }
+  }
+
+  initChemicals(): Array<string> {
+    try {
+      return this.common.getValues('chemicals').sort();
+    } catch { console.log('Error when initializing chemicals'); }
+  }
+
+  initFertilizers(): Array<string> {
+    try {
+      return this.common.getValues('fertilizers').sort();
+    } catch { console.log('Error when initializing fertilizers'); }
   }
 
   datePickr(): FlatpickrOptions {

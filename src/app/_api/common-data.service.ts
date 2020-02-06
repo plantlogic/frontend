@@ -69,7 +69,7 @@ export const CommonLookup = {
     },
     bedTypes: {
       name: 'Bed Types',
-      type: 'number'
+      type: 'text'
     },
     commodities: {
       name: 'Commodities',

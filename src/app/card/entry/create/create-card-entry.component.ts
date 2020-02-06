@@ -86,12 +86,44 @@ export class CreateCardEntryComponent implements OnInit {
   }
 
   initRateUnits(): Array<string> {
-    return this.common.getValues('chemicalRateUnits');
+    try {
+      return this.common.getValues('chemicalRateUnits').sort();
+    } catch { console.log('Error when initializing rate units'); }
+  }
+
+  initCommodities(): Array<string> {
+    try {
+      return this.common.getMapKeys('commodities').sort();
+    } catch { console.log('Error when initializing commodities'); }
+  }
+
+  initCommodityValues(p): Array<string> {
+    try {
+      return this.common.getMapValues('commodities', p.commodity).sort();
+    } catch { console.log('Error when initializing commodity values for ' + p); }
+  }
+
+  initBedTypes(): Array<string> {
+    try {
+      return this.common.getValues('bedTypes').sort();
+    } catch { console.log('Error when initializing bed types'); }
+  }
+
+  initChemicals(): Array<string> {
+    try {
+      return this.common.getValues('chemicals').sort();
+    } catch { console.log('Error when initializing chemicals'); }
+  }
+
+  initFertilizers(): Array<string> {
+    try {
+      return this.common.getValues('fertilizers').sort();
+    } catch { console.log('Error when initializing fertilizers'); }
   }
 
   getRanches(): Array<string> {
     try {
-      return this.common.getValues('ranches').filter(r => this.auth.getRanchAccess().includes(r));
+      return this.common.getValues('ranches').filter(r => this.auth.getRanchAccess().includes(r)).sort();
     } catch (E) { }
   }
 }

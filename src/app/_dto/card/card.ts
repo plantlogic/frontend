@@ -225,11 +225,13 @@ export class Card {
   }
 
   initCommodityString(): void {
-    if (this.commodityArray) {
-      this.commodityString = this.commodityArray.map(v => v.commodity).sort().join(', ');
-    } else {
-      this.commodityString = '';
-    }
+    try {
+      if (this.commodityArray) {
+        this.commodityString = this.commodityArray.map(v => v.commodity).sort().join(', ');
+      } else {
+        this.commodityString = '';
+      }
+    } catch { console.log('Error when initializing commodity string'); }
   }
 
   initTotalAcres(): void {

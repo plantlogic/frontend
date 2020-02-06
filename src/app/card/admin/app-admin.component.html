@@ -11,7 +11,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr mdbTableCol *ngFor="let c of common[k]; let i = index">
+          <tr mdbTableCol *ngFor="let c of common[k].sort(); let i = index">
             <td>
                 <input [type]="getType(k)" [(ngModel)]="c" class="form-control form-control-sm" style="width: 10em; display:inline-block"/> 
                 <button type="button" color="success" (click)="updateElement(k, common[k], common[k], i, c)" class="mr-1 mb-1" mdbBtn floating="true" size="sm" style="display: inline-block;">
@@ -60,7 +60,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr mdbTableCol *ngFor="let c of getKeys(common[k]); let i = index; ">
+        <tr mdbTableCol *ngFor="let c of getKeys(common[k]).sort(); let i = index; ">
           <td>
               <input [type]="getType(k)" [ngModel]="c" id="commodity{{i}}" class="form-control form-control-sm" style="width: 10em; display:inline-block"/> 
               <button type="button" color="success" (click)="updateHashElement(k, common[k], common[k], i, c)" class="mr-1 mb-1" mdbBtn floating="true" size="sm" style="display: inline-block;">
@@ -86,7 +86,8 @@
           </td>
           <td>
             <button type="button" color="danger"  mdbBtn class="float-right" size="sm" floating="true" mdbWavesEffect
-              (click)="popHashCategory(k, common[k], common[k], i)">
+              (click)="popHashCategory(k, common[k], common[k], i, c)">
+              <!--  "updateHashElement(k, common[k], common[k], i, c)" -->
               <i class="fa fa-trash" aria-hidden="true"></i>
             </button>
           </td>

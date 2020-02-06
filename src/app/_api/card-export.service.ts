@@ -256,8 +256,8 @@ export class CardExportService {
                 dataLine.push('', '', '', '', '', '', '');
               } else {
                 x.commodityArray.forEach(c => {
-                  dataLine.push('', c.commodity, String(c.cropAcres), String(c.bedType),
-                                String(c.bedCount), String(c.seedLotNumber), c.variety);
+                  dataLine.push('', c.commodity, String(c.cropAcres), c.bedType,
+                                String(c.bedCount), c.seedLotNumber, c.variety);
                   pushCounter += 1;
                 });
                 if (pushCounter < 3) {

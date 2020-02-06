@@ -48,11 +48,34 @@ export class AddTractorEntryComponent implements OnInit {
   }
 
   initRateUnits(): Array<string> {
-    return this.common.getValues('chemicalRateUnits');
+    try {
+      return this.common.getValues('chemicalRateUnits').sort();
+    } catch { console.log('Error when initializing rate units'); }
   }
 
+
   initTractorWork(): Array<string> {
-    return this.common.getValues('tractorWork');
+    try {
+      return this.common.getValues('tractorWork').sort();
+    } catch { console.log('Error when initializing tractor work types'); }
+  }
+
+  initTractorOperators(): Array<string> {
+    try {
+      return this.common.getValues('tractorOperators').sort();
+    } catch { console.log('Error when initializing tractor operators'); }
+  }
+
+  initChemicals(): Array<string> {
+    try {
+      return this.common.getValues('chemicals').sort();
+    } catch { console.log('Error when initializing chemicals'); }
+  }
+
+  initFertilizers(): Array<string> {
+    try {
+      return this.common.getValues('fertilizers').sort();
+    } catch { console.log('Error when initializing fertilizers'); }
   }
 
   datePickr(): FlatpickrOptions {
