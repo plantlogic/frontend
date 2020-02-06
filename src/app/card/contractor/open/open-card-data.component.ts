@@ -230,8 +230,6 @@ export class OpenCardContractorComponent implements OnInit {
     }
   }
 
-
-
   private datePickr(workDate: number): FlatpickrOptions {
     return {
       enableTime: true,
@@ -266,32 +264,64 @@ export class OpenCardContractorComponent implements OnInit {
 
   getRanches(): Array<string> {
     try {
-      return this.common.getValues('ranches').filter(r => this.auth.getRanchAccess().includes(r));
-    } catch (E) { }
+      return this.common.getValues('ranches').filter(r => this.auth.getRanchAccess().includes(r)).sort();
+    } catch (E) {
+      // Block error messages while data is loading
+     }
+  }
+
+  initBedTypes(): Array<string> {
+    try {
+      return this.common.getValues('bedTypes').sort();
+    } catch { console.log('Error when initializing bed types'); }
   }
 
   initChemicals(): Array<string> {
-    return this.common.getValues('chemicals');
+    try {
+      return this.common.getValues('chemicals').sort();
+    } catch { console.log('Error when initializing chemicals'); }
   }
 
   initFertilizers(): Array<string> {
-    return this.common.getValues('fertilizers');
+    try {
+      return this.common.getValues('fertilizers').sort();
+    } catch { console.log('Error when initializing fertilizers'); }
   }
 
   initRateUnits(): Array<string> {
-    return this.common.getValues('chemicalRateUnits');
+    try {
+      return this.common.getValues('chemicalRateUnits').sort();
+    } catch { console.log('Error when initializing rate units'); }
+  }
+
+  initCommodities(): Array<string> {
+    try {
+      return this.common.getMapKeys('commodities').sort();
+    } catch { console.log('Error when initializing commodities'); }
+  }
+
+  initCommodityValues(p): Array<string> {
+    try {
+      return this.common.getMapValues('commodities', p.commodity).sort();
+    } catch { console.log('Error when initializing commodity values for ' + p); }
   }
 
   initIrrigationMethods(): Array<string> {
-    return this.common.getValues('irrigationMethod');
+    try {
+      return this.common.getValues('irrigationMethod').sort();
+    } catch { console.log('Error when initializing irrigation methods'); }
   }
 
   initTractorOperators(): Array<string> {
-    return this.common.getValues('tractorOperators');
+    try {
+      return this.common.getValues('tractorOperators').sort();
+    } catch { console.log('Error when initializing tractor operators'); }
   }
 
   initTractorWork(): Array<string> {
-    return this.common.getValues('tractorWork');
+    try {
+      return this.common.getValues('tractorWork').sort();
+    } catch { console.log('Error when initializing tractor work types'); }
   }
 
   initWorkTypes(): Array<string> {

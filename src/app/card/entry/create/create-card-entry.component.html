@@ -28,17 +28,16 @@
           <select class="form-control" [(ngModel)]="p.commodity" id="commodityInput" (ngModelChange)="p.variety = undefined"
                   required="required" #commodityName="ngModel" [class.is-invalid]="submitAttempted && commodityName.invalid">
             <option *ngIf="!p.commodity" [value]="undefined" disabled selected>Select Commodity</option>
-            <option *ngFor="let c of common.getMapKeys('commodities')" [value]="c">{{c}}</option>
+            <option *ngFor="let c of initCommodities()" [value]="c">{{c}}</option>
           </select>
           <select class="form-control" [(ngModel)]="p.variety" id="varietyInput">
             <option *ngIf="!p.variety" [value]="undefined" disabled selected>Select Variety</option>
-            <option *ngFor="let v of common.getMapValues('commodities', p.commodity)" [value]="v">{{v}}</option>
+            <option *ngFor="let v of initCommodityValues(p)" [value]="v">{{v}}</option>
           </select>
           <select class="form-control" [(ngModel)]="p.bedType">
             <option *ngIf="!p.bedType" [value]="undefined" disabled selected>Select Bed Type</option>
-            <option *ngFor="let r of common.getValues('bedTypes')" [value]="r">{{r}}</option>
+            <option *ngFor="let r of initBedTypes()" [value]="r">{{r}}</option>
           </select>
-          <!-- <label for="bedCountInput" class="control-label small">Bed Count:</label> -->
           <input type="number" [(ngModel)]="p.bedCount" class="form-control"
                  placeholder="Bed Count" />
           <input type="number" [(ngModel)]="p.cropAcres" class="form-control"
@@ -83,7 +82,7 @@
             <div class="row px-2">
               <select class="form-control" [(ngModel)]="p.chemical.name">
                 <option *ngIf="!p.chemical.name" [value]="undefined" disabled selected>Select Chemical</option>
-                <option *ngFor="let r of common.getValues('chemicals')" [value]="r">{{r}}</option>
+                <option *ngFor="let r of initChemicals()" [value]="r">{{r}}</option>
               </select>
               <div class="form-inline m-0">
                 <input type="number" [(ngModel)]="p.chemical.rate" class="form-control"
@@ -110,7 +109,7 @@
             <div class="row px-2">
               <select class="form-control" [(ngModel)]="p.fertilizer.name">
                 <option *ngIf="!p.fertilizer.name" [value]="undefined" disabled selected>Select Fertilizer</option>
-                <option *ngFor="let r of common.getValues('fertilizers')" [value]="r">{{r}}</option>
+                <option *ngFor="let r of initFertilizers()" [value]="r">{{r}}</option>
               </select>
               <div class="form-inline m-0">
                 <input type="number" [(ngModel)]="p.fertilizer.rate" class="form-control"

@@ -37,7 +37,7 @@
         <div class="row px-2">
           <select class="form-control" [(ngModel)]="irrigation.chemical.name">
             <option *ngIf="!irrigation.chemical.name" [value]="undefined" disabled selected>Select Chemical</option>
-            <option *ngFor="let r of common.getValues('chemicals')" [value]="r">{{r}}</option>
+            <option *ngFor="let r of initChemicals()" [value]="r">{{r}}</option>
           </select>
           <div class="form-inline">
             <div class="form-group">
@@ -81,7 +81,7 @@
         <div class="row px-2">
           <select class="form-control" [(ngModel)]="irrigation.fertilizer.name">
             <option *ngIf="!irrigation.fertilizer.name" [value]="undefined" disabled selected>Select Fertilizer</option>
-            <option *ngFor="let r of common.getValues('fertilizers')" [value]="r">{{r}}</option>
+            <option *ngFor="let r of initFertilizers()" [value]="r">{{r}}</option>
           </select>
           <div class="form-inline">
             <div class="form-group">

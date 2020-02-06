@@ -151,19 +151,19 @@
             <td>
               <select class="form-control" [(ngModel)]="p.commodity" id="commodityInput" (ngModelChange)="p.variety = undefined" #commodityName="ngModel" [disabled]="!editing">
                 <option *ngIf="!p.commodity" [value]="undefined" disabled selected>Select Commodity</option>
-                <option *ngFor="let c of common.getMapKeys('commodities')" [value]="c">{{c}}</option>
+                <option *ngFor="let c of initCommodities()" [value]="c">{{c}}</option>
               </select>
             </td>
             <td>
               <select class="form-control form-control-sm" [(ngModel)]="p.variety" [disabled]="!editing" id="varietyInput">
                 <option *ngIf="!p.variety" [value]="undefined" disabled selected>Select Variety</option>
-                <option *ngFor="let v of common.getMapValues('commodities', p.commodity)" [value]="v">{{v}}</option>
+                <option *ngFor="let v of initCommodityValues(p)" [value]="v">{{v}}</option>
               </select>
             </td>
             <td>
               <select class="form-control form-control-sm" [(ngModel)]="p.bedType" [disabled]="!editing">
                 <option *ngIf="!p.bedType" [value]="undefined" disabled selected>Select Bed Type</option>
-                <option *ngFor="let r of common.getValues('bedTypes')" [value]="r">{{r}}</option>
+                <option *ngFor="let r of initBedTypes()" [value]="r">{{r}}</option>
               </select>
             </td>
             <td>
@@ -175,7 +175,7 @@
                      [placeholder]="editing ? 'Enter Acres' : ''" />
             </td>
             <td>
-              <input type="number" [(ngModel)]="p.seedLotNumber" [disabled]="!editing" class="form-control form-control-sm"
+              <input type="text" [(ngModel)]="p.seedLotNumber" [disabled]="!editing" class="form-control form-control-sm"
                      [placeholder]="editing ? 'Enter Seed Lot #' : ''" />
             </td>
             <td *ngIf="editing">
