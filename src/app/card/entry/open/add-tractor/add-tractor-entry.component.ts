@@ -31,6 +31,10 @@ export class AddTractorEntryComponent implements OnInit {
 
   submit() {
     this.submitAttempted = false;
+    if ((this.tractor.operator) && (!this.initTractorOperators().includes(this.tractor.operator))) {
+      AlertService.newBasicAlert('Invalid tractor operator selected, please select one from the list provided', true);
+      return;
+    }
     this.tractor.workDate = (new Date(this.tractor.workDate)).valueOf();
     this.cardEntryService.addTractorData(this.cardId, this.tractor).subscribe(
       data => {

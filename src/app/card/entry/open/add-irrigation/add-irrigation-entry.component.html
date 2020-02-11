@@ -5,19 +5,17 @@
       <ng2-flatpickr placeholder="Select Date" class="w-20 float-right"
                      [config]="datePickr()" [(ngModel)]="irrigation.workDate">
       </ng2-flatpickr>
+      <input class="form-control"  list="irrigators" [(ngModel)]="irrigation.irrigator" placeholder="Enter Irrigator">
+      <datalist id="irrigators">
+        <option *ngFor="let r of initIrrigators()" [value]="r">
+      </datalist>
       <select class="form-control" [(ngModel)]="irrigation.method">
         <option [value]="undefined" disabled selected>Irrigation Method</option>
         <option *ngFor="let r of initIrrigationMethods()" [value]="r">{{r}}</option>
       </select>
     </div>
 
-
-
-    <div class="w-100 d-block d-md-none">
-      <hr />
-    </div>
-
-
+    <div class="w-100 d-block d-md-none"><hr /></div>
 
     <div class="col-md my-3">
       <div class="mb-5 align-text-bottom">

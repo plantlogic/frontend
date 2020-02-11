@@ -5,14 +5,17 @@
       <ng2-flatpickr placeholder="Select Date" class="w-20 float-right"
                      [config]="datePickr()" [(ngModel)]="tractor.workDate">
       </ng2-flatpickr>
+      <div>
+        <input class="form-control" type="text" [(ngModel)]="tractor.tractorNumber" placeholder="Enter Tractor Number">
+      </div>
       <select class="form-control" [(ngModel)]="tractor.workDone" >
         <option *ngIf="!tractor.workDone" [value]="undefined" disabled selected>Select Tractor Work</option>
         <option *ngFor="let work of initTractorWork()" [value]="work">{{work}}</option>
       </select>
-      <select class="form-control" [(ngModel)]="tractor.operator">
-        <option *ngIf="!tractor.operator" [value]="undefined" disabled selected>Select Operator</option>
-        <option *ngFor="let r of initTractorOperators()" [value]="r">{{r}}</option>
-      </select>
+      <input class="form-control"  list="tractorOperators" [(ngModel)]="tractor.operator" placeholder="Enter Tractor Operator">
+      <datalist id="tractorOperators">
+        <option *ngFor="let r of initTractorOperators()" [value]="r">
+      </datalist>
     </div>
 
 

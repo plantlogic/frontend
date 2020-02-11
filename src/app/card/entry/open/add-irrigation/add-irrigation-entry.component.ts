@@ -32,6 +32,10 @@ export class AddIrrigationEntryComponent implements OnInit {
 
   submit() {
     this.submitAttempted = false;
+    if ((this.irrigation.irrigator) && (!this.initIrrigators().includes(this.irrigation.irrigator))) {
+      AlertService.newBasicAlert('Invalid Irrigator selected, please select one from the list provided', true);
+      return;
+    }
     this.irrigation.workDate = (new Date(this.irrigation.workDate)).valueOf();
     this.cardEntryService.addIrrigationData(this.cardId, this.irrigation).subscribe(
       data => {
@@ -58,6 +62,12 @@ export class AddIrrigationEntryComponent implements OnInit {
     try {
       return this.common.getValues('irrigationMethod').sort();
     } catch { console.log('Error when initializing irrigation methods'); }
+  }
+
+  initIrrigators(): Array<string> {
+    try {
+      return this.common.getValues('irrigators').sort();
+    } catch { console.log('Error when initializing irrigators'); }
   }
 
   initChemicals(): Array<string> {

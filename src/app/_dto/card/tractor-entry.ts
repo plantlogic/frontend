@@ -11,4 +11,6 @@ export class TractorEntry {
   fertilizer: Chemical;
   // Any chemical applied by tractor
   chemical: Chemical;
+  // Tractor number
+  tractorNumber: string;
 }

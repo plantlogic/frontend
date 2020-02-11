@@ -59,6 +59,10 @@ export const CommonLookup = {
       name: 'Irrigation Method',
       type: 'text'
     },
+    irrigators: {
+      name: 'Irrigators',
+      type: 'text'
+    },
     tractorOperators: {
       name: 'Tractor Operators',
       type: 'text'
