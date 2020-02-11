@@ -36,15 +36,15 @@ export class CardExportService {
                       '10th', 'Irrigation', '', '', '', '', '', '', '',
                       '11th', 'Irrigation', '', '', '', '', '', '', '',
                       '12th', 'Irrigation', '', '', '', '', '', '', '',
-                      '1st', 'Tractor', '', '', '', '', '', '', '', '',
-                      '2nd', 'Tractor', '', '', '', '', '', '', '', '',
-                      '3rd', 'Tractor', '', '', '', '', '', '', '', '',
-                      '4th', 'Tractor', '', '', '', '', '', '', '', '',
-                      '5th', 'Tractor', '', '', '', '', '', '', '', '',
-                      '6th', 'Tractor', '', '', '', '', '', '', '', '',
-                      '7th', 'Tractor', '', '', '', '', '', '', '', '',
-                      '8th', 'Tractor', '', '', '', '', '', '', '', '',
-                      '9th', 'Tractor', '', '', '', '', '', '', '', '',
+                      '1st', 'Tractor', '', '', '', '', '', '', '', '', '',
+                      '2nd', 'Tractor', '', '', '', '', '', '', '', '', '',
+                      '3rd', 'Tractor', '', '', '', '', '', '', '', '', '',
+                      '4th', 'Tractor', '', '', '', '', '', '', '', '', '',
+                      '5th', 'Tractor', '', '', '', '', '', '', '', '', '',
+                      '6th', 'Tractor', '', '', '', '', '', '', '', '', '',
+                      '7th', 'Tractor', '', '', '', '', '', '', '', '', '',
+                      '8th', 'Tractor', '', '', '', '', '', '', '', '', '',
+                      '9th', 'Tractor', '', '', '', '', '', '', '', '', '',
                       '10th', 'Tractor', '', '', '', '', '', '', '', '',
                       '11th', 'Tractor', '', '', '', '', '', '', '', '',
                       '12th', 'Tractor', '', '', '', '', '', '', '', '',
@@ -83,18 +83,18 @@ export class CardExportService {
                       'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
                       'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
                       // Tractor Data, 12 total
-                      'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
                       // Commodity Data, 3 Total
                       'Commodity', 'Crop Acres', 'Bed Type', 'Bed Count', 'SeedLotNumber', 'Variety', '',
                       'Commodity', 'Crop Acres', 'Bed Type', 'Bed Count', 'SeedLotNumber', 'Variety', '',
@@ -207,36 +207,36 @@ export class CardExportService {
               // Retrieve data from nested tractor data objects and insert into table
 
               if (!x.tractorArray.length) {
-                dataLine.push('', '', '', '', '', '', '', '', '', '');
-                dataLine.push('', '', '', '', '', '', '', '', '', '');
-                dataLine.push('', '', '', '', '', '', '', '', '', '');
-                dataLine.push('', '', '', '', '', '', '', '', '', '');
-                dataLine.push('', '', '', '', '', '', '', '', '', '');
-                dataLine.push('', '', '', '', '', '', '', '', '', '');
-                dataLine.push('', '', '', '', '', '', '', '', '', '');
-                dataLine.push('', '', '', '', '', '', '', '', '', '');
-                dataLine.push('', '', '', '', '', '', '', '', '', '');
-                dataLine.push('', '', '', '', '', '', '', '', '', '');
-                dataLine.push('', '', '', '', '', '', '', '', '', '');
-                dataLine.push('', '', '', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '', '', '', '');
               } else {
                 x.tractorArray.forEach(z => {
                   if (!z.chemical) {
                     if (!z.fertilizer) {
-                      dataLine.push('', String(z.workDate), z.workDone, z.operator, '', '', '', '', '', '');
+                      dataLine.push('', z.tractorNumber, String(z.workDate), z.workDone, z.operator, '', '', '', '', '', '');
                     } else {
-                      dataLine.push('', String(z.workDate), z.workDone, z.operator, '', '', '',
+                      dataLine.push('', z.tractorNumber, String(z.workDate), z.workDone, z.operator, '', '', '',
                                     z.fertilizer.name, String(z.fertilizer.rate), String(z.fertilizer.unit));
                     }
                   } else if (!z.fertilizer) {
                     if (!z.chemical) {
-                      dataLine.push('', String(z.workDate), z.workDone, z.operator, '', '', '', '', '', '');
+                      dataLine.push('', z.tractorNumber, String(z.workDate), z.workDone, z.operator, '', '', '', '', '', '');
                     } else {
-                      dataLine.push('', String(z.workDate), z.workDone, z.operator, z.chemical.name,
+                      dataLine.push('', z.tractorNumber, String(z.workDate), z.workDone, z.operator, z.chemical.name,
                                     String(z.chemical.rate), String(z.chemical.unit), '', '', '');
                     }
                   } else {
-                     dataLine.push('', String(z.workDate), z.workDone, z.operator, z.chemical.name,
+                     dataLine.push('', z.tractorNumber, String(z.workDate), z.workDone, z.operator, z.chemical.name,
                                    String(z.chemical.rate), String(z.chemical.unit),
                                    z.fertilizer.name, String(z.fertilizer.rate), String(z.fertilizer.unit));
                   }
@@ -244,7 +244,7 @@ export class CardExportService {
                 });
                 if (pushCounter < 12) {
                   while (pushCounter < 12) {
-                    dataLine.push('', '', '', '', '', '', '', '', '', '');
+                    dataLine.push('', '', '', '', '', '', '', '', '', '', '');
                     pushCounter += 1;
                   }
                 }

@@ -179,6 +179,20 @@ export class OpenCardContractorComponent implements OnInit {
     if (this.ranchName.invalid || (this.card.cropYear < 1000 || this.card.cropYear > 9999)) {
       AlertService.newBasicAlert('There are some invalid values - please fix before saving.', true);
     } else {
+      const operators = this.initTractorOperators();
+      for (const t of this.card.tractorArray) {
+        if ((t.operator) && (!operators.includes(t.operator))) {
+          AlertService.newBasicAlert('Invalid tractor operator selected, please select one from the list provided', true);
+          return;
+        }
+      }
+      const irrigators = this.initIrrigators();
+      for (const t of this.card.irrigationArray)  {
+        if ((t.irrigator) && (!irrigators.includes(t.irrigator))) {
+          AlertService.newBasicAlert('Invalid irrigator selected, please select one from the list provided', true);
+          return;
+        }
+      }
       const newAlert = new Alert();
       newAlert.color = 'warning';
       newAlert.title = 'Save Card';
@@ -310,6 +324,12 @@ export class OpenCardContractorComponent implements OnInit {
     try {
       return this.common.getValues('irrigationMethod').sort();
     } catch { console.log('Error when initializing irrigation methods'); }
+  }
+
+  initIrrigators(): Array<string> {
+    try {
+      return this.common.getValues('irrigators').sort();
+    } catch { console.log('Error when initializing irrigators'); }
   }
 
   initTractorOperators(): Array<string> {

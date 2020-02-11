@@ -388,6 +388,7 @@
           <thead>
           <tr>
             <th scope="col" class="small">Date</th>
+            <th scope="col" class="small">Irrigator</th>
             <th scope="col" class="small">Method</th>
             <th scope="col" class="small">Fertilizer</th>
             <th scope="col" class="small">Chemical</th>
@@ -403,6 +404,13 @@
               <ng2-flatpickr placeholder="Select Date" class="w-20"
                              [config]="datePickr(p.workDate)" [(ngModel)]="p.workDate" *ngIf="editing">
               </ng2-flatpickr>
+            </td>
+            <td class="cap-min-form-width">
+              <!-- <select class="form-control form-control-sm" [disabled]="!editing" [(ngModel)]="p.irrigator" >
+                <option *ngIf="!p.irrigator" [value]="undefined" disabled selected>Select Irrigator</option>
+                <option *ngFor="let r of initIrrigators()" [value]="r">{{r}}</option>
+              </select> -->
+              <input class="form-control form-control-sm" [disabled]="!editing" list="irrigators" [(ngModel)]="p.irrigator" placeholder="Enter Irrigator">
             </td>
             <td class="cap-min-form-width">
               <select class="form-control form-control-sm" [disabled]="!editing" [(ngModel)]="p.method" >
@@ -488,6 +496,7 @@
           <thead>
           <tr>
             <th scope="col" class="small">Date</th>
+            <th scope="col" class="small">Tractor Number</th>
             <th scope="col" class="small">Work Done</th>
             <th scope="col" class="small">Operator</th>
             <th scope="col" class="small">Fertilizer</th>
@@ -506,16 +515,16 @@
               </ng2-flatpickr>
             </td>
             <td class="cap-min-form-width">
+              <input type="text" class="form-control form-control-sm" [disabled]="!editing" [(ngModel)]="p.tractorNumber" placeholder="Enter Tractor Number">
+            </td>
+            <td class="cap-min-form-width">
               <select class="form-control form-control-sm" [disabled]="!editing" [(ngModel)]="p.workDone" >
                 <option *ngIf="!p.workDone" [value]="undefined" disabled selected>Select Tractor Work</option>
                 <option *ngFor="let r of initTractorWork()" [value]="r">{{r}}</option>
               </select>
             </td>
             <td class="cap-min-form-width">
-              <select class="form-control form-control-sm" [disabled]="!editing" [(ngModel)]="p.operator">
-                <option *ngIf="!p.operator" [value]="undefined" disabled selected>Select Tractor Operator</option>
-                <option *ngFor="let r of initTractorOperators()" [value]="r">{{r}}</option>
-              </select>
+              <input class="form-control form-control-sm" [disabled]="!editing" list="tractorOperators" [(ngModel)]="p.operator" placeholder="Enter Tractor Operator">
             </td>
             <td class="cap-max-form-width">
               <div *ngIf="!p.fertilizer && editing">
@@ -594,3 +603,11 @@
   <span>Delete </span>
   <i class="fas fa-trash ml-1"></i>
 </button>
+
+<datalist id="tractorOperators">
+  <option *ngFor="let r of initTractorOperators()" [value]="r">
+</datalist>
+
+<datalist id="irrigators">
+  <option *ngFor="let r of initIrrigators()" [value]="r">
+</datalist>

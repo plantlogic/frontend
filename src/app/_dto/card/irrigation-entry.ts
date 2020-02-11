@@ -9,4 +9,6 @@ export class IrrigationEntry {
   fertilizer: Chemical;
   // Any chemical applied with irrigation
   chemical: Chemical;
+  // Person overseeing the irrigation proccess
+  irrigator: string;
 }
