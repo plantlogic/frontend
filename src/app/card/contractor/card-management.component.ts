@@ -8,6 +8,7 @@ import {MdbTableService} from 'angular-bootstrap-md';
 import {NavService} from '../../_interact/nav.service';
 import {AuthService} from '../../_auth/auth.service';
 import {PlRole} from '../../_dto/user/pl-role.enum';
+import {CommonFormDataService} from 'src/app/_api/common-form-data.service';
 
 @Component({
   selector: 'app-management',
@@ -16,11 +17,14 @@ import {PlRole} from '../../_dto/user/pl-role.enum';
 })
 export class CardContractorComponent implements OnInit {
   constructor(private titleService: TitleService, private cardService: CardViewService, private cardEdit: CardEditService,
-              private tableService: MdbTableService, private nav: NavService, private auth: AuthService) { }
+              private tableService: MdbTableService, private nav: NavService, public common: CommonFormDataService,
+              private auth: AuthService) { }
 
   cards: any[] = [];
-  filter: string;
   previous: string;
+  filterRanchName: string;
+  filterLotNumber: string;
+  filterCommodity: string;
   viewSize = 20;
   numPages: number;
   pageNum: number;
@@ -52,7 +56,6 @@ export class CardContractorComponent implements OnInit {
            };
           });
           this.tableService.setDataSource(this.cards);
-          this.cards = this.tableService.getDataSource();
           this.previous = this.tableService.getDataSource();
           this.updateNumPages();
         } else if (!data.success) {
@@ -67,17 +70,40 @@ export class CardContractorComponent implements OnInit {
 
   public filterItems() {
     const prev = this.tableService.getDataSource();
-
-    if (!this.filter) {
+    const filter = this.filterCards();
+    if (!filter.wasFiltered) {
       this.tableService.setDataSource(this.previous);
       this.cards = this.tableService.getDataSource();
-    }
-
-    if (this.filter) {
-      this.filter.toLowerCase();
-      this.cards = this.tableService.searchLocalDataBy(this.filter.toLowerCase());
+    } else {
+      this.cards = filter.data;
       this.tableService.setDataSource(prev);
     }
+  }
+
+  public filterCards() {
+    let filterApplied = false;
+    let newCards = this.tableService.getDataSource();
+    if (this.filterRanchName) {
+      newCards = newCards.filter(card => card.ranchName.toLowerCase().includes(this.filterRanchName.toLowerCase()));
+      filterApplied = true;
+    }
+    if (this.filterLotNumber) {
+      newCards = newCards.filter(card => card.lotNumber.toLowerCase().includes(this.filterLotNumber.toLowerCase()));
+      filterApplied = true;
+    }
+    if (this.filterCommodity) {
+      newCards = newCards.filter(card => card.commodityString.toLowerCase().includes(this.filterCommodity.toLowerCase()));
+      filterApplied = true;
+    }
+    return { data: newCards, wasFiltered: filterApplied };
+  }
+
+  public clearFilter() {
+    this.filterRanchName = '';
+    this.filterLotNumber = '';
+    this.filterCommodity = '';
+    this.tableService.setDataSource(this.previous);
+    this.cards = this.tableService.getDataSource();
   }
 
   private updateCard(c: any): void {
@@ -112,6 +138,20 @@ export class CardContractorComponent implements OnInit {
 
   hasViewPermission(): boolean {
     return this.auth.hasPermission(PlRole.DATA_VIEW);
+  }
+
+  initRanches(): Array<string> {
+    try {
+      return this.common.getValues('ranches').filter(r => this.auth.getRanchAccess().includes(r)).sort();
+    } catch (E) {
+      // Block error messages while data is loading
+     }
+  }
+
+  initCommodities(): Array<string> {
+    try {
+      return this.common.getMapKeys('commodities').sort();
+    } catch { console.log('Error when initializing commodities'); }
   }
 
   initWorkTypes(): Array<string> {
