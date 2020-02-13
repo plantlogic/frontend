@@ -68,20 +68,21 @@ export class EntryDashboardComponent implements OnInit {
 
   public filterCards() {
     let filterApplied = false;
-    let newCards = this.tableService.getDataSource();
+    let cards = this.tableService.getDataSource();
+    const tempThis = this;
     if (this.filterRanchName) {
-      newCards = newCards.filter(card => card.ranchName.toLowerCase().includes(this.filterRanchName.toLowerCase()));
+      cards = cards.filter(card => (card.ranchName) && card.ranchName.toLowerCase().includes(tempThis.filterRanchName.toLowerCase()));
       filterApplied = true;
     }
     if (this.filterLotNumber) {
-      newCards = newCards.filter(card => card.lotNumber.toLowerCase().includes(this.filterLotNumber.toLowerCase()));
+      cards = cards.filter(card => (card.lotNumber) && card.lotNumber.toLowerCase().includes(tempThis.filterLotNumber.toLowerCase()));
       filterApplied = true;
     }
     if (this.filterCommodity) {
-      newCards = newCards.filter(card => card.commodityString.toLowerCase().includes(this.filterCommodity.toLowerCase()));
+      cards = cards.filter(c => (c.commodityString) && c.commodityString.toLowerCase().includes(tempThis.filterCommodity.toLowerCase()));
       filterApplied = true;
     }
-    return { data: newCards, wasFiltered: filterApplied };
+    return { data: cards, wasFiltered: filterApplied };
   }
 
   public clearFilter() {
