@@ -1,25 +1,33 @@
 <div class="jumbotron p-3">
   <div class="row">
-    <div class="col d-none d-md-inline-block">
-      <form class="form-inline">
-        <input class="form-control mr-sm-2" name="filter" type="search" placeholder="Search" aria-label="Search"
-               [(ngModel)]="filter" (keyup)="filterItems()" mdbInput>
-      </form>
-    </div>
     <div class="col d-none d-md-inline-block text-center">
       <button type="button"color="primary" name="cardCount" outline="true" disabled
               mdbBtn floating="true" size="sm">
-        <span *ngIf="!filter">Cards: </span>
-        <span *ngIf="filter">Search Results: </span>
+        <span>Cards: </span>
         <b>{{cards.length}}</b>
       </button>
     </div>
-    <div class="col d-none d-md-inline-block" *ngIf="hasViewPermission()">
-      <button type="button" class="float-right" color="primary" routerLink="/manage/export" name="addCard"
-              mdbBtn floating="true" size="sm" mdbWavesEffect>Export Data</button>
-    </div>
   </div>
+
   <hr class="my-4">
+
+  <form class="form-inline search-form">    
+    <input class="form-control form-control-sm" type="search" name="ranchName" list="ranches" placeholder="Ranch Name" 
+      aria-label="Ranch Name" [(ngModel)]="filterRanchName" mdbInput>
+    <input class="form-control form-control-sm" type="search" name="lotNumber" placeholder="Lot Number" 
+      aria-label="Lot Number" [(ngModel)]="filterLotNumber" mdbInput>
+    <input class="form-control form-control-sm" type="search" name="commodity" list="commodities" placeholder="Commodity" 
+      aria-label="Commodity" [(ngModel)]="filterCommodity" mdbInput>
+    <button class="mr-1 mb-1" type="button" color="info" (click)="filterItems()"  mdbBtn size="sm">
+      <i class="fas fa-search ml-1"></i>
+    </button>
+    <button class="mr-1 mb-1" type="button" color="danger" (click)="clearFilter()"  mdbBtn size="sm">
+      <i class="fas fa-times m1-1"></i>
+    </button>
+  </form>
+
+  <hr class="my-4">
+
   <div class="col d-md-inline-block">
     <span style="float: right; vertical-align: middle;">
     Listings: &nbsp;
@@ -107,3 +115,9 @@
       </div>
     </div>
 </div>
+<datalist id="ranches">
+  <option *ngFor="let r of initRanches()" [value]="r">
+</datalist>
+<datalist id="commodities">
+  <option *ngFor="let r of initCommodities()" [value]="r">
+</datalist>
