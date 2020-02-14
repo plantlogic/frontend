@@ -24,6 +24,10 @@
     <button class="mr-1 mb-1" type="button" color="danger" (click)="clearFilter()"  mdbBtn size="sm">
       <i class="fas fa-times m1-1"></i>
     </button>
+    <div class="col d-none d-md-inline-block" *ngIf="hasViewPermission()">
+      <button type="button" class="float-right" color="primary" routerLink="/manage/export" name="addCard"
+              mdbBtn floating="true" size="sm" mdbWavesEffect>Export Data</button>
+    </div>
   </form>
 
   <hr class="my-4">
