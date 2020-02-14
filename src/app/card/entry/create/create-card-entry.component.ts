@@ -12,6 +12,7 @@ import {FlatpickrOptions} from 'ng2-flatpickr';
 import {Chemical} from '../../../_dto/card/chemical';
 import {CommonFormDataService} from '../../../_api/common-form-data.service';
 import { componentNeedsResolution } from '@angular/core/src/metadata/resource_loading';
+import { TractorEntry } from 'src/app/_dto/card/tractor-entry';
 
 @Component({
   selector: 'app-create-card',
@@ -47,6 +48,7 @@ export class CreateCardEntryComponent implements OnInit {
       this.card.lotNumber = this.card.lotNumber.replace(/\s/g, '');
 
       this.card.preChemicalArray.forEach(v => v.date = (new Date(v.date)).valueOf());
+      this.card.tractorArray.forEach(v => v.workDate = (new Date(v.workDate)).valueOf());
       this.cardEntryService.createCard(this.card).subscribe(
         data => {
           console.log(data);
@@ -71,6 +73,14 @@ export class CreateCardEntryComponent implements OnInit {
 
   private addPreChemicals(): void {
     this.card.preChemicalArray.push(new Chemicals());
+  }
+
+  private addTractor(): void {
+    if (this.card.tractorArray.length < 1) {
+      const t = new TractorEntry();
+      t.workDone = 'Initial Setup';
+      this.card.tractorArray.push(t);
+    }
   }
 
   private datePickr(workDate: number): FlatpickrOptions {
@@ -119,6 +129,21 @@ export class CreateCardEntryComponent implements OnInit {
     try {
       return this.common.getValues('fertilizers').sort();
     } catch { console.log('Error when initializing fertilizers'); }
+  }
+
+  initTractorOperators(): Array<string> {
+    try {
+      return this.common.getValues('tractorOperators').sort();
+    } catch { console.log('Error when initializing tractor operators'); }
+  }
+
+  fixDate(d): Date {
+    if (!d) { return; }
+    const parts = d.split('-');
+    const day = parts[2];
+    const month = parts[1] - 1; // 0 based
+    const year = parts[0];
+    return new Date(year, month, day);
   }
 
   getRanches(): Array<string> {

@@ -52,6 +52,8 @@ export class Card {
   //
   shipperID: string;
   //
+  planterNumber: string;
+  //
   comment: string;
   //
   wetDate: number;
@@ -113,6 +115,7 @@ export class Card {
     this.ranchManagerName = card.ranchManagerName;
     this.lotNumber = card.lotNumber;
     this.shipperID = card.shipperID;
+    this.planterNumber = card.planterNumber;
     this.comment = card.comment;
     this.wetDate = card.wetDate;
     this.thinDate = card.thinDate;

@@ -53,7 +53,11 @@
         <br />
         <b>Shipper ID:</b>
         <br />
-        <input type="number" [(ngModel)]="card.shipperID" [disabled]="!editing" class="form-control form-control-sm" />
+        <input type="text" [(ngModel)]="card.shipperID" [disabled]="!editing" class="form-control form-control-sm" />
+        <br />
+        <b>Planter Number</b>
+        <br />
+        <input type="text" [(ngModel)]="card.planterNumber" [disabled]="!editing" class="form-control form-control-sm" />
       </div>
       <div class="col-sm border p-4">
         <b>Wet Date:</b>

@@ -64,6 +64,7 @@ export class EntryDashboardComponent implements OnInit {
       this.cards = filter.data;
       this.tableService.setDataSource(prev);
     }
+    this.updateNumPages();
   }
 
   public filterCards() {
@@ -91,6 +92,7 @@ export class EntryDashboardComponent implements OnInit {
     this.filterCommodity = '';
     this.tableService.setDataSource(this.previous);
     this.cards = this.tableService.getDataSource();
+    this.updateNumPages();
   }
 
   // Used for animation
