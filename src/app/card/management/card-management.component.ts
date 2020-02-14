@@ -22,6 +22,7 @@ export class CardManagementComponent implements OnInit {
 
   cards: Card[] = [];
   filterRanchName: string;
+  filterFieldID: string;
   filterLotNumber: string;
   filterCommodity: string;
   previous: string;
@@ -66,6 +67,7 @@ export class CardManagementComponent implements OnInit {
       this.cards = filter.data;
       this.tableService.setDataSource(prev);
     }
+    this.updateNumPages();
   }
 
   public filterCards() {
@@ -74,6 +76,10 @@ export class CardManagementComponent implements OnInit {
     const tempThis = this;
     if (this.filterRanchName) {
       cards = cards.filter(card => (card.ranchName) && card.ranchName.toLowerCase().includes(tempThis.filterRanchName.toLowerCase()));
+      filterApplied = true;
+    }
+    if (this.filterFieldID) {
+      cards = cards.filter(card => (card.fieldID) && (card.fieldID + '').includes(tempThis.filterFieldID.toLowerCase()));
       filterApplied = true;
     }
     if (this.filterLotNumber) {
@@ -89,10 +95,12 @@ export class CardManagementComponent implements OnInit {
 
   public clearFilter() {
     this.filterRanchName = '';
+    this.filterFieldID = '';
     this.filterLotNumber = '';
     this.filterCommodity = '';
     this.tableService.setDataSource(this.previous);
     this.cards = this.tableService.getDataSource();
+    this.updateNumPages();
   }
 
   private updateFieldId(c: Card): void {

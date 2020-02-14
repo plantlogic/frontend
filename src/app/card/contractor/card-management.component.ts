@@ -78,6 +78,7 @@ export class CardContractorComponent implements OnInit {
       this.cards = filter.data;
       this.tableService.setDataSource(prev);
     }
+    this.updateNumPages();
   }
 
   public filterCards() {
@@ -105,6 +106,7 @@ export class CardContractorComponent implements OnInit {
     this.filterCommodity = '';
     this.tableService.setDataSource(this.previous);
     this.cards = this.tableService.getDataSource();
+    this.updateNumPages();
   }
 
   private updateCard(c: any): void {

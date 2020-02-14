@@ -14,6 +14,8 @@
   <form class="form-inline search-form">    
     <input class="form-control form-control-sm" type="search" name="ranchName" list="ranches" placeholder="Ranch Name" 
       aria-label="Ranch Name" [(ngModel)]="filterRanchName" mdbInput>
+    <input class="form-control form-control-sm" type="search" name="fieldID" placeholder="Field ID" 
+      aria-label="Field ID" [(ngModel)]="filterFieldID" mdbInput>
     <input class="form-control form-control-sm" type="search" name="lotNumber" placeholder="Lot Number" 
       aria-label="Lot Number" [(ngModel)]="filterLotNumber" mdbInput>
     <input class="form-control form-control-sm" type="search" name="commodity" list="commodities" placeholder="Commodity" 
@@ -24,7 +26,7 @@
     <button class="mr-1 mb-1" type="button" color="danger" (click)="clearFilter()"  mdbBtn size="sm">
       <i class="fas fa-times m1-1"></i>
     </button>
-    <div class="col d-none d-md-inline-block" *ngIf="hasViewPermission()">
+    <div class="col d-md-inline-block" *ngIf="hasViewPermission()">
       <button type="button" class="float-right" color="primary" routerLink="/manage/export" name="addCard"
               mdbBtn floating="true" size="sm" mdbWavesEffect>Export Data</button>
     </div>
