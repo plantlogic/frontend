@@ -24,18 +24,18 @@ export class CardExportService {
           const table: Array<Array<string>> = [];
           // Add column labels
           table.push(['', '', '', '', '', '', '', '', '', '', '', '',
-                      '1st', 'Irrigation', '', '', '', '', '', '', '',
-                      '2nd', 'Irrigation', '', '', '', '', '', '', '',
-                      '3rd', 'Irrigation', '', '', '', '', '', '', '',
-                      '4th', 'Irrigation', '', '', '', '', '', '', '',
-                      '5th', 'Irrigation', '', '', '', '', '', '', '',
-                      '6th', 'Irrigation', '', '', '', '', '', '', '',
-                      '7th', 'Irrigation', '', '', '', '', '', '', '',
-                      '8th', 'Irrigation', '', '', '', '', '', '', '',
-                      '9th', 'Irrigation', '', '', '', '', '', '', '',
-                      '10th', 'Irrigation', '', '', '', '', '', '', '',
-                      '11th', 'Irrigation', '', '', '', '', '', '', '',
-                      '12th', 'Irrigation', '', '', '', '', '', '', '',
+                      '1st', 'Irrigation', '', '', '', '', '', '', '', '',
+                      '2nd', 'Irrigation', '', '', '', '', '', '', '', '',
+                      '3rd', 'Irrigation', '', '', '', '', '', '', '', '',
+                      '4th', 'Irrigation', '', '', '', '', '', '', '', '',
+                      '5th', 'Irrigation', '', '', '', '', '', '', '', '',
+                      '6th', 'Irrigation', '', '', '', '', '', '', '', '',
+                      '7th', 'Irrigation', '', '', '', '', '', '', '', '',
+                      '8th', 'Irrigation', '', '', '', '', '', '', '', '',
+                      '9th', 'Irrigation', '', '', '', '', '', '', '', '',
+                      '10th', 'Irrigation', '', '', '', '', '', '', '', '',
+                      '11th', 'Irrigation', '', '', '', '', '', '', '', '',
+                      '12th', 'Irrigation', '', '', '', '', '', '', '', '',
                       '1st', 'Tractor', '', '', '', '', '', '', '', '', '',
                       '2nd', 'Tractor', '', '', '', '', '', '', '', '', '',
                       '3rd', 'Tractor', '', '', '', '', '', '', '', '', '',
@@ -45,9 +45,9 @@ export class CardExportService {
                       '7th', 'Tractor', '', '', '', '', '', '', '', '', '',
                       '8th', 'Tractor', '', '', '', '', '', '', '', '', '',
                       '9th', 'Tractor', '', '', '', '', '', '', '', '', '',
-                      '10th', 'Tractor', '', '', '', '', '', '', '', '',
-                      '11th', 'Tractor', '', '', '', '', '', '', '', '',
-                      '12th', 'Tractor', '', '', '', '', '', '', '', '',
+                      '10th', 'Tractor', '', '', '', '', '', '', '', '', '',
+                      '11th', 'Tractor', '', '', '', '', '', '', '', '', '',
+                      '12th', 'Tractor', '', '', '', '', '', '', '', '', '',
                       '1st', 'Commodity', '', '', '', '', '',
                       '2nd', 'Commodity', '', '', '', '', '',
                       '3rd', 'Commodity', '', '', '', '', '',
@@ -70,18 +70,18 @@ export class CardExportService {
           table.push(['Field ID', 'Ranch Name', 'Ranch Manager', 'Lot Number', 'Shipper ID',
                       'Wet Date', 'Thin Date', 'Thin Type', 'Hoe Date', 'Hoe Type', 'Harvest Date', '',
                       // Irrigation Data, 12 total
-                      'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Irrigator', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Irrigator', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Irrigator', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Irrigator', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Irrigator', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Irrigator', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Irrigator', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Irrigator', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Irrigator', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Irrigator', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Irrigator', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Irrigator', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
                       // Tractor Data, 12 total
                       'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
                       'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
@@ -160,37 +160,37 @@ export class CardExportService {
               // Retrieve data from nested irrigation data objects and insert into table
               if (!x.irrigationArray.length) {
 
-                dataLine.push('', '', '', '', '', '', '', '', '');
-                dataLine.push('', '', '', '', '', '', '', '', '');
-                dataLine.push('', '', '', '', '', '', '', '', '');
-                dataLine.push('', '', '', '', '', '', '', '', '');
-                dataLine.push('', '', '', '', '', '', '', '', '');
-                dataLine.push('', '', '', '', '', '', '', '', '');
-                dataLine.push('', '', '', '', '', '', '', '', '');
-                dataLine.push('', '', '', '', '', '', '', '', '');
-                dataLine.push('', '', '', '', '', '', '', '', '');
-                dataLine.push('', '', '', '', '', '', '', '', '');
-                dataLine.push('', '', '', '', '', '', '', '', '');
-                dataLine.push('', '', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '', '', '');
 
               } else {
                 x.irrigationArray.forEach(y => {
                   if (!y.chemical) {
                     if (!y.fertilizer) {
-                      dataLine.push('', String(y.workDate), y.method, '', '', '', '', '', '');
+                      dataLine.push('', String(y.workDate), y.irrigator, y.method, '', '', '', '', '', '');
                     } else {
-                      dataLine.push('', String(y.workDate), y.method, '', '', '',
+                      dataLine.push('', String(y.workDate), y.irrigator, y.method, '', '', '',
                                     y.fertilizer.name, String(y.fertilizer.rate), String(y.fertilizer.unit));
                     }
                   } else if (!y.fertilizer) {
                     if (!y.chemical) {
-                      dataLine.push('', String(y.workDate), y.method, '', '', '', '', '', '');
+                      dataLine.push('', String(y.workDate), y.irrigator, y.method, '', '', '', '', '', '');
                     } else {
-                      dataLine.push('', String(y.workDate), y.method,
+                      dataLine.push('', String(y.workDate), y.irrigator, y.method,
                                     y.chemical.name, String(y.chemical.rate), String(y.chemical.unit), '', '', '');
                     }
                   } else {
-                     dataLine.push('', String(y.workDate), y.method, y.chemical.name,
+                     dataLine.push('', String(y.workDate), y.irrigator, y.method, y.chemical.name,
                                    String(y.chemical.rate), String(y.chemical.unit),
                                    y.fertilizer.name, String(y.fertilizer.rate), String(y.fertilizer.unit));
                   }
@@ -198,7 +198,7 @@ export class CardExportService {
                 });
                 if (pushCounter < 12) {
                   while (pushCounter < 12) {
-                    dataLine.push('', '', '', '', '', '', '', '', '');
+                    dataLine.push('', '', '', '', '', '', '', '', '', '');
                     pushCounter += 1;
                   }
                 }
