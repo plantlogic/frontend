@@ -38,9 +38,9 @@ export class NavService {
           }
         });
 
-        this.router.navigate(newUrl);
+        this.router.navigate(newUrl, { queryParams: { saveFilter: true } });
       } else {
-        this.router.navigate([NavService.parent]);
+        this.router.navigate([NavService.parent], { queryParams: { saveFilter: true } });
       }
     } else {
       this.router.navigateByUrl('/');

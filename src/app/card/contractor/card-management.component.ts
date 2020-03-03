@@ -9,22 +9,23 @@ import {NavService} from '../../_interact/nav.service';
 import {AuthService} from '../../_auth/auth.service';
 import {PlRole} from '../../_dto/user/pl-role.enum';
 import {CommonFormDataService} from 'src/app/_api/common-form-data.service';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
-  selector: 'app-management',
+  selector: 'app-contractor',
   templateUrl: './card-management.component.html',
   styleUrls: ['./card-management.component.scss']
 })
 export class CardContractorComponent implements OnInit {
   constructor(private titleService: TitleService, private cardService: CardViewService, private cardEdit: CardEditService,
               private tableService: MdbTableService, private nav: NavService, public common: CommonFormDataService,
-              private auth: AuthService) { }
+              private route: ActivatedRoute, private auth: AuthService) { }
 
   cards: any[] = [];
-  previous: string;
   filterRanchName: string;
   filterLotNumber: string;
   filterCommodity: string;
+  previous: string;
   viewSize = 20;
   numPages: number;
   pageNum: number;
@@ -58,6 +59,23 @@ export class CardContractorComponent implements OnInit {
           this.tableService.setDataSource(this.cards);
           this.previous = this.tableService.getDataSource();
           this.updateNumPages();
+
+          if (this.route.snapshot.queryParams.saveFilter) {
+            let previousQuery: any = localStorage.getItem('contractorQuery');
+            if (previousQuery) {
+              previousQuery = JSON.parse(previousQuery);
+              this.filterRanchName = previousQuery.ranchName;
+              this.filterLotNumber = previousQuery.lotNumber;
+              this.filterCommodity = previousQuery.commodity;
+              this.filterItems();
+            }
+          } else {
+            this.filterRanchName = '';
+            this.filterLotNumber = '';
+            this.filterCommodity = '';
+            localStorage.removeItem('contractorQuery');
+          }
+
         } else if (!data.success) {
           AlertService.newBasicAlert('Error: ' + data.error, true);
         }
@@ -97,6 +115,12 @@ export class CardContractorComponent implements OnInit {
       cards = cards.filter(c => (c.commodityString) && c.commodityString.toLowerCase().includes(tempThis.filterCommodity.toLowerCase()));
       filterApplied = true;
     }
+    // Update local storage to save query
+    localStorage.setItem('contractorQuery', JSON.stringify({
+      ranchName: this.filterRanchName,
+      lotNumber: this.filterLotNumber,
+      commodity: this.filterCommodity
+    }));
     return { data: cards, wasFiltered: filterApplied };
   }
 
@@ -104,6 +128,7 @@ export class CardContractorComponent implements OnInit {
     this.filterRanchName = '';
     this.filterLotNumber = '';
     this.filterCommodity = '';
+    localStorage.removeItem('contractorQuery');
     this.tableService.setDataSource(this.previous);
     this.cards = this.tableService.getDataSource();
     this.updateNumPages();

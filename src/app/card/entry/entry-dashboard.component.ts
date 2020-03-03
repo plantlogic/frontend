@@ -7,6 +7,7 @@ import {MdbTableService} from 'angular-bootstrap-md';
 import {NavService} from '../../_interact/nav.service';
 import {CommonFormDataService} from 'src/app/_api/common-form-data.service';
 import {AuthService} from 'src/app/_auth/auth.service';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-entry',
@@ -15,7 +16,8 @@ import {AuthService} from 'src/app/_auth/auth.service';
 })
 export class EntryDashboardComponent implements OnInit {
   constructor(private titleService: TitleService, private cardService: CardEntryService, private tableService: MdbTableService,
-              private nav: NavService, public common: CommonFormDataService, private auth: AuthService) { }
+              private nav: NavService, public common: CommonFormDataService, private route: ActivatedRoute,
+              private auth: AuthService) { }
 
   cards: Card[] = [];
   filterRanchName: string;
@@ -44,6 +46,23 @@ export class EntryDashboardComponent implements OnInit {
           this.tableService.setDataSource(this.cards);
           this.previous = this.tableService.getDataSource();
           this.updateNumPages();
+
+          if (this.route.snapshot.queryParams.saveFilter) {
+            let previousQuery: any = localStorage.getItem('entryQuery');
+            if (previousQuery) {
+              previousQuery = JSON.parse(previousQuery);
+              this.filterRanchName = previousQuery.ranchName;
+              this.filterLotNumber = previousQuery.lotNumber;
+              this.filterCommodity = previousQuery.commodity;
+              this.filterItems();
+            }
+          } else {
+            this.filterRanchName = '';
+            this.filterLotNumber = '';
+            this.filterCommodity = '';
+            localStorage.removeItem('entryQuery');
+          }
+
         } else if (!data.success) {
           AlertService.newBasicAlert('Error: ' + data.error, true);
         }
@@ -83,6 +102,12 @@ export class EntryDashboardComponent implements OnInit {
       cards = cards.filter(c => (c.commodityString) && c.commodityString.toLowerCase().includes(tempThis.filterCommodity.toLowerCase()));
       filterApplied = true;
     }
+    // Update local storage to save query
+    localStorage.setItem('entryQuery', JSON.stringify({
+      ranchName: this.filterRanchName,
+      lotNumber: this.filterLotNumber,
+      commodity: this.filterCommodity
+    }));
     return { data: cards, wasFiltered: filterApplied };
   }
 
@@ -90,6 +115,7 @@ export class EntryDashboardComponent implements OnInit {
     this.filterRanchName = '';
     this.filterLotNumber = '';
     this.filterCommodity = '';
+    localStorage.removeItem('entryQuery');
     this.tableService.setDataSource(this.previous);
     this.cards = this.tableService.getDataSource();
     this.updateNumPages();

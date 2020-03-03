@@ -15,6 +15,7 @@ export class AppAdminComponent implements OnInit {
   entries = {};
   keys: Array<string> = new Array<string>();
   commodities = {};
+  displayToggles = {};
 
   ngOnInit() {
     this.titleService.setTitle('Administration');
@@ -42,8 +43,8 @@ export class AppAdminComponent implements OnInit {
           }
 
           this.keys.push(a.key);
+          this.displayToggles[this.getName(a.key)] = true;
         });
-
         this.emptyEntries = JSON.parse(JSON.stringify(this.entries));
       } else if (!data.success) {
         AlertService.newBasicAlert('Error: ' + data.error, true);
@@ -53,8 +54,24 @@ export class AppAdminComponent implements OnInit {
     });
   }
 
-  private getSimpleTables(): Array<string> {
-    return this.keys.filter(v => CommonLookup[v].type === 'text' || CommonLookup[v].type === 'number');
+  public toggleDisplay(s: string): void {
+    this.displayToggles[s] = !this.displayToggles[s];
+  }
+
+  public isHidden(s: string): boolean {
+    return this.displayToggles[s];
+  }
+
+  private getSimpleTablesSort(): Array<string> {
+    return this.keys.filter(v => {
+      return (CommonLookup[v].type === 'text' || CommonLookup[v].type === 'number') && (CommonLookup[v].sort === true);
+    });
+  }
+
+  private getSimpleTablesNoSort(): Array<string> {
+    return this.keys.filter(v => {
+      return (CommonLookup[v].type === 'text' || CommonLookup[v].type === 'number') && (CommonLookup[v].sort === false);
+    });
   }
 
   private getHashTables(): Array<string> {
