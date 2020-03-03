@@ -9,6 +9,7 @@ import {NavService} from '../../_interact/nav.service';
 import {AuthService} from '../../_auth/auth.service';
 import {PlRole} from '../../_dto/user/pl-role.enum';
 import {CommonFormDataService} from 'src/app/_api/common-form-data.service';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-management',
@@ -18,7 +19,7 @@ import {CommonFormDataService} from 'src/app/_api/common-form-data.service';
 export class CardManagementComponent implements OnInit {
   constructor(private titleService: TitleService, private cardService: CardViewService, private cardEdit: CardEditService,
               private tableService: MdbTableService, private nav: NavService, public common: CommonFormDataService,
-              private auth: AuthService) { }
+              private route: ActivatedRoute, private auth: AuthService) { }
 
   cards: Card[] = [];
   filterRanchName: string;
@@ -47,6 +48,25 @@ export class CardManagementComponent implements OnInit {
           this.tableService.setDataSource(this.cards);
           this.previous = this.tableService.getDataSource();
           this.updateNumPages();
+
+          if (this.route.snapshot.queryParams.saveFilter) {
+            let previousQuery: any = localStorage.getItem('managementQuery');
+            if (previousQuery) {
+              previousQuery = JSON.parse(previousQuery);
+              this.filterRanchName = previousQuery.ranchName;
+              this.filterFieldID = previousQuery.fieldID;
+              this.filterLotNumber = previousQuery.lotNumber;
+              this.filterCommodity = previousQuery.commodity;
+              this.filterItems();
+            }
+          } else {
+            this.filterRanchName = '';
+            this.filterFieldID = '';
+            this.filterLotNumber = '';
+            this.filterCommodity = '';
+            localStorage.removeItem('managementQuery');
+          }
+
         } else if (!data.success) {
           AlertService.newBasicAlert('Error: ' + data.error, true);
         }
@@ -90,6 +110,13 @@ export class CardManagementComponent implements OnInit {
       cards = cards.filter(c => (c.commodityString) && c.commodityString.toLowerCase().includes(tempThis.filterCommodity.toLowerCase()));
       filterApplied = true;
     }
+    // Update local storage to save query
+    localStorage.setItem('managementQuery', JSON.stringify({
+      ranchName: this.filterRanchName,
+      fieldID: this.filterFieldID,
+      lotNumber: this.filterLotNumber,
+      commodity: this.filterCommodity
+    }));
     return { data: cards, wasFiltered: filterApplied };
   }
 
@@ -98,6 +125,7 @@ export class CardManagementComponent implements OnInit {
     this.filterFieldID = '';
     this.filterLotNumber = '';
     this.filterCommodity = '';
+    localStorage.removeItem('managementQuery');
     this.tableService.setDataSource(this.previous);
     this.cards = this.tableService.getDataSource();
     this.updateNumPages();

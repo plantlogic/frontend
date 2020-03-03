@@ -102,6 +102,14 @@ const routes: Routes = [
     }
   },
   {
+    path: 'entry/:saveFilter',
+    component: EntryDashboardComponent,
+    canActivate: [RoleGuard],
+    data: {
+      role: [PlRole.DATA_ENTRY]
+    }
+  },
+  {
     path: 'entry/o/:id',
     component: OpenCardEntryComponent,
     canActivate: [RoleGuard],
@@ -174,10 +182,26 @@ const routes: Routes = [
       role: [PlRole.DATA_VIEW]
     }
   },
+  {
+    path: 'manage/:saveFilter',
+    component: CardManagementComponent,
+    canActivate: [RoleGuard],
+    data: {
+      role: [PlRole.DATA_VIEW, PlRole.DATA_ENTRY]
+    }
+  },
 
   // Contractor Card Management
   {
     path: 'contractor',
+    component: CardContractorComponent,
+    canActivate: [RoleGuard],
+    data: {
+      role: [PlRole.CONTRACTOR_VIEW]
+    }
+  },
+  {
+    path: 'contractor/:saveFilter',
     component: CardContractorComponent,
     canActivate: [RoleGuard],
     data: {

@@ -121,13 +121,13 @@ export class CreateCardEntryComponent implements OnInit {
 
   initChemicals(): Array<string> {
     try {
-      return this.common.getValues('chemicals').sort();
+      return this.common.getValues('chemicals');
     } catch { console.log('Error when initializing chemicals'); }
   }
 
   initFertilizers(): Array<string> {
     try {
-      return this.common.getValues('fertilizers').sort();
+      return this.common.getValues('fertilizers');
     } catch { console.log('Error when initializing fertilizers'); }
   }
 

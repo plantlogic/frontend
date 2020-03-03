@@ -1,9 +1,11 @@
 <div class="jumbotron p-3">
   <h2 *ngIf="!common">Loading...</h2>
   <div class="row" *ngIf="common">
-    <div class="col-lg-4 border p-3" *ngFor="let k of getSimpleTables()">
-      <h4>{{getName(k)}}</h4>
-      <table mdbTable class="table table-sm" small="true">
+    <div class="col-lg-4 border p-3" *ngFor="let k of getSimpleTablesSort().sort()">
+      <a (click)="toggleDisplay(getName(k))" class="text-primary">
+        <h4><i class="fas mr-1" [ngClass]="{ 'fa-caret-right': isHidden(getName(k)), 'fa-caret-down': !isHidden(getName(k)) }"></i> {{getName(k)}}</h4>
+      </a>
+      <table mdbTable class="table table-sm" [class.collapse]="isHidden(getName(k))" small="true">
         <thead>
           <tr>
             <th scope="col" class="small">Name</th>
@@ -12,6 +14,46 @@
         </thead>
         <tbody>
           <tr mdbTableCol *ngFor="let c of common[k].sort(); let i = index">
+            <td>
+                <input [type]="getType(k)" [(ngModel)]="c" class="form-control form-control-sm" style="width: 10em; display:inline-block"/> 
+                <button type="button" color="success" (click)="updateElement(k, common[k], common[k], i, c)" class="mr-1 mb-1" mdbBtn floating="true" size="sm" style="display: inline-block;">
+                      <i class="fas fa-check ml-1"></i>
+                </button>
+            </td>
+            <td class="minOptWidth">
+              <button type="button" color="danger" (click)="removeElement(k, common[k], common[k], i)" mdbBtn class="float-right"
+                      size="sm" floating="true" mdbWavesEffect>
+                <i class="fa fa-trash" aria-hidden="true"></i>
+              </button>
+            </td>
+          </tr>
+          <tr mdbTableCol>
+            <td>
+              <input [type]="getType(k)" [(ngModel)]="entries[k]" class="form-control"
+                     (keyup.enter)="addElement(k, common[k], common[k], entries[k])" />
+            </td>
+            <td>
+              <button type="button" color="primary" (click)="addElement(k, common[k], common[k], entries[k])" mdbBtn
+                      size="sm" floating="true" mdbWavesEffect><i class="fa fa-plus" aria-hidden="true"></i></button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <div class="col-lg-4 border p-3" *ngFor="let k of getSimpleTablesNoSort().sort()">
+      <a (click)="toggleDisplay(getName(k))" class="text-primary">
+        <h4><i class="fas mr-1" [ngClass]="{ 'fa-caret-right': isHidden(getName(k)), 'fa-caret-down': !isHidden(getName(k)) }"></i> {{getName(k)}}</h4>
+      </a>
+      <table mdbTable class="table table-sm" [class.collapse]="isHidden(getName(k))" small="true">
+        <thead>
+          <tr>
+            <th scope="col" class="small">Name</th>
+            <th scope="col" class="small minOptWidth">Options</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr mdbTableCol *ngFor="let c of common[k]; let i = index">
             <td>
                 <input [type]="getType(k)" [(ngModel)]="c" class="form-control form-control-sm" style="width: 10em; display:inline-block"/> 
                 <button type="button" color="success" (click)="updateElement(k, common[k], common[k], i, c)" class="mr-1 mb-1" mdbBtn floating="true" size="sm" style="display: inline-block;">
@@ -49,8 +91,10 @@
 
 
     <div class="col-lg-12 border p-3" *ngFor="let k of getHashTables()">
-      <h4>{{getName(k)}}</h4>
-      <table mdbTable class="table table-sm" small="true">
+      <a (click)="toggleDisplay(getName(k))" class="text-primary">
+        <h4><i class="fas mr-1" [ngClass]="{ 'fa-caret-right': isHidden(getName(k)), 'fa-caret-down': !isHidden(getName(k)) }"></i> {{getName(k)}}</h4>
+      </a>
+      <table mdbTable class="table table-sm" [class.collapse]="isHidden(getName(k))" small="true">
         <thead>
         <tr>
           <th scope="col" class="small" width="25%">Name</th>

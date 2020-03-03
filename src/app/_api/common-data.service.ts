@@ -41,42 +41,52 @@ export class CommonData {
 export const CommonLookup = {
     ranches: {
       name: 'Ranches',
+      sort: true,
       type: 'text'
     },
     fertilizers: {
       name: 'Fertilizers',
+      sort: false,
       type: 'text'
     },
     chemicals: {
       name: 'Chemicals',
+      sort: false,
       type: 'text'
     },
     chemicalRateUnits: {
       name: 'Chemical Rate Units',
+      sort: true,
       type: 'text'
     },
     irrigationMethod: {
       name: 'Irrigation Method',
+      sort: true,
       type: 'text'
     },
     irrigators: {
       name: 'Irrigators',
+      sort: true,
       type: 'text'
     },
     tractorOperators: {
       name: 'Tractor Operators',
+      sort: true,
       type: 'text'
     },
     tractorWork: {
       name: 'Tractor Work',
+      sort: true,
       type: 'text'
     },
     bedTypes: {
       name: 'Bed Types',
+      sort: true,
       type: 'text'
     },
     commodities: {
       name: 'Commodities',
+      sort: true,
       type: 'hashTable'
     }
 };
