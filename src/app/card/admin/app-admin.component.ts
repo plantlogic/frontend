@@ -2,6 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {TitleService} from 'src/app/_interact/title.service';
 import {CommonData, CommonDataService, CommonLookup} from '../../_api/common-data.service';
 import {AlertService} from '../../_interact/alert/alert.service';
+// import { componentNeedsResolution } from '@angular/core/src/metadata/resource_loading';
+// import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { ObjectID } from 'bson';
+
 
 @Component({
   selector: 'app-admin',
@@ -10,42 +14,21 @@ import {AlertService} from '../../_interact/alert/alert.service';
 })
 export class AppAdminComponent implements OnInit {
   constructor(private titleService: TitleService, private commonData: CommonDataService) { }
-  common = {};
-  emptyEntries = undefined;
-  entries = {};
-  keys: Array<string> = new Array<string>();
-  commodities = {};
+  keys = [];
+  commonArray = [];
+  sortedCommonArray = [];
   displayToggles = {};
 
   ngOnInit() {
     this.titleService.setTitle('Administration');
-
     this.commonData.getAllData().subscribe(data => {
       if (data.success) {
-        data.data.forEach(a => {
-          if (CommonLookup[a.key].type === 'text' || CommonLookup[a.key].type === 'number') {
-            // Simple Tables
-            this.entries[a.key] = '';
-
-            this.common[a.key] = [];
-            if (a.values && a.values.length > 0) {
-              (a.values as Array<string>).forEach(v => this.common[a.key].push(v));
-            }
-          } else if (CommonLookup[a.key].type === 'hashTable') {
-            // Hash Table
-            this.entries[a.key] = {
-              category: '',
-              varieties: {}
-            };
-            Object.keys(a.values).forEach(v => this.entries[a.key].varieties[v] = '');
-
-            this.common[a.key] = a.values;
-          }
-
-          this.keys.push(a.key);
-          this.displayToggles[this.getName(a.key)] = true;
+        this.keys = Object.keys(CommonLookup);
+        this.commonArray = data.data;
+        this.sortedCommonArray = this.getSortedData();
+        this.keys.forEach(key => {
+          this.displayToggles[key] = true;
         });
-        this.emptyEntries = JSON.parse(JSON.stringify(this.entries));
       } else if (!data.success) {
         AlertService.newBasicAlert('Error: ' + data.error, true);
       }
@@ -54,131 +37,215 @@ export class AppAdminComponent implements OnInit {
     });
   }
 
-  public toggleDisplay(s: string): void {
-    this.displayToggles[s] = !this.displayToggles[s];
+  public addCommonFromInput(key) {
+    const newValue = (document.getElementById(key + 'NewValue') as HTMLInputElement).value;
+    const newCommon = {id: (new ObjectID()).toHexString()};
+    if (CommonLookup[key].type === 'hashTable') {
+      newCommon[`value`] = {key: newValue, value: []};
+    } else {
+      newCommon[`value`] = newValue;
+    }
+
+    const keyIndex = this.sortedCommonArray.findIndex(e => e.key === key);
+    if (keyIndex >= 0) {
+      this.sortedCommonArray[keyIndex].values.push(newCommon);
+    }
+    this.updateCommon(key);
+    (document.getElementById(key + 'NewValue') as HTMLInputElement).value = '';
+  }
+
+  public addSubValue(key, c, displayIndex) {
+    const newValue = (document.getElementById(key + 'NewSubValue' + displayIndex) as HTMLInputElement).value;
+    const keyIndex = this.sortedCommonArray.findIndex(e => e.key === key);
+    const valueIndex = this.sortedCommonArray[keyIndex].values.findIndex(v => v.id === c.id);
+    this.sortedCommonArray[keyIndex].values[valueIndex].value.value.push(newValue);
+    this.updateCommon(key);
+    (document.getElementById(key + 'NewSubValue' + displayIndex) as HTMLInputElement).value = '';
+  }
+
+  // Compare function for sorting objects with hash tables as values
+  public compareHashTableText(a, b): number {
+    let comparison = 0;
+    const valA = a.value.key.toUpperCase();
+    const valB = b.value.key.toUpperCase();
+    if (valA > valB) {
+      comparison = 1;
+    } else if (valA < valB) {
+      comparison = -1;
+    }
+    return comparison;
+  }
+
+  // Compare function for sorting objects with numbers as values
+  public compareSimpleNumber(a, b): number {
+    let comparison = 0;
+    const valA = Number(a.value);
+    const valB = Number(b.value);
+    if (valA > valB) {
+      comparison = 1;
+    } else if (valA < valB) {
+      comparison = -1;
+    }
+    return comparison;
+  }
+
+  // Compare function for sorting objects with text as values
+  public compareSimpleText(a, b): number {
+    let comparison = 0;
+    const valA = a.value.toUpperCase();
+    const valB = b.value.toUpperCase();
+    if (valA > valB) {
+      comparison = 1;
+    } else if (valA < valB) {
+      comparison = -1;
+    }
+    return comparison;
+  }
+
+  // Returns an array of {id, value} for type key + (reformats hashTables for ease of use)
+  public getCommonValuesArray(key) {
+    const commonValues = this.commonArray.filter(c => c.key === key)[0].values;
+    if (this.getLookupType(key) === 'hashTable') {
+      const arr = [];
+      commonValues.forEach(entry => {
+        arr.push({
+          id: entry.id,
+          value : {
+            key : Object.keys(entry.value)[0],
+            value: entry.value[Object.keys(entry.value)[0]]
+          }
+        });
+      });
+      return arr;
+    }
+    return commonValues;
+  }
+
+  // Gets sorted data whose CommonLookup data match parameters
+  public getData(isHashTable: boolean, sort: boolean): Array<any> {
+    return this.sortedCommonArray.filter(e => {
+      return (CommonLookup[e.key].sort === sort) && ((CommonLookup[e.key].type === 'hashTable') === isHashTable);
+    });
+  }
+
+  // Retrieves the lookup name for a key (better for display)
+  private getLookupName(key: string): string {
+    return (CommonLookup[key] && CommonLookup[key].name) ? CommonLookup[key].name : key;
+  }
+
+  // Retrieves the lookup type for a key
+  private getLookupType(key: string): string {
+    return (CommonLookup[key] && CommonLookup[key].type) ? CommonLookup[key].type : 'text';
+  }
+
+  /*
+    Returns an array of arrays
+    The outer array is sorted common keys (e.g. commodities, ranches, etc...)
+    The inner array is an array of objects sorted by the object.value compare function
+  */
+  public getSortedData(): Array<any> {
+    const commonSorted = [];
+    this.keys.sort().forEach(key => {
+      commonSorted.push({
+        key,
+        values: this.sortCommonArray(this.getCommonValuesArray(key), key)
+      });
+    });
+    return commonSorted;
   }
 
   public isHidden(s: string): boolean {
     return this.displayToggles[s];
   }
 
-  private getSimpleTablesSort(): Array<string> {
-    return this.keys.filter(v => {
-      return (CommonLookup[v].type === 'text' || CommonLookup[v].type === 'number') && (CommonLookup[v].sort === true);
+  public removeCommon(key, value) {
+    const keyIndex = this.sortedCommonArray.findIndex(e => e.key === key);
+    if (keyIndex >= 0) {
+      this.sortedCommonArray[keyIndex].values = this.sortedCommonArray[keyIndex].values.filter(v => {
+        return v.id !== value.id;
+      });
+    }
+    this.updateCommon(key);
+  }
+
+  public removeSubValue(key, c, valToDelete) {
+    const keyIndex = this.sortedCommonArray.findIndex(e => e.key === key);
+    const valueIndex = this.sortedCommonArray[keyIndex].values.findIndex(v => v.id === c.id);
+    const oldValues = this.sortedCommonArray[keyIndex].values[valueIndex].value.value;
+    this.sortedCommonArray[keyIndex].values[valueIndex].value.value = oldValues.filter(v => {
+      return v !== valToDelete;
     });
+    this.updateCommon(key);
   }
 
-  private getSimpleTablesNoSort(): Array<string> {
-    return this.keys.filter(v => {
-      return (CommonLookup[v].type === 'text' || CommonLookup[v].type === 'number') && (CommonLookup[v].sort === false);
-    });
+  public shiftDown(key, value) {
+    const keyIndex = this.sortedCommonArray.findIndex(c => c.key === key);
+    const keyValuesLength = this.sortedCommonArray[keyIndex].values.length;
+    const oldValueIndex = this.sortedCommonArray[keyIndex].values.findIndex(v => v.id === value.id);
+    if (oldValueIndex >= keyValuesLength - 1) { return; }
+    const desiredValueIndex = oldValueIndex + 1;
+    const copy = this.sortedCommonArray[keyIndex].values[desiredValueIndex];
+    this.sortedCommonArray[keyIndex].values[desiredValueIndex] = value;
+    this.sortedCommonArray[keyIndex].values[oldValueIndex] = copy;
+    this.updateCommon(key);
   }
 
-  private getHashTables(): Array<string> {
-    return this.keys.filter(v => CommonLookup[v].type === 'hashTable');
+  public shiftUp(key, value) {
+    const keyIndex = this.sortedCommonArray.findIndex(c => c.key === key);
+    const oldValueIndex = this.sortedCommonArray[keyIndex].values.findIndex(v => v.id === value.id);
+    if (oldValueIndex <= 0) { return; }
+    const desiredValueIndex = oldValueIndex - 1;
+    const copy = this.sortedCommonArray[keyIndex].values[desiredValueIndex];
+    this.sortedCommonArray[keyIndex].values[desiredValueIndex] = value;
+    this.sortedCommonArray[keyIndex].values[oldValueIndex] = copy;
+    this.updateCommon(key);
   }
 
-  private getName(key: string): string {
-    if (CommonLookup[key] && CommonLookup[key].name) {
-      return CommonLookup[key].name;
+  // Sort function which sorts the array based on its CommonLookup properties
+  public sortCommonArray(arr: any[], key: string): any[] {
+    if (CommonLookup[key].sort === false) { return arr; }
+    const type = this.getLookupType(key);
+    if (type === 'text') {
+      return arr.sort(this.compareSimpleText);
+    } else if (type === 'number') {
+      return arr.sort(this.compareSimpleNumber);
+    } else if (type === 'hashTable') {
+      return arr.sort(this.compareHashTableText);
+    }
+    return arr;
+  }
+
+  public toggleDisplay(s: string): void {
+    this.displayToggles[s] = !this.displayToggles[s];
+  }
+
+  public updateCommon(key) {
+    const arr = this.sortedCommonArray.filter(e => e.key === key)[0].values;
+    let valuesToSend = [];
+    if (CommonLookup[key].type === 'hashTable') {
+      arr.forEach(e => {
+        const copy = { ...e};
+        const temp = {};
+        temp[copy[`value`][`key`]] = copy[`value`][`value`];
+        copy[`value`] = temp;
+        valuesToSend.push(copy);
+      });
     } else {
-      return key;
+      valuesToSend = arr;
     }
-  }
-
-  private getType(key: string): string {
-    if (CommonLookup[key] && CommonLookup[key].type) {
-      return CommonLookup[key].type;
-    } else {
-      return 'text';
-    }
-  }
-
-  private getKeys(o: any): Array<any> {
-    return Object.keys(o);
-  }
-
-  private removeElement(key: string, pub: any, arr: Array<string>, index: number): void {
-    arr.splice(index, 1);
-
-    this.publishChange(key, pub);
-  }
-
-  private updateElement(key: string, pub: any, arr: Array<string>, index: number, newValue: any): void {
-    arr[index] = newValue;
-    this.publishChange(key, pub);
-  }
-
-  private updateHashElement(key: string, pub: any, arr: Array<string>, index: number, oldKey: string): void {
-    const newKey = (document.getElementById('commodity' + index) as HTMLInputElement).value;
-
-    // const oldKey = Object.keys(arr)[index];
-    if (oldKey !== newKey) {
-      const oldValue = arr[oldKey];
-      arr[newKey] = oldValue;
-      // delete old key
-      delete arr[oldKey];
-      this.publishChange(key, pub);
-      this.clearEntries();
-    }
-  }
-
-  private shiftUp(key: string, pub: any, arr: Array<string>, index: number): void {
-    const copy = arr[index - 1];
-    arr[index - 1] = arr[index];
-    arr[index] = copy;
-
-    this.publishChange(key, pub);
-  }
-
-  private shiftDown(key: string, pub: any, arr: Array<string>, index: number): void {
-    const copy = arr[index + 1];
-    arr[index + 1] = arr[index];
-    arr[index] = copy;
-
-    this.publishChange(key, pub);
-  }
-
-  private addElement(key: string, pub: any, arr: Array<string>, value: string, sort: boolean = false): void {
-    if (value) {
-      arr.push(value);
-
-      if (sort) {
-        arr.sort();
-      }
-
-      this.publishChange(key, pub);
-      this.clearEntries();
-    }
-  }
-
-  private addHashCategory(key: string, pub: any, obj: any, value: string): void {
-    if (value && !obj[value]) {
-      obj[value] = new Array<string>();
-
-      this.publishChange(key, pub);
-      this.clearEntries();
-    }
-  }
-
-  private popHashCategory(key: string, pub: any, arr: Array<string>, index: number, keyToDelete: string): void {
-    delete arr[keyToDelete];
-    this.publishChange(key, pub);
-    this.clearEntries();
-  }
-
-  private clearEntries(): void {
-    this.entries = JSON.parse(JSON.stringify(this.emptyEntries));
-  }
-
-  private publishChange(key: string, pub: any): void {
     const val: CommonData = new CommonData();
     val.key = key;
-    val.values = pub;
+    val.values = valuesToSend;
 
     this.commonData.updateByKey(val).subscribe(data => {
       if (!data.success) {
         AlertService.newBasicAlert('There was a client error saving the change: ' + data.error, true, 10);
+      } else {
+        // Re-sort common display at specified key to reflect updated values
+        const keyIndex = this.sortedCommonArray.findIndex(e => e.key === key);
+        if (keyIndex >= 0) {
+          this.sortedCommonArray[keyIndex].values = this.sortCommonArray(this.sortedCommonArray[keyIndex].values, key);
+        }
       }
     }, failure => {
       AlertService.newBasicAlert('There was a connection error while saving the changes: ' + failure.message + ' (Try Again)', true, 10);
