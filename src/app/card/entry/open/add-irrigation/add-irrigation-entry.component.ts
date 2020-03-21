@@ -21,23 +21,94 @@ export class AddIrrigationEntryComponent implements OnInit {
               public common: CommonFormDataService) { }
 
   irrigation: IrrigationEntry = new IrrigationEntry();
-  submitAttempted = false;
   cardId: string;
 
+  // create array of common keys, whose data is needed. Omit restricted options.
+  commonKeys = ['chemicals', 'chemicalRateUnits', 'fertilizers', 'irrigationMethod', 'irrigators'];
 
   ngOnInit() {
+    const tempThis = this;
     this.titleService.setTitle('Irrigation');
-    this.route.params.subscribe(data => this.cardId = data.id);
+    this.initCommon(c => {
+      this.commonKeys.forEach(key => tempThis[key] = c[key] );
+      this.route.params.subscribe(data => this.cardId = data.id);
+    });
+  }
+
+  public dataListOptionValueToID(optionValue, dataListID) {
+    const option = document.querySelector('#' + dataListID + ' [value="' + optionValue + '"]') as HTMLElement;
+    return (option) ? option.id : null;
+  }
+
+  datePickr(): FlatpickrOptions {
+    return {
+      dateFormat: 'm-d-Y',
+      defaultDate: new Date()
+    };
+  }
+
+  public getCommon(key) {
+    if (this.commonKeys.includes(key)) {
+      return this[key];
+    } else {
+      console.log('Key ' + key + ' is not in the commonKeys array.');
+      return [];
+    }
+  }
+
+  public initCommon(f): void {
+    const tempThis = this;
+    const sortedCommon = {};
+    this.common.getAllValues(data => {
+      this.commonKeys.forEach(key => {
+        sortedCommon[key] = tempThis.common.sortCommonArray(data[key], key);
+      });
+      f(sortedCommon);
+    });
+  }
+
+  newChemical(): Chemical {
+    return new Chemical();
   }
 
   submit() {
-    this.submitAttempted = false;
-    if ((this.irrigation.irrigator) && (!this.initIrrigators().includes(this.irrigation.irrigator))) {
-      AlertService.newBasicAlert('Invalid Irrigator selected, please select one from the list provided', true);
+    // Check Irrigation Info
+    const c = this.irrigation;
+    c.workDate = (new Date(c.workDate)).valueOf();
+    if (c.chemical) {
+      if (!c.chemical.name || !this[`chemicals`].find(c2 => c2.id === c.chemical.name)) {
+        AlertService.newBasicAlert('Invalid Chemical Entered - please fix and try again.', true);
+        return;
+      }
+      if (!c.chemical.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === c.chemical.unit)) {
+        AlertService.newBasicAlert('Invalid Chemical Rate Unit Entered - please fix and try again.', true);
+        return;
+      }
+    }
+    if (c.fertilizer) {
+      if (!c.fertilizer.name || !this[`fertilizers`].find(c2 => c2.id === c.fertilizer.name)) {
+        AlertService.newBasicAlert('Invalid Fertilizer Entered - please fix and try again.', true);
+        return;
+      }
+      if (!c.fertilizer.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === c.fertilizer.unit)) {
+        AlertService.newBasicAlert('Invalid Fertilizer Rate Unit Entered - please fix and try again.', true);
+        return;
+      }
+    }
+    if (c.irrigator) {
+      const irrigatorID = this.dataListOptionValueToID(c.irrigator, 'irrigators');
+      if (!irrigatorID) {
+        AlertService.newBasicAlert('Invalid Irrigator - please fix and try again.', true);
+        return;
+      }
+      c.irrigator = irrigatorID;
+    }
+    if (!c.method || !this[`irrigationMethod`].find(c2 => c2.id === c.method)) {
+      AlertService.newBasicAlert('Invalid Irrigation Method - please fix and try again.', true);
       return;
     }
-    this.irrigation.workDate = (new Date(this.irrigation.workDate)).valueOf();
-    this.cardEntryService.addIrrigationData(this.cardId, this.irrigation).subscribe(
+
+    this.cardEntryService.addIrrigationData(this.cardId, c).subscribe(
       data => {
         if (data.success) {
           AlertService.newBasicAlert('Saved successfully!', false);
@@ -50,46 +121,5 @@ export class AddIrrigationEntryComponent implements OnInit {
         AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
       }
     );
-  }
-
-  initRateUnits(): Array<string> {
-    try {
-      return this.common.getValues('chemicalRateUnits').sort();
-    } catch { console.log('Error when initializing rate units'); }
-  }
-
-  initIrrigationMethods(): Array<string> {
-    try {
-      return this.common.getValues('irrigationMethod').sort();
-    } catch { console.log('Error when initializing irrigation methods'); }
-  }
-
-  initIrrigators(): Array<string> {
-    try {
-      return this.common.getValues('irrigators').sort();
-    } catch { console.log('Error when initializing irrigators'); }
-  }
-
-  initChemicals(): Array<string> {
-    try {
-      return this.common.getValues('chemicals');
-    } catch { console.log('Error when initializing chemicals'); }
-  }
-
-  initFertilizers(): Array<string> {
-    try {
-      return this.common.getValues('fertilizers');
-    } catch { console.log('Error when initializing fertilizers'); }
-  }
-
-  datePickr(): FlatpickrOptions {
-    return {
-      dateFormat: 'm-d-Y',
-      defaultDate: new Date()
-    };
-  }
-
-  newChemical(): Chemical {
-    return new Chemical();
   }
 }

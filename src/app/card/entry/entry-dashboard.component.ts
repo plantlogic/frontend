@@ -8,6 +8,7 @@ import {NavService} from '../../_interact/nav.service';
 import {CommonFormDataService} from 'src/app/_api/common-form-data.service';
 import {AuthService} from 'src/app/_auth/auth.service';
 import {ActivatedRoute} from '@angular/router';
+import { CommonLookup } from 'src/app/_api/common-data.service';
 
 @Component({
   selector: 'app-entry',
@@ -30,19 +31,194 @@ export class EntryDashboardComponent implements OnInit {
   pages: number[];
   hiddenPages: false;
 
+  // create array of common keys, whose data is needed. Omit restricted options.
+  commonKeys = ['commodities'];
+
   ngOnInit() {
+    const tempThis = this;
     this.titleService.setTitle('Open Cards');
-    this.loadCardData();
+    this.initCommon(c => {
+      this.commonKeys.forEach(key => {
+        tempThis[key] = c[key];
+      });
+      this[`ranches`] = c[`ranches`];
+      this.loadCardData();
+    });
     this.setPage(1);
   }
 
+  private cardIDsToValues(card: Card): Card {
+    card.ranchName = this.findCommonValue('ranches', ['value'], card.ranchName);
+    card.commodityArray.forEach(e => {
+      e.commodity = this.findCommonValue('commodities', ['value', 'key'], e.commodity);
+      e.bedType = this.findCommonValue('bedTypes', ['value'], e.bedType);
+    });
+    card.preChemicalArray.forEach(e => {
+      if (e.chemical) {
+        e.chemical.name = this.findCommonValue('chemicals', ['value'], e.chemical.name);
+        e.chemical.unit = this.findCommonValue('chemicalRateUnits', ['value'], e.chemical.unit);
+      }
+      if (e.fertilizer) {
+        e.fertilizer.name = this.findCommonValue('fertilizers', ['value'], e.fertilizer.name);
+        e.fertilizer.unit = this.findCommonValue('chemicalRateUnits', ['value'], e.fertilizer.unit);
+      }
+    });
+    card.postChemicalArray.forEach(e => {
+      if (e.chemical) {
+        e.chemical.name = this.findCommonValue('chemicals', ['value'], e.chemical.name);
+        e.chemical.unit = this.findCommonValue('chemicalRateUnits', ['value'], e.chemical.unit);
+      }
+      if (e.fertilizer) {
+        e.fertilizer.name = this.findCommonValue('fertilizers', ['value'], e.fertilizer.name);
+        e.fertilizer.unit = this.findCommonValue('chemicalRateUnits', ['value'], e.fertilizer.unit);
+      }
+    });
+    card.tractorArray.forEach(e => {
+      e.workDone = this.findCommonValue('tractorWork', ['value'], e.workDone);
+      e.operator = this.findCommonValue('tractorOperators', ['value'], e.operator);
+      if (e.chemical) {
+        e.chemical.name = this.findCommonValue('chemicals', ['value'], e.chemical.name);
+        e.chemical.unit = this.findCommonValue('chemicalRateUnits', ['value'], e.chemical.unit);
+      }
+      if (e.fertilizer) {
+        e.fertilizer.name = this.findCommonValue('fertilizers', ['value'], e.fertilizer.name);
+        e.fertilizer.unit = this.findCommonValue('chemicalRateUnits', ['value'], e.fertilizer.unit);
+      }
+    });
+    card.irrigationArray.forEach(e => {
+      e.method = this.findCommonValue('irrigationMethod', ['value'], e.method);
+      e.irrigator = this.findCommonValue('irrigators', ['value'], e.irrigator);
+      if (e.chemical) {
+        e.chemical.name = this.findCommonValue('chemicals', ['value'], e.chemical.name);
+        e.chemical.unit = this.findCommonValue('chemicalRateUnits', ['value'], e.chemical.unit);
+      }
+      if (e.fertilizer) {
+        e.fertilizer.name = this.findCommonValue('fertilizers', ['value'], e.fertilizer.name);
+        e.fertilizer.unit = this.findCommonValue('chemicalRateUnits', ['value'], e.fertilizer.unit);
+      }
+    });
+    return card;
+  }
+
+  public clearFilter() {
+    this.filterRanchName = '';
+    this.filterLotNumber = '';
+    this.filterCommodity = '';
+    localStorage.removeItem('entryQuery');
+    this.tableService.setDataSource(this.previous);
+    this.cards = this.tableService.getDataSource();
+    this.updateNumPages();
+  }
+
+  public filterCards() {
+    let filterApplied = false;
+    let cards = this.tableService.getDataSource();
+    const tempThis = this;
+    if (this.filterRanchName) {
+      cards = cards.filter(card => (card.ranchName) && card.ranchName.toLowerCase().includes(tempThis.filterRanchName.toLowerCase()));
+      filterApplied = true;
+    }
+    if (this.filterLotNumber) {
+      cards = cards.filter(card => (card.lotNumber) && card.lotNumber.toLowerCase().includes(tempThis.filterLotNumber.toLowerCase()));
+      filterApplied = true;
+    }
+    if (this.filterCommodity) {
+      cards = cards.filter(c => (c.commodityString) && c.commodityString.toLowerCase().includes(tempThis.filterCommodity.toLowerCase()));
+      filterApplied = true;
+    }
+    // Update local storage to save query
+    localStorage.setItem('entryQuery', JSON.stringify({
+      ranchName: this.filterRanchName,
+      lotNumber: this.filterLotNumber,
+      commodity: this.filterCommodity
+    }));
+    return { data: cards, wasFiltered: filterApplied };
+  }
+
+  public filterItems() {
+    const prev = this.tableService.getDataSource();
+    const filter = this.filterCards();
+    if (!filter.wasFiltered) {
+      this.tableService.setDataSource(this.previous);
+      this.cards = this.tableService.getDataSource();
+    } else {
+      this.cards = filter.data;
+      this.tableService.setDataSource(prev);
+    }
+    this.updateNumPages();
+  }
+
+  /*
+    Searches common values in [key] list where value.id === targetID
+    returns value.valuePropertyArr where valuePropertyArr = array of nesting properties
+    returns null in no targetID supplied
+    returns targetID if key is not in commonKeys Array (don't need value)
+    returns generic message of targetID not found
+  */
+ findCommonValue(key, valuePropertyArr, targetID?) {
+  if (!targetID) { return null; }
+  if (!this.commonKeys.includes(key) && key !== 'ranches') { return targetID; }
+  let commonValue = this.getCommon(key).find(e => {
+    return e.id === targetID;
+  });
+  try {
+    valuePropertyArr.forEach(p => {
+      commonValue = commonValue[p];
+    });
+  } catch (e) {
+    console.log(e);
+  }
+  return (commonValue) ? commonValue : 'Unknown ' + key + ' ID';
+}
+
+  public getCommon(key) {
+    if (this.commonKeys.includes(key) || key === 'ranches') {
+      return this[key];
+    } else {
+      console.log('Key ' + key + ' is not in the commonKeys array.');
+      return [];
+    }
+  }
+
+  public initCommon(f): void {
+    const tempThis = this;
+    const sortedCommon = {};
+    const userRanchAccess = this.auth.getRanchAccess();
+    this.common.getAllValues(data => {
+      this.commonKeys.forEach(key => {
+        if (CommonLookup[key].type === 'hashTable') {
+          const temp = [];
+          data[key].forEach(entry => {
+            temp.push({
+              id: entry.id,
+              value : {
+                key : Object.keys(entry.value)[0],
+                value: entry.value[Object.keys(entry.value)[0]]
+              }
+            });
+          });
+          sortedCommon[key] = tempThis.common.sortCommonArray(temp, key);
+        } else {
+          sortedCommon[key] = tempThis.common.sortCommonArray(data[key], key);
+        }
+      });
+      sortedCommon[`ranches`] = data[`ranches`].filter(e => userRanchAccess.includes(e.id));
+      sortedCommon[`ranches`] = tempThis.common.sortCommonArray(sortedCommon[`ranches`], 'ranches');
+      f(sortedCommon);
+    });
+  }
 
   private loadCardData() {
+    const tempThis = this;
     this.cardService.getMyCards().subscribe(
       data => {
         if (data.success) {
-          this.cards = data.data.map(c => (new Card()).copyConstructor(c));
-          this.cards.forEach(c => c.initCommodityString());
+          tempThis.cards = data.data.map(c => (new Card()).copyConstructor(c));
+          tempThis.cards.forEach(c => {
+            // For display purposes, change any common IDs to their values
+            c = tempThis.cardIDsToValues(c);
+            c.initCommodityString();
+          });
           this.tableService.setDataSource(this.cards);
           this.previous = this.tableService.getDataSource();
           this.updateNumPages();
@@ -73,71 +249,18 @@ export class EntryDashboardComponent implements OnInit {
     );
   }
 
-  public filterItems() {
-    const prev = this.tableService.getDataSource();
-    const filter = this.filterCards();
-    if (!filter.wasFiltered) {
-      this.tableService.setDataSource(this.previous);
-      this.cards = this.tableService.getDataSource();
-    } else {
-      this.cards = filter.data;
-      this.tableService.setDataSource(prev);
-    }
-    this.updateNumPages();
-  }
-
-  public filterCards() {
-    let filterApplied = false;
-    let cards = this.tableService.getDataSource();
-    const tempThis = this;
-    if (this.filterRanchName) {
-      cards = cards.filter(card => (card.ranchName) && card.ranchName.toLowerCase().includes(tempThis.filterRanchName.toLowerCase()));
-      filterApplied = true;
-    }
-    if (this.filterLotNumber) {
-      cards = cards.filter(card => (card.lotNumber) && card.lotNumber.toLowerCase().includes(tempThis.filterLotNumber.toLowerCase()));
-      filterApplied = true;
-    }
-    if (this.filterCommodity) {
-      cards = cards.filter(c => (c.commodityString) && c.commodityString.toLowerCase().includes(tempThis.filterCommodity.toLowerCase()));
-      filterApplied = true;
-    }
-    // Update local storage to save query
-    localStorage.setItem('entryQuery', JSON.stringify({
-      ranchName: this.filterRanchName,
-      lotNumber: this.filterLotNumber,
-      commodity: this.filterCommodity
-    }));
-    return { data: cards, wasFiltered: filterApplied };
-  }
-
-  public clearFilter() {
-    this.filterRanchName = '';
-    this.filterLotNumber = '';
-    this.filterCommodity = '';
-    localStorage.removeItem('entryQuery');
-    this.tableService.setDataSource(this.previous);
-    this.cards = this.tableService.getDataSource();
-    this.updateNumPages();
-  }
-
   // Used for animation
   public min(x: number, y: number): number {
     return Math.min(x, y);
   }
 
-  initRanches(): Array<string> {
-    try {
-      return this.common.getValues('ranches').filter(r => this.auth.getRanchAccess().includes(r)).sort();
-    } catch (E) {
-      // Block error messages while data is loading
-     }
-  }
-
-  initCommodities(): Array<string> {
-    try {
-      return this.common.getMapKeys('commodities').sort();
-    } catch { console.log('Error when initializing commodities'); }
+  showListing(index: number): boolean {
+    const low = (this.pageNum - 1) * this.viewSize;
+    const high = (this.pageNum * this.viewSize) - 1;
+    if ((index >= low) && (index <= high)) {
+      return true;
+    }
+    return false;
   }
 
   setPage(n: number): void {
@@ -153,14 +276,5 @@ export class EntryDashboardComponent implements OnInit {
     this.numPages = Math.ceil(this.cards.length / this.viewSize);
     this.pages = Array(this.numPages).fill(0).map( (x, i) => i + 1);
     this.setPage(1);
-  }
-
-  showListing(index: number): boolean {
-    const low = (this.pageNum - 1) * this.viewSize;
-    const high = (this.pageNum * this.viewSize) - 1;
-    if ((index >= low) && (index <= high)) {
-      return true;
-    }
-    return false;
   }
 }

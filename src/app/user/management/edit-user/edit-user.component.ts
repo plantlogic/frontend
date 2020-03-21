@@ -9,6 +9,7 @@ import {AlertService} from '../../../_interact/alert/alert.service';
 import {AuthService} from '../../../_auth/auth.service';
 import {Alert} from '../../../_interact/alert/alert';
 import {CommonFormDataService} from '../../../_api/common-form-data.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-edit-user',
@@ -24,9 +25,13 @@ export class EditUserComponent implements OnInit {
   roleList: Array<string>;
   manualPassword = false;
   hadEmail: boolean;
-
-  multiselectSettings = {
+  ranchDropDownSettings = {};
+  ranchList = [];
+  userRanches = [];
+  multiSelectSettings = {
     singleSelection: false,
+    idField: 'id',
+    textField: 'value',
     selectAllText: 'Select All',
     unSelectAllText: 'Unselect All',
     itemsShowLimit: 5,
@@ -41,7 +46,7 @@ export class EditUserComponent implements OnInit {
       username: ['', [Validators.required, Validators.minLength(4)]],
       password: [''],
       email: ['', [Validators.required, Validators.email]],
-      realname: ['', [Validators.required]],
+      realName: ['', [Validators.required]],
       ranchAccess: [],
       roles: this.fb.array(this.initRoleBoolArray())
     });
@@ -51,6 +56,7 @@ export class EditUserComponent implements OnInit {
   }
 
   ngOnInit() {
+    const tempThis = this;
     this.titleService.setTitle('Edit User');
     this.route.params.subscribe(
       data => {
@@ -61,10 +67,15 @@ export class EditUserComponent implements OnInit {
               this.user.importInfo(apiData.data);
               this.form.get('username').setValue(this.user.username);
               this.form.get('email').setValue(this.user.email);
-              this.form.get('realname').setValue(this.user.realName);
-              this.form.get('ranchAccess').setValue(this.user.ranchAccess);
+              this.form.get('realName').setValue(this.user.realName);
               this.form.get('roles').setValue(this.setSelectedRoles());
-
+              this.commonData.getValues('ranches', ranches => {
+                tempThis.userRanches = ranches.filter(e => {
+                  tempThis.ranchList.push(e);
+                  return tempThis.user.ranchAccess.includes(e.id);
+                });
+                tempThis.form.get('ranchAccess').setValue(tempThis.userRanches);
+              });
               if (!this.user.email) {
                 this.manualPassword = true;
                 this.hadEmail = false;
@@ -98,7 +109,7 @@ export class EditUserComponent implements OnInit {
   }
 
   submit() {
-    if (this.form.get('username').invalid || this.form.get('realname').invalid  || this.passwordOrEmailInvalid()) {
+    if (this.form.get('username').invalid || this.form.get('realName').invalid  || this.passwordOrEmailInvalid()) {
       this.submitAttempted = true;
     } else {
       this.submitAttempted = false;
@@ -107,8 +118,8 @@ export class EditUserComponent implements OnInit {
       this.user.username = this.form.value.username;
       this.user.email = this.form.value.email;
       this.user.password = this.form.value.password;
-      this.user.realName = this.form.value.realname;
-      this.user.ranchAccess = this.form.value.ranchAccess;
+      this.user.realName = this.form.value.realName;
+      this.user.ranchAccess = this.form.value.ranchAccess.map(e => e.id);
       this.user.permissions = this.getSelectedRoles();
 
       this.userService.editUser(this.user).subscribe(

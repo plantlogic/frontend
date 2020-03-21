@@ -104,21 +104,28 @@ export class AppAdminComponent implements OnInit {
 
   // Returns an array of {id, value} for type key + (reformats hashTables for ease of use)
   public getCommonValuesArray(key) {
-    const commonValues = this.commonArray.filter(c => c.key === key)[0].values;
-    if (this.getLookupType(key) === 'hashTable') {
-      const arr = [];
-      commonValues.forEach(entry => {
-        arr.push({
-          id: entry.id,
-          value : {
-            key : Object.keys(entry.value)[0],
-            value: entry.value[Object.keys(entry.value)[0]]
-          }
+    try {
+      const common = this.commonArray.filter(c => c.key === key)[0];
+      if (!common) { return []; }
+      const commonValues = common.values;
+      if (this.getLookupType(key) === 'hashTable') {
+        const arr = [];
+        commonValues.forEach(entry => {
+          arr.push({
+            id: entry.id,
+            value : {
+              key : Object.keys(entry.value)[0],
+              value: entry.value[Object.keys(entry.value)[0]]
+            }
+          });
         });
-      });
-      return arr;
+        return arr;
+      }
+      return commonValues;
+    } catch (e) {
+      console.log(e);
+      return [];
     }
-    return commonValues;
   }
 
   // Gets sorted data whose CommonLookup data match parameters
@@ -236,7 +243,6 @@ export class AppAdminComponent implements OnInit {
     const val: CommonData = new CommonData();
     val.key = key;
     val.values = valuesToSend;
-
     this.commonData.updateByKey(val).subscribe(data => {
       if (!data.success) {
         AlertService.newBasicAlert('There was a client error saving the change: ' + data.error, true, 10);
