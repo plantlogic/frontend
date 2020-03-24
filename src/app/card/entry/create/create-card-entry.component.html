@@ -161,7 +161,10 @@
               <input type="text" [(ngModel)]="p.operator" class="form-control" list="tractorOperators" placeholder="Tractor Operator" />
               <input type="hidden" [(ngModel)]="p.operatorID" class="form-control"/>
               <input type="text" [(ngModel)]="p.tractorNumber" class="form-control" placeholder="Tractor Number" />
-              <input type="text" class="form-control" value="Initial Setup" readonly/>
+              <select class="form-control" [(ngModel)]="p.workDone" >
+                <option *ngIf="!p.workDone" [value]="undefined" disabled selected>Select Tractor Work</option>
+                <option *ngFor="let r of getCommon('tractorWork')" [value]="r.id">{{r.value}}</option>
+              </select>
               <input [ngModel]="p.workDate | date:'yyyy-MM-dd'" (ngModelChange)="p.workDate = fixDate($event)" type="date"/>
             </div>
             <hr />

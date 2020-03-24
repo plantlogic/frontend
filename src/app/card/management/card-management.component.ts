@@ -10,6 +10,7 @@ import {AuthService} from '../../_auth/auth.service';
 import {PlRole} from '../../_dto/user/pl-role.enum';
 import {CommonFormDataService} from 'src/app/_api/common-form-data.service';
 import {ActivatedRoute} from '@angular/router';
+import { CommonLookup } from 'src/app/_api/common-data.service';
 
 @Component({
   selector: 'app-management',
@@ -22,6 +23,7 @@ export class CardManagementComponent implements OnInit {
               private route: ActivatedRoute, private auth: AuthService) { }
 
   cards: Card[] = [];
+  cardsRaw: Card[] = [];
   filterRanchName: string;
   filterFieldID: string;
   filterLotNumber: string;
@@ -33,48 +35,40 @@ export class CardManagementComponent implements OnInit {
   pages: number[];
   hiddenPages: false;
 
+  // create array of common keys, whose data is needed for card entry. Omit restricted options.
+  commonKeys = ['commodities'];
+
   ngOnInit() {
+    const tempThis = this;
     this.titleService.setTitle('All Cards');
-    this.loadCardData();
-    this.setPage(1);
+    this.initCommon(c => {
+      this.commonKeys.forEach(key => {
+        tempThis[key] = c[key];
+      });
+      this[`ranches`] = c[`ranches`];
+      this.loadCardData();
+      this.setPage(1);
+    });
   }
 
-  private loadCardData() {
-    this.cardService.getAllCards().subscribe(
-      data => {
-        if (data.success) {
-          this.cards = data.data.map(c => (new Card()).copyConstructor(c));
-          this.cards.forEach(c => c.initCommodityString());
-          this.tableService.setDataSource(this.cards);
-          this.previous = this.tableService.getDataSource();
-          this.updateNumPages();
+  private cardIDsToValues(card: Card): Card {
+    // Only convert what is needed on this page 
+    card.ranchName = this.findCommonValue('ranches', ['value'], card.ranchName);
+    card.commodityArray.forEach(e => {
+      e.commodity = this.findCommonValue('commodities', ['value', 'key'], e.commodity);
+    });
+    return card;
+  }
 
-          if (this.route.snapshot.queryParams.saveFilter) {
-            let previousQuery: any = localStorage.getItem('managementQuery');
-            if (previousQuery) {
-              previousQuery = JSON.parse(previousQuery);
-              this.filterRanchName = previousQuery.ranchName;
-              this.filterFieldID = previousQuery.fieldID;
-              this.filterLotNumber = previousQuery.lotNumber;
-              this.filterCommodity = previousQuery.commodity;
-              this.filterItems();
-            }
-          } else {
-            this.filterRanchName = '';
-            this.filterFieldID = '';
-            this.filterLotNumber = '';
-            this.filterCommodity = '';
-            localStorage.removeItem('managementQuery');
-          }
-
-        } else if (!data.success) {
-          AlertService.newBasicAlert('Error: ' + data.error, true);
-        }
-      },
-      failure => {
-        AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
-      }
-    );
+  public clearFilter() {
+    this.filterRanchName = '';
+    this.filterFieldID = '';
+    this.filterLotNumber = '';
+    this.filterCommodity = '';
+    localStorage.removeItem('managementQuery');
+    this.tableService.setDataSource(this.previous);
+    this.cards = this.tableService.getDataSource();
+    this.updateNumPages();
   }
 
   public filterItems() {
@@ -120,29 +114,131 @@ export class CardManagementComponent implements OnInit {
     return { data: cards, wasFiltered: filterApplied };
   }
 
-  public clearFilter() {
-    this.filterRanchName = '';
-    this.filterFieldID = '';
-    this.filterLotNumber = '';
-    this.filterCommodity = '';
-    localStorage.removeItem('managementQuery');
-    this.tableService.setDataSource(this.previous);
-    this.cards = this.tableService.getDataSource();
-    this.updateNumPages();
+  /*
+    Searches common values in [key] list where value.id === targetID
+    returns value.valuePropertyArr where valuePropertyArr = array of nesting properties
+    returns null in no targetID supplied
+    returns targetID if key is not in commonKeys Array (don't need value)
+    returns generic message of targetID not found
+  */
+  findCommonValue(key, valuePropertyArr, targetID?) {
+    if (!targetID) { return null; }
+    if (!this.commonKeys.includes(key) && key !== 'ranches') { return targetID; }
+    let commonValue = this.getCommon(key).find(e => {
+      return e.id === targetID;
+    });
+    try {
+      valuePropertyArr.forEach(p => {
+        commonValue = commonValue[p];
+      });
+    } catch (e) {
+      console.log(e);
+    }
+    return (commonValue) ? commonValue : 'Unknown ' + key + ' ID';
   }
 
-  private updateFieldId(c: Card): void {
-    this.cardEdit.updateCard(c).subscribe(data => {
-      if (data.success) {
-        AlertService.newBasicAlert('Change saved successfully!', false);
-        // this.loadCardData();
-      } else {
-        AlertService.newBasicAlert('Error: ' + data.error, true);
+  findModifiedCards() {
+    const modifiedCards = [];
+    try {
+      // Cycle through the cards being currently displayed, check if fieldID is different from raw
+      for (let i = 0; i < this.cards.length; i++) {
+        if (this.showListing(i)) {
+          const cardID = this.cards[i].id;
+          if (this.cardsRaw.find(c => c.id === cardID).fieldID !== this.cards[i].fieldID) {
+            modifiedCards.push(this.cards[i]);
+          }
+        }
       }
-    },
-    failure => {
-      AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
+      return modifiedCards;
+    } catch (e) {
+      return [];
+    }
+  }
+
+  public getCommon(key) {
+    if (this.commonKeys.includes(key) || key === 'ranches') {
+      return this[key];
+    } else {
+      console.log('Key ' + key + ' is not in the commonKeys array.');
+      return [];
+    }
+  }
+
+  hasViewPermission(): boolean {
+    return this.auth.hasPermission(PlRole.DATA_VIEW);
+  }
+
+  public initCommon(f): void {
+    const tempThis = this;
+    const sortedCommon = {};
+    const userRanchAccess = this.auth.getRanchAccess();
+    this.common.getAllValues(data => {
+      this.commonKeys.forEach(key => {
+        if (CommonLookup[key].type === 'hashTable') {
+          const temp = [];
+          data[key].forEach(entry => {
+            temp.push({
+              id: entry.id,
+              value : {
+                key : Object.keys(entry.value)[0],
+                value: entry.value[Object.keys(entry.value)[0]]
+              }
+            });
+          });
+          sortedCommon[key] = tempThis.common.sortCommonArray(temp, key);
+        } else {
+          sortedCommon[key] = tempThis.common.sortCommonArray(data[key], key);
+        }
+      });
+      sortedCommon[`ranches`] = data[`ranches`].filter(e => userRanchAccess.includes(e.id));
+      sortedCommon[`ranches`] = tempThis.common.sortCommonArray(sortedCommon[`ranches`], 'ranches');
+      f(sortedCommon);
     });
+  }
+
+  private loadCardData() {
+    this.cardService.getAllCards().subscribe(
+      data => {
+        if (data.success) {
+          this.cards = data.data.map(c => (new Card()).copyConstructor(c));
+
+          // For display purposes, change any common IDs to their values
+          this.cards.forEach(card => {
+            card = this.cardIDsToValues(card);
+            card.initCommodityString()
+          });
+          // Keep a raw copy of the data
+          this.cardsRaw = data.data.map(c => (new Card()).copyConstructor(c));
+          this.tableService.setDataSource(this.cards);
+          this.previous = this.tableService.getDataSource();
+          this.updateNumPages();
+
+          if (this.route.snapshot.queryParams.saveFilter) {
+            let previousQuery: any = localStorage.getItem('managementQuery');
+            if (previousQuery) {
+              previousQuery = JSON.parse(previousQuery);
+              this.filterRanchName = previousQuery.ranchName;
+              this.filterFieldID = previousQuery.fieldID;
+              this.filterLotNumber = previousQuery.lotNumber;
+              this.filterCommodity = previousQuery.commodity;
+              this.filterItems();
+            }
+          } else {
+            this.filterRanchName = '';
+            this.filterFieldID = '';
+            this.filterLotNumber = '';
+            this.filterCommodity = '';
+            localStorage.removeItem('managementQuery');
+          }
+
+        } else if (!data.success) {
+          AlertService.newBasicAlert('Error: ' + data.error, true);
+        }
+      },
+      failure => {
+        AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
+      }
+    );
   }
 
   // Used for animation
@@ -150,22 +246,15 @@ export class CardManagementComponent implements OnInit {
     return Math.min(x, y);
   }
 
-  hasViewPermission(): boolean {
-    return this.auth.hasPermission(PlRole.DATA_VIEW);
-  }
-
-  initRanches(): Array<string> {
-    try {
-      return this.common.getValues('ranches').filter(r => this.auth.getRanchAccess().includes(r)).sort();
-    } catch (E) {
-      // Block error messages while data is loading
-     }
-  }
-
-  initCommodities(): Array<string> {
-    try {
-      return this.common.getMapKeys('commodities').sort();
-    } catch { console.log('Error when initializing commodities'); }
+  public resetFieldIds(): void {
+    const tempThis = this;
+    this.cards.forEach(card => {
+      try {
+        card.fieldID = tempThis.cardsRaw.find(e => e.id === card.id).fieldID;
+      } catch (e) {
+        console.log("Error resetting card fieldID");
+      }
+    })
   }
 
   setPage(n: number): void {
@@ -173,14 +262,6 @@ export class CardManagementComponent implements OnInit {
     this.pageNum = n;
     if (this.pageNum > this.numPages) { this.pageNum = this.numPages; }
     if (this.pageNum < 1) { this.pageNum = 1; }
-  }
-
-  updateNumPages(e?: number): void {
-    // When event is called, e is new viewSize value while this.viewSize is old Value
-    if (e) { this.viewSize = e; }
-    this.numPages = Math.ceil(this.cards.length / this.viewSize);
-    this.pages = Array(this.numPages).fill(0).map((x, i) => i + 1);
-    this.setPage(1);
   }
 
   showListing(index: number): boolean {
@@ -191,4 +272,52 @@ export class CardManagementComponent implements OnInit {
     }
     return false;
   }
+
+  public updateFieldIds(): void {
+    const tempThis = this;
+    const log = {
+      success: 0,
+      failure: 0
+    };
+    const modified = this.findModifiedCards();
+    modified.forEach(m => {
+      const card = tempThis.cardsRaw.find(c => c.id === m.id);
+      if (!card) { 
+        log.failure += 1;
+        tempThis.updateMessage(log, modified.length);
+      } else {
+        card.fieldID = m.fieldID;
+        tempThis.cardEdit.updateCard(card).subscribe(data => {
+          if(data.success) {
+            log.success += 1;
+          } else {
+            log.failure += 1;
+          }
+          tempThis.updateMessage(log, modified.length);
+        },
+        failure => {
+          log.failure += 1;
+          tempThis.updateMessage(log, modified.length);
+        });
+      }
+    });
+  }
+
+  updateMessage(log, expected) {
+    const total = log.success + log.failure;
+    if (total >= expected) {
+      AlertService.newBasicAlert(`Cards updated: ${log.success} successfully, ${log.failure} unsuccessfully`, false);
+    }
+    
+  }
+
+  updateNumPages(e?: number): void {
+    // When event is called, e is new viewSize value while this.viewSize is old Value
+    if (e) { this.viewSize = e; }
+    this.numPages = Math.ceil(this.cards.length / this.viewSize);
+    this.pages = Array(this.numPages).fill(0).map((x, i) => i + 1);
+    this.setPage(1);
+  }
+
+  
 }

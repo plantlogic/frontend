@@ -17,6 +17,7 @@ import {Chemical} from '../../../_dto/card/chemical';
 import {Chemicals} from '../../../_dto/card/chemicals';
 import {Commodities} from '../../../_dto/card/commodities';
 import {CommonFormDataService} from 'src/app/_api/common-form-data.service';
+import { CommonLookup } from 'src/app/_api/common-data.service';
 
 @Component({
   selector: 'app-open-card',
@@ -32,8 +33,11 @@ export class OpenCardDataComponent implements OnInit {
   editable: boolean;
   editing = false;
 
-  @ViewChild('ranchName') public ranchName: NgModel;
-  @ViewChild('cropYear') public cropYear: NgModel;
+  // create array of common keys, whose data is needed for card entry. Omit restricted options.
+  commonKeys = ['bedTypes', 'chemicals', 'chemicalRateUnits', 'commodities',
+                'fertilizers', 'irrigationMethod', 'irrigators', 'tractorOperators',
+                'tractorWork'];
+
 
   hoeDatePickr: FlatpickrOptions = {
     dateFormat: 'm-d-Y',
@@ -52,20 +56,178 @@ export class OpenCardDataComponent implements OnInit {
     defaultDate: null
   };
 
-
   ngOnInit() {
+    const tempThis = this;
     this.titleService.setTitle('View Card');
-    this.loadCardData();
+    this.initCommon(c => {
+      this.commonKeys.forEach(key => {
+        tempThis[key] = c[key];
+      });
+      this[`ranches`] = c[`ranches`];
+      this.loadCardData();
+    });
     this.editable = this.auth.hasPermission(PlRole.DATA_EDIT);
   }
 
+  private addTractorData(): void {
+    this.card.tractorArray.push(new TractorEntry());
+  }
+
+  private addIrrigationData(): void {
+    this.card.irrigationArray.push(new IrrigationEntry());
+  }
+
+  private addPreChemicals(): void {
+    this.card.preChemicalArray.push(new Chemicals());
+  }
+
+  private addPostChemicals(): void {
+    this.card.postChemicalArray.push(new Chemicals());
+  }
+
+  private addCommodities(): void {
+    this.card.commodityArray.push(new Commodities());
+  }
+
+  private clearChanges(): void {
+    const newAlert = new Alert();
+    newAlert.color = 'warning';
+    newAlert.title = 'Clear Changes';
+    newAlert.message = 'This will clear all changes made to the card, and cannot be undone. Continue?';
+    newAlert.actionName = 'Clear';
+    newAlert.actionClosesAlert = true;
+    newAlert.timeLeft = undefined;
+    newAlert.blockPageInteraction = true;
+    newAlert.closeName = 'Cancel';
+    newAlert.action$ = new EventEmitter<null>();
+    newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
+      this.loadCardData();
+      this.toggleEditing();
+    });
+
+    AlertService.newAlert(newAlert);
+  }
+
+  public dataListOptionValueToID(optionValue, dataListID) {
+    const option = document.querySelector('#' + dataListID + ' [value="' + optionValue + '"]') as HTMLElement;
+    return (option) ? option.id : null;
+  }
+
+  private datePickr(workDate: number): FlatpickrOptions {
+    return {
+      enableTime: true,
+      dateFormat: 'm-d-Y H:i',
+      defaultDate: new Date(workDate)
+    };
+  }  
+
+  private deleteCard() {
+    const newAlert = new Alert();
+    newAlert.color = 'danger';
+    newAlert.title = 'WARNING: Deleting Card Permanently';
+    newAlert.message = 'Are you sure you want to delete this card? This action cannot be reversed.';
+    newAlert.timeLeft = undefined;
+    newAlert.blockPageInteraction = true;
+    newAlert.actionName = 'Permanently Delete';
+    newAlert.actionClosesAlert = true;
+    newAlert.action$ = new EventEmitter<null>();
+    newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
+      this.cardEdit.deleteCard(this.card.id).subscribe(data => {
+          if (data.success) {
+            AlertService.newBasicAlert('Card deleted successfully!', false);
+            this.nav.goBack();
+          } else {
+            AlertService.newBasicAlert('Error: ' + data.error, true);
+          }
+        },
+        failure => {
+          AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
+        });
+    });
+
+    AlertService.newAlert(newAlert);
+  }
+
+  public getCommon(key) {
+    if (this.commonKeys.includes(key) || key === 'ranches') {
+      return this[key];
+    } else {
+      console.log('Key ' + key + ' is not in the commonKeys array.');
+      return [];
+    }
+  }
+
+  public getRanchName(ID) {
+    return this[`ranches`].find(r => r.id === ID).value;
+  }
+
+  public getVarieties(commodityID) {
+    try {
+      const searchResult = this[`commodities`].find(e => e.id === commodityID).value.value;
+      return searchResult;
+    } catch (e) {
+      return [];
+    }
+  }
+
+  public iDToDataListOption(commonID, commonKey) {
+    const values = this.getCommon(commonKey);
+    for (let i = 0; i < values.length; i++) {
+      if (values[i].id === commonID) {
+        return (i+1) + ' - ' + values[i].value;
+      }
+    }
+  }
+
+  public initCommon(f): void {
+    const tempThis = this;
+    const sortedCommon = {};
+    const userRanchAccess = this.auth.getRanchAccess();
+    this.common.getAllValues(data => {
+      this.commonKeys.forEach(key => {
+        if (CommonLookup[key].type === 'hashTable') {
+          const temp = [];
+          data[key].forEach(entry => {
+            temp.push({
+              id: entry.id,
+              value : {
+                key : Object.keys(entry.value)[0],
+                value: entry.value[Object.keys(entry.value)[0]]
+              }
+            });
+          });
+          sortedCommon[key] = tempThis.common.sortCommonArray(temp, key);
+        } else {
+          sortedCommon[key] = tempThis.common.sortCommonArray(data[key], key);
+        }
+      });
+      sortedCommon[`ranches`] = data[`ranches`].filter(e => userRanchAccess.includes(e.id));
+      sortedCommon[`ranches`] = tempThis.common.sortCommonArray(sortedCommon[`ranches`], 'ranches');
+      f(sortedCommon);
+    });
+  }
+
+  initWorkTypes(): Array<string> {
+    const keys = Object.keys(WorkType);
+    return keys.slice(keys.length / 2);
+  }
+
   private loadCardData() {
+    const tempThis = this;
     this.route.params.subscribe(cr => {
       this.cardView.getCardById(cr.id).subscribe(
         data => {
           if (data.success) {
             this.card = (new Card()).copyConstructor(data.data);
-
+            
+            // Fix Datalist Display
+            this.card.tractorArray.forEach(e => {
+              e.operator = tempThis.iDToDataListOption(e.operator, 'tractorOperators');
+            })
+            this.card.irrigationArray.forEach(e => {
+              e.irrigator = tempThis.iDToDataListOption(e.irrigator, 'irrigators');
+            })
+            
             if (this.card.hoeDate) {
               this.hoeDatePickr.defaultDate = new Date(this.card.hoeDate);
             }
@@ -93,21 +255,33 @@ export class OpenCardDataComponent implements OnInit {
     });
   }
 
-  private deleteCard() {
+  private newChemical(): Chemical {
+    return new Chemical();
+  }
+
+  private saveChanges(): void {
+    // Validate
+    const card = this.validateAndFix(this.card);
+    if (!card) { return; }
+
+    // If Valid, continue
     const newAlert = new Alert();
-    newAlert.color = 'danger';
-    newAlert.title = 'WARNING: Deleting Card Permanently';
-    newAlert.message = 'Are you sure you want to delete this card? This action cannot be reversed.';
+    newAlert.color = 'warning';
+    newAlert.title = 'Save Card';
+    newAlert.message = 'This will save the card, overwriting what is in the database. This cannot be undone. Continue?';
+    newAlert.actionName = 'Save';
+    newAlert.actionClosesAlert = true;
     newAlert.timeLeft = undefined;
     newAlert.blockPageInteraction = true;
-    newAlert.actionName = 'Permanently Delete';
-    newAlert.actionClosesAlert = true;
-    newAlert.action$ = new EventEmitter<null>();
+    newAlert.closeName = 'Cancel';
+    newAlert.action$ = new EventEmitter<null>(); 
+
     newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
-      this.cardEdit.deleteCard(this.card.id).subscribe(data => {
+      this.cardEdit.updateCard(card).subscribe(data => {
           if (data.success) {
-            AlertService.newBasicAlert('Card deleted successfully!', false);
-            this.nav.goBack();
+            AlertService.newBasicAlert('Change saved successfully!', false);
+            this.loadCardData();
+            this.toggleEditing();
           } else {
             AlertService.newBasicAlert('Error: ' + data.error, true);
           }
@@ -116,8 +290,7 @@ export class OpenCardDataComponent implements OnInit {
           AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
         });
     });
-
-    AlertService.newAlert(newAlert);
+    AlertService.newAlert(newAlert);    
   }
 
   private toggleCard() {
@@ -158,194 +331,119 @@ export class OpenCardDataComponent implements OnInit {
     this.editing = !this.editing;
   }
 
-  private clearChanges(): void {
-    const newAlert = new Alert();
-    newAlert.color = 'warning';
-    newAlert.title = 'Clear Changes';
-    newAlert.message = 'This will clear all changes made to the card, and cannot be undone. Continue?';
-    newAlert.actionName = 'Clear';
-    newAlert.actionClosesAlert = true;
-    newAlert.timeLeft = undefined;
-    newAlert.blockPageInteraction = true;
-    newAlert.closeName = 'Cancel';
-    newAlert.action$ = new EventEmitter<null>();
-    newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
-      this.loadCardData();
-      this.toggleEditing();
-    });
-
-    AlertService.newAlert(newAlert);
-  }
-
-  private saveChanges(): void {
-    if (this.ranchName.invalid || (this.card.cropYear < 1000 || this.card.cropYear > 9999)) {
-      AlertService.newBasicAlert('There are some invalid values - please fix before saving.', true);
-    } else {
-      const operators = this.initTractorOperators();
-      for (const t of this.card.tractorArray) {
-        if ((t.operator) && (!operators.includes(t.operator))) {
-          AlertService.newBasicAlert('Invalid tractor operator selected, please select one from the list provided', true);
-          return;
+  private validateAndFix(c: Card) {
+    try {
+      const card = (new Card()).copyConstructor(c);
+      // Check Ranch Info
+      if (!card.ranchName || !(this[`ranches`].find(r => r.id === card.ranchName))) {
+        AlertService.newBasicAlert('Invalid Ranch - please fix and try again.', true);
+        return false;
+      }
+      // Check Commodity Info
+      for (const c of card.commodityArray) {
+        if (!c.commodity || !this[`commodities`].find(c2 => {
+          return c2.id === c.commodity && c2.value.value.includes(c.variety);
+        })) {
+          AlertService.newBasicAlert('Invalid Commodity Information - please fix and try again.', true);
+          return false;
+        }
+        if (c.bedType && !this[`bedTypes`].find(c2 => c2.id === c.bedType)) {
+          AlertService.newBasicAlert('Invalid Commodity Bed Type - please fix and try again.', true);
+          return false;
         }
       }
-      const irrigators = this.initIrrigators();
-      for (const t of this.card.irrigationArray)  {
-        if ((t.irrigator) && (!irrigators.includes(t.irrigator))) {
-          AlertService.newBasicAlert('Invalid irrigator selected, please select one from the list provided', true);
-          return;
+      // Check Chemical / Fertilizer Info
+      for (const c of card.preChemicalArray) {
+        c.date = (new Date(c.date)).valueOf();
+        if (c.chemical) {
+          if (!c.chemical.name || !this[`chemicals`].find(c2 => c2.id === c.chemical.name)) {
+            AlertService.newBasicAlert('Invalid Chemical Entered - please fix and try again.', true);
+            return false;
+          }
+          if (!c.chemical.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === c.chemical.unit)) {
+            AlertService.newBasicAlert('Invalid Chemical Rate Unit Entered - please fix and try again.', true);
+            return false;
+          }
+        }
+        if (c.fertilizer) {
+          if (!c.fertilizer.name || !this[`fertilizers`].find(c2 => c2.id === c.fertilizer.name)) {
+            AlertService.newBasicAlert('Invalid Fertilizer Entered - please fix and try again.', true);
+            return false;
+          }
+          if (!c.fertilizer.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === c.fertilizer.unit)) {
+            AlertService.newBasicAlert('Invalid Fertilizer Rate Unit Entered - please fix and try again.', true);
+            return false;
+          }
+        }
+        if (!c.chemical && !c.fertilizer) {
+          AlertService.newBasicAlert('No Chemical or Fertilizer Entered - please fix and try again.', true);
+          return false;
         }
       }
-      const newAlert = new Alert();
-      newAlert.color = 'warning';
-      newAlert.title = 'Save Card';
-      newAlert.message = 'This will save the card, overwriting what is in the database. This cannot be undone. Continue?';
-      newAlert.actionName = 'Save';
-      newAlert.actionClosesAlert = true;
-      newAlert.timeLeft = undefined;
-      newAlert.blockPageInteraction = true;
-      newAlert.closeName = 'Cancel';
-      newAlert.action$ = new EventEmitter<null>();
-
-      // Fix flatPickr date format
-      if (this.card.hoeDate) {
-        this.card.hoeDate = (new Date(this.card.hoeDate)).valueOf();
+      for (const c of card.postChemicalArray) {
+        c.date = (new Date(c.date)).valueOf();
+        if (c.chemical) {
+          if (!c.chemical.name || !this[`chemicals`].find(c2 => c2.id === c.chemical.name)) {
+            AlertService.newBasicAlert('Invalid Chemical Entered - please fix and try again.', true);
+            return false;
+          }
+          if (!c.chemical.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === c.chemical.unit)) {
+            AlertService.newBasicAlert('Invalid Chemical Rate Unit Entered - please fix and try again.', true);
+            return false;
+          }
+        }
+        if (c.fertilizer) {
+          if (!c.fertilizer.name || !this[`fertilizers`].find(c2 => c2.id === c.fertilizer.name)) {
+            AlertService.newBasicAlert('Invalid Fertilizer Entered - please fix and try again.', true);
+            return false;
+          }
+          if (!c.fertilizer.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === c.fertilizer.unit)) {
+            AlertService.newBasicAlert('Invalid Fertilizer Rate Unit Entered - please fix and try again.', true);
+            return false;
+          }
+        }
+        if (!c.chemical && !c.fertilizer) {
+          AlertService.newBasicAlert('No Chemical or Fertilizer Entered - please fix and try again.', true);
+          return false;
+        }
       }
-      if (this.card.harvestDate) {
-        this.card.harvestDate = (new Date(this.card.harvestDate)).valueOf();
+      // Check Tractor Info
+      for (const t of card.tractorArray) {
+        t.workDate = (new Date(t.workDate)).valueOf();
+        const operatorID = this.dataListOptionValueToID(t.operator, 'tractorOperators');
+        if (!operatorID) {
+          AlertService.newBasicAlert('Invalid Tractor Operator - please fix and try again.', true);
+          return false;
+        }
+        t.operator = operatorID;
       }
-      if (this.card.thinDate) {
-        this.card.thinDate = (new Date(this.card.thinDate)).valueOf();
+      // Check Irrigation Info
+      for (const e of card.irrigationArray) {
+        e.workDate = (new Date(e.workDate)).valueOf();
+        const irrigatorID = this.dataListOptionValueToID(e.irrigator, 'irrigators');
+        if (!irrigatorID) {
+          AlertService.newBasicAlert('Invalid Irrigator - please fix and try again.', true);
+          return false;
+        }
+        e.irrigator = irrigatorID;
+        if (!e.method || !this[`irrigationMethod`].find(e2 => e2.id === e.method)) {
+          AlertService.newBasicAlert('Invalid Irrigation Method Entered - please fix and try again.', true);
+          return false;
+        }
       }
-      if (this.card.wetDate) {
-        this.card.wetDate = (new Date(this.card.wetDate)).valueOf();
-      }
-      this.card.preChemicalArray.map(x => x.date = (new Date(x.date).valueOf()));
-      this.card.postChemicalArray.map(x => x.date = (new Date(x.date).valueOf()));
-      this.card.tractorArray.map(x => x.workDate = (new Date(x.workDate).valueOf()));
-      this.card.irrigationArray.map(x => x.workDate = (new Date(x.workDate).valueOf()));
 
-      // Remove all whitespace from card.lotNumber
-      this.card.lotNumber = this.card.lotNumber.replace(/\s/g, '');
-
-      newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
-        this.cardEdit.updateCard(this.card).subscribe(data => {
-            if (data.success) {
-              AlertService.newBasicAlert('Change saved successfully!', false);
-              this.loadCardData();
-              this.toggleEditing();
-            } else {
-              AlertService.newBasicAlert('Error: ' + data.error, true);
-            }
-          },
-          failure => {
-            AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
-          });
-      });
-
-      AlertService.newAlert(newAlert);
+      // Replace Lot Number Whitespace
+      card.lotNumber = card.lotNumber.replace(/\s/g, '');
+      // Fix Other flatPickr date formats
+      card.hoeDate = (this.card.hoeDate) ? (new Date(this.card.hoeDate)).valueOf() : null;
+      card.harvestDate = (this.card.harvestDate) ? (new Date(this.card.harvestDate)).valueOf() : null;
+      card.thinDate = (this.card.thinDate) ? (new Date(this.card.thinDate)).valueOf() : null;
+      card.wetDate = (this.card.wetDate) ? (new Date(this.card.wetDate)).valueOf() : null;
+      return card;
+    } catch (e) {
+      AlertService.newBasicAlert('Error When Validating Card Data', true);
+      console.log(e);
+      return false;
     }
-  }
-
-  private datePickr(workDate: number): FlatpickrOptions {
-    return {
-      enableTime: true,
-      dateFormat: 'm-d-Y H:i',
-      defaultDate: new Date(workDate)
-    };
-  }
-
-  private addTractorData(): void {
-    this.card.tractorArray.push(new TractorEntry());
-  }
-
-  private addIrrigationData(): void {
-    this.card.irrigationArray.push(new IrrigationEntry());
-  }
-
-  private addPreChemicals(): void {
-    this.card.preChemicalArray.push(new Chemicals());
-  }
-
-  private addPostChemicals(): void {
-    this.card.postChemicalArray.push(new Chemicals());
-  }
-
-  private addCommodities(): void {
-    this.card.commodityArray.push(new Commodities());
-  }
-
-  private newChemical(): Chemical {
-    return new Chemical();
-  }
-
-  getRanches(): Array<string> {
-    try {
-      return this.common.getValues('ranches').filter(r => this.auth.getRanchAccess().includes(r)).sort();
-    } catch (E) { }
-  }
-
-  initBedTypes(): Array<string> {
-    try {
-      return this.common.getValues('bedTypes').sort();
-    } catch { console.log('Error when initializing bed types'); }
-  }
-
-  initChemicals(): Array<string> {
-    try {
-      return this.common.getValues('chemicals');
-    } catch { console.log('Error when initializing chemicals'); }
-  }
-
-  initFertilizers(): Array<string> {
-    try {
-      return this.common.getValues('fertilizers');
-    } catch { console.log('Error when initializing fertilizers'); }
-  }
-
-  initRateUnits(): Array<string> {
-    try {
-      return this.common.getValues('chemicalRateUnits').sort();
-    } catch { console.log('Error when initializing rate units'); }
-  }
-
-  initCommodities(): Array<string> {
-    try {
-      return this.common.getMapKeys('commodities').sort();
-    } catch { console.log('Error when initializing commodities'); }
-  }
-
-  initCommodityValues(p): Array<string> {
-    try {
-      return this.common.getMapValues('commodities', p.commodity).sort();
-    } catch { console.log('Error when initializing commodity values for ' + p); }
-  }
-
-  initIrrigationMethods(): Array<string> {
-    try {
-      return this.common.getValues('irrigationMethod').sort();
-    } catch { console.log('Error when initializing irrigation methods'); }
-  }
-
-  initIrrigators(): Array<string> {
-    try {
-      return this.common.getValues('irrigators').sort();
-    } catch { console.log('Error when initializing irrigators'); }
-  }
-
-  initTractorOperators(): Array<string> {
-    try {
-      return this.common.getValues('tractorOperators').sort();
-    } catch { console.log('Error when initializing tractor operators'); }
-  }
-
-  initTractorWork(): Array<string> {
-    try {
-      return this.common.getValues('tractorWork').sort();
-    } catch { console.log('Error when initializing tractor work types'); }
-  }
-
-  initWorkTypes(): Array<string> {
-    const keys = Object.keys(WorkType);
-    return keys.slice(keys.length / 2);
   }
 }

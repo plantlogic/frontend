@@ -21,7 +21,6 @@ import {OpenCardDataComponent} from './card/management/open/open-card-data.compo
 import {ExportCardDataComponent} from './card/management/export/export-card-data.component';
 
 import {CardContractorComponent} from './card/contractor/card-management.component';
-import {OpenCardContractorComponent} from './card/contractor/open/open-card-data.component';
 
 import {AppAdminComponent} from './card/admin/app-admin.component';
 import {AddChemicalEntryComponent} from './card/entry/open/add-chemical/add-chemical-entry.component';
@@ -210,7 +209,7 @@ const routes: Routes = [
   },
   {
     path: 'contractor/o/:id',
-    component: OpenCardContractorComponent,
+    component: OpenCardDataComponent, // Don't duplicate
     canActivate: [RoleGuard],
     data: {
       parent: '/contractor',
