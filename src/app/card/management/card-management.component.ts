@@ -52,7 +52,7 @@ export class CardManagementComponent implements OnInit {
   }
 
   private cardIDsToValues(card: Card): Card {
-    // Only convert what is needed on this page 
+    // Only convert what is needed on this page
     card.ranchName = this.findCommonValue('ranches', ['value'], card.ranchName);
     card.commodityArray.forEach(e => {
       e.commodity = this.findCommonValue('commodities', ['value', 'key'], e.commodity);
@@ -205,7 +205,7 @@ export class CardManagementComponent implements OnInit {
           // For display purposes, change any common IDs to their values
           this.cards.forEach(card => {
             card = this.cardIDsToValues(card);
-            card.initCommodityString()
+            card.initCommodityString();
           });
           // Keep a raw copy of the data
           this.cardsRaw = data.data.map(c => (new Card()).copyConstructor(c));
@@ -252,9 +252,9 @@ export class CardManagementComponent implements OnInit {
       try {
         card.fieldID = tempThis.cardsRaw.find(e => e.id === card.id).fieldID;
       } catch (e) {
-        console.log("Error resetting card fieldID");
+        console.log('Error resetting card fieldID');
       }
-    })
+    });
   }
 
   setPage(n: number): void {
@@ -282,13 +282,13 @@ export class CardManagementComponent implements OnInit {
     const modified = this.findModifiedCards();
     modified.forEach(m => {
       const card = tempThis.cardsRaw.find(c => c.id === m.id);
-      if (!card) { 
+      if (!card) {
         log.failure += 1;
         tempThis.updateMessage(log, modified.length);
       } else {
         card.fieldID = m.fieldID;
         tempThis.cardEdit.updateCard(card).subscribe(data => {
-          if(data.success) {
+          if (data.success) {
             log.success += 1;
           } else {
             log.failure += 1;
@@ -308,7 +308,6 @@ export class CardManagementComponent implements OnInit {
     if (total >= expected) {
       AlertService.newBasicAlert(`Cards updated: ${log.success} successfully, ${log.failure} unsuccessfully`, false);
     }
-    
   }
 
   updateNumPages(e?: number): void {
@@ -318,6 +317,4 @@ export class CardManagementComponent implements OnInit {
     this.pages = Array(this.numPages).fill(0).map((x, i) => i + 1);
     this.setPage(1);
   }
-
-  
 }

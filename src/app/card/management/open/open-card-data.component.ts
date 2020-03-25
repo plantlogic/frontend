@@ -119,7 +119,7 @@ export class OpenCardDataComponent implements OnInit {
       dateFormat: 'm-d-Y H:i',
       defaultDate: new Date(workDate)
     };
-  }  
+  }
 
   private deleteCard() {
     const newAlert = new Alert();
@@ -174,7 +174,7 @@ export class OpenCardDataComponent implements OnInit {
     const values = this.getCommon(commonKey);
     for (let i = 0; i < values.length; i++) {
       if (values[i].id === commonID) {
-        return (i+1) + ' - ' + values[i].value;
+        return (i + 1) + ' - ' + values[i].value;
       }
     }
   }
@@ -219,15 +219,13 @@ export class OpenCardDataComponent implements OnInit {
         data => {
           if (data.success) {
             this.card = (new Card()).copyConstructor(data.data);
-            
             // Fix Datalist Display
             this.card.tractorArray.forEach(e => {
               e.operator = tempThis.iDToDataListOption(e.operator, 'tractorOperators');
-            })
+            });
             this.card.irrigationArray.forEach(e => {
               e.irrigator = tempThis.iDToDataListOption(e.irrigator, 'irrigators');
-            })
-            
+            });
             if (this.card.hoeDate) {
               this.hoeDatePickr.defaultDate = new Date(this.card.hoeDate);
             }
@@ -274,7 +272,7 @@ export class OpenCardDataComponent implements OnInit {
     newAlert.timeLeft = undefined;
     newAlert.blockPageInteraction = true;
     newAlert.closeName = 'Cancel';
-    newAlert.action$ = new EventEmitter<null>(); 
+    newAlert.action$ = new EventEmitter<null>();
 
     newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
       this.cardEdit.updateCard(card).subscribe(data => {
@@ -290,7 +288,7 @@ export class OpenCardDataComponent implements OnInit {
           AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
         });
     });
-    AlertService.newAlert(newAlert);    
+    AlertService.newAlert(newAlert);
   }
 
   private toggleCard() {
@@ -331,9 +329,9 @@ export class OpenCardDataComponent implements OnInit {
     this.editing = !this.editing;
   }
 
-  private validateAndFix(c: Card) {
+  private validateAndFix(cardRaw: Card) {
     try {
-      const card = (new Card()).copyConstructor(c);
+      const card = (new Card()).copyConstructor(cardRaw);
       // Check Ranch Info
       if (!card.ranchName || !(this[`ranches`].find(r => r.id === card.ranchName))) {
         AlertService.newBasicAlert('Invalid Ranch - please fix and try again.', true);

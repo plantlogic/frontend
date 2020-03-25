@@ -97,15 +97,10 @@ export class CardExportService {
   return (commonValue) ? commonValue : targetID;
 }
 
-  public generateExport(commonData, from: number, to: number, ranches: Array<string>, commodities: Array<string>, includeUnharvested: boolean): void {
-    console.log("Using commondata");
-    console.log(commonData);
-    console.log("Filtering from");
-    console.log(ranches);
-    console.log(commodities);
+  public generateExport(commonData, from: number, to: number, ranches: Array<string>, commodities: Array<string>,
+                        includeUnharvested: boolean): void {
     this.http.get<BasicDTO<Card[]>>(environment.ApiUrl + '/data/view/ranches', this.httpOptions).subscribe(
       data => {
-        console.log(data);
         // If data is successful retrieved
         if (data.success) {
           // Format is [x][y]: [x] is a row and [y] is a column. Commas and newlines will automatically be added.
@@ -215,8 +210,6 @@ export class CardExportService {
             .map(x => (new Card()).copyConstructor(x))
             // Filter it to match user filters
             .filter(x => {
-              console.log("Filtering: ");
-              console.log(x);
               // If card doesn't contain any of our selected ranches
               if (!x.ranchName || !ranches.includes(x.ranchName)) {
                 return false;
@@ -243,8 +236,6 @@ export class CardExportService {
             .forEach(x => {
               // Convert card common ids to their values
               x = this.cardIDsToValues(x, commonData);
-              console.log("Converted IDs to values:");
-              console.log(x);
               // Push simple data
               dataLine.push(
                 String(x.fieldID), x.ranchName, x.ranchManagerName, x.lotNumber, x.shipperID,

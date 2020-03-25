@@ -52,7 +52,6 @@ import { CommonLookup } from 'src/app/_api/common-data.service';
   }
 
   private cardIDsToValues(card: Card): Card {
-    // Only convert what is needed on this page 
     card.ranchName = this.findCommonValue('ranches', ['value'], card.ranchName);
     card.commodityArray.forEach(e => {
       e.commodity = this.findCommonValue('commodities', ['value', 'key'], e.commodity);
@@ -135,16 +134,14 @@ import { CommonLookup } from 'src/app/_api/common-data.service';
   findModifiedCards() {
     const modifiedCards = [];
     try {
-      // Cycle through the cards being currently displayed, check if data is different from raw
       for (let i = 0; i < this.cards.length; i++) {
         if (this.showListing(i)) {
-            //(new Date(c.hoeDate.val)).valueOf()
           const card1 = this.cardsRaw.find(c => c.id === this.cards[i].id);
           const card2 = this.cards[i];
-          let hoeDate1 = new Date(card1.hoeDate).valueOf();
-          let hoeDate2 = new Date(card2.hoeDate.val).valueOf();
-          let thinDate1 = new Date(card1.thinDate).valueOf();
-          let thinDate2 = new Date(card2.thinDate.val).valueOf();
+          const hoeDate1 = new Date(card1.hoeDate).valueOf();
+          const hoeDate2 = new Date(card2.hoeDate.val).valueOf();
+          const thinDate1 = new Date(card1.thinDate).valueOf();
+          const thinDate2 = new Date(card2.thinDate.val).valueOf();
           if ((hoeDate1 !== hoeDate2) || (thinDate1 !== thinDate2)
           || (card1.hoeType !== card2.hoeType) || (card1.thinType !== card2.thinType)) {
             modifiedCards.push(this.cards[i]);
@@ -206,7 +203,7 @@ import { CommonLookup } from 'src/app/_api/common-data.service';
       f(sortedCommon);
     });
   }
-  
+
   initWorkTypes(): Array<string> {
     const keys = Object.keys(WorkType);
     return keys.slice(keys.length / 2);
@@ -288,9 +285,9 @@ import { CommonLookup } from 'src/app/_api/common-data.service';
         };
         card.thinType = rawCard.thinType;
       } catch (e) {
-        console.log("Error resetting card fieldID");
+        console.log('Error resetting card fieldID');
       }
-    })
+    });
   }
 
   setPage(n: number): void {
@@ -318,7 +315,7 @@ import { CommonLookup } from 'src/app/_api/common-data.service';
     const modified = this.findModifiedCards();
     modified.forEach(m => {
       const card = tempThis.cardsRaw.find(c => c.id === m.id);
-      if (!card) { 
+      if (!card) {
         log.failure += 1;
         tempThis.updateMessage(log, modified.length);
       } else {
@@ -327,7 +324,7 @@ import { CommonLookup } from 'src/app/_api/common-data.service';
         card.thinDate = (new Date(m.thinDate.val)).valueOf();
         card.thinType = m.thinType;
         tempThis.cardEdit.updateCard(card as Card).subscribe(data => {
-          if(data.success) {
+          if (data.success) {
             log.success += 1;
           } else {
             log.failure += 1;
@@ -347,7 +344,6 @@ import { CommonLookup } from 'src/app/_api/common-data.service';
     if (total >= expected) {
       AlertService.newBasicAlert(`Cards updated: ${log.success} successfully, ${log.failure} unsuccessfully`, false);
     }
-    
   }
 
   updateNumPages(e?: number): void {
@@ -357,6 +353,4 @@ import { CommonLookup } from 'src/app/_api/common-data.service';
     this.pages = Array(this.numPages).fill(0).map((x, i) => i + 1);
     this.setPage(1);
   }
-
-  
 }
