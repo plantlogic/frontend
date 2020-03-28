@@ -106,8 +106,8 @@
     </div>
 </div>
 <datalist id="ranches">
-  <option *ngFor="let r of initRanches()" [value]="r">
+  <option *ngFor="let r of getCommon('ranches')" [value]="r.value">
 </datalist>
 <datalist id="commodities">
-  <option *ngFor="let r of initCommodities()" [value]="r">
+  <option *ngFor="let c of getCommon('commodities')" [value]="c.value.key">
 </datalist>

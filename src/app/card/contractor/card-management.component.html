@@ -29,6 +29,14 @@
   <hr class="my-4">
 
   <div class="col d-md-inline-block">
+    <span style="float: left; vertical-align: middle;">
+      <button type="button" color="success" (click)="updateCards()" class="mr-1 mb-1" mdbBtn floating="true" size="sm" style="display: inline-block; margin-right: 5px">
+        Update All Cards
+      </button>
+      <button type="button" color="danger" (click)="resetCards()" class="mr-1 mb-1" mdbBtn floating="true" size="sm" style="display: inline-block;">
+        Clear Changes
+      </button>
+    </span>
     <span style="float: right; vertical-align: middle;">
     Listings: &nbsp;
     <select class="form-control form-control-sm select-sm"  (ngModelChange)="updateNumPages($event)" [(ngModel)]="viewSize">
@@ -51,7 +59,7 @@
               <th class="small" [mdbTableSort]="cards" [sortBy]="'lotNumber'" style="width:12%;max-width:12%;">
                 <span>Lot # <i class="fa fa-sort ml-1"></i></span>
               </th>
-              <th class="small" [mdbTableSort]="cards" [sortBy]="'commodityString'" style="width:12%;max-width:12%;">
+              <th class="small" [mdbTableSort]="cards" [sortBy]="'commodityString'" style="width:15%;max-width:15%;">
                 <span>Commodities <i class="fa fa-sort ml-1"></i></span>
               </th>
               <th class="small" [mdbTableSort]="cards" [sortBy]="'hoeDate.num'" style="width:15%;max-width:15%;">
@@ -60,13 +68,10 @@
               <th class="small" [mdbTableSort]="cards" [sortBy]="'thinDate.num'" style="width:15%;max-width:15%;">
                 Thin Date <i class="fa fa-sort ml-1"></i>
               </th>
-              <th class="small" style="width:10%;max-width:10%;">
-                Update
-              </th>
-              <th class="small" [mdbTableSort]="cards" [sortBy]="'lastUpdated'" style="width:10%;max-width:10%;">
+              <th class="small" [mdbTableSort]="cards" [sortBy]="'lastUpdated'" style="width:15%;max-width:15%;">
                 Last Updated <i class="fa fa-sort ml-1"></i>
               </th>
-              <th class="small" [mdbTableSort]="cards" [sortBy]="'closed'" style="width:8%;max-width:8%;">
+              <th class="small" [mdbTableSort]="cards" [sortBy]="'closed'" style="width:10%;max-width:10%;">
                 State <i class="fa fa-sort ml-1"></i>
               </th>
               <th class="small" style="width:8%;max-width:8%;">Options</th>
@@ -93,11 +98,6 @@
                     <option *ngIf="!p.thinType" [value]="undefined" disabled selected>Select Thin Type</option>
                     <option *ngFor="let r of initWorkTypes()" [value]="r">{{r}}</option>
                   </select>
-                </td>
-                <td>
-                  <button type="button" color="success" (click)="updateCard(p)" class="mr-1 mb-1" mdbBtn floating="true" size="sm" style="display: inline-block;">
-                  <i class="fas fa-check ml-1"></i>
-                  </button>
                 </td>
                 <td>{{p.lastUpdated | date:'longDate'}}</td>
                 <td>
@@ -139,10 +139,10 @@
     </div>
 </div>
 <datalist id="ranches">
-  <option *ngFor="let r of initRanches()" [value]="r">
+  <option *ngFor="let r of getCommon('ranches')" [value]="r.value">
 </datalist>
 <datalist id="commodities">
-  <option *ngFor="let r of initCommodities()" [value]="r">
+  <option *ngFor="let r of getCommon('commodities')" [value]="r.value.key">
 </datalist>
 
 <div id="flatpickr-node"></div>

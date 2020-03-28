@@ -35,6 +35,14 @@
   <hr class="my-4">
 
   <div class="col d-md-inline-block">
+    <span style="float: left; vertical-align: middle;">
+      <button type="button" color="success" (click)="updateFieldIds()" class="mr-1 mb-1" mdbBtn floating="true" size="sm" style="display: inline-block; margin-right: 5px">
+        Update All Field IDs
+      </button>
+      <button type="button" color="danger" (click)="resetFieldIds()" class="mr-1 mb-1" mdbBtn floating="true" size="sm" style="display: inline-block;">
+        Clear Changes
+      </button>
+    </span>
     <span style="float: right; vertical-align: middle;">
     Listings: &nbsp;
     <select class="form-control form-control-sm select-sm"  (ngModelChange)="updateNumPages($event)" [(ngModel)]="viewSize">
@@ -76,10 +84,7 @@
             <tr mdbTableCol *ngFor="let p of cards; let i = index" class="animated fadeIn" [style.animation-delay]="this.min((30*i), 1000)+ 'ms'">
               <ng-container *ngIf="showListing(i)">
                 <td>
-                  <input type="number" [(ngModel)]="p.fieldID" class="form-control form-control-sm" placeholder="Field ID" style="width: 10em; display:inline-block"/> 
-                  <button type="button" color="success" (click)="updateFieldId(p)" class="mr-1 mb-1" mdbBtn floating="true" size="sm" style="display: inline-block;">
-                        <i class="fas fa-check ml-1"></i>
-                  </button>
+                  <input type="number" [(ngModel)]="p.fieldID" class="form-control form-control-sm" placeholder="Field ID" style="width: 90%; display:inline-block"/> 
                 </td>
                 <td class="hover">{{p.ranchName}}<span class="hover-text">{{p.ranchName}}</span></td>
                 <td class="hover">{{p.lotNumber}}<span class="hover-text">{{p.lotNumber}}</span></td>
@@ -122,8 +127,8 @@
     </div>
 </div>
 <datalist id="ranches">
-  <option *ngFor="let r of initRanches()" [value]="r">
+  <option *ngFor="let r of getCommon('ranches')" [value]="r.value">
 </datalist>
 <datalist id="commodities">
-  <option *ngFor="let r of initCommodities()" [value]="r">
+  <option *ngFor="let r of getCommon('commodities')" [value]="r.value.key">
 </datalist>

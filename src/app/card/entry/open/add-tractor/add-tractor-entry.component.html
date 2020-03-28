@@ -10,21 +10,15 @@
       </div>
       <select class="form-control" [(ngModel)]="tractor.workDone" >
         <option *ngIf="!tractor.workDone" [value]="undefined" disabled selected>Select Tractor Work</option>
-        <option *ngFor="let work of initTractorWork()" [value]="work">{{work}}</option>
+        <option *ngFor="let r of getCommon('tractorWork')" [value]="r.id">{{r.value}}</option>
       </select>
       <input class="form-control"  list="tractorOperators" [(ngModel)]="tractor.operator" placeholder="Enter Tractor Operator">
       <datalist id="tractorOperators">
-        <option *ngFor="let r of initTractorOperators()" [value]="r">
+        <option *ngFor="let r of getCommon('tractorOperators'); let i = index;" data-id="{{r.id}}" [value]="(i+1) + ' - ' + r.value">
       </datalist>
     </div>
 
-
-
-    <div class="w-100 d-block d-md-none">
-      <hr />
-    </div>
-
-
+    <div class="w-100 d-block d-md-none"><hr /></div>
 
     <div class="col-md my-3">
       <div class="mb-5 align-text-bottom">
@@ -44,7 +38,7 @@
         <div class="row px-2">
           <select class="form-control" [(ngModel)]="tractor.chemical.name">
             <option *ngIf="!tractor.chemical.name" [value]="undefined" disabled selected>Select Chemical</option>
-            <option *ngFor="let r of initChemicals()" [value]="r">{{r}}</option>
+            <option *ngFor="let r of getCommon('chemicals')" [value]="r.id">{{r.value}}</option>
           </select>
           <div class="form-inline">
             <div class="form-group">
@@ -54,7 +48,7 @@
             <div class="form-group">
               <select class="form-control" [(ngModel)]="tractor.chemical.unit" >
                 <option *ngIf="!tractor.chemical.unit" [value]="undefined" disabled selected>Select Rate Unit</option>
-                <option *ngFor="let r of initRateUnits()" [value]="r">{{r}}</option>
+                <option *ngFor="let r of getCommon('chemicalRateUnits')" [value]="r.id">{{r.value}}</option>
               </select>
             </div>
           </div>
@@ -62,13 +56,7 @@
       </div>
     </div>
 
-
-
-    <div class="w-100 d-block d-md-none">
-      <hr />
-    </div>
-
-
+    <div class="w-100 d-block d-md-none"><hr /></div>
 
     <div class="col-md my-3">
       <div class="mb-5 align-text-bottom">
@@ -88,7 +76,7 @@
         <div class="row px-2">
           <select class="form-control" [(ngModel)]="tractor.fertilizer.name">
             <option *ngIf="!tractor.fertilizer.name" [value]="undefined" disabled selected>Select Fertilizer</option>
-            <option *ngFor="let r of initFertilizers()" [value]="r">{{r}}</option>
+            <option *ngFor="let r of getCommon('fertilizers')" [value]="r.id">{{r.value}}</option>
           </select>
           <div class="form-inline">
             <div class="form-group">
@@ -98,7 +86,7 @@
             <div class="form-group">
               <select class="form-control" [(ngModel)]="tractor.fertilizer.unit" >
                 <option *ngIf="!tractor.fertilizer.unit" [value]="undefined" disabled selected>Select Rate Unit</option>
-                <option *ngFor="let r of initRateUnits()" [value]="r">{{r}}</option>
+                <option *ngFor="let r of getCommon('chemicalRateUnits')" [value]="r.id">{{r.value}}</option>
               </select>
             </div>
           </div>

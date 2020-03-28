@@ -23,20 +23,86 @@ export class AddTractorEntryComponent implements OnInit {
   submitAttempted = false;
   cardId: string;
 
+  // create array of common keys, whose data is needed. Omit restricted options.
+  commonKeys = ['chemicals', 'chemicalRateUnits', 'fertilizers', 'tractorOperators', 'tractorWork'];
 
   ngOnInit() {
+    const tempThis = this;
     this.titleService.setTitle('Tractor');
-    this.route.params.subscribe(data => this.cardId = data.id);
+    this.initCommon(c => {
+      this.commonKeys.forEach(key => tempThis[key] = c[key] );
+      this.route.params.subscribe(data => this.cardId = data.id);
+    });
+  }
+
+  public dataListOptionValueToID(optionValue, dataListID) {
+    const option = document.querySelector('#' + dataListID + ' [value="' + optionValue + '"]') as HTMLElement;
+    return (option) ? option.id : null;
+  }
+
+  datePickr(): FlatpickrOptions {
+    return {
+      dateFormat: 'm-d-Y',
+      defaultDate: new Date()
+    };
+  }
+
+  public getCommon(key) {
+    if (this.commonKeys.includes(key)) {
+      return this[key];
+    } else {
+      console.log('Key ' + key + ' is not in the commonKeys array.');
+      return [];
+    }
+  }
+
+  public initCommon(f): void {
+    const tempThis = this;
+    const sortedCommon = {};
+    this.common.getAllValues(data => {
+      this.commonKeys.forEach(key => {
+        sortedCommon[key] = tempThis.common.sortCommonArray(data[key], key);
+      });
+      f(sortedCommon);
+    });
+  }
+
+  newChemical(): Chemical {
+    return new Chemical();
   }
 
   submit() {
-    this.submitAttempted = false;
-    if ((this.tractor.operator) && (!this.initTractorOperators().includes(this.tractor.operator))) {
-      AlertService.newBasicAlert('Invalid tractor operator selected, please select one from the list provided', true);
+    // Check Tractor Info
+    const c = this.tractor;
+    c.workDate = (new Date(c.workDate)).valueOf();
+    const operatorID = this.dataListOptionValueToID(c.operator, 'tractorOperators');
+    if (!operatorID) {
+      AlertService.newBasicAlert('Invalid Tractor Operator - please fix and try again.', true);
       return;
     }
-    this.tractor.workDate = (new Date(this.tractor.workDate)).valueOf();
-    this.cardEntryService.addTractorData(this.cardId, this.tractor).subscribe(
+    c.operator = operatorID;
+    if (c.chemical) {
+      if (!c.chemical.name || !this[`chemicals`].find(c2 => c2.id === c.chemical.name)) {
+        AlertService.newBasicAlert('Invalid Chemical Entered - please fix and try again.', true);
+        return;
+      }
+      if (!c.chemical.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === c.chemical.unit)) {
+        AlertService.newBasicAlert('Invalid Chemical Rate Unit Entered - please fix and try again.', true);
+        return;
+      }
+    }
+    if (c.fertilizer) {
+      if (!c.fertilizer.name || !this[`fertilizers`].find(c2 => c2.id === c.fertilizer.name)) {
+        AlertService.newBasicAlert('Invalid Fertilizer Entered - please fix and try again.', true);
+        return;
+      }
+      if (!c.fertilizer.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === c.fertilizer.unit)) {
+        AlertService.newBasicAlert('Invalid Fertilizer Rate Unit Entered - please fix and try again.', true);
+        return;
+      }
+    }
+
+    this.cardEntryService.addTractorData(this.cardId, c).subscribe(
       data => {
         if (data.success) {
           AlertService.newBasicAlert('Saved successfully!', false);
@@ -49,47 +115,5 @@ export class AddTractorEntryComponent implements OnInit {
         AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
       }
     );
-  }
-
-  initRateUnits(): Array<string> {
-    try {
-      return this.common.getValues('chemicalRateUnits').sort();
-    } catch { console.log('Error when initializing rate units'); }
-  }
-
-
-  initTractorWork(): Array<string> {
-    try {
-      return this.common.getValues('tractorWork').sort();
-    } catch { console.log('Error when initializing tractor work types'); }
-  }
-
-  initTractorOperators(): Array<string> {
-    try {
-      return this.common.getValues('tractorOperators').sort();
-    } catch { console.log('Error when initializing tractor operators'); }
-  }
-
-  initChemicals(): Array<string> {
-    try {
-      return this.common.getValues('chemicals');
-    } catch { console.log('Error when initializing chemicals'); }
-  }
-
-  initFertilizers(): Array<string> {
-    try {
-      return this.common.getValues('fertilizers');
-    } catch { console.log('Error when initializing fertilizers'); }
-  }
-
-  datePickr(): FlatpickrOptions {
-    return {
-      dateFormat: 'm-d-Y',
-      defaultDate: new Date()
-    };
-  }
-
-  newChemical(): Chemical {
-    return new Chemical();
   }
 }

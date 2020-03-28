@@ -10,6 +10,7 @@ import {Chemical} from '../../../../_dto/card/chemical';
 import {FlatpickrOptions} from 'ng2-flatpickr';
 import {ActivatedRoute} from '@angular/router';
 import {CommonFormDataService} from '../../../../_api/common-form-data.service';
+import { CommonLookup } from 'src/app/_api/common-data.service';
 
 @Component({
   selector: 'app-add-chemical',
@@ -23,19 +24,82 @@ export class AddChemicalEntryComponent implements OnInit {
               public common: CommonFormDataService) { }
 
   chem: Chemicals = new Chemicals(); // has date, chemical, and fertilizer
-  submitAttempted = false;
   cardId: string;
 
+  // create array of common keys, whose data is needed. Omit restricted options.
+  commonKeys = ['chemicals', 'chemicalRateUnits', 'fertilizers'];
+
   ngOnInit() {
+    const tempThis = this;
     this.titleService.setTitle('Applied');
-    this.route.params.subscribe(data => this.cardId = data.id);
+    this.initCommon(c => {
+      this.commonKeys.forEach(key => tempThis[key] = c[key] );
+      this.route.params.subscribe(data => this.cardId = data.id);
+    });
   }
 
+  datePickr(workDate: number): FlatpickrOptions {
+    return {
+      dateFormat: 'm-d-Y',
+      defaultDate: new Date()
+    };
+  }
+
+  public getCommon(key) {
+    if (this.commonKeys.includes(key)) {
+      return this[key];
+    } else {
+      console.log('Key ' + key + ' is not in the commonKeys array.');
+      return [];
+    }
+  }
+
+  public initCommon(f): void {
+    const tempThis = this;
+    const sortedCommon = {};
+    this.common.getAllValues(data => {
+      this.commonKeys.forEach(key => {
+        sortedCommon[key] = tempThis.common.sortCommonArray(data[key], key);
+      });
+      f(sortedCommon);
+    });
+  }
+
+  newChemical(): Chemical {
+    return new Chemical();  // has name, rate, unit
+  }
 
   submit() {
-    this.submitAttempted = false;
-    this.chem.date = (new Date(this.chem.date)).valueOf();
-    this.cardEntryService.addChemicalData(this.cardId, this.chem).subscribe(
+    const c = this.chem;
+
+    // Check Chemical / Fertilizer Info
+    c.date = (new Date(c.date)).valueOf();
+    if (c.chemical) {
+      if (!c.chemical.name || !this[`chemicals`].find(c2 => c2.id === c.chemical.name)) {
+        AlertService.newBasicAlert('Invalid Chemical Entered - please fix and try again.', true);
+        return;
+      }
+      if (!c.chemical.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === c.chemical.unit)) {
+        AlertService.newBasicAlert('Invalid Chemical Rate Unit Entered - please fix and try again.', true);
+        return;
+      }
+    }
+    if (c.fertilizer) {
+      if (!c.fertilizer.name || !this[`fertilizers`].find(c2 => c2.id === c.fertilizer.name)) {
+        AlertService.newBasicAlert('Invalid Fertilizer Entered - please fix and try again.', true);
+        return;
+      }
+      if (!c.fertilizer.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === c.fertilizer.unit)) {
+        AlertService.newBasicAlert('Invalid Fertilizer Rate Unit Entered - please fix and try again.', true);
+        return;
+      }
+    }
+    if (!c.chemical && !c.fertilizer) {
+      AlertService.newBasicAlert('No Chemical or Fertilizer Entered - please fix and try again.', true);
+      return;
+    }
+
+    this.cardEntryService.addChemicalData(this.cardId, c).subscribe(
       data => {
         if (data.success) {
           AlertService.newBasicAlert('Saved successfully!', false);
@@ -48,34 +112,5 @@ export class AddChemicalEntryComponent implements OnInit {
         AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
       }
     );
-  }
-
-  initChemicals(): Array<string> {
-    try {
-      return this.common.getValues('chemicals');
-    } catch { console.log('Error when initializing chemicals'); }
-  }
-
-  initFertilizers(): Array<string> {
-    try {
-      return this.common.getValues('fertilizers');
-    } catch { console.log('Error when initializing fertilizers'); }
-  }
-
-  initRateUnits(): Array<string> {
-    try {
-      return this.common.getValues('chemicalRateUnits').sort();
-    } catch { console.log('Error when initializing rate units'); }
-  }
-
-  datePickr(workDate: number): FlatpickrOptions {
-    return {
-      dateFormat: 'm-d-Y',
-      defaultDate: new Date()
-    };
-  }
-
-  newChemical(): Chemical {
-    return new Chemical();  // has name, rate, unit
   }
 }

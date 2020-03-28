@@ -39,9 +39,9 @@
       <div class="row">
         <div class="col-md">
           <div class="form-group">
-            <label for="realnameInput">Employee Name</label>
-            <input type="text" name="realname" formControlName="realname" class="form-control" id="realnameInput"
-                   [class.is-invalid]="submitAttempted && form.get('realname').invalid" required>
+            <label for="realNameInput">Employee Name</label>
+            <input type="text" name="realName" formControlName="realName" class="form-control" id="realNameInput"
+                   [class.is-invalid]="submitAttempted && form.get('realName').invalid" required>
             <div class="invalid-feedback" role="alert">User's full name is required.</div>
           </div>
         </div>
@@ -78,7 +78,7 @@
                   formControlName="ranchAccess"
                   [placeholder]="'Select Ranches'"
                   [data]="commonData.getValues('ranches')"
-                  [settings]="multiselectSettings">
+                  [settings]="multiSelectSettings">
                 </ng-multiselect-dropdown>
               </div>
             </div>

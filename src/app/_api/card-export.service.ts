@@ -5,19 +5,102 @@ import {AlertService} from '../_interact/alert/alert.service';
 import {BasicDTO} from '../_dto/basicDTO';
 import {Card} from '../_dto/card/card';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
+import { CommonLookup } from './common-data.service';
+import { CommonFormDataService } from './common-form-data.service';
+import { AuthService } from '../_auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CardExportService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, public common: CommonFormDataService, private auth: AuthService) { }
   private httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'})};
 
+  private cardIDsToValues(card: Card, commonData): Card {
+    card.ranchName = this.findCommonValue(commonData, 'ranches', ['value'], card.ranchName);
+    card.commodityArray.forEach(e => {
+      e.commodity = this.findCommonValue(commonData, 'commodities', ['value', 'key'], e.commodity);
+      e.bedType = this.findCommonValue(commonData, 'bedTypes', ['value'], e.bedType);
+    });
+    card.preChemicalArray.forEach(e => {
+      if (e.chemical) {
+        e.chemical.name = this.findCommonValue(commonData, 'chemicals', ['value'], e.chemical.name);
+        e.chemical.unit = this.findCommonValue(commonData, 'chemicalRateUnits', ['value'], e.chemical.unit);
+      }
+      if (e.fertilizer) {
+        e.fertilizer.name = this.findCommonValue(commonData, 'fertilizers', ['value'], e.fertilizer.name);
+        e.fertilizer.unit = this.findCommonValue(commonData, 'chemicalRateUnits', ['value'], e.fertilizer.unit);
+      }
+    });
+    card.postChemicalArray.forEach(e => {
+      if (e.chemical) {
+        e.chemical.name = this.findCommonValue(commonData, 'chemicals', ['value'], e.chemical.name);
+        e.chemical.unit = this.findCommonValue(commonData, 'chemicalRateUnits', ['value'], e.chemical.unit);
+      }
+      if (e.fertilizer) {
+        e.fertilizer.name = this.findCommonValue(commonData, 'fertilizers', ['value'], e.fertilizer.name);
+        e.fertilizer.unit = this.findCommonValue(commonData, 'chemicalRateUnits', ['value'], e.fertilizer.unit);
+      }
+    });
+    card.tractorArray.forEach(e => {
+      e.workDone = this.findCommonValue(commonData, 'tractorWork', ['value'], e.workDone);
+      e.operator = this.findCommonValue(commonData, 'tractorOperators', ['value'], e.operator);
+      if (e.chemical) {
+        e.chemical.name = this.findCommonValue(commonData, 'chemicals', ['value'], e.chemical.name);
+        e.chemical.unit = this.findCommonValue(commonData, 'chemicalRateUnits', ['value'], e.chemical.unit);
+      }
+      if (e.fertilizer) {
+        e.fertilizer.name = this.findCommonValue(commonData, 'fertilizers', ['value'], e.fertilizer.name);
+        e.fertilizer.unit = this.findCommonValue(commonData, 'chemicalRateUnits', ['value'], e.fertilizer.unit);
+      }
+    });
+    card.irrigationArray.forEach(e => {
+      e.method = this.findCommonValue(commonData, 'irrigationMethod', ['value'], e.method);
+      e.irrigator = this.findCommonValue(commonData, 'irrigators', ['value'], e.irrigator);
+      if (e.chemical) {
+        e.chemical.name = this.findCommonValue(commonData, 'chemicals', ['value'], e.chemical.name);
+        e.chemical.unit = this.findCommonValue(commonData, 'chemicalRateUnits', ['value'], e.chemical.unit);
+      }
+      if (e.fertilizer) {
+        e.fertilizer.name = this.findCommonValue(commonData, 'fertilizers', ['value'], e.fertilizer.name);
+        e.fertilizer.unit = this.findCommonValue(commonData, 'chemicalRateUnits', ['value'], e.fertilizer.unit);
+      }
+    });
+    return card;
+  }
 
-  public generateExport(from: number, to: number, ranches: Array<string>, commodities: Array<string>, includeUnharvested: boolean): void {
+  public export(from: number, to: number, ranches: Array<string>, commodities: Array<string>, includeUnharvested: boolean): void {
+    this.initCommon(commonData => {
+      this.generateExport(commonData, from, to, ranches, commodities, includeUnharvested);
+    });
+  }
+
+  /*
+    Searches common values in [key] list where value.id === targetID
+    returns value.valuePropertyArr where valuePropertyArr = array of nesting properties
+    returns null in no targetID supplied
+    returns targetID if key is not in commonKeys Array (don't need value)
+    returns generic message of targetID not found
+  */
+ findCommonValue(commonData, key, valuePropertyArr, targetID?) {
+  if (!targetID) { return null; }
+  let commonValue = commonData[key].find(e => {
+    return e.id === targetID;
+  });
+  try {
+    valuePropertyArr.forEach(p => {
+      commonValue = commonValue[p];
+    });
+  } catch (e) {
+    console.log(e);
+  }
+  return (commonValue) ? commonValue : targetID;
+}
+
+  public generateExport(commonData, from: number, to: number, ranches: Array<string>, commodities: Array<string>,
+                        includeUnharvested: boolean): void {
     this.http.get<BasicDTO<Card[]>>(environment.ApiUrl + '/data/view/ranches', this.httpOptions).subscribe(
       data => {
-        console.log(data);
         // If data is successful retrieved
         if (data.success) {
           // Format is [x][y]: [x] is a row and [y] is a column. Commas and newlines will automatically be added.
@@ -151,6 +234,8 @@ export class CardExportService {
             })
             // Put in the table
             .forEach(x => {
+              // Convert card common ids to their values
+              x = this.cardIDsToValues(x, commonData);
               // Push simple data
               dataLine.push(
                 String(x.fieldID), x.ranchName, x.ranchManagerName, x.lotNumber, x.shipperID,
@@ -365,6 +450,32 @@ export class CardExportService {
         AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
       }
     );
+  }
+
+  public initCommon(f): void {
+    const tempThis = this;
+    const sortedCommon = {};
+    const userRanchAccess = this.auth.getRanchAccess();
+    this.common.getAllValues(data => {
+      Object.keys(CommonLookup).forEach(key => {
+        if (CommonLookup[key].type === 'hashTable') {
+          const temp = [];
+          data[key].forEach(entry => {
+            temp.push({
+              id: entry.id,
+              value : {
+                key : Object.keys(entry.value)[0],
+                value: entry.value[Object.keys(entry.value)[0]]
+              }
+            });
+          });
+          sortedCommon[key] = tempThis.common.sortCommonArray(temp, key);
+        } else {
+          sortedCommon[key] = tempThis.common.sortCommonArray(data[key], key);
+        }
+      });
+      f(sortedCommon);
+    });
   }
 
   private separateDateTime(dt: number) {

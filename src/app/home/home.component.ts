@@ -11,6 +11,8 @@ import {BasicDTO} from '../_dto/basicDTO';
 import {CardEntryService} from '../_api/card-entry.service';
 import {UserService} from '../_api/user.service';
 import {environment} from '../../environments/environment';
+import { CommonLookup } from '../_api/common-data.service';
+import { CommonFormDataService } from '../_api/common-form-data.service';
 
 @Component({
   selector: 'app-home',
@@ -19,7 +21,8 @@ import {environment} from '../../environments/environment';
 })
 export class HomeComponent implements OnInit {
   constructor(private titleService: TitleService, private auth: AuthService, private router: Router,
-              private cardView: CardViewService, private cardEntry: CardEntryService, private userManagement: UserService) { }
+              private cardView: CardViewService, private cardEntry: CardEntryService, private userManagement: UserService,
+              public common: CommonFormDataService) { }
 
   message = '';
   appname = environment.AppName;
@@ -36,6 +39,7 @@ export class HomeComponent implements OnInit {
   userManagementElements = false;
   userCount: number;
 
+  commonKeys = ['commodities'];
   months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
   ngOnInit() {
@@ -55,40 +59,62 @@ export class HomeComponent implements OnInit {
       }
     }
 
-
     /* ----------------
     Page Init
     ------------------- */
 
     this.titleService.setTitle('Home');
+    const tempThis = this;
+    this.initCommon(c => {
+      tempThis.commonKeys.forEach(key => tempThis[key] = c[key]);
+      if (tempThis.auth.permissionCount() === 0) {
+        tempThis.message = 'This account is disabled and has no permissions.';
+      }
+      // Init our date array
+      const recent = [];
+      for (let i = 5; i >= 0; i--) {
+        recent.push(tempThis.months[((new Date()).getMonth() - i + 12) % 12]);
+      }
+      tempThis.months = recent;
 
-    if (this.auth.permissionCount() === 0) {
-      this.message = 'This account is disabled and has no permissions.';
-    }
+      // Init our data array
+      if (tempThis.auth.hasPermission(PlRole.DATA_ENTRY)) {
+        tempThis.generateDataEntryElements();
+      }
+      if (tempThis.auth.hasPermission(PlRole.DATA_VIEW)) {
+        tempThis.generateDataViewElements();
+      }
+      if (tempThis.auth.hasPermission(PlRole.APP_ADMIN)) {
 
-    // Init our date array
-    const recent = [];
-    for (let i = 5; i >= 0; i--) {
-      recent.push(this.months[((new Date()).getMonth() - i + 12) % 12]);
-    }
-    this.months = recent;
-
-    // Init our data array
-    if (this.auth.hasPermission(PlRole.DATA_ENTRY)) {
-      this.generateDataEntryElements();
-    }
-    if (this.auth.hasPermission(PlRole.DATA_VIEW)) {
-      this.generateDataViewElements();
-    }
-    if (this.auth.hasPermission(PlRole.APP_ADMIN)) {
-
-    }
-    if (this.auth.hasPermission(PlRole.USER_MANAGEMENT)) {
-      this.generateUserManagementElements();
-    }
+      }
+      if (tempThis.auth.hasPermission(PlRole.USER_MANAGEMENT)) {
+        tempThis.generateUserManagementElements();
+      }
+    });
   }
 
-
+  /*
+    Searches common values in [key] list where value.id === targetID
+    returns value.valuePropertyArr where valuePropertyArr = array of nesting properties
+    returns null in no targetID supplied
+    returns targetID if key is not in commonKeys Array (don't need value)
+    returns generic message of targetID not found
+  */
+  findCommonValue(key, valuePropertyArr, targetID?) {
+    if (!targetID) { return null; }
+    if (!this.commonKeys.includes(key) && key !== 'ranches') { return targetID; }
+    let commonValue = this.getCommon(key).find(e => {
+      return e.id === targetID;
+    });
+    try {
+      valuePropertyArr.forEach(p => {
+        commonValue = commonValue[p];
+      });
+    } catch (e) {
+      console.log(e);
+    }
+    return (commonValue) ? commonValue : targetID;
+  }
 
   private generateUserManagementElements(): void {
     this.userManagementElements = true;
@@ -135,15 +161,17 @@ export class HomeComponent implements OnInit {
   }
 
   private generateOpenCommoditiesChart(data: Array<Card>): void {
+    const tempThis = this;
     const commodities = [];
     const counts = [];
 
     data.map(c => (new Card()).copyConstructor(c))
       .filter(c => !c.closed)
       .forEach(c => c.commodityArray.forEach(co => {
-        const indx = commodities.indexOf(co.commodity);
+        const val = tempThis.findCommonValue('commodities', ['value', 'key'], co.commodity);
+        const indx = commodities.indexOf(val);
         if (indx < 0) {
-          commodities.push(co.commodity);
+          commodities.push(val);
           counts.push(1);
         } else {
           counts[indx]++;
@@ -230,4 +258,38 @@ export class HomeComponent implements OnInit {
       }
     });
   }
+
+  public getCommon(key) {
+    if (this.commonKeys.includes(key) || key === 'ranches') {
+      return this[key];
+    } else {
+      console.log('Key ' + key + ' is not in the commonKeys array.');
+      return [];
+    }
+  }
+  public initCommon(f): void {
+    const tempThis = this;
+    const sortedCommon = {};
+    this.common.getAllValues(data => {
+      this.commonKeys.forEach(key => {
+        if (CommonLookup[key].type === 'hashTable') {
+          const temp = [];
+          data[key].forEach(entry => {
+            temp.push({
+              id: entry.id,
+              value : {
+                key : Object.keys(entry.value)[0],
+                value: entry.value[Object.keys(entry.value)[0]]
+              }
+            });
+          });
+          sortedCommon[key] = tempThis.common.sortCommonArray(temp, key);
+        } else {
+          sortedCommon[key] = tempThis.common.sortCommonArray(data[key], key);
+        }
+      });
+      f(sortedCommon);
+    });
+  }
+
 }
