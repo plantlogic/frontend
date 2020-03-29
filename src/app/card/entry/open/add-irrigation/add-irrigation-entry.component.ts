@@ -49,7 +49,7 @@ export class AddIrrigationEntryComponent implements OnInit {
 
   public getCommon(key) {
     if (this.commonKeys.includes(key)) {
-      return this[key];
+      return (this[key]) ? this[key] : [];
     } else {
       console.log('Key ' + key + ' is not in the commonKeys array.');
       return [];
@@ -84,6 +84,10 @@ export class AddIrrigationEntryComponent implements OnInit {
         AlertService.newBasicAlert('Invalid Chemical Rate Unit Entered - please fix and try again.', true);
         return;
       }
+      if (!c.irrigator) {
+        AlertService.newBasicAlert('Irrigator is required when adding chemicals - please fix and try again.', true);
+        return;
+      }
     }
     if (c.fertilizer) {
       if (!c.fertilizer.name || !this[`fertilizers`].find(c2 => c2.id === c.fertilizer.name)) {
@@ -97,7 +101,7 @@ export class AddIrrigationEntryComponent implements OnInit {
     }
     if (c.irrigator) {
       const irrigatorID = this.dataListOptionValueToID(c.irrigator, 'irrigators');
-      if (!irrigatorID) {
+      if (!irrigatorID || !this[`irrigators`].find(e => e.id === irrigatorID)) {
         AlertService.newBasicAlert('Invalid Irrigator - please fix and try again.', true);
         return;
       }
