@@ -16,6 +16,7 @@ import {Chemicals} from '../../../_dto/card/chemicals';
 import {Commodities} from '../../../_dto/card/commodities';
 import {TractorEntry} from 'src/app/_dto/card/tractor-entry';
 import { CommonLookup } from 'src/app/_api/common-data.service';
+import { SSL_OP_PKCS1_CHECK_2 } from 'constants';
 
 @Component({
   selector: 'app-create-card',
@@ -85,7 +86,7 @@ export class CreateCardEntryComponent implements OnInit {
 
   public getCommon(key) {
     if (this.commonKeys.includes(key) || key === 'ranches') {
-      return this[key];
+      return (this[key]) ? this[key] : [];
     } else {
       console.log('Key ' + key + ' is not in the commonKeys array.');
       return [];
@@ -146,12 +147,12 @@ export class CreateCardEntryComponent implements OnInit {
     // Check Commodity Info
     for (const c of card.commodityArray) {
       if (!c.commodity || !this[`commodities`].find(c2 => {
-        return c2.id === c.commodity && c2.value.value.includes(c.variety);
+        return c2.id === c.commodity && (c.variety) ? c2.value.value.includes(c.variety) : true;
       })) {
         AlertService.newBasicAlert('Invalid Commodity Information - please fix and try again.', true);
         return;
       }
-      if (c.bedType && !this[`bedTypes`].find(c2 => c2.id === c.bedType)) {
+      if (!c.bedType || !this[`bedTypes`].find(c2 => c2.id === c.bedType)) {
         AlertService.newBasicAlert('Invalid Commodity Bed Type - please fix and try again.', true);
         return;
       }

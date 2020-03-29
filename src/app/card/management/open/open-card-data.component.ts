@@ -150,7 +150,7 @@ export class OpenCardDataComponent implements OnInit {
 
   public getCommon(key) {
     if (this.commonKeys.includes(key) || key === 'ranches') {
-      return this[key];
+      return (this[key]) ? this[key] : [];
     } else {
       console.log('Key ' + key + ' is not in the commonKeys array.');
       return [];
@@ -340,12 +340,12 @@ export class OpenCardDataComponent implements OnInit {
       // Check Commodity Info
       for (const c of card.commodityArray) {
         if (!c.commodity || !this[`commodities`].find(c2 => {
-          return c2.id === c.commodity && c2.value.value.includes(c.variety);
+          return c2.id === c.commodity && (c.variety) ? c2.value.value.includes(c.variety) : true;
         })) {
           AlertService.newBasicAlert('Invalid Commodity Information - please fix and try again.', true);
           return false;
         }
-        if (c.bedType && !this[`bedTypes`].find(c2 => c2.id === c.bedType)) {
+        if (!c.bedType || !this[`bedTypes`].find(c2 => c2.id === c.bedType)) {
           AlertService.newBasicAlert('Invalid Commodity Bed Type - please fix and try again.', true);
           return false;
         }
@@ -409,21 +409,67 @@ export class OpenCardDataComponent implements OnInit {
       for (const t of card.tractorArray) {
         t.workDate = (new Date(t.workDate)).valueOf();
         const operatorID = this.dataListOptionValueToID(t.operator, 'tractorOperators');
-        if (!operatorID) {
+        if (!operatorID || !this[`tractorOperators`].find(e => e.id === operatorID)) {
           AlertService.newBasicAlert('Invalid Tractor Operator - please fix and try again.', true);
           return false;
         }
         t.operator = operatorID;
+        if (t.chemical) {
+          if (!t.chemical.name || !this[`chemicals`].find(t2 => t2.id === t.chemical.name)) {
+            AlertService.newBasicAlert('Invalid Chemical Entered - please fix and try again.', true);
+            return;
+          }
+          if (!t.chemical.unit || !this[`chemicalRateUnits`].find(t2 => t2.id === t.chemical.unit)) {
+            AlertService.newBasicAlert('Invalid Chemical Rate Unit Entered - please fix and try again.', true);
+            return;
+          }
+        }
+        if (t.fertilizer) {
+          if (!t.fertilizer.name || !this[`fertilizers`].find(t2 => t2.id === t.fertilizer.name)) {
+            AlertService.newBasicAlert('Invalid Fertilizer Entered - please fix and try again.', true);
+            return;
+          }
+          if (!t.fertilizer.unit || !this[`chemicalRateUnits`].find(t2 => t2.id === t.fertilizer.unit)) {
+            AlertService.newBasicAlert('Invalid Fertilizer Rate Unit Entered - please fix and try again.', true);
+            return;
+          }
+        }
       }
       // Check Irrigation Info
       for (const e of card.irrigationArray) {
         e.workDate = (new Date(e.workDate)).valueOf();
-        const irrigatorID = this.dataListOptionValueToID(e.irrigator, 'irrigators');
-        if (!irrigatorID) {
-          AlertService.newBasicAlert('Invalid Irrigator - please fix and try again.', true);
-          return false;
+        if (e.chemical) {
+          if (!e.chemical.name || !this[`chemicals`].find(e2 => e2.id === e.chemical.name)) {
+            AlertService.newBasicAlert('Invalid Chemical Entered - please fix and try again.', true);
+            return;
+          }
+          if (!e.chemical.unit || !this[`chemicalRateUnits`].find(e2 => e2.id === e.chemical.unit)) {
+            AlertService.newBasicAlert('Invalid Chemical Rate Unit Entered - please fix and try again.', true);
+            return;
+          }
+          if (!e.irrigator) {
+            AlertService.newBasicAlert('Irrigator is required when adding chemicals - please fix and try again.', true);
+            return;
+          }
         }
-        e.irrigator = irrigatorID;
+        if (e.fertilizer) {
+          if (!e.fertilizer.name || !this[`fertilizers`].find(e2 => e2.id === e.fertilizer.name)) {
+            AlertService.newBasicAlert('Invalid Fertilizer Entered - please fix and try again.', true);
+            return;
+          }
+          if (!e.fertilizer.unit || !this[`chemicalRateUnits`].find(e2 => e2.id === e.fertilizer.unit)) {
+            AlertService.newBasicAlert('Invalid Fertilizer Rate Unit Entered - please fix and try again.', true);
+            return;
+          }
+        }
+        if (e.irrigator) {
+          const irrigatorID = this.dataListOptionValueToID(e.irrigator, 'irrigators');
+          if (irrigatorID && !this[`irrigators`].find(e2 => e2.id === irrigatorID)) {
+            AlertService.newBasicAlert('Invalid Irrigator - please fix and try again.', true);
+            return false;
+          }
+          e.irrigator = irrigatorID;
+        }
         if (!e.method || !this[`irrigationMethod`].find(e2 => e2.id === e.method)) {
           AlertService.newBasicAlert('Invalid Irrigation Method Entered - please fix and try again.', true);
           return false;

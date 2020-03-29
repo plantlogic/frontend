@@ -49,7 +49,7 @@ export class AddTractorEntryComponent implements OnInit {
 
   public getCommon(key) {
     if (this.commonKeys.includes(key)) {
-      return this[key];
+      return (this[key]) ? this[key] : [];
     } else {
       console.log('Key ' + key + ' is not in the commonKeys array.');
       return [];
@@ -76,7 +76,7 @@ export class AddTractorEntryComponent implements OnInit {
     const c = this.tractor;
     c.workDate = (new Date(c.workDate)).valueOf();
     const operatorID = this.dataListOptionValueToID(c.operator, 'tractorOperators');
-    if (!operatorID) {
+    if (!operatorID || !this[`tractorOperators`].find(e => e.id === operatorID)) {
       AlertService.newBasicAlert('Invalid Tractor Operator - please fix and try again.', true);
       return;
     }
