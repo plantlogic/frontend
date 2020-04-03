@@ -83,7 +83,7 @@
           </legend>
           <div class="col-sm border p-2 text-right" *ngFor="let p of card.preChemicalArray; let i = index">
             <b>Date:</b>
-            <ng2-flatpickr placeholder="Select Date" class="w-20" [config]="datePickr(p.date)" [(ngModel)]="p.date"></ng2-flatpickr>
+            <input class="date" [ngModel]="p.date | date:'yyyy-MM-dd'" (ngModelChange)="p.date = fixDate($event)" type="date"/><br/>
             <b>Chemical:</b>
             <div>
               <div *ngIf="!p.chemical">

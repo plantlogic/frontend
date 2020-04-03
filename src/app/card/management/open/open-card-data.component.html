@@ -65,18 +65,20 @@
         <div *ngIf="!editing">
           {{card.wetDate | date:'shortDate'}}
         </div>
-        <ng2-flatpickr [placeholder]="editing ? 'Wet Date' : ''" id="wetDate"
-                       [config]="wetDatePickr" [(ngModel)]="card.wetDate" *ngIf="editing">
-        </ng2-flatpickr>
+        <div *ngIf="editing">
+          <input class="date" [ngModel]="card.wetDate | date:'yyyy-MM-dd'" (ngModelChange)="card.wetDate = fixDate($event)" type="date"/>
+          <br />
+        </div>
         <br />
         <b>Thin Date:</b>
         <br />
         <div *ngIf="!editing">
           {{card.thinDate | date:'shortDate'}}
         </div>
-        <ng2-flatpickr [placeholder]="editing ? 'Thin Date' : ''" id="thinDate"
-                       [config]="thinDatePickr" [(ngModel)]="card.thinDate" *ngIf="editing">
-        </ng2-flatpickr>
+        <div *ngIf="editing">
+          <input class="date" [ngModel]="card.thinDate | date:'yyyy-MM-dd'" (ngModelChange)="card.thinDate = fixDate($event)" type="date"/>
+          <br />
+        </div>
         <br />
         <div>
           <b>Thin Type:</b>
@@ -91,9 +93,10 @@
         <div *ngIf="!editing">
           {{card.hoeDate | date:'shortDate'}}
         </div>
-        <ng2-flatpickr [placeholder]="editing ? 'Hoe Date' : ''" id="hoeDate"
-                       [config]="hoeDatePickr" [(ngModel)]="card.hoeDate" *ngIf="editing">
-        </ng2-flatpickr>
+        <div *ngIf="editing">
+          <input class="date" [ngModel]="card.hoeDate | date:'yyyy-MM-dd'" (ngModelChange)="card.hoeDate = fixDate($event)" type="date"/>
+          <br />
+        </div>
         <br />
         <div>
           <b>Hoe Type:</b>
@@ -108,9 +111,10 @@
         <div *ngIf="!editing">
           {{card.harvestDate | date:'shortDate'}}
         </div>
-        <ng2-flatpickr [placeholder]="editing ? 'Harvest Date' : ''" id="harvestDate"
-                       [config]="harvestDatePickr" [(ngModel)]="card.harvestDate" *ngIf="editing">
-        </ng2-flatpickr>
+        <div *ngIf="editing">
+          <input class="date" [ngModel]="card.harvestDate | date:'yyyy-MM-dd'" (ngModelChange)="card.harvestDate = fixDate($event)" type="date"/>
+          <br />
+        </div>
         <br />
         <b>Date Created:</b> {{card.dateCreated | date:'shortDate'}}
       </div>
@@ -216,9 +220,7 @@
               <div *ngIf="!editing">
                 {{p.date | date:'shortDate'}}
               </div>
-              <ng2-flatpickr placeholder="Select Date" class="w-20"
-                             [config]="datePickr(p.date)" [(ngModel)]="p.date" *ngIf="editing">
-              </ng2-flatpickr>
+              <input *ngIf="editing" class="date" [ngModel]="p.date | date:'yyyy-MM-dd'" (ngModelChange)="p.date = fixDate($event)" type="date"/>
             </td>
             <td class="cap-max-form-width">
               <div *ngIf="!p.fertilizer && editing">
@@ -309,9 +311,7 @@
               <div *ngIf="!editing">
                 {{p.date | date:'shortDate'}}
               </div>
-              <ng2-flatpickr placeholder="Select Date" class="w-20"
-                             [config]="datePickr(p.date)" [(ngModel)]="p.date" *ngIf="editing">
-              </ng2-flatpickr>
+              <input *ngIf="editing" class="date" [ngModel]="p.date | date:'yyyy-MM-dd'" (ngModelChange)="p.date = fixDate($event)" type="date"/>
             </td>
             <td class="cap-max-form-width">
               <div *ngIf="!p.fertilizer && editing">
@@ -405,9 +405,7 @@
               <div *ngIf="!editing">
                 {{p.workDate | date:'shortDate'}}
               </div>
-              <ng2-flatpickr placeholder="Select Date" class="w-20"
-                             [config]="datePickr(p.workDate)" [(ngModel)]="p.workDate" *ngIf="editing">
-              </ng2-flatpickr>
+              <input *ngIf="editing" class="date" [ngModel]="p.workDate | date:'yyyy-MM-dd'" (ngModelChange)="p.workDate = fixDate($event)" type="date"/>
             </td>
             <td class="cap-min-form-width">
               <input class="form-control form-control-sm" [disabled]="!editing" list="irrigators" [(ngModel)]="p.irrigator" placeholder="Enter Irrigator">
@@ -510,9 +508,7 @@
               <div *ngIf="!editing">
                 {{p.workDate | date:'shortDate'}}
               </div>
-              <ng2-flatpickr placeholder="Select Date" class="w-20"
-                             [config]="datePickr(p.workDate)" [(ngModel)]="p.workDate" *ngIf="editing">
-              </ng2-flatpickr>
+              <input *ngIf="editing" class="date" [ngModel]="p.workDate | date:'yyyy-MM-dd'" (ngModelChange)="p.workDate = fixDate($event)" type="date"/>
             </td>
             <td class="cap-min-form-width">
               <input type="text" class="form-control form-control-sm" [disabled]="!editing" [(ngModel)]="p.tractorNumber" placeholder="Enter Tractor Number">

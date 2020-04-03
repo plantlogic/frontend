@@ -220,6 +220,10 @@ import { CommonLookup } from 'src/app/_api/common-data.service';
             card = this.cardIDsToValues(card);
             card.initCommodityString();
             // Modify hoe and thin dates to hold both their input value (val) and the value used to sort by (num)
+            card.wetDate = {
+                val: card.wetDate,
+                num: (card.wetDate) ? new Date(card.wetDate).valueOf() : ''
+            };
             card.hoeDate = {
                 val: card.hoeDate,
                 num: (card.hoeDate) ? new Date(card.hoeDate).valueOf() : ''
@@ -319,6 +323,7 @@ import { CommonLookup } from 'src/app/_api/common-data.service';
         log.failure += 1;
         tempThis.updateMessage(log, modified.length);
       } else {
+        card.wetDate = (new Date(m.wetDate.val)).valueOf();
         card.hoeDate = (new Date(m.hoeDate.val)).valueOf();
         card.hoeType = m.hoeType;
         card.thinDate = (new Date(m.thinDate.val)).valueOf();

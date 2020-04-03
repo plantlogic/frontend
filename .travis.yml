@@ -11,7 +11,7 @@ before_script:
   - npm install -g @angular/cli
 script:
   - ng lint
-  - ng build --prod
+  - ng build --prod --outputHashing=all
   - docker build -t $DOCKER_REPO_SLUG:latest .
 after_success:
   - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then

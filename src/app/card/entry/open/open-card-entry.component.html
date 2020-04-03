@@ -202,7 +202,7 @@
 
       <div class="d-inline-block d-md-none w-100"><hr /></div>
 
-      <div class="col-md-6">
+      <div class="col-md-8">
         <a (click)="cardInfo.toggle()" class="text-primary">
           <h4><i class="fas fa-caret-down mr-1"></i> More Info</h4>
         </a>
@@ -221,33 +221,29 @@
               <br />
               <b>Field ID:</b> {{card.fieldID}}
               <br />
-              <b>Shipped ID:</b> {{card.shipperID}}
+              <b>Shipper ID:</b> {{card.shipperID}}
               <br />
               <b>Planter Number:</b> {{card.planterNumber}}
             </div>
             <div class="col-sm">
               <b>Wet Date: </b>
-              <span *ngIf="wetDateSet">{{card.wetDate | date:'shortDate'}}</span>
-              <ng2-flatpickr placeholder="Select Date" class="w-20"
-                             [config]="datePickr" [(ngModel)]="card.wetDate" *ngIf="!wetDateSet"
-                             (ngModelChange)="saveDates()">
-              </ng2-flatpickr>
+              <span *ngIf="datesSet">{{card.wetDate | date:'shortDate'}}</span>
+              <input *ngIf="!datesSet" class="date" [ngModel]="card.wetDate | date:'yyyy-MM-dd'" (ngModelChange)="card.wetDate = fixDate($event);" type="date"/>
               <br />
               <b>Thin Date:</b>
-              <span *ngIf="thinDateSet">{{card.thinDate | date:'shortDate'}}</span>
-              <ng2-flatpickr placeholder="Select Date" class="w-20"
-                             [config]="datePickr" [(ngModel)]="card.thinDate" *ngIf="!thinDateSet"
-                             (ngModelChange)="saveDates()">
-              </ng2-flatpickr>
+              <span *ngIf="datesSet">{{card.thinDate | date:'shortDate'}}</span>
+              <input *ngIf="!datesSet" class="date" [ngModel]="card.thinDate | date:'yyyy-MM-dd'" (ngModelChange)="card.thinDate = fixDate($event);" type="date"/>
               <br />
               <b>Hoe Date:</b>
-              <span *ngIf="hoeDateSet">{{card.hoeDate | date:'shortDate'}}</span>
-              <ng2-flatpickr placeholder="Select Date" class="w-20"
-                             [config]="datePickr" [(ngModel)]="card.hoeDate" *ngIf="!hoeDateSet"
-                             (ngModelChange)="saveDates()">
-              </ng2-flatpickr>
+              <span *ngIf="datesSet">{{card.hoeDate | date:'shortDate'}}</span>
+              <input *ngIf="!datesSet" class="date" [ngModel]="card.hoeDate | date:'yyyy-MM-dd'" (ngModelChange)="card.hoeDate = fixDate($event);" type="date"/>
               <br />
               <b>Date Created:</b> {{card.dateCreated | date:'shortDate'}}
+            </div>
+            <div class="col-sm">
+              <button *ngIf="!datesSet" type="button" class="btn btn-info float-right ml-1" (click)="saveDates()">
+                <span class="d-none d-md-inline-block">Confirm Dates</span>
+              </button>
             </div>
           </div>
         </div>

@@ -61,7 +61,6 @@ export class AddUserComponent implements OnInit {
   }
 
   submit() {
-    console.log(this.form.value.ranchAccess.map(e => e.id));
     if (this.form.get('username').invalid || this.form.get('realname').invalid || this.passwordOrEmailInvalid()) {
       this.submitAttempted = true;
     } else {
@@ -86,7 +85,6 @@ export class AddUserComponent implements OnInit {
           this.getSelectedRoles()
         );
       }
-      console.log(user);
       this.userService.addUser(user).subscribe(
         data => {
           if (data.success) {
@@ -98,7 +96,6 @@ export class AddUserComponent implements OnInit {
             this.router.navigate(['/userManagement']);
           } else if (!data.success) {
             AlertService.newBasicAlert('Error: ' + data.error, true);
-            console.log(data);
             this.form.enable();
           }
         },
