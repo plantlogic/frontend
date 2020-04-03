@@ -5,7 +5,6 @@ import {AlertService} from '../../../_interact/alert/alert.service';
 import {Component, OnInit, ViewChild, Input} from '@angular/core';
 import {AuthService} from 'src/app/_auth/auth.service';
 import {NavService} from '../../../_interact/nav.service';
-import {FlatpickrOptions} from 'ng2-flatpickr';
 import {CommonFormDataService} from '../../../_api/common-form-data.service';
 import {componentNeedsResolution} from '@angular/core/src/metadata/resource_loading';
 
@@ -65,14 +64,6 @@ export class CreateCardEntryComponent implements OnInit {
   public dataListOptionValueToID(optionValue, dataListID) {
     const option = document.querySelector('#' + dataListID + ' [value="' + optionValue + '"]') as HTMLElement;
     return (option) ? option.id : null;
-  }
-
-  private datePickr(workDate: number): FlatpickrOptions {
-    return {
-      enableTime: true,
-      dateFormat: 'm-d-Y H:i',
-      defaultDate: new Date()
-    };
   }
 
   public fixDate(d): Date {

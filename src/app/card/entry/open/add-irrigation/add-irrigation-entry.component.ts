@@ -47,6 +47,15 @@ export class AddIrrigationEntryComponent implements OnInit {
     };
   }
 
+  fixDate(d): number {
+    if (!d) { return null; }
+    const parts = d.split('-');
+    const day = parts[2];
+    const month = parts[1] - 1; // 0 based
+    const year = parts[0];
+    return new Date(year, month, day).valueOf();
+  }
+
   public getCommon(key) {
     if (this.commonKeys.includes(key)) {
       return (this[key]) ? this[key] : [];

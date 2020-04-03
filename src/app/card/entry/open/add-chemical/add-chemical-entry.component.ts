@@ -7,7 +7,6 @@ import {AuthService} from '../../../../_auth/auth.service';
 import {NavService} from '../../../../_interact/nav.service';
 import {Chemicals} from '../../../../_dto/card/chemicals';
 import {Chemical} from '../../../../_dto/card/chemical';
-import {FlatpickrOptions} from 'ng2-flatpickr';
 import {ActivatedRoute} from '@angular/router';
 import {CommonFormDataService} from '../../../../_api/common-form-data.service';
 import { CommonLookup } from 'src/app/_api/common-data.service';
@@ -38,11 +37,13 @@ export class AddChemicalEntryComponent implements OnInit {
     });
   }
 
-  datePickr(workDate: number): FlatpickrOptions {
-    return {
-      dateFormat: 'm-d-Y',
-      defaultDate: new Date()
-    };
+  fixDate(d): number {
+    if (!d) { return null; }
+    const parts = d.split('-');
+    const day = parts[2];
+    const month = parts[1] - 1; // 0 based
+    const year = parts[0];
+    return new Date(year, month, day).valueOf();
   }
 
   public getCommon(key) {

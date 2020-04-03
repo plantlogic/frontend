@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChildren} from '@angular/core';
+import {Component, OnInit, ViewChildren, EventEmitter} from '@angular/core';
 import {TitleService} from '../../../_interact/title.service';
 import {Card} from '../../../_dto/card/card';
 import {AlertService} from '../../../_interact/alert/alert.service';
@@ -6,10 +6,10 @@ import {CardEntryService} from '../../../_api/card-entry.service';
 import {CollapseComponent} from 'angular-bootstrap-md';
 import {NavService} from '../../../_interact/nav.service';
 import {ActivatedRoute} from '@angular/router';
-import {FlatpickrOptions} from 'ng2-flatpickr';
 import { CommonFormDataService } from 'src/app/_api/common-form-data.service';
 import { CommonLookup } from 'src/app/_api/common-data.service';
 import { AuthService } from 'src/app/_auth/auth.service';
+import { Alert } from 'src/app/_interact/alert/alert';
 
 @Component({
   selector: 'app-open-card-entry',
@@ -24,13 +24,7 @@ export class OpenCardEntryComponent implements OnInit {
               public common: CommonFormDataService) { }
 
   card: Card;
-
-  datePickr: FlatpickrOptions = {
-    dateFormat: 'm-d-Y'
-  };
-  wetDateSet: boolean;
-  thinDateSet: boolean;
-  hoeDateSet: boolean;
+  datesSet: boolean;
 
   // create array of common keys, whose data is needed. Omit restricted options.
   commonKeys = ['bedTypes', 'chemicals', 'chemicalRateUnits', 'commodities',
@@ -124,6 +118,15 @@ export class OpenCardEntryComponent implements OnInit {
     return (commonValue) ? commonValue : 'Unknown ' + key + ' ID';
   }
 
+  public fixDate(d): Date {
+    if (!d) { return; }
+    const parts = d.split('-');
+    const day = parts[2];
+    const month = parts[1] - 1; // 0 based
+    const year = parts[0];
+    return new Date(year, month, day);
+  }
+
   public getCommon(key) {
     if (this.commonKeys.includes(key) || key === 'ranches') {
       return (this[key]) ? this[key] : [];
@@ -181,9 +184,7 @@ export class OpenCardEntryComponent implements OnInit {
 
           this.card.initCommodityString();
           this.card.initTotalAcres();
-          this.wetDateSet = (this.card.wetDate && true);
-          this.thinDateSet = (this.card.thinDate && true);
-          this.hoeDateSet = (this.card.hoeDate && true);
+          this.datesSet = (this.card.wetDate || this.card.thinDate || this.card.hoeDate) ? true : false;
         } else if (!data.success) {
           AlertService.newBasicAlert('Error: ' + data.error, true);
           this.nav.goBack();
@@ -197,15 +198,36 @@ export class OpenCardEntryComponent implements OnInit {
   }
 
   private saveDates(): void {
-    if (this.card.wetDate) {
-      this.card.wetDate = (new Date(this.card.wetDate)).valueOf();
-    }
-    if (this.card.thinDate) {
-      this.card.thinDate = (new Date(this.card.thinDate)).valueOf();
-    }
-    if (this.card.hoeDate) {
-      this.card.hoeDate = (new Date(this.card.hoeDate)).valueOf();
-    }
-    this.cardService.addWetThinHoeData(this.card.id, this.card).subscribe();
+    const newAlert = new Alert();
+    newAlert.color = 'warning';
+    newAlert.title = 'Confirm Dates';
+    newAlert.message = 'This will save the hoe, thin, and wet dates. This can only be done once on the entry side. Continue?';
+    newAlert.actionName = 'Confirm';
+    newAlert.actionClosesAlert = true;
+    newAlert.timeLeft = undefined;
+    newAlert.blockPageInteraction = true;
+    newAlert.closeName = 'Cancel';
+    newAlert.action$ = new EventEmitter<null>();
+
+    newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
+      let changed = 0;
+      if (this.card.wetDate) {
+        this.card.wetDate = (new Date(this.card.wetDate)).valueOf();
+        changed++;
+      }
+      if (this.card.thinDate) {
+        this.card.thinDate = (new Date(this.card.thinDate)).valueOf();
+        changed++;
+      }
+      if (this.card.hoeDate) {
+        this.card.hoeDate = (new Date(this.card.hoeDate)).valueOf();
+        changed++;
+      }
+      this.datesSet = true;
+      if (changed > 0) {
+        this.cardService.addWetThinHoeData(this.card.id, this.card).subscribe();
+      }
+    });
+    AlertService.newAlert(newAlert);
   }
 }

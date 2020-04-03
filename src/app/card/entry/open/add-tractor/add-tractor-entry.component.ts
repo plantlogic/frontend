@@ -4,7 +4,6 @@ import {TitleService} from 'src/app/_interact/title.service';
 import {ActivatedRoute} from '@angular/router';
 import {CardEntryService} from 'src/app/_api/card-entry.service';
 import {AlertService} from 'src/app/_interact/alert/alert.service';
-import {FlatpickrOptions} from 'ng2-flatpickr';
 import {NavService} from '../../../../_interact/nav.service';
 import {Chemical} from 'src/app/_dto/card/chemical';
 import {CommonFormDataService} from '../../../../_api/common-form-data.service';
@@ -40,11 +39,13 @@ export class AddTractorEntryComponent implements OnInit {
     return (option) ? option.id : null;
   }
 
-  datePickr(): FlatpickrOptions {
-    return {
-      dateFormat: 'm-d-Y',
-      defaultDate: new Date()
-    };
+  fixDate(d): number {
+    if (!d) { return null; }
+    const parts = d.split('-');
+    const day = parts[2];
+    const month = parts[1] - 1; // 0 based
+    const year = parts[0];
+    return new Date(year, month, day).valueOf();
   }
 
   public getCommon(key) {

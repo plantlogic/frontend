@@ -2,9 +2,7 @@
   <div class="row">
     <div class="col-md my-3 text-right">
       <span>Work Date</span><br />
-      <ng2-flatpickr placeholder="Select Date" class="w-20 float-right"
-                     [config]="datePickr()" [(ngModel)]="irrigation.workDate">
-      </ng2-flatpickr>
+      <input class="date" [ngModel]="irrigation.workDate | date:'yyyy-MM-dd'" (ngModelChange)="irrigation.workDate = fixDate($event)" type="date"/>
       <input class="form-control"  list="irrigators" [(ngModel)]="irrigation.irrigator" placeholder="Enter Irrigator">
       <datalist id="irrigators">
         <option *ngFor="let r of getCommon('irrigators'); let i = index;" data-id="{{r.id}}" [value]="(i+1) + ' - ' + r.value">

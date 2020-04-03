@@ -9,7 +9,7 @@ import {CardEditService} from '../../../_api/card-edit.service';
 import {AuthService} from '../../../_auth/auth.service';
 import {PlRole} from '../../../_dto/user/pl-role.enum';
 import {Alert} from '../../../_interact/alert/alert';
-import {FlatpickrOptions} from 'ng2-flatpickr';
+// import {FlatpickrOptions} from 'ng2-flatpickr';
 import {NgModel} from '@angular/forms';
 import {TractorEntry} from '../../../_dto/card/tractor-entry';
 import {IrrigationEntry} from '../../../_dto/card/irrigation-entry';
@@ -37,24 +37,6 @@ export class OpenCardDataComponent implements OnInit {
   commonKeys = ['bedTypes', 'chemicals', 'chemicalRateUnits', 'commodities',
                 'fertilizers', 'irrigationMethod', 'irrigators', 'tractorOperators',
                 'tractorWork'];
-
-
-  hoeDatePickr: FlatpickrOptions = {
-    dateFormat: 'm-d-Y',
-    defaultDate: null
-  };
-  harvestDatePickr: FlatpickrOptions = {
-    dateFormat: 'm-d-Y',
-    defaultDate: null
-  };
-  thinDatePickr: FlatpickrOptions = {
-    dateFormat: 'm-d-Y',
-    defaultDate: null
-  };
-  wetDatePickr: FlatpickrOptions = {
-    dateFormat: 'm-d-Y',
-    defaultDate: null
-  };
 
   ngOnInit() {
     const tempThis = this;
@@ -113,14 +95,6 @@ export class OpenCardDataComponent implements OnInit {
     return (option) ? option.id : null;
   }
 
-  private datePickr(workDate: number): FlatpickrOptions {
-    return {
-      enableTime: true,
-      dateFormat: 'm-d-Y H:i',
-      defaultDate: new Date(workDate)
-    };
-  }
-
   private deleteCard() {
     const newAlert = new Alert();
     newAlert.color = 'danger';
@@ -146,6 +120,15 @@ export class OpenCardDataComponent implements OnInit {
     });
 
     AlertService.newAlert(newAlert);
+  }
+
+  fixDate(d): Date {
+    if (!d) { return; }
+    const parts = d.split('-');
+    const day = parts[2];
+    const month = parts[1] - 1; // 0 based
+    const year = parts[0];
+    return new Date(year, month, day);
   }
 
   public getCommon(key) {
@@ -226,19 +209,6 @@ export class OpenCardDataComponent implements OnInit {
             this.card.irrigationArray.forEach(e => {
               e.irrigator = tempThis.iDToDataListOption(e.irrigator, 'irrigators');
             });
-            if (this.card.hoeDate) {
-              this.hoeDatePickr.defaultDate = new Date(this.card.hoeDate);
-            }
-            if (this.card.harvestDate) {
-              this.harvestDatePickr.defaultDate = new Date(this.card.harvestDate);
-            }
-            if (this.card.thinDate) {
-              this.thinDatePickr.defaultDate = new Date(this.card.thinDate);
-            }
-            if (this.card.wetDate) {
-              this.wetDatePickr.defaultDate = new Date(this.card.wetDate);
-            }
-
             this.card.initTotalAcres();
           } else if (!data.success) {
             AlertService.newBasicAlert('Error: ' + data.error, true);
