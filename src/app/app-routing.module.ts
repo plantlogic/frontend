@@ -160,7 +160,9 @@ const routes: Routes = [
     component: CardManagementComponent,
     canActivate: [RoleGuard],
     data: {
-      role: [PlRole.DATA_VIEW, PlRole.DATA_ENTRY]
+      // Only view is required to access page
+      // Enforce DATA_EDIT check when modifying any data
+      role: [PlRole.DATA_VIEW]
     }
   },
   {
@@ -169,7 +171,7 @@ const routes: Routes = [
     canActivate: [RoleGuard],
     data: {
       parent: '/manage',
-      role: [PlRole.DATA_VIEW, PlRole.DATA_ENTRY]
+      role: [PlRole.DATA_VIEW, PlRole.DATA_EDIT]
     }
   },
   {
@@ -186,7 +188,9 @@ const routes: Routes = [
     component: CardManagementComponent,
     canActivate: [RoleGuard],
     data: {
-      role: [PlRole.DATA_VIEW, PlRole.DATA_ENTRY]
+      // Only view is required to access page
+      // Enforce DATA_EDIT check when modifying any data
+      role: [PlRole.DATA_VIEW]
     }
   },
 
@@ -196,6 +200,8 @@ const routes: Routes = [
     component: CardContractorComponent,
     canActivate: [RoleGuard],
     data: {
+      // Only view is required to access page
+      // Enforce CONTRACTOR_EDIT check when modifying any data
       role: [PlRole.CONTRACTOR_VIEW]
     }
   },
@@ -204,6 +210,8 @@ const routes: Routes = [
     component: CardContractorComponent,
     canActivate: [RoleGuard],
     data: {
+      // Only view is required to access page
+      // Enforce CONTRACTOR_EDIT check when modifying any data
       role: [PlRole.CONTRACTOR_VIEW]
     }
   },
