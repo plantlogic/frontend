@@ -196,8 +196,13 @@ export class EditUserComponent implements OnInit {
       .map(key => PlRole[key]);
   }
 
-  hasEntryPerms(): boolean {
-    return this.getSelectedRoles().includes(PlRole[PlRole.DATA_ENTRY.toString()]);
+  hasPerms(): boolean {
+    const roles = this.getSelectedRoles();
+    return roles.includes(PlRole[PlRole.DATA_ENTRY.toString()])
+    || roles.includes(PlRole[PlRole.DATA_VIEW.toString()])
+    || roles.includes(PlRole[PlRole.DATA_EDIT.toString()])
+    || roles.includes(PlRole[PlRole.CONTRACTOR_VIEW.toString()])
+    || roles.includes(PlRole[PlRole.CONTRACTOR_EDIT.toString()]);
   }
 
   editSelfAlert(prefixMessage: string): void {
