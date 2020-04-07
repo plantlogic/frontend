@@ -30,7 +30,8 @@
 
   <div class="col d-md-inline-block">
     <span style="float: left; vertical-align: middle;">
-      <button type="button" color="success" (click)="updateCards()" class="mr-1 mb-1" mdbBtn floating="true" size="sm" style="display: inline-block; margin-right: 5px">
+      <button type="button" color="success" (click)="updateCards()" class="mr-1 mb-1" mdbBtn floating="true" size="sm" style="display: inline-block; margin-right: 5px"
+        [disabled]="!hasEditPermission()">
         Update All Cards
       </button>
       <button type="button" color="danger" (click)="resetCards()" class="mr-1 mb-1" mdbBtn floating="true" size="sm" style="display: inline-block;">
@@ -87,15 +88,15 @@
                 <td class="hover">{{p.commodityString}} <span class="hover-text">{{p.commodityString}}</span></td>
                 <td>{{p.wetDate.val | date:'longDate'}}</td>
                 <td>
-                  <input class="date" [ngModel]="p.thinDate.val | date:'yyyy-MM-dd'" (ngModelChange)="p.thinDate.val = fixDate($event)" type="date"/>
-                  <select class="form-control form-control-sm" [(ngModel)]="p.thinType" [disabled]="!p.thinDate.val">
+                  <input class="date" [ngModel]="p.thinDate.val | date:'yyyy-MM-dd'" (ngModelChange)="p.thinDate.val = fixDate($event)" type="date" [disabled]="!hasEditPermission()"/>
+                  <select class="form-control form-control-sm" [(ngModel)]="p.thinType" [disabled]="!p.thinDate.val || !hasEditPermission()">
                     <option *ngIf="!p.thinType" [value]="undefined" disabled selected>Select Thin Type</option>
                     <option *ngFor="let r of initWorkTypes()" [value]="r">{{r}}</option>
                   </select>
                 </td>
                 <td>
-                  <input class="date" [ngModel]="p.hoeDate.val | date:'yyyy-MM-dd'" (ngModelChange)="p.hoeDate.val = fixDate($event)" type="date"/>
-                  <select class="form-control form-control-sm" [(ngModel)]="p.hoeType" [disabled]="!p.hoeDate.val">
+                  <input class="date" [ngModel]="p.hoeDate.val | date:'yyyy-MM-dd'" (ngModelChange)="p.hoeDate.val = fixDate($event)" type="date" [disabled]="!hasEditPermission()"/>
+                  <select class="form-control form-control-sm" [(ngModel)]="p.hoeType" [disabled]="!p.hoeDate.val || !hasEditPermission()">
                     <option *ngIf="!p.hoeType" [value]="undefined" disabled selected>Select Hoe Type</option>
                     <option *ngFor="let r of initWorkTypes()" [value]="r">{{r}}</option>
                   </select>
@@ -118,7 +119,6 @@
                     Open <i class="ml-1 fa fa-external-link-alt" aria-hidden="true"></i>
                   </button>
                 </td>
-
               </ng-container>
             
             </tr>

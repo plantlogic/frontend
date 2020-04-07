@@ -47,6 +47,10 @@ select {
     visibility: visible;
 }
 
+.noPerm {
+    cursor: help;
+}
+
 .selected {
     background-color: lightblue;
     font-weight: bold;

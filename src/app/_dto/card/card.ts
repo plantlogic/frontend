@@ -2,6 +2,7 @@ import {IrrigationEntry} from './irrigation-entry';
 import {TractorEntry} from './tractor-entry';
 import {Commodities} from './commodities';
 import {Chemicals} from './chemicals';
+import {Comment} from './comment';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 export class Card {
@@ -54,7 +55,7 @@ export class Card {
   //
   planterNumber: string;
   //
-  comment: string;
+  comments: Array<Comment> = new Array<Comment>();
   //
   wetDate: number;
   //
@@ -90,6 +91,10 @@ export class Card {
     this.dateCreated = card.dateCreated;
     this.lastUpdated = card.lastUpdated;
 
+    if (card.comments && card.comments.length > 0) {
+      this.comments = JSON.parse(JSON.stringify(card.comments));
+    }
+
     if (card.irrigation) {
       this.irrigation = JSON.parse(JSON.stringify(card.irrigation));
     }
@@ -116,7 +121,6 @@ export class Card {
     this.lotNumber = card.lotNumber;
     this.shipperID = card.shipperID;
     this.planterNumber = card.planterNumber;
-    this.comment = card.comment;
     this.wetDate = card.wetDate;
     this.thinDate = card.thinDate;
     this.hoeDate = card.hoeDate;
@@ -126,8 +130,6 @@ export class Card {
     this.hoeType = card.hoeType;
     return this;
   }
-
-
 
   // =======================
   // Getters and Setters

@@ -4,6 +4,7 @@ import {Card} from '../_dto/card/card';
 import {Observable} from 'rxjs';
 import {BasicDTO} from '../_dto/basicDTO';
 import {environment} from '../../environments/environment';
+import { Comment } from '../_dto/card/comment';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,10 @@ export class CardEditService {
 
   public updateCard(card: Card): Observable<BasicDTO<null>> {
     return this.http.put<BasicDTO<null>>(environment.ApiUrl + '/data/edit/ranches/' + card.id, card, this.httpOptions);
+  }
+
+  public setCardComments(id: string, comments: Comment[]): Observable<BasicDTO<null>> {
+    return this.http.put<BasicDTO<null>>(environment.ApiUrl + '/data/edit/ranches/' + id + '/setComments', comments, this.httpOptions);
   }
 
   public setCardState(id: string, closed: boolean): Observable<BasicDTO<null>> {

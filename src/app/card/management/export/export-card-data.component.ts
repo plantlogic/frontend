@@ -1,7 +1,6 @@
 import {CommonFormDataService} from './../../../_api/common-form-data.service';
 import {Component, OnInit} from '@angular/core';
 import {CardExportService} from '../../../_api/card-export.service';
-import {FlatpickrOptions} from 'ng2-flatpickr';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {TitleService} from '../../../_interact/title.service';
 import {Card} from '../../../_dto/card/card';
@@ -31,7 +30,6 @@ export class ExportCardDataComponent implements OnInit {
   selectedRanches = [];
   selectedCommodities = [];
 
-  flatpickrOptions: FlatpickrOptions = { dateFormat: 'm-d-Y', defaultDate: new Date(Date.now())};
   multiselectSettings = {
     singleSelection: false,
     idField: 'id',
@@ -55,6 +53,15 @@ export class ExportCardDataComponent implements OnInit {
       this[`ranches`] = c[`ranches`];
       this.loadCardData();
     });
+  }
+
+  fixDate(d): Date {
+    if (!d) { return; }
+    const parts = d.split('-');
+    const day = parts[2];
+    const month = parts[1] - 1; // 0 based
+    const year = parts[0];
+    return new Date(year, month, day);
   }
 
   generate(): void {
