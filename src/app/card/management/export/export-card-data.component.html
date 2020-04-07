@@ -4,13 +4,11 @@
   <div class="row" *ngIf="!(loading || generating)">
     <div class="col-3">
       <label for="harvestFromDate" class="control-label">From Harvest Date</label>
-      <ng2-flatpickr placeholder="Select Date" id="harvestFromDate" [config]="flatpickrOptions" [(ngModel)]="fromDate">
-      </ng2-flatpickr>
+      <input id="harvestFromDate" class="date" [ngModel]=" fromDate | date:'yyyy-MM-dd'" (ngModelChange)="fromDate = fixDate($event)" type="date"/>
     </div>
     <div class="col-3">
       <label for="harvestToDate" class="control-label">To Harvest Date</label>
-      <ng2-flatpickr placeholder="Select Date" id="harvestToDate" [config]="flatpickrOptions" [(ngModel)]="toDate">
-      </ng2-flatpickr>
+      <input id="harvestToDate" class="date" [ngModel]=" toDate | date:'yyyy-MM-dd'" (ngModelChange)="toDate = fixDate($event)" type="date"/>
     </div>
     <div class="col-3 mt-4">
       <ng-multiselect-dropdown *ngIf="!loading"

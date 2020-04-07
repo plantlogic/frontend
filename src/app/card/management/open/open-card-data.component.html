@@ -12,17 +12,27 @@
           <i> {{card.lotNumber}}</i>
         </h5>
       </div>
-      <div class="col-md">
-        <button *ngIf="card && editable && !editing" type="button" class="btn btn-warning mt-n2 float-right" (click)="toggleEditing()">
+      <div *ngIf="editable" class="col-md">
+        <button *ngIf="card && !editing" type="button" class="btn btn-warning mt-n2 float-right" (click)="toggleEditing()">
           <span>Edit <i class="fas fa-edit ml-1"></i></span>
         </button>
-        <button *ngIf="card && editable && editing" type="button" class="btn btn-light mt-n2 float-right" (click)="clearChanges()">
+        <button *ngIf="card && editable && (editing || editingComment)" type="button" class="btn btn-light mt-n2 float-right" (click)="clearChanges()">
           <span>Cancel <i class="fas fa-times ml-1"></i></span>
         </button>
         <button *ngIf="card && editable && editing" type="button" class="btn btn-success mt-n2 float-right" (click)="saveChanges()">
           <span>Save <i class="fas fa-save ml-1"></i></span>
         </button>
-        
+      </div>
+      <div *ngIf="!editable" class="col-md">
+        <button *ngIf="card && !editingComment" type="button" class="btn btn-warning mt-n2 float-right" (click)="toggleEditingComment()">
+          <span>Edit Comments<i class="fas fa-edit ml-1"></i></span>
+        </button>
+        <button *ngIf="card && editingComment" type="button" class="btn btn-light mt-n2 float-right" (click)="clearChanges()">
+          <span>Cancel <i class="fas fa-times ml-1"></i></span>
+        </button>
+        <button *ngIf="card && editingComment" type="button" class="btn btn-success mt-n2 float-right" (click)="saveComments()">
+          <span>Save Comments<i class="fas fa-save ml-1"></i></span>
+        </button>
       </div>
     </div>
     <div class="row justify-content-center mt-3">
@@ -119,13 +129,68 @@
         <b>Date Created:</b> {{card.dateCreated | date:'shortDate'}}
       </div>
     </div>
-    <div class="col-md">
+    <div class="row mt-4">
       <br/>
-      <div class="d-inline-flex"><h4><i class="fas fa-comments ml-1"></i> Comment</h4></div><br />
-        <textarea type="text" [(ngModel)]="card.comment" [disabled]="!editing" class="form-control form-control-sm"
+      
+
+      <div class="col-md">
+        <span class="float-right">
+          <button type="button" color="primary" (click)="addComment()" mdbBtn floating="true"
+                  *ngIf="editing || editingComment"
+                  size="sm" mdbWavesEffect><i class="fa fa-plus" aria-hidden="true"></i></button>
+        </span>
+        <div class="d-inline-flex">
+          <a (click)="commentsCollapsed = !commentsCollapsed" class="text-primary">
+            <h4>
+              <i class="fas mr-1" [ngClass]="{ 'fa-caret-right': commentsCollapsed, 'fa-caret-down': !commentsCollapsed }"></i>
+              <span style="color: black"><i class="fas fa-comments ml-1"></i> Comments</span>
+            </h4>
+          </a>
+        </div>
+        <div class="d-inline-flex ml-2">
+          | Total: <i>{{getActiveComments()}}</i>
+        </div>
+        <table mdbTable *ngIf="card" class="table" [class.collapse]="commentsCollapsed">
+          <thead>
+          <tr>
+            <th scope="col" class="small" style="width:15%;max-width:15%;">Last Modified</th>
+            <th scope="col" class="small" style="width:15%;max-width:15%;">Author</th>
+            <th scope="col" class="small" style="width:60%;max-width:60%;">Message</th>
+            <th scope="col" class="small" >Options</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr mdbTableCol *ngFor="let c of comments; let i = index">
+            <ng-container *ngIf="!c.deleted">
+              <td>
+                {{c.dateModified | date:'long'}}
+              </td>
+              <td>
+                {{c.author}}
+              </td>
+              <td>
+                <textarea type="text" [(ngModel)]="c.body" [disabled]="!canEditComment(c)" class="form-control form-control-sm"
+                    [placeholder]="editing ? 'Enter Any Comments' : ''" maxlength="200" autosize>
+                </textarea>
+              </td>
+              <td *ngIf="editing || editingComment">
+                <button *ngIf="!canDeleteComment(c)" type="button" (click)="deleteComment(i)" mdbBtn floating="true"
+                        size="sm" mdbWavesEffect disabled>Delete <i class="ml-1 fa fa-trash" aria-hidden="true"></i></button>
+                <button *ngIf="canDeleteComment(c)" type="button" color="danger" (click)="deleteComment(i)" mdbBtn floating="true"
+                        size="sm" mdbWavesEffect>Delete <i class="ml-1 fa fa-trash" aria-hidden="true"></i></button>
+              </td>
+            </ng-container>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+
+      <!-- <div class="d-inline-flex"><h4><i class="fas fa-comments ml-1"></i> Comments</h4></div><br />
+        <textarea type="text" [(ngModel)]="card.comment" [disabled]="!editing && !editingComment" class="form-control form-control-sm"
                   [placeholder]="editing ? 'Enter Any Comments' : ''" maxlength="200" autosize>
         </textarea>
-        <br />
+        <br /> -->
         <div class="w-100 my-2"><hr /></div>
     </div>
     <div class="row mt-4">

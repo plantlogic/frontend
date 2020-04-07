@@ -8,6 +8,7 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { CommonLookup } from './common-data.service';
 import { CommonFormDataService } from './common-form-data.service';
 import { AuthService } from '../_auth/auth.service';
+import { Comment } from '../_dto/card/comment';
 
 @Injectable({
   providedIn: 'root'
@@ -67,6 +68,36 @@ export class CardExportService {
       }
     });
     return card;
+  }
+
+  public commentsToDisplayString(comments: Array<Comment>): string {
+    let displayString = '';
+    for (let i = 0; i < comments.length; i++) {
+      const c = comments[i];
+      let cString = '';
+      try {
+        cString = `[${new Date(c.dateModified)}] ${c.author}: ${c.body}`;
+      } catch (e) {
+        cString = '[Error Processing Comment]';
+      }
+      if (i < comments.length - 1) {
+        displayString += cString + ' | ';
+      } else {
+        displayString += cString;
+      }
+    }
+    return displayString;
+  }
+
+  public dateToDisplay(date) {
+    // Modify how the date appears in the export
+    // Convert to Date object for nicer print
+    try {
+      const display = String(new Date(date));
+      return display;
+    } catch (e) {
+      return date;
+    }
   }
 
   public export(from: number, to: number, ranches: Array<string>, commodities: Array<string>, includeUnharvested: boolean): void {
@@ -239,7 +270,8 @@ export class CardExportService {
               // Push simple data
               dataLine.push(
                 String(x.fieldID), x.ranchName, x.ranchManagerName, x.lotNumber, x.shipperID,
-                String(x.wetDate), String(x.thinDate), String(x.thinType), String(x.hoeDate), String(x.hoeType), String(x.harvestDate)
+                this.dateToDisplay(x.wetDate), this.dateToDisplay(x.thinDate), String(x.thinType), this.dateToDisplay(x.hoeDate),
+                String(x.hoeType), this.dateToDisplay(x.harvestDate)
               );
 
               // Retrieve data from nested irrigation data objects and insert into table
@@ -262,20 +294,20 @@ export class CardExportService {
                 x.irrigationArray.forEach(y => {
                   if (!y.chemical) {
                     if (!y.fertilizer) {
-                      dataLine.push('', String(y.workDate), y.irrigator, y.method, '', '', '', '', '', '');
+                      dataLine.push('', this.dateToDisplay(y.workDate), y.irrigator, y.method, '', '', '', '', '', '');
                     } else {
-                      dataLine.push('', String(y.workDate), y.irrigator, y.method, '', '', '',
+                      dataLine.push('', this.dateToDisplay(y.workDate), y.irrigator, y.method, '', '', '',
                                     y.fertilizer.name, String(y.fertilizer.rate), String(y.fertilizer.unit));
                     }
                   } else if (!y.fertilizer) {
                     if (!y.chemical) {
-                      dataLine.push('', String(y.workDate), y.irrigator, y.method, '', '', '', '', '', '');
+                      dataLine.push('', this.dateToDisplay(y.workDate), y.irrigator, y.method, '', '', '', '', '', '');
                     } else {
-                      dataLine.push('', String(y.workDate), y.irrigator, y.method,
+                      dataLine.push('', this.dateToDisplay(y.workDate), y.irrigator, y.method,
                                     y.chemical.name, String(y.chemical.rate), String(y.chemical.unit), '', '', '');
                     }
                   } else {
-                     dataLine.push('', String(y.workDate), y.irrigator, y.method, y.chemical.name,
+                     dataLine.push('', this.dateToDisplay(y.workDate), y.irrigator, y.method, y.chemical.name,
                                    String(y.chemical.rate), String(y.chemical.unit),
                                    y.fertilizer.name, String(y.fertilizer.rate), String(y.fertilizer.unit));
                   }
@@ -308,20 +340,20 @@ export class CardExportService {
                 x.tractorArray.forEach(z => {
                   if (!z.chemical) {
                     if (!z.fertilizer) {
-                      dataLine.push('', z.tractorNumber, String(z.workDate), z.workDone, z.operator, '', '', '', '', '', '');
+                      dataLine.push('', z.tractorNumber, this.dateToDisplay(z.workDate), z.workDone, z.operator, '', '', '', '', '', '');
                     } else {
-                      dataLine.push('', z.tractorNumber, String(z.workDate), z.workDone, z.operator, '', '', '',
+                      dataLine.push('', z.tractorNumber, this.dateToDisplay(z.workDate), z.workDone, z.operator, '', '', '',
                                     z.fertilizer.name, String(z.fertilizer.rate), String(z.fertilizer.unit));
                     }
                   } else if (!z.fertilizer) {
                     if (!z.chemical) {
-                      dataLine.push('', z.tractorNumber, String(z.workDate), z.workDone, z.operator, '', '', '', '', '', '');
+                      dataLine.push('', z.tractorNumber, this.dateToDisplay(z.workDate), z.workDone, z.operator, '', '', '', '', '', '');
                     } else {
-                      dataLine.push('', z.tractorNumber, String(z.workDate), z.workDone, z.operator, z.chemical.name,
+                      dataLine.push('', z.tractorNumber, this.dateToDisplay(z.workDate), z.workDone, z.operator, z.chemical.name,
                                     String(z.chemical.rate), String(z.chemical.unit), '', '', '');
                     }
                   } else {
-                     dataLine.push('', z.tractorNumber, String(z.workDate), z.workDone, z.operator, z.chemical.name,
+                     dataLine.push('', z.tractorNumber, this.dateToDisplay(z.workDate), z.workDone, z.operator, z.chemical.name,
                                    String(z.chemical.rate), String(z.chemical.unit),
                                    z.fertilizer.name, String(z.fertilizer.rate), String(z.fertilizer.unit));
                   }
@@ -427,10 +459,10 @@ export class CardExportService {
                 pushCounter = 0;
               }
 
-              if (!x.comment) {
+              if (!x.comments) {
                 dataLine.push('', '');
               } else {
-                dataLine.push('', x.comment);
+                dataLine.push('', this.commentsToDisplayString(x.comments));
               }
 
               table.push(dataLine);

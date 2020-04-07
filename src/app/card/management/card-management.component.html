@@ -36,7 +36,8 @@
 
   <div class="col d-md-inline-block">
     <span style="float: left; vertical-align: middle;">
-      <button type="button" color="success" (click)="updateFieldIds()" class="mr-1 mb-1" mdbBtn floating="true" size="sm" style="display: inline-block; margin-right: 5px">
+      <button type="button" color="success" (click)="updateFieldIds()" class="mr-1 mb-1" mdbBtn floating="true" size="sm" style="display: inline-block; margin-right: 5px"
+        [disabled]="!hasEditPermission()">
         Update All Field IDs
       </button>
       <button type="button" color="danger" (click)="resetFieldIds()" class="mr-1 mb-1" mdbBtn floating="true" size="sm" style="display: inline-block;">
@@ -84,7 +85,8 @@
             <tr mdbTableCol *ngFor="let p of cards; let i = index" class="animated fadeIn" [style.animation-delay]="this.min((30*i), 1000)+ 'ms'">
               <ng-container *ngIf="showListing(i)">
                 <td>
-                  <input type="number" [(ngModel)]="p.fieldID" class="form-control form-control-sm" placeholder="Field ID" style="width: 90%; display:inline-block"/> 
+                  <input type="number" [(ngModel)]="p.fieldID" class="form-control form-control-sm" placeholder="Field ID" 
+                    style="width: 90%; display:inline-block" [disabled]="!hasEditPermission()"/> 
                 </td>
                 <td class="hover">{{p.ranchName}}<span class="hover-text">{{p.ranchName}}</span></td>
                 <td class="hover">{{p.lotNumber}}<span class="hover-text">{{p.lotNumber}}</span></td>

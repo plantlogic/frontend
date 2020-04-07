@@ -138,10 +138,10 @@ import { CommonLookup } from 'src/app/_api/common-data.service';
         if (this.showListing(i)) {
           const card1 = this.cardsRaw.find(c => c.id === this.cards[i].id);
           const card2 = this.cards[i];
-          const hoeDate1 = new Date(card1.hoeDate).valueOf();
-          const hoeDate2 = new Date(card2.hoeDate.val).valueOf();
-          const thinDate1 = new Date(card1.thinDate).valueOf();
-          const thinDate2 = new Date(card2.thinDate.val).valueOf();
+          const hoeDate1 = (card1.hoeDate) ? new Date(card1.hoeDate).valueOf() : null;
+          const hoeDate2 = (card2.hoeDate.val) ? new Date(card2.hoeDate.val).valueOf() : null;
+          const thinDate1 = (card1.thinDate) ? new Date(card1.thinDate).valueOf() : null;
+          const thinDate2 = (card2.thinDate.val) ? new Date(card2.thinDate.val).valueOf() : null;
           if ((hoeDate1 !== hoeDate2) || (thinDate1 !== thinDate2)
           || (card1.hoeType !== card2.hoeType) || (card1.thinType !== card2.thinType)) {
             modifiedCards.push(this.cards[i]);
@@ -174,6 +174,10 @@ import { CommonLookup } from 'src/app/_api/common-data.service';
 
   hasViewPermission(): boolean {
     return this.auth.hasPermission(PlRole.CONTRACTOR_VIEW);
+  }
+
+  hasEditPermission(): boolean {
+    return this.auth.hasPermission(PlRole.CONTRACTOR_EDIT);
   }
 
   public initCommon(f): void {
@@ -311,6 +315,10 @@ import { CommonLookup } from 'src/app/_api/common-data.service';
   }
 
   public updateCards(): void {
+    if (!this.hasEditPermission()) {
+      AlertService.newBasicAlert('Failed to Edit: CONTRACTOR EDIT Permission Required', true);
+      return;
+    }
     const tempThis = this;
     const log = {
       success: 0,
@@ -323,10 +331,10 @@ import { CommonLookup } from 'src/app/_api/common-data.service';
         log.failure += 1;
         tempThis.updateMessage(log, modified.length);
       } else {
-        card.wetDate = (new Date(m.wetDate.val)).valueOf();
-        card.hoeDate = (new Date(m.hoeDate.val)).valueOf();
+        card.wetDate = (m.wetDate.val) ? (new Date(m.wetDate.val)).valueOf() : null;
+        card.hoeDate = (m.hoeDate.val) ? (new Date(m.hoeDate.val)).valueOf() : null;
         card.hoeType = m.hoeType;
-        card.thinDate = (new Date(m.thinDate.val)).valueOf();
+        card.thinDate = (m.thinDate.val) ? (new Date(m.thinDate.val)).valueOf() : null;
         card.thinType = m.thinType;
         tempThis.cardEdit.updateCard(card as Card).subscribe(data => {
           if (data.success) {

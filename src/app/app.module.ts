@@ -10,7 +10,6 @@ import {AppComponent} from './app.component';
 import {MDBBootstrapModule} from 'angular-bootstrap-md';
 import {LoadingBarHttpClientModule} from '@ngx-loading-bar/http-client';
 import {AutosizeModule} from 'ngx-autosize';
-import {Ng2FlatpickrModule} from 'ng2-flatpickr';
 import {NgMultiSelectDropDownModule} from 'ng-multiselect-dropdown';
 
 import {HomeComponent} from './home/home.component';
@@ -78,7 +77,6 @@ import {AddChemicalEntryComponent} from './card/entry/open/add-chemical/add-chem
     HttpClientModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    Ng2FlatpickrModule,
     AutosizeModule,
     LoadingBarHttpClientModule,
     NgMultiSelectDropDownModule.forRoot(),

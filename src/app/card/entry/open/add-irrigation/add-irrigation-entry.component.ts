@@ -4,7 +4,6 @@ import {TitleService} from 'src/app/_interact/title.service';
 import {CardEntryService} from 'src/app/_api/card-entry.service';
 import {AlertService} from 'src/app/_interact/alert/alert.service';
 import {ActivatedRoute} from '@angular/router';
-import {FlatpickrOptions} from 'ng2-flatpickr';
 import {NavService} from '../../../../_interact/nav.service';
 import {Chemical} from 'src/app/_dto/card/chemical';
 import {CommonFormDataService} from '../../../../_api/common-form-data.service';
@@ -38,13 +37,6 @@ export class AddIrrigationEntryComponent implements OnInit {
   public dataListOptionValueToID(optionValue, dataListID) {
     const option = document.querySelector('#' + dataListID + ' [value="' + optionValue + '"]') as HTMLElement;
     return (option) ? option.id : null;
-  }
-
-  datePickr(): FlatpickrOptions {
-    return {
-      dateFormat: 'm-d-Y',
-      defaultDate: new Date()
-    };
   }
 
   fixDate(d): number {

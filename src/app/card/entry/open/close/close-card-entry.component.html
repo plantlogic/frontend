@@ -3,14 +3,10 @@
   <div *ngIf="card" >
     <div class="row">
       <div class="col">
-        <form [formGroup]="form">
-          <div class="form-group">
-            <label for="harvestDate"><h5>Harvest Date</h5></label>
-            <ng2-flatpickr placeholder="Harvest Date" id="harvestDate" formControlName="harvestDate"
-                           [config]="flatpickrOptions">
-            </ng2-flatpickr>
-          </div>
-        </form>
+        <div class="form-group">
+          <label for="harvestDate"><h5>Harvest Date</h5></label><br/>
+          <input id="harvestDate" class="date" [ngModel]=" harvestDate | date:'yyyy-MM-dd'" (ngModelChange)="harvestDate = fixDate($event)" type="date"/>
+        </div>
       </div>
     </div>
     <div class="row">

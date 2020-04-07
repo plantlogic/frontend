@@ -9,7 +9,6 @@ import {CardEditService} from '../../../_api/card-edit.service';
 import {AuthService} from '../../../_auth/auth.service';
 import {PlRole} from '../../../_dto/user/pl-role.enum';
 import {Alert} from '../../../_interact/alert/alert';
-// import {FlatpickrOptions} from 'ng2-flatpickr';
 import {NgModel} from '@angular/forms';
 import {TractorEntry} from '../../../_dto/card/tractor-entry';
 import {IrrigationEntry} from '../../../_dto/card/irrigation-entry';
@@ -18,6 +17,7 @@ import {Chemicals} from '../../../_dto/card/chemicals';
 import {Commodities} from '../../../_dto/card/commodities';
 import {CommonFormDataService} from 'src/app/_api/common-form-data.service';
 import { CommonLookup } from 'src/app/_api/common-data.service';
+import { Comment } from 'src/app/_dto/card/comment';
 
 @Component({
   selector: 'app-open-card',
@@ -30,8 +30,12 @@ export class OpenCardDataComponent implements OnInit {
               private nav: NavService, private route: ActivatedRoute, private auth: AuthService, public common: CommonFormDataService) { }
 
   card: Card;
+  // Additional values will be attached to comments, so use a separate variable
+  comments = [];
   editable: boolean;
   editing = false;
+  editingComment = false;
+  commentsCollapsed = true;
 
   // create array of common keys, whose data is needed for card entry. Omit restricted options.
   commonKeys = ['bedTypes', 'chemicals', 'chemicalRateUnits', 'commodities',
@@ -48,7 +52,19 @@ export class OpenCardDataComponent implements OnInit {
       this[`ranches`] = c[`ranches`];
       this.loadCardData();
     });
-    this.editable = this.auth.hasPermission(PlRole.DATA_EDIT);
+    this.editable = this.auth.hasPermission(PlRole.DATA_EDIT)
+                 || this.auth.hasPermission(PlRole.CONTRACTOR_EDIT);
+  }
+
+  private addComment(): void {
+    // DO SOMETHING DIFFERENT IF SHIPPER
+    const c: Comment = new Comment();
+    c.author = this.auth.getName();
+    c.userName = this.auth.getUsername();
+    c.body = '';
+    c.dateCreated = new Date().valueOf();
+    c.dateModified = c.dateCreated;
+    this.comments.push(c);
   }
 
   private addTractorData(): void {
@@ -71,6 +87,28 @@ export class OpenCardDataComponent implements OnInit {
     this.card.commodityArray.push(new Commodities());
   }
 
+  public canEditComment(comment): boolean {
+    if (!this.editing && !this.editingComment) {
+      return false;
+    }
+    if (this.auth.getUsername() === comment.userName) {
+      return true;
+    }
+    return false;
+  }
+
+  public canDeleteComment(comment): boolean {
+    if (!this.editing && !this.editingComment) {
+      return false;
+    }
+    if (this.auth.getUsername() === comment.userName) {
+      return true;
+    } else if (this.auth.hasPermission(PlRole.DATA_EDIT) || this.auth.hasPermission(PlRole.CONTRACTOR_EDIT)) {
+      return true;
+    }
+    return false;
+  }
+
   private clearChanges(): void {
     const newAlert = new Alert();
     newAlert.color = 'warning';
@@ -84,9 +122,9 @@ export class OpenCardDataComponent implements OnInit {
     newAlert.action$ = new EventEmitter<null>();
     newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
       this.loadCardData();
-      this.toggleEditing();
+      if (this.editing) { this.toggleEditing(); }
+      if (this.editingComment) { this.toggleEditingComment(); }
     });
-
     AlertService.newAlert(newAlert);
   }
 
@@ -122,6 +160,34 @@ export class OpenCardDataComponent implements OnInit {
     AlertService.newAlert(newAlert);
   }
 
+  public deleteComment(index) {
+    const comment = this.comments[index];
+    if (comment.userName !== this.auth.getUsername()) {
+      if (!this.auth.hasPermission(PlRole.DATA_EDIT) && !this.auth.hasPermission(PlRole.CONTRACTOR_EDIT)) {
+        AlertService.newBasicAlert('Edit permission is needed to delete comments which aren\'t your own', true);
+        return false;
+      } else {
+        const newAlert = new Alert();
+        newAlert.color = 'danger';
+        newAlert.title = 'WARNING: Deleting Other Users Comment';
+        newAlert.message = 'Are you sure you want to delete another user\'s comment?';
+        newAlert.timeLeft = undefined;
+        newAlert.blockPageInteraction = true;
+        newAlert.actionName = 'Delete';
+        newAlert.actionClosesAlert = true;
+        newAlert.action$ = new EventEmitter<null>();
+        newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
+          this.comments[index].deleted = true;
+          return true;
+        });
+        AlertService.newAlert(newAlert);
+      }
+    } else {
+      this.comments[index].deleted = true;
+      return true;
+    }
+  }
+
   fixDate(d): Date {
     if (!d) { return; }
     const parts = d.split('-');
@@ -129,6 +195,10 @@ export class OpenCardDataComponent implements OnInit {
     const month = parts[1] - 1; // 0 based
     const year = parts[0];
     return new Date(year, month, day);
+  }
+
+  public getActiveComments() {
+    return this.comments.filter(c => !c.deleted).length;
   }
 
   public getCommon(key) {
@@ -202,6 +272,7 @@ export class OpenCardDataComponent implements OnInit {
         data => {
           if (data.success) {
             this.card = (new Card()).copyConstructor(data.data);
+            this.comments = (new Card()).copyConstructor(data.data).comments;
             // Fix Datalist Display
             this.card.tractorArray.forEach(e => {
               e.operator = tempThis.iDToDataListOption(e.operator, 'tractorOperators');
@@ -229,9 +300,9 @@ export class OpenCardDataComponent implements OnInit {
 
   private saveChanges(): void {
     // Validate
+    if (!this.setCardCommentsForUpdate()) { return; }
     const card = this.validateAndFix(this.card);
     if (!card) { return; }
-
     // If Valid, continue
     const newAlert = new Alert();
     newAlert.color = 'warning';
@@ -249,7 +320,8 @@ export class OpenCardDataComponent implements OnInit {
           if (data.success) {
             AlertService.newBasicAlert('Change saved successfully!', false);
             this.loadCardData();
-            this.toggleEditing();
+            if (this.editing) { this.toggleEditing(); }
+            if (this.editingComment) { this.toggleEditingComment(); }
           } else {
             AlertService.newBasicAlert('Error: ' + data.error, true);
           }
@@ -259,6 +331,69 @@ export class OpenCardDataComponent implements OnInit {
         });
     });
     AlertService.newAlert(newAlert);
+  }
+
+  public saveComments() {
+    if (!this.setCardCommentsForUpdate()) { return; }
+
+    this.cardEdit.setCardComments(this.card.id, this.card.comments).subscribe(data => {
+      if (data.success) {
+        AlertService.newBasicAlert('Change saved successfully!', false);
+        this.loadCardData();
+        if (this.editing) { this.toggleEditing(); }
+        if (this.editingComment) { this.toggleEditingComment(); }
+      } else {
+        console.log(data);
+        AlertService.newBasicAlert('Error: ' + data.error, true);
+      }
+    },
+    failure => {
+      AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
+    });
+  }
+
+  public setCardCommentsForUpdate() {
+    let invalid = 0;
+    const elevatedPerms = this.auth.hasPermission(PlRole.DATA_EDIT) || this.auth.hasPermission(PlRole.CONTRACTOR_EDIT);
+    for (let i = 0; i < this.card.comments.length; i++) {
+      const oldComment = this.card.comments[i];
+      const newComment = this.comments[i];
+      if (newComment.userName !== oldComment.userName) {
+        AlertService.newBasicAlert('Error: The username of a comment was modified.', true);
+        return false;
+      }
+      // If the comment was marked for deletion and the user doesn't have edit permissions
+      if (newComment.deleted && !elevatedPerms) {
+        // Only delete if it was their own comment
+        if (newComment.userName !== this.auth.getUsername()) {
+          this.comments[i] = oldComment;
+          invalid++;
+        } else {
+          this.comments[i].lastModified = new Date().valueOf();
+        }
+      } else {
+        // check if same data
+        let same = oldComment.author === newComment.author;
+        same = same && (oldComment.dateCreated === newComment.dateCreated);
+        same = same && (oldComment.dateModified === newComment.dateModified);
+        same = same && (oldComment.body === newComment.body);
+        same = same && (oldComment.userName === newComment.userName);
+        // if it has been modified, only accept if it is this user's comment
+        if (!same) {
+          if (newComment.userName !== this.auth.getUsername()) {
+            this.comments[i] = oldComment;
+            invalid++;
+          } else {
+            this.comments[i].lastModified = new Date().valueOf();
+          }
+        }
+      }
+    }
+    if (invalid > 0) {
+      AlertService.newBasicAlert(`${invalid} comments will not be changed due to invalid modifications`, true);
+    }
+    this.card.comments = this.comments.filter(c => !c.deleted);
+    return true;
   }
 
   private toggleCard() {
@@ -297,6 +432,10 @@ export class OpenCardDataComponent implements OnInit {
 
   private toggleEditing(): void {
     this.editing = !this.editing;
+  }
+
+  private toggleEditingComment(): void {
+    this.editingComment = !this.editingComment;
   }
 
   private validateAndFix(cardRaw: Card) {
@@ -448,7 +587,6 @@ export class OpenCardDataComponent implements OnInit {
 
       // Replace Lot Number Whitespace
       card.lotNumber = card.lotNumber.replace(/\s/g, '');
-      // Fix Other flatPickr date formats
       card.hoeDate = (this.card.hoeDate) ? (new Date(this.card.hoeDate)).valueOf() : null;
       card.harvestDate = (this.card.harvestDate) ? (new Date(this.card.harvestDate)).valueOf() : null;
       card.thinDate = (this.card.thinDate) ? (new Date(this.card.thinDate)).valueOf() : null;
@@ -456,7 +594,6 @@ export class OpenCardDataComponent implements OnInit {
       return card;
     } catch (e) {
       AlertService.newBasicAlert('Error When Validating Card Data', true);
-      console.log(e);
       return false;
     }
   }

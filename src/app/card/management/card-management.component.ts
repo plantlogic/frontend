@@ -164,6 +164,10 @@ export class CardManagementComponent implements OnInit {
     }
   }
 
+  hasEditPermission(): boolean {
+    return this.auth.hasPermission(PlRole.DATA_EDIT);
+  }
+
   hasViewPermission(): boolean {
     return this.auth.hasPermission(PlRole.DATA_VIEW);
   }
@@ -274,6 +278,10 @@ export class CardManagementComponent implements OnInit {
   }
 
   public updateFieldIds(): void {
+    if (!this.hasEditPermission()) {
+      AlertService.newBasicAlert('Failed to Edit: DATA EDIT Permission Required', true);
+      return;
+    }
     const tempThis = this;
     const log = {
       success: 0,
