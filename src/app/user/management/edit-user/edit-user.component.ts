@@ -48,7 +48,8 @@ export class EditUserComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       realName: ['', [Validators.required]],
       ranchAccess: [],
-      roles: this.fb.array(this.initRoleBoolArray())
+      roles: this.fb.array(this.initRoleBoolArray()),
+      shipperID: ''
     });
 
     this.form.disable();
@@ -69,6 +70,7 @@ export class EditUserComponent implements OnInit {
               this.form.get('email').setValue(this.user.email);
               this.form.get('realName').setValue(this.user.realName);
               this.form.get('roles').setValue(this.setSelectedRoles());
+              this.form.get('shipperID').setValue(this.user.shipperID);
               this.commonData.getValues('ranches', ranches => {
                 tempThis.userRanches = ranches.filter(e => {
                   tempThis.ranchList.push(e);
@@ -98,6 +100,21 @@ export class EditUserComponent implements OnInit {
     );
   }
 
+  isShipper(): boolean {
+    return false; // disable shippers for now
+    // return this.getSelectedRoles().includes(PlRole[PlRole.SHIPPER.toString()]);
+  }
+
+  getRanchAccess() {
+    if (!this.hasPerms()) {return []; }
+    try {
+      return (this.form.value.ranchAccess) ? this.form.value.ranchAccess.map(e => e.id) : [];
+    } catch (e) {
+      AlertService.newBasicAlert('Error When Reading Ranch Access', true);
+      return [];
+    }
+  }
+
   passwordOrEmailInvalid(): boolean {
     if (this.manualPassword) {
       this.form.get('email').setValue('');
@@ -111,6 +128,9 @@ export class EditUserComponent implements OnInit {
   submit() {
     if (this.form.get('username').invalid || this.form.get('realName').invalid  || this.passwordOrEmailInvalid()) {
       this.submitAttempted = true;
+    } else if (this.isShipper() && !this.form.value.shipperID) {
+      this.submitAttempted = true;
+      AlertService.newBasicAlert('Users with Shipper role need a shipper ID', true);
     } else {
       this.submitAttempted = false;
       this.form.disable();
@@ -119,9 +139,9 @@ export class EditUserComponent implements OnInit {
       this.user.email = this.form.value.email;
       this.user.password = this.form.value.password;
       this.user.realName = this.form.value.realName;
-      this.user.ranchAccess = this.form.value.ranchAccess.map(e => e.id);
+      this.user.ranchAccess = this.getRanchAccess();
       this.user.permissions = this.getSelectedRoles();
-
+      this.user.shipperID = (this.isShipper() && this.form.value.shipperID) ? this.form.value.shipperID : null;
       this.userService.editUser(this.user).subscribe(
         data => {
           if (data.success) {

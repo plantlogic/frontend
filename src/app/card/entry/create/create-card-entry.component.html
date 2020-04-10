@@ -98,7 +98,7 @@
                     <option *ngFor="let r of getCommon('chemicals')" [value]="r.id">{{r.value}}</option>
                   </select>
                   <div class="form-inline m-0">
-                    <input type="number" [(ngModel)]="p.chemical.rate" class="form-control" placeholder="Rate" pattern="\d*" />
+                    <input type="number" [(ngModel)]="p.chemical.rate" class="form-control" placeholder="Rate (Per Acre)" pattern="\d*" />
                     <select class="form-control" [(ngModel)]="p.chemical.unit">
                       <option *ngIf="!p.chemical.unit" [value]="undefined" disabled selected>Select Rate Unit</option>
                       <option *ngFor="let r of getCommon('chemicalRateUnits')" [value]="r.id">{{r.value}}</option>
@@ -124,7 +124,7 @@
                     <option *ngFor="let r of getCommon('fertilizers')" [value]="r.id">{{r.value}}</option>
                   </select>
                   <div class="form-inline m-0">
-                    <input type="number" [(ngModel)]="p.fertilizer.rate" class="form-control" placeholder="Rate" pattern="\d*" />
+                    <input type="number" [(ngModel)]="p.fertilizer.rate" class="form-control" placeholder="Rate (Per Acre)" pattern="\d*" />
                     <select class="form-control" [(ngModel)]="p.fertilizer.unit" >
                       <option *ngIf="!p.fertilizer.unit" [value]="undefined" disabled selected>Select Rate Unit</option>
                       <option *ngFor="let r of getCommon('chemicalRateUnits')" [value]="r.id">{{r.value}}</option>

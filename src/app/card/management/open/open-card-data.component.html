@@ -274,8 +274,8 @@
           <thead>
           <tr>
             <th scope="col" class="small">Date</th>
-            <th scope="col" class="small">Fertilizer</th>
-            <th scope="col" class="small">Chemical</th>
+            <th scope="col" class="small">Fertilizer /ac</th>
+            <th scope="col" class="small">Chemical /ac</th>
             <th scope="col" class="small" *ngIf="editing"></th>
           </tr>
           </thead>
@@ -300,9 +300,9 @@
                   </select>
                   <div class="form-inline m-0">
                     <input type="number" [(ngModel)]="p.fertilizer.rate" [disabled]="!editing" class="form-control form-control-sm"
-                           [placeholder]="editing ? 'Rate' : ''" />
+                           [placeholder]="editing ? 'Rate (Per Acre)' : ''" />
                     <select class="form-control form-control-sm" [disabled]="!editing" [(ngModel)]="p.fertilizer.unit">
-                      <option *ngIf="!p.fertilizer.unit" [value]="undefined" disabled selected>Select Unit Rate</option>
+                      <option *ngIf="!p.fertilizer.unit" [value]="undefined" disabled selected>Select Rate Unit</option>
                       <option *ngFor="let r of getCommon('chemicalRateUnits')" [value]="r.id">{{r.value}}</option>
                     </select>
                     <button *ngIf="editing" type="button" color="danger" (click)="p.fertilizer = undefined" mdbBtn
@@ -326,9 +326,9 @@
                   </select>
                   <div class="form-inline m-0">
                     <input type="number" [(ngModel)]="p.chemical.rate" [disabled]="!editing" class="form-control form-control-sm"
-                           [placeholder]="editing ? 'Rate' : ''" />
+                           [placeholder]="editing ? 'Rate (Per Acre)' : ''" />
                     <select class="form-control form-control-sm" [disabled]="!editing" [(ngModel)]="p.chemical.unit" >
-                      <option *ngIf="!p.chemical.unit" [value]="undefined" disabled selected>Select Unit Rate</option>
+                      <option *ngIf="!p.chemical.unit" [value]="undefined" disabled selected>Select Rate Unit</option>
                       <option *ngFor="let r of getCommon('chemicalRateUnits')" [value]="r.id">{{r.value}}</option>
                     </select>
                     <button *ngIf="editing" type="button" color="danger" (click)="p.chemical = undefined" mdbBtn
@@ -365,8 +365,8 @@
           <thead>
           <tr>
             <th scope="col" class="small">Date</th>
-            <th scope="col" class="small">Fertilizer</th>
-            <th scope="col" class="small">Chemical</th>
+            <th scope="col" class="small">Fertilizer /ac</th>
+            <th scope="col" class="small">Chemical /ac</th>
             <th scope="col" class="small" *ngIf="editing"></th>
           </tr>
           </thead>
@@ -391,9 +391,9 @@
                   </select>
                   <div class="form-inline m-0">
                     <input type="number" [(ngModel)]="p.fertilizer.rate" [disabled]="!editing" class="form-control form-control-sm"
-                           [placeholder]="editing ? 'Rate' : ''" />
+                           [placeholder]="editing ? 'Rate (Per Acre)' : ''" />
                     <select class="form-control form-control-sm" [disabled]="!editing" [(ngModel)]="p.fertilizer.unit">
-                      <option *ngIf="!p.fertilizer.unit" [value]="undefined" disabled selected>Select Unit Rate</option>
+                      <option *ngIf="!p.fertilizer.unit" [value]="undefined" disabled selected>Select Rate Unit</option>
                       <option *ngFor="let r of getCommon('chemicalRateUnits')" [value]="r.id">{{r.value}}</option>
                     </select>
                     <button *ngIf="editing" type="button" color="danger" (click)="p.fertilizer = undefined" mdbBtn
@@ -417,9 +417,9 @@
                   </select>
                   <div class="form-inline m-0">
                     <input type="number" [(ngModel)]="p.chemical.rate" [disabled]="!editing" class="form-control form-control-sm"
-                           [placeholder]="editing ? 'Rate' : ''" />
+                           [placeholder]="editing ? 'Rate (Per Acre)' : ''" />
                     <select class="form-control form-control-sm" [disabled]="!editing" [(ngModel)]="p.chemical.unit" >
-                      <option *ngIf="!p.chemical.unit" [value]="undefined" disabled selected>Select Unit Rate</option>
+                      <option *ngIf="!p.chemical.unit" [value]="undefined" disabled selected>Select Rate Unit</option>
                       <option *ngFor="let r of getCommon('chemicalRateUnits')" [value]="r.id">{{r.value}}</option>
                     </select>
                     <button *ngIf="editing" type="button" color="danger" (click)="p.chemical = undefined" mdbBtn
@@ -459,8 +459,8 @@
             <th scope="col" class="small">Date</th>
             <th scope="col" class="small">Irrigator</th>
             <th scope="col" class="small">Method</th>
-            <th scope="col" class="small">Fertilizer</th>
-            <th scope="col" class="small">Chemical</th>
+            <th scope="col" class="small">Fertilizer /ac</th>
+            <th scope="col" class="small">Chemical /ac</th>
             <th scope="col" class="small" *ngIf="editing"></th>
           </tr>
           </thead>
@@ -494,9 +494,9 @@
                   </select>
                   <div class="form-inline m-0">
                     <input type="number" [(ngModel)]="p.fertilizer.rate" [disabled]="!editing" class="form-control form-control-sm"
-                           [placeholder]="editing ? 'Rate' : ''" />
+                           [placeholder]="editing ? 'Rate (Per Acre)' : ''" />
                     <select class="form-control form-control-sm" [disabled]="!editing" [(ngModel)]="p.fertilizer.unit">
-                      <option *ngIf="!p.fertilizer.unit" [value]="undefined" disabled selected>Select Unit Rate</option>
+                      <option *ngIf="!p.fertilizer.unit" [value]="undefined" disabled selected>Select Rate Unit</option>
                       <option *ngFor="let r of getCommon('chemicalRateUnits')" [value]="r.id">{{r.value}}</option>
                     </select>
                     <button *ngIf="editing" type="button" color="danger" (click)="p.fertilizer = undefined" mdbBtn
@@ -520,9 +520,9 @@
                   </select>
                   <div class="form-inline m-0">
                     <input type="number" [(ngModel)]="p.chemical.rate" [disabled]="!editing" class="form-control form-control-sm"
-                           [placeholder]="editing ? 'Rate' : ''" />
+                           [placeholder]="editing ? 'Rate (Per Acre)' : ''" />
                     <select class="form-control form-control-sm" [disabled]="!editing" [(ngModel)]="p.chemical.unit" >
-                      <option *ngIf="!p.chemical.unit" [value]="undefined" disabled selected>Select Unit Rate</option>
+                      <option *ngIf="!p.chemical.unit" [value]="undefined" disabled selected>Select Rate Unit</option>
                       <option *ngFor="let r of getCommon('chemicalRateUnits')" [value]="r.id">{{r.value}}</option>
                     </select>
                     <button *ngIf="editing" type="button" color="danger" (click)="p.chemical = undefined" mdbBtn
@@ -562,8 +562,8 @@
             <th scope="col" class="small">Tractor Number</th>
             <th scope="col" class="small">Work Done</th>
             <th scope="col" class="small">Operator</th>
-            <th scope="col" class="small">Fertilizer</th>
-            <th scope="col" class="small">Chemical</th>
+            <th scope="col" class="small">Fertilizer /ac</th>
+            <th scope="col" class="small">Chemical /ac</th>
             <th scope="col" class="small" *ngIf="editing"></th>
           </tr>
           </thead>
@@ -600,9 +600,9 @@
                   </select>
                   <div class="form-inline m-0">
                     <input type="number" [(ngModel)]="p.fertilizer.rate" [disabled]="!editing" class="form-control form-control-sm"
-                           [placeholder]="editing ? 'Rate' : ''" />
+                           [placeholder]="editing ? 'Rate (Per Acre)' : ''" />
                     <select class="form-control form-control-sm" [disabled]="!editing" [(ngModel)]="p.fertilizer.unit">
-                      <option *ngIf="!p.fertilizer.unit" [value]="undefined" disabled selected>Select Unit Rate</option>
+                      <option *ngIf="!p.fertilizer.unit" [value]="undefined" disabled selected>Select Rate Unit</option>
                       <option *ngFor="let r of getCommon('chemicalRateUnits')" [value]="r.id">{{r.value}}</option>
                     </select>
                     <button *ngIf="editing" type="button" color="danger" (click)="p.fertilizer = undefined" mdbBtn
@@ -626,9 +626,9 @@
                   </select>
                   <div class="form-inline m-0">
                     <input type="number" [(ngModel)]="p.chemical.rate" [disabled]="!editing" class="form-control form-control-sm"
-                           [placeholder]="editing ? 'Rate' : ''" />
+                           [placeholder]="editing ? 'Rate (Per Acre)' : ''" />
                     <select class="form-control form-control-sm" [disabled]="!editing" [(ngModel)]="p.chemical.unit">
-                      <option *ngIf="!p.chemical.unit" [value]="undefined" disabled selected>Select Unit Rate</option>
+                      <option *ngIf="!p.chemical.unit" [value]="undefined" disabled selected>Select Rate Unit</option>
                       <option *ngFor="let r of getCommon('chemicalRateUnits')" [value]="r.id">{{r.value}}</option>
                     </select>
                     <button *ngIf="editing" type="button" color="danger" (click)="p.chemical = undefined" mdbBtn

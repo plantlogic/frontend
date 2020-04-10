@@ -44,7 +44,7 @@
                 <div class="col-sm border" *ngFor="let p of card.preChemicalArray">
                   <b>Date:</b> {{p.date | date:'shortDate'}}
                   <div *ngIf="p.fertilizer">
-                    <b>Fertilizer:</b>
+                    <b>Fertilizer /ac:</b>
                     {{p.fertilizer.name}}
                     <span class="text-info">
                       {{p.fertilizer.rate}}
@@ -52,7 +52,7 @@
                     </span>
                   </div>
                   <div *ngIf="p.chemical">
-                    <b>Chemical:</b>
+                    <b>Chemical /ac:</b>
                     {{p.chemical.name}}
                     <span class="text-info">
                       {{p.chemical.rate}}
@@ -66,7 +66,7 @@
                 <div class="col-sm border" *ngFor="let p of card.postChemicalArray">
                   <b>Date:</b> {{p.date | date:'shortDate'}}
                   <div *ngIf="p.fertilizer">
-                    <b>Fertilizer:</b>
+                    <b>Fertilizer /ac:</b>
                     {{p.fertilizer.name}}
                     <span class="text-info">
                       {{p.fertilizer.rate}}
@@ -74,7 +74,7 @@
                     </span>
                   </div>
                   <div *ngIf="p.chemical">
-                    <b>Chemical:</b>
+                    <b>Chemical /ac:</b>
                     {{p.chemical.name}}
                     <span class="text-info">
                       {{p.chemical.rate}}
@@ -112,7 +112,7 @@
               <br />
               <b>Operator:</b> {{p.operator}}
               <div *ngIf="p.fertilizer">
-                <b>Fertilizer:</b>
+                <b>Fertilizer /ac:</b>
                 {{p.fertilizer.name}}
                 <span class="text-info">
                       {{p.fertilizer.rate}}
@@ -120,7 +120,7 @@
                     </span>
               </div>
               <div *ngIf="p.chemical">
-                <b>Chemical:</b>
+                <b>Chemical /ac:</b>
                 {{p.chemical.name}}
                 <span class="text-info">
                       {{p.chemical.rate}}
@@ -154,7 +154,7 @@
               <br />
               <b>Method:</b> {{p.method}}
               <div *ngIf="p.fertilizer">
-                <b>Fertilizer:</b>
+                <b>Fertilizer /ac:</b>
                 {{p.fertilizer.name}}
                 <span class="text-info">
                   {{p.fertilizer.rate}}
@@ -162,7 +162,7 @@
                 </span>
               </div>
               <div *ngIf="p.chemical">
-                <b>Chemical:</b>
+                <b>Chemical /ac:</b>
                 {{p.chemical.name}}
                 <span class="text-info">
                   {{p.chemical.rate}}
