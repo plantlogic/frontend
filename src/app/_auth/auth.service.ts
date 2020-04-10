@@ -48,6 +48,7 @@ export class AuthService {
 
               this.router.navigate(['/loginRedirect']);
             } else if (!data.success) {
+              console.log(data);
               AlertService.newBasicAlert('Login Failed: ' + data.error, true);
             }
           },

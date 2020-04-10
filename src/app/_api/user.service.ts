@@ -29,6 +29,7 @@ export class UserService {
   }
 
   public addUser(user: User): Observable<BasicDTO<string>> {
+    console.log(`Adding User With Shipper ID: ${user.shipperID}`);
     return this.http.post<BasicDTO<string>>(environment.ApiUrl + '/user/management/addUser', user, this.httpOptions);
   }
 

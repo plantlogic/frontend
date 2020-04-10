@@ -9,6 +9,7 @@ import { CommonLookup } from './common-data.service';
 import { CommonFormDataService } from './common-form-data.service';
 import { AuthService } from '../_auth/auth.service';
 import { Comment } from '../_dto/card/comment';
+import { Chemical } from '../_dto/card/chemical';
 
 @Injectable({
   providedIn: 'root'
@@ -76,7 +77,7 @@ export class CardExportService {
       const c = comments[i];
       let cString = '';
       try {
-        cString = `[${new Date(c.dateModified)}] ${c.author}: ${c.body}`;
+        cString = `[${this.dateToDisplay(c.dateModified, true)}] ${c.author}: ${c.body}`;
       } catch (e) {
         cString = '[Error Processing Comment]';
       }
@@ -89,14 +90,22 @@ export class CardExportService {
     return displayString;
   }
 
-  public dateToDisplay(date) {
+  public dateToDisplay(dateInput, time?: boolean): string {
     // Modify how the date appears in the export
     // Convert to Date object for nicer print
+    if (!dateInput) { return null; }
     try {
-      const display = String(new Date(date));
-      return display;
+      const d = new Date(dateInput);
+      const day = d.getDate();
+      const month = d.getMonth() + 1;
+      const year = d.getFullYear();
+      // dirty fix to remove invalid dates (remove after validating all cards)
+      if (year === 1969) { return null; }
+      let dateStr = month + '/' + day + '/' + year;
+      if (time) { dateStr += ' - ' + d.toTimeString(); }
+      return dateStr;
     } catch (e) {
-      return date;
+      return '[Could Not Convert]: ' + dateInput;
     }
   }
 
@@ -161,7 +170,7 @@ export class CardExportService {
                       '9th', 'Tractor', '', '', '', '', '', '', '', '', '',
                       '10th', 'Tractor', '', '', '', '', '', '', '', '', '',
                       '11th', 'Tractor', '', '', '', '', '', '', '', '', '',
-                      '12th', 'Tractor', '', '', '', '', '', '', '', '', '',
+                      '12th', 'Tractor', '', '', '', '', '', '', '', '', '', '', '',
                       '1st', 'Commodity', '', '', '', '', '',
                       '2nd', 'Commodity', '', '', '', '', '',
                       '3rd', 'Commodity', '', '', '', '', '',
@@ -184,57 +193,60 @@ export class CardExportService {
           table.push(['Field ID', 'Ranch Name', 'Ranch Manager', 'Lot Number', 'Shipper ID',
                       'Wet Date', 'Thin Date', 'Thin Type', 'Hoe Date', 'Hoe Type', 'Harvest Date', '',
                       // Irrigation Data, 12 total
-                      'Date', 'Irrigator', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Irrigator', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Irrigator', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Irrigator', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Irrigator', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Irrigator', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Irrigator', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Irrigator', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Irrigator', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Irrigator', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Irrigator', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Irrigator', 'Method', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      // Tractor Data, 12 total
-                      'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Irrigator', 'Method', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
+                      'Date', 'Irrigator', 'Method', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
+                      'Date', 'Irrigator', 'Method', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
+                      'Date', 'Irrigator', 'Method', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
+                      'Date', 'Irrigator', 'Method', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
+                      'Date', 'Irrigator', 'Method', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
+                      'Date', 'Irrigator', 'Method', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
+                      'Date', 'Irrigator', 'Method', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
+                      'Date', 'Irrigator', 'Method', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
+                      'Date', 'Irrigator', 'Method', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
+                      'Date', 'Irrigator', 'Method', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
+                      'Date', 'Irrigator', 'Method', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
+                  // Tractor Data, 12 total
+                  'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
+                  'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
+                  'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
+                  'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
+                  'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
+                  'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
+                  'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
+                  'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
+                  'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
+                  'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
+                  'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
+                  'Tractor Number', 'Date', 'Work Done', 'Operator', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
+                      // Drip Tape Check
+                      'Driptape', '',
                       // Commodity Data, 3 Total
                       'Commodity', 'Crop Acres', 'Bed Type', 'Bed Count', 'SeedLotNumber', 'Variety', '',
                       'Commodity', 'Crop Acres', 'Bed Type', 'Bed Count', 'SeedLotNumber', 'Variety', '',
                       'Commodity', 'Crop Acres', 'Bed Type', 'Bed Count', 'SeedLotNumber', 'Variety', '',
                       // Preplant, 3 total
-                      'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
+                      'Date', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
+                      'Date', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
                       // Postplant, 12 total
-                      'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
-                      'Date', 'Time', 'Chemical', 'Rate', 'Unit', 'Fertilizer', 'Rate', 'Unit', '',
+                      'Date', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
+                      'Date', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
+                      'Date', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
+                      'Date', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
+                      'Date', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
+                      'Date', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
+                      'Date', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
+                      'Date', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
+                      'Date', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
+                      'Date', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
+                      'Date', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
+                      'Date', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
                       // Comments, 1 total
                       'Comments'
           ]);
           let dataLine: Array<string> = [];
           let pushCounter = 0;
+          let hasDripTape = false;
           // Take our data
           data.data
             // Convert into real card
@@ -292,6 +304,7 @@ export class CardExportService {
 
               } else {
                 x.irrigationArray.forEach(y => {
+                  hasDripTape = hasDripTape || this.hasDripTape(y);
                   if (!y.chemical) {
                     if (!y.fertilizer) {
                       dataLine.push('', this.dateToDisplay(y.workDate), y.irrigator, y.method, '', '', '', '', '', '');
@@ -338,6 +351,7 @@ export class CardExportService {
                 dataLine.push('', '', '', '', '', '', '', '', '', '', '');
               } else {
                 x.tractorArray.forEach(z => {
+                  hasDripTape = hasDripTape || this.hasDripTape(z);
                   if (!z.chemical) {
                     if (!z.fertilizer) {
                       dataLine.push('', z.tractorNumber, this.dateToDisplay(z.workDate), z.workDone, z.operator, '', '', '', '', '', '');
@@ -367,6 +381,16 @@ export class CardExportService {
                 }
                 pushCounter = 0;
               }
+
+              // DRIP TAPE
+              if (hasDripTape) {
+                dataLine.push('', 'Yes');
+              } else {
+                dataLine.push('', 'No');
+              }
+              // RESET DRIP TAPE BOOLEAN
+              hasDripTape = false;
+
               if (!x.commodityArray.length) {
                 dataLine.push('', '', '', '', '', '', '');
                 dataLine.push('', '', '', '', '', '', '');
@@ -391,23 +415,23 @@ export class CardExportService {
                 dataLine.push('', '', '', '', '', '', '', '', '');
               } else {
                 x.preChemicalArray.forEach(preC => {
-                  const dt = this.separateDateTime(preC.date);
+                  const dt = this.dateToDisplay(preC.date);
                   if (!preC.chemical) {
                     if (!preC.fertilizer) {
-                      dataLine.push('', dt.date, dt.time, '', '', '', '', '', '');
+                      dataLine.push('', dt, '', '', '', '', '', '');
                     } else {
-                      dataLine.push('', dt.date, dt.time, '', '', '', preC.fertilizer.name,
+                      dataLine.push('', dt, '', '', '', preC.fertilizer.name,
                                     String(preC.fertilizer.rate), String(preC.fertilizer.unit));
                     }
                   } else if (!preC.fertilizer) {
                     if (!preC.chemical) {
-                      dataLine.push('', dt.date, dt.time, '', '', '', '', '', '');
+                      dataLine.push('', dt, '', '', '', '', '', '');
                     } else {
-                      dataLine.push('', dt.date, dt.time, preC.chemical.name, String(preC.chemical.rate),
+                      dataLine.push('', dt, preC.chemical.name, String(preC.chemical.rate),
                                     String(preC.chemical.unit), '', '', '');
                     }
                   } else {
-                     dataLine.push('', dt.date, dt.time, preC.chemical.name,
+                     dataLine.push('', dt, preC.chemical.name,
                                    String(preC.chemical.rate), String(preC.chemical.unit),
                                    preC.fertilizer.name, String(preC.fertilizer.rate), String(preC.fertilizer.unit));
                   }
@@ -428,23 +452,23 @@ export class CardExportService {
                 }
               } else {
                 x.postChemicalArray.forEach(postC => {
-                  const dt = this.separateDateTime(postC.date);
+                  const dt = this.dateToDisplay(postC.date);
                   if (!postC.chemical) {
                     if (!postC.fertilizer) {
-                      dataLine.push('', dt.date, dt.time, '', '', '', '', '', '');
+                      dataLine.push('', dt, '', '', '', '', '', '');
                     } else {
-                      dataLine.push('', dt.date, dt.time, '', '', '', postC.fertilizer.name,
+                      dataLine.push('', dt, '', '', '', postC.fertilizer.name,
                                     String(postC.fertilizer.rate), String(postC.fertilizer.unit));
                     }
                   } else if (!postC.fertilizer) {
                     if (!postC.chemical) {
-                      dataLine.push('', dt.date, dt.time, '', '', '', '', '', '');
+                      dataLine.push('', dt, '', '', '', '', '', '');
                     } else {
-                      dataLine.push('', dt.date, dt.time, postC.chemical.name,
+                      dataLine.push('', dt, postC.chemical.name,
                                     String(postC.chemical.rate), String(postC.chemical.unit), '', '', '');
                     }
                   } else {
-                     dataLine.push('', dt.date, dt.time, postC.chemical.name,
+                     dataLine.push('', dt, postC.chemical.name,
                                    String(postC.chemical.rate), String(postC.chemical.unit),
                                    postC.fertilizer.name, String(postC.fertilizer.rate), String(postC.fertilizer.unit));
                   }
@@ -510,14 +534,6 @@ export class CardExportService {
     });
   }
 
-  private separateDateTime(dt: number) {
-    const dateTime = new Date(String(dt));
-    return {
-      date: dateTime.toDateString(),
-      time: dateTime.toTimeString()
-    };
-  }
-
   // Helper - generates the CSV and invokes the file download
   private generateAndDownload(table: Array<Array<string>>, fileName: string): void {
     FileDownload(
@@ -526,6 +542,18 @@ export class CardExportService {
       // Filename
       fileName + '.csv'
     );
+  }
+
+  hasDripTape(e): boolean {
+    if (e.method) {
+      // Irrigation Entry
+      return String(e.method).toLowerCase().includes('drip');
+    } else if (e.workDone) {
+      // Tractor Entry
+      return String(e.workDone).toLowerCase().includes('drip');
+    } else {
+      return false;
+    }
   }
 
   // Takes care of commas and quotations that may occur in any cells, following RFC 4180

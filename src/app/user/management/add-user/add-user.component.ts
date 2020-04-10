@@ -40,7 +40,8 @@ export class AddUserComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       realname: ['', [Validators.required]],
       ranchAccess: [],
-      roles: this.fb.array(this.initRoleBoolArray())
+      roles: this.fb.array(this.initRoleBoolArray()),
+      shipperID: ''
     });
 
     this.roleList = this.initRoles();
@@ -63,6 +64,9 @@ export class AddUserComponent implements OnInit {
   submit() {
     if (this.form.get('username').invalid || this.form.get('realname').invalid || this.passwordOrEmailInvalid()) {
       this.submitAttempted = true;
+    } else if (this.isShipper() && !this.form.value.shipperID) {
+      this.submitAttempted = true;
+      AlertService.newBasicAlert('Users with Shipper role need a shipper ID', true);
     } else {
       this.submitAttempted = false;
       this.form.disable();
@@ -73,16 +77,18 @@ export class AddUserComponent implements OnInit {
           this.form.value.password,
           this.form.value.username,
           this.form.value.realname,
-          this.form.value.ranchAccess.map(e => e.id),
-          this.getSelectedRoles()
+          this.getRanchAccess(),
+          this.getSelectedRoles(),
+          (this.form.value.shipperID) ? this.form.value.shipperID : ''
         );
       } else {
         user = (new User()).emailConstruct(
           this.form.value.email,
           this.form.value.username,
           this.form.value.realname,
-          this.form.value.ranchAccess.map(e => e.id),
-          this.getSelectedRoles()
+          this.getRanchAccess(),
+          this.getSelectedRoles(),
+          (this.form.value.shipperID) ? this.form.value.shipperID : ''
         );
       }
       this.userService.addUser(user).subscribe(
@@ -114,6 +120,21 @@ export class AddUserComponent implements OnInit {
 
   initRoleBoolArray(): Array<boolean> {
     return Array((Object.keys(this.plRole).length) / 2).fill(false);
+  }
+
+  isShipper(): boolean {
+    return false; // disable shippers for now
+    // return this.getSelectedRoles().includes(PlRole[PlRole.SHIPPER.toString()]);
+  }
+
+  getRanchAccess() {
+    if (!this.hasPerms()) {return []; }
+    try {
+      return (this.form.value.ranchAccess) ? this.form.value.ranchAccess.map(e => e.id) : [];
+    } catch (e) {
+      AlertService.newBasicAlert('Error When Reading Ranch Access', true);
+      return [];
+    }
   }
 
   getRoleFormControls(): AbstractControl[] {
