@@ -5,7 +5,7 @@ export enum PlRole {
   DATA_EDIT,
   DATA_ENTRY,
   DATA_VIEW,
-  // SHIPPER,
+  SHIPPER,
   USER_MANAGEMENT
 }
 
@@ -43,11 +43,11 @@ export const PlRoleLookup = {
       'If the user also has the "Data Edit" role, they will be able to edit all cards (both closed and open, from all ranches) ' +
       'plus close/re-open and permanently delete any card.'
   },
-  // SHIPPER: {
-  //   style: 'badge-secondary',
-  //   description: 'Allows the user to view the Data page which shows cards containing the shipper ID of the current user. When opening ' +
-  //     'a card it will not show any pre/post plant, tractor, or irrigation information. The user is able to add comments'
-  // },
+  SHIPPER: {
+    style: 'badge-secondary',
+    description: 'Allows the user to view the Data page which shows cards containing the shipper ID of the current user. When opening ' +
+      'a card it will not show any pre/post plant, tractor, or irrigation information. The user is able to add comments'
+  },
   USER_MANAGEMENT: {
     style: 'badge-danger',
     description: 'Allows the user to create, edit, and delete all users from the "Users" tab of the application.'

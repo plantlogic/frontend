@@ -6,72 +6,134 @@
                [(ngModel)]="filter" (keyup)="filterItems()" mdbInput>
       </form>
     </div>
-    <div class="col text-center" *ngIf="users">
+    <div class="col text-center" *ngIf="users.local && users.shippers">
         <button type="button"color="primary" name="userCount" outline="true" disabled
         mdbBtn floating="true" size="sm">
         <span *ngIf="!filter">Total Users: </span>
         <span *ngIf="filter">Search Results: </span>
-        <b>{{users.length}}</b>
+        <b>{{users.local.length + users.shippers.length || 0}}</b>
       </button>
-      </div>
+    </div>
     <div class="col">
       <button type="button" class="float-right" color="primary" routerLink="/userManagement/addUser" name="addUser"
       mdbBtn floating="true" size="sm" mdbWavesEffect>Add User <i class="fa fa-plus ml-1" aria-hidden="true"></i></button>
     </div>
   </div>
   <hr class="my-4">
-  <div class="row">
-    <div class="col">
-      <h2 *ngIf="!users">Loading data...</h2>
-      <table mdbTable *ngIf="users">
+  <div class="col">
+    <div class="row">
+      <h2 *ngIf="!users.local">Loading data...</h2>
+      <h2 *ngIf="users.local">Merrill Farm Users</h2>
+      <table mdbTable *ngIf="users.local">
         <thead>
           <tr>
-            <th scope="col" [mdbTableSort]="users" [sortBy]="'username'">
+            <th scope="col" [mdbTableSort]="users.local" [sortBy]="'username'">
               Username <i class="fa fa-sort ml-1"></i>
             </th>
-            <th scope="col" [mdbTableSort]="users" [sortBy]="'realName'">
+            <th scope="col" [mdbTableSort]="users.local" [sortBy]="'realName'">
               Name <i class="fa fa-sort ml-1"></i>
             </th>
-            <th scope="col" [mdbTableSort]="users" [sortBy]="'email'" class="d-none d-md-table-cell">
+            <th scope="col" [mdbTableSort]="users.local" [sortBy]="'email'" class="d-none d-md-table-cell">
               Email <i class="fa fa-sort ml-1"></i>
             </th>
-            <th scope="col" [mdbTableSort]="users" [sortBy]="'passwordUpdated'" class="d-none d-md-table-cell">
+            <th scope="col" [mdbTableSort]="users.local" [sortBy]="'passwordUpdated'" class="d-none d-md-table-cell">
               Password Last Updated <i class="fa fa-sort ml-1"></i>
             </th>
-            <th scope="col" [mdbTableSort]="users" [sortBy]="'permissions'" class="d-none d-md-table-cell">
+            <th scope="col" [mdbTableSort]="users.local" [sortBy]="'permissions'" class="d-none d-md-table-cell">
               Permissions <i class="fa fa-sort ml-1"></i>
             </th>
             <th scope="col">Options</th>
           </tr>
         </thead>
         <tbody>
-          <tr mdbTableCol *ngFor="let p of users; let i = index" class="animated fadeIn" [style.animation-delay]="min((30*i), 1000)+ 'ms'">
-            <th scope="row">{{p.username}}</th>
-            <td>{{p.realName}}</td>
-            <td class="d-none d-md-table-cell">
-              <span *ngIf="p.email">{{p.email}}</span>
-              <span *ngIf="!p.email" class="badge badge-dark">No Email</span>
-            </td>
-            <td class="d-none d-md-table-cell">{{p.passwordUpdated | date:'longDate'}}</td>
-            <td class="d-none d-md-table-cell">
-              <div *ngIf="p.permissions.length <= 0" class="badge badge-dark text-wrap">
-                User Disabled:
-                <div *ngIf="p.passwordReset" class="mt-1">Password Change Required</div>
-                <div *ngIf="!p.passwordReset" class="mt-1">User Has No Permissions</div>
-              </div>
-              <div *ngFor="let r of p.permissions; let i = index">
-                <span class="badge mr-1" [ngClass]="PlRoleLookup[r]['style']" [mdbTooltip]="PlRoleLookup[r]['description']">
-                  {{r.toString() | underscoreToSpace | titlecase}}
-                </span>
-              </div>
-            </td>
-            <td>
-              <button type="button" color="amber" [routerLink]="['/userManagement/editUser', p.username]"
-                      alt="Edit User" class="mr-1 mb-1" mdbBtn floating="true" size="sm"
-                      mdbWavesEffect>Edit <i class="ml-1 fa fa-edit" aria-hidden="true"></i></button>
-              <button type="button" color="danger" alt="Delete User" (click)="deleteUser(p.username)"
-              mdbBtn floating="true" size="sm" mdbWavesEffect>Delete <i class="ml-1 fa fa-trash" aria-hidden="true"></i></button>
-            </td>
+          <tr mdbTableCol *ngFor="let p of users.local; let i = index" class="animated fadeIn" [style.animation-delay]="min((30*i), 1000)+ 'ms'">
+            <ng-container *ngIf="p">
+              <th scope="row">{{p.username}}</th>
+              <td>{{p.realName}}</td>
+              <td class="d-none d-md-table-cell">
+                <span *ngIf="p.email">{{p.email}}</span>
+                <span *ngIf="!p.email" class="badge badge-dark">No Email</span>
+              </td>
+              <td class="d-none d-md-table-cell">{{p.passwordUpdated | date:'longDate'}}</td>
+              <td class="d-none d-md-table-cell">
+                <div *ngIf="p.permissions.length <= 0" class="badge badge-dark text-wrap">
+                  User Disabled:
+                  <div *ngIf="p.passwordReset" class="mt-1">Password Change Required</div>
+                  <div *ngIf="!p.passwordReset" class="mt-1">User Has No Permissions</div>
+                </div>
+                <div *ngFor="let r of p.permissions; let i = index">
+                  <span class="badge mr-1" [ngClass]="PlRoleLookup[r]['style']" [mdbTooltip]="PlRoleLookup[r]['description']">
+                    {{r.toString() | underscoreToSpace | titlecase}}
+                  </span>
+                </div>
+              </td>
+              <td>
+                <button type="button" color="amber" [routerLink]="['/userManagement/editUser', p.username]"
+                        alt="Edit User" class="mr-1 mb-1" mdbBtn floating="true" size="sm"
+                        mdbWavesEffect>Edit <i class="ml-1 fa fa-edit" aria-hidden="true"></i></button>
+                <button type="button" color="danger" alt="Delete User" (click)="deleteUser(p.username)"
+                mdbBtn floating="true" size="sm" mdbWavesEffect>Delete <i class="ml-1 fa fa-trash" aria-hidden="true"></i></button>
+              </td>
+            </ng-container>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <br/><br/>
+    <div class="row">
+      <h2 *ngIf="!users.shippers">Loading data...</h2>
+      <h2 *ngIf="users.shippers">Shippers</h2>
+      <table mdbTable *ngIf="users.shippers">
+        <thead>
+          <tr>
+            <th scope="col" [mdbTableSort]="users.shippers" [sortBy]="'username'">
+              Username <i class="fa fa-sort ml-1"></i>
+            </th>
+            <th scope="col" [mdbTableSort]="users.shippers" [sortBy]="'realName'">
+              Name <i class="fa fa-sort ml-1"></i>
+            </th>
+            <th scope="col" [mdbTableSort]="users.shippers" [sortBy]="'email'" class="d-none d-md-table-cell">
+              Email <i class="fa fa-sort ml-1"></i>
+            </th>
+            <th scope="col" [mdbTableSort]="users.shippers" [sortBy]="'passwordUpdated'" class="d-none d-md-table-cell">
+              Password Last Updated <i class="fa fa-sort ml-1"></i>
+            </th>
+            <th scope="col" [mdbTableSort]="users.shippers" [sortBy]="'permissions'" class="d-none d-md-table-cell">
+              Permissions <i class="fa fa-sort ml-1"></i>
+            </th>
+            <th scope="col">Options</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr mdbTableCol *ngFor="let p of users.shippers; let i = index" class="animated fadeIn" [style.animation-delay]="min((30*i), 1000)+ 'ms'">
+            <ng-container *ngIf="p">
+              <th scope="row">{{p.username}}</th>
+              <td>{{p.realName}}</td>
+              <td class="d-none d-md-table-cell">
+                <span *ngIf="p.email">{{p.email}}</span>
+                <span *ngIf="!p.email" class="badge badge-dark">No Email</span>
+              </td>
+              <td class="d-none d-md-table-cell">{{p.passwordUpdated | date:'longDate'}}</td>
+              <td class="d-none d-md-table-cell">
+                <div *ngIf="p.permissions.length <= 0" class="badge badge-dark text-wrap">
+                  User Disabled:
+                  <div *ngIf="p.passwordReset" class="mt-1">Password Change Required</div>
+                  <div *ngIf="!p.passwordReset" class="mt-1">User Has No Permissions</div>
+                </div>
+                <div *ngFor="let r of p.permissions; let i = index">
+                  <span class="badge mr-1" [ngClass]="PlRoleLookup[r]['style']" [mdbTooltip]="PlRoleLookup[r]['description']">
+                    {{r.toString() | underscoreToSpace | titlecase}}
+                  </span>
+                </div>
+              </td>
+              <td>
+                <button type="button" color="amber" [routerLink]="['/userManagement/editUser', p.username]"
+                        alt="Edit User" class="mr-1 mb-1" mdbBtn floating="true" size="sm"
+                        mdbWavesEffect>Edit <i class="ml-1 fa fa-edit" aria-hidden="true"></i></button>
+                <button type="button" color="danger" alt="Delete User" (click)="deleteUser(p.username)"
+                mdbBtn floating="true" size="sm" mdbWavesEffect>Delete <i class="ml-1 fa fa-trash" aria-hidden="true"></i></button>
+              </td>
+            </ng-container>
           </tr>
         </tbody>
       </table>

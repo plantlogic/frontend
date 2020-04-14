@@ -28,7 +28,7 @@ export class OpenCardEntryComponent implements OnInit {
 
   // create array of common keys, whose data is needed. Omit restricted options.
   commonKeys = ['bedTypes', 'chemicals', 'chemicalRateUnits', 'commodities',
-  'fertilizers', 'irrigators', 'irrigationMethod', 'tractorOperators', 'tractorWork'];
+  'fertilizers', 'irrigators', 'irrigationMethod', 'shippers', 'tractorOperators', 'tractorWork'];
 
   ngOnInit() {
     const tempThis = this;
@@ -44,6 +44,9 @@ export class OpenCardEntryComponent implements OnInit {
 
   private cardIDsToValues(card: Card): Card {
     card.ranchName = this.findCommonValue('ranches', ['value'], card.ranchName);
+    card.shippers.forEach(e => {
+      e = this.findCommonValue('shippers', ['value'], e);
+    });
     card.commodityArray.forEach(e => {
       e.commodity = this.findCommonValue('commodities', ['value', 'key'], e.commodity);
       e.bedType = this.findCommonValue('bedTypes', ['value'], e.bedType);
@@ -181,7 +184,7 @@ export class OpenCardEntryComponent implements OnInit {
 
           // For display purposes, change any common IDs to their values
           this.card = this.cardIDsToValues(this.card);
-
+          this.card.initShippersString();
           this.card.initCommodityString();
           this.card.initTotalAcres();
           this.datesSet = (this.card.wetDate || this.card.thinDate || this.card.hoeDate) ? true : false;

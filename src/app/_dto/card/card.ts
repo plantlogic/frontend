@@ -51,7 +51,8 @@ export class Card {
   //
   lotNumber: string;
   //
-  shipperID: string;
+  shippers: Array<string> = new Array<string>();
+  shippersString: string;
   //
   planterNumber: string;
   //
@@ -119,7 +120,7 @@ export class Card {
     this.fieldID = card.fieldID;
     this.ranchManagerName = card.ranchManagerName;
     this.lotNumber = card.lotNumber;
-    this.shipperID = card.shipperID;
+    this.shippers = card.shippers;
     this.planterNumber = card.planterNumber;
     this.wetDate = card.wetDate;
     this.thinDate = card.thinDate;
@@ -237,6 +238,16 @@ export class Card {
         this.commodityString = '';
       }
     } catch { console.log('Error when initializing commodity string'); }
+  }
+
+  initShippersString(): void {
+    try {
+      if (this.shippers) {
+        this.shippersString = this.shippers.sort().join(', ');
+      } else {
+        this.shippersString = '';
+      }
+    } catch { console.log('Error when initializing shippers string'); }
   }
 
   initTotalAcres(): void {

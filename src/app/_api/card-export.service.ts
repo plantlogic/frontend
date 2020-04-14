@@ -174,20 +174,20 @@ export class CardExportService {
                       '1st', 'Commodity', '', '', '', '', '',
                       '2nd', 'Commodity', '', '', '', '', '',
                       '3rd', 'Commodity', '', '', '', '', '',
-                      '1st', 'Pre Plant', '', '', '', '', '', '', '',
-                      '2nd', 'Pre Plant', '', '', '', '', '', '', '',
-                      '3rd', 'Pre Plant', '', '', '', '', '', '', '',
-                      '1st', 'At Plant', '', '', '', '', '', '', '',
-                      '2nd', 'At Plant', '', '', '', '', '', '', '',
-                      '3rd', 'At Plant', '', '', '', '', '', '', '',
-                      '4th', 'At Plant', '', '', '', '', '', '', '',
-                      '5th', 'At Plant', '', '', '', '', '', '', '',
-                      '6th', 'At Plant', '', '', '', '', '', '', '',
-                      '7th', 'At Plant', '', '', '', '', '', '', '',
-                      '8th', 'At Plant', '', '', '', '', '', '', '',
-                      '9th', 'At Plant', '', '', '', '', '', '', '',
-                      '10th', 'At Plant', '', '', '', '', '', '', '',
-                      '11th', 'At Plant', '', '', '', '', '', '', '',
+                      '1st', 'Pre Plant', '', '', '', '', '', '',
+                      '2nd', 'Pre Plant', '', '', '', '', '', '',
+                      '3rd', 'Pre Plant', '', '', '', '', '', '',
+                      '1st', 'At Plant', '', '', '', '', '', '',
+                      '2nd', 'At Plant', '', '', '', '', '', '',
+                      '3rd', 'At Plant', '', '', '', '', '', '',
+                      '4th', 'At Plant', '', '', '', '', '', '',
+                      '5th', 'At Plant', '', '', '', '', '', '',
+                      '6th', 'At Plant', '', '', '', '', '', '',
+                      '7th', 'At Plant', '', '', '', '', '', '',
+                      '8th', 'At Plant', '', '', '', '', '', '',
+                      '9th', 'At Plant', '', '', '', '', '', '',
+                      '10th', 'At Plant', '', '', '', '', '', '',
+                      '11th', 'At Plant', '', '', '', '', '', '',
                       '12th', 'At Plant', '', '', '', '', '', '',
           ]);
           table.push(['Field ID', 'Ranch Name', 'Ranch Manager', 'Lot Number', 'Shipper ID',
@@ -281,7 +281,7 @@ export class CardExportService {
               x = this.cardIDsToValues(x, commonData);
               // Push simple data
               dataLine.push(
-                String(x.fieldID), x.ranchName, x.ranchManagerName, x.lotNumber, x.shipperID,
+                String(x.fieldID), x.ranchName, x.ranchManagerName, x.lotNumber, 'x.shippers',
                 this.dateToDisplay(x.wetDate), this.dateToDisplay(x.thinDate), String(x.thinType), this.dateToDisplay(x.hoeDate),
                 String(x.hoeType), this.dateToDisplay(x.harvestDate)
               );
@@ -410,27 +410,26 @@ export class CardExportService {
                 pushCounter = 0;
               }
               if (!x.preChemicalArray.length) {
-                dataLine.push('', '', '', '', '', '', '', '', '');
-                dataLine.push('', '', '', '', '', '', '', '', '');
-                dataLine.push('', '', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '');
+                dataLine.push('', '', '', '', '', '', '', '');
               } else {
                 x.preChemicalArray.forEach(preC => {
                   const dt = this.dateToDisplay(preC.date);
                   if (!preC.chemical) {
                     if (!preC.fertilizer) {
+                      // no chem, no fert
                       dataLine.push('', dt, '', '', '', '', '', '');
                     } else {
+                      // no chem, has fert
                       dataLine.push('', dt, '', '', '', preC.fertilizer.name,
                                     String(preC.fertilizer.rate), String(preC.fertilizer.unit));
                     }
                   } else if (!preC.fertilizer) {
-                    if (!preC.chemical) {
-                      dataLine.push('', dt, '', '', '', '', '', '');
-                    } else {
-                      dataLine.push('', dt, preC.chemical.name, String(preC.chemical.rate),
-                                    String(preC.chemical.unit), '', '', '');
-                    }
+                    // has chem, no fert
+                    dataLine.push('', dt, preC.chemical.name, String(preC.chemical.rate), String(preC.chemical.unit), '', '', '');
                   } else {
+                    // has chem, has fert
                      dataLine.push('', dt, preC.chemical.name,
                                    String(preC.chemical.rate), String(preC.chemical.unit),
                                    preC.fertilizer.name, String(preC.fertilizer.rate), String(preC.fertilizer.unit));
@@ -439,7 +438,7 @@ export class CardExportService {
                 });
                 if (pushCounter < 3) {
                   while (pushCounter < 3) {
-                    dataLine.push('', '', '', '', '', '', '', '', '');
+                    dataLine.push('', '', '', '', '', '', '', '');
                     pushCounter += 1;
                   }
                 }
@@ -448,26 +447,25 @@ export class CardExportService {
 
               if (!x.postChemicalArray.length) {
                 for (let i = 0; i < 12; i++) {
-                  dataLine.push('', '', '', '', '', '', '', '', '');
+                  dataLine.push('', '', '', '', '', '', '', '');
                 }
               } else {
                 x.postChemicalArray.forEach(postC => {
                   const dt = this.dateToDisplay(postC.date);
                   if (!postC.chemical) {
                     if (!postC.fertilizer) {
+                      // no chem, no fert
                       dataLine.push('', dt, '', '', '', '', '', '');
                     } else {
+                      // no chem, has fert
                       dataLine.push('', dt, '', '', '', postC.fertilizer.name,
                                     String(postC.fertilizer.rate), String(postC.fertilizer.unit));
                     }
                   } else if (!postC.fertilizer) {
-                    if (!postC.chemical) {
-                      dataLine.push('', dt, '', '', '', '', '', '');
-                    } else {
-                      dataLine.push('', dt, postC.chemical.name,
-                                    String(postC.chemical.rate), String(postC.chemical.unit), '', '', '');
-                    }
+                    // has chem, no fert
+                    dataLine.push('', dt, postC.chemical.name, String(postC.chemical.rate), String(postC.chemical.unit), '', '', '');
                   } else {
+                    // has chem, has fert
                      dataLine.push('', dt, postC.chemical.name,
                                    String(postC.chemical.rate), String(postC.chemical.unit),
                                    postC.fertilizer.name, String(postC.fertilizer.rate), String(postC.fertilizer.unit));
@@ -476,7 +474,7 @@ export class CardExportService {
                 });
                 if (pushCounter < 12) {
                   while (pushCounter < 12) {
-                    dataLine.push('', '', '', '', '', '', '', '', '');
+                    dataLine.push('', '', '', '', '', '', '', '');
                     pushCounter += 1;
                   }
                 }
