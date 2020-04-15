@@ -97,8 +97,8 @@ export class UserManagementComponent implements OnInit {
   }
 
   public separateLocalUsersAndShippers(allUsers: User[]) {
-    const shippers = [];
-    const localUsers = [];
+    const shippersArr = [];
+    const localUsersArr = [];
     allUsers.forEach(user => {
       let isShipper = false;
       user.permissions.forEach(p => {
@@ -107,12 +107,12 @@ export class UserManagementComponent implements OnInit {
           isShipper = true;
         }
       });
-      (isShipper) ? shippers.push(user) : localUsers.push(user);
+      (isShipper) ? shippersArr.push(user) : localUsersArr.push(user);
       isShipper = false;
     });
     return {
-      shippers: shippers,
-      local: localUsers
+      shippers: shippersArr,
+      local: localUsersArr
     };
   }
 

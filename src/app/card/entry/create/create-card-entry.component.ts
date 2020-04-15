@@ -28,10 +28,20 @@ export class CreateCardEntryComponent implements OnInit {
               public common: CommonFormDataService) { }
 
   card: Card = new Card();
+  cardShippers = [];
+  multiSelectSettings = {
+    singleSelection: false,
+    idField: 'id',
+    textField: 'value',
+    selectAllText: 'Select All',
+    unSelectAllText: 'Unselect All',
+    itemsShowLimit: 5,
+    allowSearchFilter: true
+  };
 
   // create array of common keys, whose data is needed for card entry. Omit restricted options.
   commonKeys = ['bedTypes', 'chemicals', 'chemicalRateUnits', 'commodities',
-                'fertilizers', 'tractorOperators', 'tractorWork'];
+                'fertilizers', 'shippers', 'tractorOperators', 'tractorWork'];
 
   ngOnInit() {
     const tempThis = this;
@@ -80,6 +90,15 @@ export class CreateCardEntryComponent implements OnInit {
       return (this[key]) ? this[key] : [];
     } else {
       console.log('Key ' + key + ' is not in the commonKeys array.');
+      return [];
+    }
+  }
+
+  getSelectedShippers(): Array<string> {
+    try {
+      return (this.cardShippers) ? this.cardShippers.map(e => e.id) : [];
+    } catch (e) {
+      AlertService.newBasicAlert('Error When Reading Shippers', true);
       return [];
     }
   }
@@ -190,7 +209,7 @@ export class CreateCardEntryComponent implements OnInit {
     }
     // Replace Lot Number Whitespace
     card.lotNumber = card.lotNumber.replace(/\s/g, '');
-
+    card.shippers = this.getSelectedShippers();
     // Create Card
     this.cardEntryService.createCard(card).subscribe(
       data => {

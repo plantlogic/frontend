@@ -26,6 +26,16 @@
         <label for="planterNumber"><b>Planter Number</b></label>
         <input class="form-control" id="planterNumber" name="planterNumber" type="text" placeholder="Planter Number" [(ngModel)]="card.planterNumber" />
       </div>
+      <div class="form-group col-md">
+        <label for="shippers"><b>Shippers</b></label>
+        <ng-multiselect-dropdown
+            id="shipperSelector"
+            [(ngModel)]="cardShippers"
+            [placeholder]="'Select Shipper Access'"
+            [data]="common.getValues('shippers')"
+            [settings]="multiSelectSettings">
+          </ng-multiselect-dropdown>
+      </div>
     </div>
 
     <div class="d-inline-block w-100"><hr /></div>
