@@ -36,10 +36,21 @@ export class OpenCardDataComponent implements OnInit {
   editing = false;
   editingComment = false;
   commentsCollapsed = true;
+  cardShippers = [];
+  multiSelectSettings = {
+    singleSelection: false,
+    idField: 'id',
+    textField: 'value',
+    selectAllText: 'Select All',
+    unSelectAllText: 'Unselect All',
+    itemsShowLimit: 5,
+    allowSearchFilter: true
+  };
 
   // create array of common keys, whose data is needed for card entry. Omit restricted options.
-  commonKeys = ['bedTypes', 'chemicals', 'chemicalRateUnits', 'commodities',
-                'fertilizers', 'irrigationMethod', 'irrigators', 'tractorOperators',
+  commonKeys = (this.isShipper()) ? ['bedTypes', 'commodities', 'shippers'] :
+                ['bedTypes', 'chemicals', 'chemicalRateUnits', 'commodities',
+                'fertilizers', 'irrigationMethod', 'irrigators', 'shippers', 'tractorOperators',
                 'tractorWork'];
 
   ngOnInit() {
@@ -60,6 +71,9 @@ export class OpenCardDataComponent implements OnInit {
     // DO SOMETHING DIFFERENT IF SHIPPER
     const c: Comment = new Comment();
     c.author = this.auth.getName();
+    if (this.isShipper()) {
+      c.author = '{' + this.getShipper(this.auth.getShipperID()) + '} ' + c.author;
+    }
     c.userName = this.auth.getUsername();
     c.body = '';
     c.dateCreated = new Date().valueOf();
@@ -214,6 +228,28 @@ export class OpenCardDataComponent implements OnInit {
     return this[`ranches`].find(r => r.id === ID).value;
   }
 
+  getSelectedShippers(): Array<string> {
+    try {
+      return (this.cardShippers) ? this.cardShippers.map(e => e.id) : [];
+    } catch (e) {
+      AlertService.newBasicAlert('Error When Reading Shippers', true);
+      return [];
+    }
+  }
+
+  getShipper(id: string): string {
+    if (this.isShipper()) {
+      try {
+        const shipper = this[`shippers`].find(e => e.id === id). value;
+        return shipper;
+      } catch (e) {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
   public getVarieties(commodityID) {
     try {
       const searchResult = this[`commodities`].find(e => e.id === commodityID).value.value;
@@ -254,8 +290,12 @@ export class OpenCardDataComponent implements OnInit {
           sortedCommon[key] = tempThis.common.sortCommonArray(data[key], key);
         }
       });
-      sortedCommon[`ranches`] = data[`ranches`].filter(e => userRanchAccess.includes(e.id));
-      sortedCommon[`ranches`] = tempThis.common.sortCommonArray(sortedCommon[`ranches`], 'ranches');
+      if (this.isShipper()) {
+        sortedCommon[`ranches`] = data[`ranches`];
+      } else {
+        sortedCommon[`ranches`] = data[`ranches`].filter(e => userRanchAccess.includes(e.id));
+        sortedCommon[`ranches`] = tempThis.common.sortCommonArray(sortedCommon[`ranches`], 'ranches');
+      }
       f(sortedCommon);
     });
   }
@@ -265,30 +305,47 @@ export class OpenCardDataComponent implements OnInit {
     return keys.slice(keys.length / 2);
   }
 
+  isShipper(): boolean {
+    return this.auth.hasPermission(PlRole.SHIPPER);
+  }
+
   private loadCardData() {
     const tempThis = this;
     this.route.params.subscribe(cr => {
       this.cardView.getCardById(cr.id).subscribe(
         data => {
           if (data.success) {
-            this.card = (new Card()).copyConstructor(data.data);
-            this.comments = (new Card()).copyConstructor(data.data).comments;
-            // Fix Datalist Display
-            this.card.tractorArray.forEach(e => {
-              e.operator = tempThis.iDToDataListOption(e.operator, 'tractorOperators');
+            tempThis.card = (new Card()).copyConstructor(data.data);
+            tempThis.comments = (new Card()).copyConstructor(data.data).comments;
+            tempThis.card.initTotalAcres();
+            // Set up shippers multiselect
+            tempThis.common.getValues('shippers', shippers => {
+              tempThis.cardShippers = shippers.filter(e => {
+                return tempThis.card.shippers.includes(e.id);
+              });
             });
-            this.card.irrigationArray.forEach(e => {
-              e.irrigator = tempThis.iDToDataListOption(e.irrigator, 'irrigators');
-            });
-            this.card.initTotalAcres();
+            if (tempThis.isShipper()) {
+              tempThis.card.preChemicalArray = [];
+              tempThis.card.postChemicalArray = [];
+              tempThis.card.tractorArray = [];
+              tempThis.card.irrigationArray = [];
+            } else {
+              // Fix Datalist Display
+              tempThis.card.tractorArray.forEach(e => {
+                e.operator = tempThis.iDToDataListOption(e.operator, 'tractorOperators');
+              });
+              tempThis.card.irrigationArray.forEach(e => {
+                e.irrigator = tempThis.iDToDataListOption(e.irrigator, 'irrigators');
+              });
+            }
           } else if (!data.success) {
             AlertService.newBasicAlert('Error: ' + data.error, true);
-            this.nav.goBack();
+            tempThis.nav.goBack();
           }
         },
         failure => {
           AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
-          this.nav.goBack();
+          tempThis.nav.goBack();
         }
       );
     });
@@ -303,6 +360,7 @@ export class OpenCardDataComponent implements OnInit {
     if (!this.setCardCommentsForUpdate()) { return; }
     const card = this.validateAndFix(this.card);
     if (!card) { return; }
+
     // If Valid, continue
     const newAlert = new Alert();
     newAlert.color = 'warning';
@@ -591,6 +649,7 @@ export class OpenCardDataComponent implements OnInit {
       card.harvestDate = (this.card.harvestDate) ? (new Date(this.card.harvestDate)).valueOf() : null;
       card.thinDate = (this.card.thinDate) ? (new Date(this.card.thinDate)).valueOf() : null;
       card.wetDate = (this.card.wetDate) ? (new Date(this.card.wetDate)).valueOf() : null;
+      card.shippers = this.getSelectedShippers();
       return card;
     } catch (e) {
       AlertService.newBasicAlert('Error When Validating Card Data', true);

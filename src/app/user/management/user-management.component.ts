@@ -6,7 +6,7 @@ import {AlertService} from '../../_interact/alert/alert.service';
 import {User} from '../../_dto/user/user';
 import {MdbTableService} from 'angular-bootstrap-md';
 import {Alert} from '../../_interact/alert/alert';
-import {PlRoleLookup} from '../../_dto/user/pl-role.enum';
+import {PlRoleLookup, PlRole} from '../../_dto/user/pl-role.enum';
 
 @Component({
   selector: 'app-user-management',
@@ -17,7 +17,8 @@ export class UserManagementComponent implements OnInit {
   constructor(private titleService: TitleService, private userService: UserService, private auth: AuthService,
               private tableService: MdbTableService) {}
 
-  users: User[];
+  users = null;
+  usersRaw: User[] = null;
   filter: string;
   previous: string;
   PlRoleLookup = PlRoleLookup;
@@ -31,9 +32,10 @@ export class UserManagementComponent implements OnInit {
     this.userService.getUserList().subscribe(
       data => {
         if (data.success) {
-          this.users = data.data;
-          this.tableService.setDataSource(this.users);
-          this.users = this.tableService.getDataSource();
+          this.usersRaw = data.data;
+          this.users = this.separateLocalUsersAndShippers(this.usersRaw);
+          this.tableService.setDataSource(this.usersRaw);
+          this.usersRaw = this.tableService.getDataSource();
           this.previous = this.tableService.getDataSource();
         } else if (!data.success) {
           AlertService.newBasicAlert('Error: ' + data.error, true);
@@ -50,13 +52,14 @@ export class UserManagementComponent implements OnInit {
 
     if (!this.filter) {
       this.tableService.setDataSource(this.previous);
-      this.users = this.tableService.getDataSource();
-    }
-
-    if (this.filter) {
+      this.usersRaw = this.tableService.getDataSource();
+      this.users = this.separateLocalUsersAndShippers(this.usersRaw);
+    } else {
       this.filter.toLowerCase();
-      this.users = this.tableService.searchLocalDataBy(this.filter.toLowerCase());
+      this.usersRaw = this.tableService.searchLocalDataBy(this.filter.toLowerCase());
       this.tableService.setDataSource(prev);
+      this.filter.toLowerCase();
+      this.users = this.separateLocalUsersAndShippers(this.usersRaw);
     }
   }
 
@@ -91,6 +94,26 @@ export class UserManagementComponent implements OnInit {
         );
       });
     }
+  }
+
+  public separateLocalUsersAndShippers(allUsers: User[]) {
+    const shippersArr = [];
+    const localUsersArr = [];
+    allUsers.forEach(user => {
+      let isShipper = false;
+      user.permissions.forEach(p => {
+        // Checking for SHIPPER role not working?
+        if (String(p) === 'SHIPPER') {
+          isShipper = true;
+        }
+      });
+      (isShipper) ? shippersArr.push(user) : localUsersArr.push(user);
+      isShipper = false;
+    });
+    return {
+      shippers: shippersArr,
+      local: localUsersArr
+    };
   }
 
   // Used for animation

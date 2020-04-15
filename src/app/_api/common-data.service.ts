@@ -79,11 +79,11 @@ export const CommonLookup = {
     sort: true,
     type: 'text'
   },
-  // shippers: {
-  //   name: 'Shippers',
-  //   sort: true,
-  //   type: 'text'
-  // },
+  shippers: {
+    name: 'Shippers',
+    sort: true,
+    type: 'text'
+  },
   tractorOperators: {
     name: 'Tractor Operators',
     sort: true,

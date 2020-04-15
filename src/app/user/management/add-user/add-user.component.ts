@@ -20,6 +20,7 @@ export class AddUserComponent implements OnInit {
   plRole = PlRole;
   roleList: Array<string>;
   manualPassword = false;
+  hasBeenWarned = false;
 
   multiselectSettings = {
     singleSelection: false,
@@ -68,6 +69,15 @@ export class AddUserComponent implements OnInit {
       this.submitAttempted = true;
       AlertService.newBasicAlert('Users with Shipper role need a shipper ID', true);
     } else {
+      if (this.isShipper() && this.getSelectedRoles().includes(PlRole[PlRole.DATA_VIEW.toString()])) {
+        AlertService.newBasicAlert('Error: \'Data View\' role supersedes Shipper role, please disable one and try again', true, 30);
+        return;
+      } else if (this.isShipper() && this.hasPerms() && !this.hasBeenWarned) {
+        AlertService.newBasicAlert('Notice: Shipper role grants access to a limited view of the data page, ' +
+              'adding additional view or edit roles may give the user unintended data access. Submit again to continue.', true, 30);
+        this.hasBeenWarned = true;
+        return;
+      }
       this.submitAttempted = false;
       this.form.disable();
 
@@ -123,8 +133,7 @@ export class AddUserComponent implements OnInit {
   }
 
   isShipper(): boolean {
-    return false; // disable shippers for now
-    // return this.getSelectedRoles().includes(PlRole[PlRole.SHIPPER.toString()]);
+    return this.getSelectedRoles().includes(PlRole[PlRole.SHIPPER.toString()]);
   }
 
   getRanchAccess() {

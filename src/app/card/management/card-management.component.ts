@@ -168,6 +168,10 @@ export class CardManagementComponent implements OnInit {
     return this.auth.hasPermission(PlRole.DATA_EDIT);
   }
 
+  hasShipperPermission(): boolean {
+    return this.auth.hasPermission(PlRole.SHIPPER);
+  }
+
   hasViewPermission(): boolean {
     return this.auth.hasPermission(PlRole.DATA_VIEW);
   }
@@ -194,14 +198,20 @@ export class CardManagementComponent implements OnInit {
           sortedCommon[key] = tempThis.common.sortCommonArray(data[key], key);
         }
       });
-      sortedCommon[`ranches`] = data[`ranches`].filter(e => userRanchAccess.includes(e.id));
+      if (this.hasShipperPermission() && !this.hasViewPermission()) {
+        sortedCommon[`ranches`] = data[`ranches`];
+      } else {
+        sortedCommon[`ranches`] = data[`ranches`].filter(e => userRanchAccess.includes(e.id));
+      }
       sortedCommon[`ranches`] = tempThis.common.sortCommonArray(sortedCommon[`ranches`], 'ranches');
       f(sortedCommon);
     });
   }
 
   private loadCardData() {
-    this.cardService.getAllCards().subscribe(
+    const shipperRestricted: boolean = this.hasShipperPermission() && !this.hasViewPermission();
+    const shipperID = (shipperRestricted) ? this.auth.getShipperID() : null;
+    this.cardService.getAllCards(shipperRestricted, shipperID).subscribe(
       data => {
         if (data.success) {
           this.cards = data.data.map(c => (new Card()).copyConstructor(c));

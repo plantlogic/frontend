@@ -350,6 +350,15 @@ export class AuthService {
     }
   }
 
+  public getShipperID(): string {
+    const user: User = this.getParsedTokenUser();
+    if (user && this.hasPermission(PlRole.SHIPPER) && user.shipperID) {
+      return user.shipperID;
+    } else {
+      return null;
+    }
+  }
+
   public hasEmail(): boolean {
     const user: User = this.getParsedTokenUser();
 

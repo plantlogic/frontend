@@ -162,7 +162,7 @@ const routes: Routes = [
     data: {
       // Only view is required to access page
       // Enforce DATA_EDIT check when modifying any data
-      role: [PlRole.DATA_VIEW]
+      role: [PlRole.DATA_VIEW, PlRole.SHIPPER]
     }
   },
   {
@@ -171,7 +171,7 @@ const routes: Routes = [
     canActivate: [RoleGuard],
     data: {
       parent: '/manage',
-      role: [PlRole.DATA_VIEW, PlRole.DATA_EDIT]
+      role: [PlRole.DATA_VIEW, PlRole.DATA_EDIT, PlRole.SHIPPER]
     }
   },
   {
