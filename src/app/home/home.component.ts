@@ -42,6 +42,8 @@ export class HomeComponent implements OnInit {
   commonKeys = ['commodities'];
   months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
+  redirecting = false;
+
   ngOnInit() {
     /* ----------------
     Redirects
@@ -56,6 +58,14 @@ export class HomeComponent implements OnInit {
       // Go straight to the create card page if only permission is data entry
       if (this.auth.permissionCount() === 1) {
         this.router.navigate(['/entry']);
+      }
+    } else if (this.auth.hasPermission(PlRole.SHIPPER)) {
+     // Go straight to the data page if only permission is shipper
+     // Add small delay to fix unloaded common data issue
+      if (this.auth.permissionCount() === 1) {
+        setTimeout( () => { this.router.navigate(['/manage']); }, 1000);
+        this.message = 'Redirecting...';
+        this.redirecting = true;
       }
     }
 
