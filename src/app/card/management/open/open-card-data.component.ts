@@ -321,7 +321,7 @@ export class OpenCardDataComponent implements OnInit {
             // Set up shippers multiselect
             tempThis.common.getValues('shippers', shippers => {
               tempThis.cardShippers = shippers.filter(e => {
-                return tempThis.card.shippers.includes(e.id);
+                return (tempThis.card.shippers) ? tempThis.card.shippers.includes(e.id) : false;
               });
             });
             if (tempThis.isShipper()) {

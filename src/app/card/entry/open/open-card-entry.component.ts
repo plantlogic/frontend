@@ -45,10 +45,16 @@ export class OpenCardEntryComponent implements OnInit {
   private cardIDsToValues(card: Card): Card {
     card.ranchName = this.findCommonValue('ranches', ['value'], card.ranchName);
     const shippers = [];
-    card.shippers.forEach(e => {
-      shippers.push(this.findCommonValue('shippers', ['value'], e));
-    });
-    card.shippers = shippers;
+    if (card.shippers) {
+      try {
+        card.shippers.forEach(e => {
+          shippers.push(this.findCommonValue('shippers', ['value'], e));
+        });
+        card.shippers = shippers;
+      } catch (e) {
+        console.log(e);
+      }
+    }
     card.commodityArray.forEach(e => {
       e.commodity = this.findCommonValue('commodities', ['value', 'key'], e.commodity);
       e.bedType = this.findCommonValue('bedTypes', ['value'], e.bedType);
