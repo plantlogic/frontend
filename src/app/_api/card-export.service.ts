@@ -146,7 +146,7 @@ export class CardExportService {
   } catch (e) {
     console.log(e);
   }
-  return (commonValue) ? commonValue : targetID;
+  return (commonValue) ? commonValue : `Missing Value, ID: ${targetID}`;
 }
 
   public generateExport(commonData, from: number, to: number, ranches: Array<string>, commodities: Array<string>,
