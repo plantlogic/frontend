@@ -24,7 +24,7 @@ export class CardExportService {
       const shippers = [];
       try {
         card.shippers.forEach(e => {
-          shippers.push(this.findCommonValue('shippers', ['value'], e));
+          shippers.push(this.findCommonValue(commonData, 'shippers', ['value'], e));
         });
         card.shippers = shippers;
       } catch (e) {
@@ -202,7 +202,7 @@ export class CardExportService {
                       '11th', 'At Plant', '', '', '', '', '', '',
                       '12th', 'At Plant', '', '', '', '', '', '',
           ]);
-          table.push(['Field ID', 'Ranch Name', 'Ranch Manager', 'Lot Number', 'Shipper ID',
+          table.push(['Field ID', 'Ranch Name', 'Ranch Manager', 'Lot Number', 'Shippers',
                       'Wet Date', 'Thin Date', 'Thin Type', 'Hoe Date', 'Hoe Type', 'Harvest Date', '',
                       // Irrigation Data, 12 total
                       'Date', 'Irrigator', 'Method', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
