@@ -1,10 +1,11 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, EventEmitter} from '@angular/core';
 import {TitleService} from 'src/app/_interact/title.service';
 import {CommonData, CommonDataService, CommonLookup} from '../../_api/common-data.service';
 import {AlertService} from '../../_interact/alert/alert.service';
 // import { componentNeedsResolution } from '@angular/core/src/metadata/resource_loading';
 // import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { ObjectID } from 'bson';
+import { Alert } from 'src/app/_interact/alert/alert';
 
 
 @Component({
@@ -166,13 +167,29 @@ export class AppAdminComponent implements OnInit {
   }
 
   public removeCommon(key, value) {
-    const keyIndex = this.sortedCommonArray.findIndex(e => e.key === key);
-    if (keyIndex >= 0) {
-      this.sortedCommonArray[keyIndex].values = this.sortedCommonArray[keyIndex].values.filter(v => {
-        return v.id !== value.id;
-      });
-    }
-    this.updateCommon(key);
+    const newAlert = new Alert();
+    newAlert.color = 'warning';
+    newAlert.title = 'Delete Common Data';
+    newAlert.message = `This will permanently remove: ` +
+                       `${(CommonLookup[key].type === 'hashTable') ? value.value[Object.keys(value.value)[0]] : value.value}` +
+                       ` from ${CommonLookup[key].name}. Are you sure?`;
+    newAlert.actionName = 'Delete';
+    newAlert.actionClosesAlert = true;
+    newAlert.timeLeft = undefined;
+    newAlert.blockPageInteraction = true;
+    newAlert.closeName = 'Cancel';
+    newAlert.action$ = new EventEmitter<null>();
+
+    newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
+      const keyIndex = this.sortedCommonArray.findIndex(e => e.key === key);
+      if (keyIndex >= 0) {
+        this.sortedCommonArray[keyIndex].values = this.sortedCommonArray[keyIndex].values.filter(v => {
+          return v.id !== value.id;
+        });
+      }
+      this.updateCommon(key);
+    });
+    AlertService.newAlert(newAlert);
   }
 
   public removeSubValue(key, c, valToDelete) {
