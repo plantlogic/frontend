@@ -20,6 +20,18 @@ export class CardExportService {
 
   private cardIDsToValues(card: Card, commonData): Card {
     card.ranchName = this.findCommonValue(commonData, 'ranches', ['value'], card.ranchName);
+    if (card.shippers) {
+      const shippers = [];
+      try {
+        card.shippers.forEach(e => {
+          shippers.push(this.findCommonValue('shippers', ['value'], e));
+        });
+        card.shippers = shippers;
+      } catch (e) {
+        console.log(e);
+      }
+      card.initShippersString();
+    }
     card.commodityArray.forEach(e => {
       e.commodity = this.findCommonValue(commonData, 'commodities', ['value', 'key'], e.commodity);
       e.bedType = this.findCommonValue(commonData, 'bedTypes', ['value'], e.bedType);
@@ -281,7 +293,7 @@ export class CardExportService {
               x = this.cardIDsToValues(x, commonData);
               // Push simple data
               dataLine.push(
-                String(x.fieldID), x.ranchName, x.ranchManagerName, x.lotNumber, 'x.shippers',
+                String(x.fieldID), x.ranchName, x.ranchManagerName, x.lotNumber, x.shippersString,
                 this.dateToDisplay(x.wetDate), this.dateToDisplay(x.thinDate), String(x.thinType), this.dateToDisplay(x.hoeDate),
                 String(x.hoeType), this.dateToDisplay(x.harvestDate)
               );
