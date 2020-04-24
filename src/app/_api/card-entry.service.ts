@@ -7,6 +7,7 @@ import {environment} from '../../environments/environment';
 import {TractorEntry} from '../_dto/card/tractor-entry';
 import {IrrigationEntry} from '../_dto/card/irrigation-entry';
 import {Chemicals} from '../_dto/card/chemicals';
+import { Comment } from '../_dto/card/comment';
 
 @Injectable({
   providedIn: 'root'
@@ -43,6 +44,7 @@ export class CardEntryService {
     );
   }
 
+  // Remove pre plant chemical input on entry side
   public addChemicalData(id: string, chemicalEntry: Chemicals): Observable<BasicDTO<null>> {
     return this.http.post<BasicDTO<null>>(
       environment.ApiUrl + '/data/entry/ranches/' + id + '/chemical',
@@ -62,5 +64,9 @@ export class CardEntryService {
       environment.ApiUrl + '/data/entry/ranches/' + card.id + '/close',
       card, this.httpOptions
     );
+  }
+
+  public setCardComments(id: string, comments: Comment[]): Observable<BasicDTO<null>> {
+    return this.http.put<BasicDTO<null>>(environment.ApiUrl + '/data/entry/ranches/' + id + '/setComments', comments, this.httpOptions);
   }
 }

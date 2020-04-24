@@ -52,7 +52,6 @@ export class EditUserComponent implements OnInit {
       roles: this.fb.array(this.initRoleBoolArray()),
       shipperID: ''
     });
-
     this.form.disable();
     this.roleList = this.initRoles();
   }
@@ -142,8 +141,10 @@ export class EditUserComponent implements OnInit {
         return;
       }
       this.submitAttempted = false;
+      if (!this.isShipper()) {
+        this.form.value.shipperID = null;
+      }
       this.form.disable();
-
       this.user.username = this.form.value.username;
       this.user.email = this.form.value.email;
       this.user.password = this.form.value.password;

@@ -68,9 +68,9 @@ export class Card {
   //
   cropYear: number = new Date().getFullYear();
   //
-  thinType: WorkType | string = 'Machine';
+  thinType: WorkType;
   //
-  hoeType: WorkType | string = 'Machine';
+  hoeType: WorkType;
 
   // =======================
   // Cached Helper Values
@@ -97,11 +97,19 @@ export class Card {
     }
 
     if (card.irrigation) {
-      this.irrigation = JSON.parse(JSON.stringify(card.irrigation));
+      const temp: Array<IrrigationEntry> = new Array<IrrigationEntry>();
+      card.irrigation.forEach(t => {
+        temp.push(Object.assign(new IrrigationEntry(), t));
+      });
+      this.irrigation = temp;
     }
 
     if (card.tractor) {
-      this.tractor = JSON.parse(JSON.stringify(card.tractor));
+      const temp: Array<TractorEntry> = new Array<TractorEntry>();
+      card.tractor.forEach(t => {
+        temp.push(Object.assign(new TractorEntry(), t));
+      });
+      this.tractor = temp;
     }
 
     if (card.commodities) {
@@ -139,7 +147,7 @@ export class Card {
     if (this.irrigation.length > this.irrigationMax) {
       this.irrigation = this.irrigation.slice(0, this.irrigationMax);
     }
-    return this.irrigation;
+    return this.irrigation.sort(this.compareIrrigations);
   }
 
   set irrigationArray(value: Array<IrrigationEntry>) {
@@ -158,7 +166,7 @@ export class Card {
     if (this.tractor.length > this.tractorMax) {
       this.tractor = this.tractor.slice(0, this.tractorMax);
     }
-    return this.tractor;
+    return this.tractor.sort(this.compareTractors);
   }
 
   set tractorArray(value: Array<TractorEntry>) {
@@ -196,7 +204,7 @@ export class Card {
     if (this.preChemicals.length > this.preChemicalsMax) {
       this.preChemicals = this.preChemicals.slice(0, this.preChemicalsMax);
     }
-    return this.preChemicals;
+    return this.preChemicals.sort(this.compareChemicalApplications);
   }
 
   set preChemicalArray(value: Array<Chemicals>) {
@@ -256,6 +264,42 @@ export class Card {
     } else {
       this.totalAcres = 0;
     }
+  }
+
+  public compareChemicalApplications(a: Chemicals, b: Chemicals): number {
+    let comparison = 0;
+    const valA = a.date;
+    const valB = b.date;
+    if (valA > valB) {
+      comparison = 1;
+    } else if (valA < valB) {
+      comparison = -1;
+    }
+    return comparison;
+  }
+
+  public compareIrrigations(a: IrrigationEntry, b: IrrigationEntry): number {
+    let comparison = 0;
+    const valA = a.workDate;
+    const valB = b.workDate;
+    if (valA > valB) {
+      comparison = 1;
+    } else if (valA < valB) {
+      comparison = -1;
+    }
+    return comparison;
+  }
+
+  public compareTractors(a: TractorEntry, b: TractorEntry): number {
+    let comparison = 0;
+    const valA = a.workDate;
+    const valB = b.workDate;
+    if (valA > valB) {
+      comparison = 1;
+    } else if (valA < valB) {
+      comparison = -1;
+    }
+    return comparison;
   }
 }
 export enum WorkType {

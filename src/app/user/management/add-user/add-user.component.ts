@@ -79,6 +79,9 @@ export class AddUserComponent implements OnInit {
         return;
       }
       this.submitAttempted = false;
+      if (!this.isShipper()) {
+        this.form.value.shipperID = null;
+      }
       this.form.disable();
 
       let user: User;

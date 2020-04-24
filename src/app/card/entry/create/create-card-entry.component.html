@@ -79,84 +79,6 @@
         </fieldset>
       </div>
 
-      <div class="d-inline-block d-md-none w-100"><hr /></div>
-
-      <div class="col-md">
-        <fieldset>
-          <legend>
-            <h4>
-              Pre-Plant Chem &nbsp;&nbsp; <wbr> {{card.preChemicalArray.length}}/{{card.preChemicalsMax}}
-              <button type="button" color="primary" (click)="addPreChemicals()" mdbBtn *ngIf="!card.preChemicalsFull()" floating="true"
-                size="lg" mdbWavesEffect><i class="fa fa-plus" aria-hidden="true"></i>
-              </button>
-            </h4>
-          </legend>
-          <div class="col-sm border p-2 text-right" *ngFor="let p of card.preChemicalArray; let i = index">
-            <b>Date:</b>
-            <input class="date" [ngModel]="p.date | date:'yyyy-MM-dd'" (ngModelChange)="p.date = fixDate($event)" type="date"/><br/>
-            <b>Chemical:</b>
-            <div>
-              <div *ngIf="!p.chemical">
-                <button type="button" color="success" (click)="p.chemical = newChemical()" mdbBtn floating="true"
-                  size="lg" mdbWavesEffect><i class="fa fa-plus mr-1" aria-hidden="true"></i>
-                </button>
-              </div>
-              <div *ngIf="p.chemical">
-                <div class="row px-2">
-                  <select class="form-control" [(ngModel)]="p.chemical.name">
-                    <option *ngIf="!p.chemical.name" [value]="undefined" disabled selected>Select Chemical</option>
-                    <option *ngFor="let r of getCommon('chemicals')" [value]="r.id">{{r.value}}</option>
-                  </select>
-                  <div class="form-inline m-0">
-                    <input type="number" [(ngModel)]="p.chemical.rate" class="form-control" placeholder="Rate (Per Acre)" pattern="\d*" />
-                    <select class="form-control" [(ngModel)]="p.chemical.unit">
-                      <option *ngIf="!p.chemical.unit" [value]="undefined" disabled selected>Select Rate Unit</option>
-                      <option *ngFor="let r of getCommon('chemicalRateUnits')" [value]="r.id">{{r.value}}</option>
-                    </select>
-                    <button type="button" color="warning" (click)="p.chemical = undefined" mdbBtn floating="true" size="md" mdbWavesEffect>
-                      <i class="fa fa-times" aria-hidden="true"></i>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <b>Fertilizer:</b>
-            <div>
-            <div *ngIf="!p.fertilizer">
-              <button type="button" color="success" (click)="p.fertilizer = newChemical()" mdbBtn floating="true"
-                size="lg" mdbWavesEffect><i class="fa fa-plus mr-1" aria-hidden="true"></i>
-              </button>
-              </div>
-              <div *ngIf="p.fertilizer">
-                <div class="row px-2">
-                  <select class="form-control" [(ngModel)]="p.fertilizer.name">
-                    <option *ngIf="!p.fertilizer.name" [value]="undefined" disabled selected>Select Fertilizer</option>
-                    <option *ngFor="let r of getCommon('fertilizers')" [value]="r.id">{{r.value}}</option>
-                  </select>
-                  <div class="form-inline m-0">
-                    <input type="number" [(ngModel)]="p.fertilizer.rate" class="form-control" placeholder="Rate (Per Acre)" pattern="\d*" />
-                    <select class="form-control" [(ngModel)]="p.fertilizer.unit" >
-                      <option *ngIf="!p.fertilizer.unit" [value]="undefined" disabled selected>Select Rate Unit</option>
-                      <option *ngFor="let r of getCommon('chemicalRateUnits')" [value]="r.id">{{r.value}}</option>
-                    </select>
-                    <button type="button" color="warning" (click)="p.fertilizer = undefined" mdbBtn
-                      floating="true" mdbWavesEffect size="md">
-                      <i class="fa fa-times" aria-hidden="true"></i>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <hr />
-            <button type="button" color="danger" (click)="card.preChemicalArray.splice(i, 1)" size="md"
-              mdbBtn floating="true" mdbWavesEffect>Delete <i class="ml-1 fa fa-trash" aria-hidden="true"></i>
-            </button>
-          </div>
-        </fieldset>
-      </div>
-
-      <div class="d-inline-block d-md-none w-100"><hr /></div>
-
       <div class="col-md">
         <fieldset>
           <legend>
@@ -168,6 +90,7 @@
           </legend>
           <div class="col-sm border p-2 text-right" *ngFor="let p of card.tractorArray; let i = index">
             <div>
+              <input [ngModel]="p.workDate | date:'yyyy-MM-dd'" (ngModelChange)="p.workDate = fixDate($event)" type="date"/>
               <input type="text" [(ngModel)]="p.operator" class="form-control" list="tractorOperators" placeholder="Tractor Operator" />
               <input type="hidden" [(ngModel)]="p.operatorID" class="form-control"/>
               <input type="text" [(ngModel)]="p.tractorNumber" class="form-control" placeholder="Tractor Number" />
@@ -175,7 +98,64 @@
                 <option *ngIf="!p.workDone" [value]="undefined" disabled selected>Select Tractor Work</option>
                 <option *ngFor="let r of getCommon('tractorWork')" [value]="r.id">{{r.value}}</option>
               </select>
-              <input [ngModel]="p.workDate | date:'yyyy-MM-dd'" (ngModelChange)="p.workDate = fixDate($event)" type="date"/>
+
+              
+              <b>Chemicals:</b>
+              <span class="mr-2">{{p.chemicalArray.length}}/{{p.chemicalsMax}}</span>
+              <div>
+                <div *ngIf="!p.chemicalsFull()">
+                  <button type="button" color="success" (click)="addTractorChemical()" mdbBtn floating="true" size="lg" mdbWavesEffect>
+                    <i class="fa fa-plus mr-1" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <div *ngFor="let c of p.chemicalArray; let j = index">
+                  <div class="row px-2">
+                  <select class="form-control" [(ngModel)]="c.name">
+                    <option *ngIf="!c.name" [value]="undefined" disabled selected>Select Chemical</option>
+                    <option *ngFor="let r of getCommon('chemicals')" [value]="r.id">{{r.value}}</option>
+                  </select>
+                  <div class="form-inline m-0">
+                    <input type="number" [(ngModel)]="c.rate" class="form-control" placeholder="Rate (Per Acre)" pattern="\d*" />
+                    <select class="form-control" [(ngModel)]="c.unit">
+                      <option *ngIf="!c.unit" [value]="undefined" disabled selected>Select Rate Unit</option>
+                      <option *ngFor="let r of getCommon('chemicalRateUnits')" [value]="r.id">{{r.value}}</option>
+                    </select>
+                    <button type="button" color="warning" (click)="p.chemicalArray.splice(j, 1)" mdbBtn floating="true" size="md" mdbWavesEffect>
+                      <i class="fa fa-times" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                  </div>
+                </div>
+              </div>
+
+              <b>Fertilizers:</b>
+              <span class="mr-2">{{p.fertilizerArray.length}}/{{p.fertilizersMax}}</span>
+              <div>
+                <div *ngIf="!p.fertilizersFull()">
+                  <button type="button" color="success" (click)="addTractorFertilizer()" mdbBtn floating="true" size="lg" mdbWavesEffect>
+                    <i class="fa fa-plus mr-1" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <div *ngFor="let c of p.fertilizerArray; let j = index">
+                  <div class="row px-2">
+                  <select class="form-control" [(ngModel)]="c.name">
+                    <option *ngIf="!c.name" [value]="undefined" disabled selected>Select Fertilizer</option>
+                    <option *ngFor="let r of getCommon('fertilizers')" [value]="r.id">{{r.value}}</option>
+                  </select>
+                  <div class="form-inline m-0">
+                    <input type="number" [(ngModel)]="c.rate" class="form-control" placeholder="Rate (Per Acre)" pattern="\d*" />
+                    <select class="form-control" [(ngModel)]="c.unit">
+                      <option *ngIf="!c.unit" [value]="undefined" disabled selected>Select Rate Unit</option>
+                      <option *ngFor="let r of getCommon('chemicalRateUnits')" [value]="r.id">{{r.value}}</option>
+                    </select>
+                    <button type="button" color="warning" (click)="p.fertilizerArray.splice(j, 1)" mdbBtn floating="true" size="md" mdbWavesEffect>
+                      <i class="fa fa-times" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                  </div>
+                </div>
+              </div>
+
             </div>
             <hr />
             <button type="button" color="danger" (click)="card.tractorArray.splice(i, 1)" size="md"

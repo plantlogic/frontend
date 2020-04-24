@@ -10,6 +10,7 @@ import { CommonFormDataService } from 'src/app/_api/common-form-data.service';
 import { CommonLookup } from 'src/app/_api/common-data.service';
 import { AuthService } from 'src/app/_auth/auth.service';
 import { Alert } from 'src/app/_interact/alert/alert';
+import { Comment } from 'src/app/_dto/card/comment';
 
 @Component({
   selector: 'app-open-card-entry',
@@ -24,6 +25,8 @@ export class OpenCardEntryComponent implements OnInit {
               public common: CommonFormDataService) { }
 
   card: Card;
+  // Additional values will be attached to comments, so use a separate variable
+  comments = [];
   datesSet: boolean;
 
   // create array of common keys, whose data is needed. Omit restricted options.
@@ -40,6 +43,21 @@ export class OpenCardEntryComponent implements OnInit {
       this[`ranches`] = c[`ranches`];
       tempThis.route.params.subscribe(data => tempThis.loadCardData(data.id));
     });
+  }
+
+  private addComment(): void {
+    // DO SOMETHING DIFFERENT IF SHIPPER
+    const c: Comment = new Comment();
+    c.author = this.auth.getName();
+    c.userName = this.auth.getUsername();
+    c.body = '';
+    c.dateCreated = new Date().valueOf();
+    c.dateModified = c.dateCreated;
+    this.comments.push(c);
+  }
+
+  public canEditComment(comment): boolean {
+    return this.auth.getUsername() === comment.userName;
   }
 
   private cardIDsToValues(card: Card): Card {
@@ -82,28 +100,59 @@ export class OpenCardEntryComponent implements OnInit {
     card.tractorArray.forEach(e => {
       e.workDone = this.findCommonValue('tractorWork', ['value'], e.workDone);
       e.operator = this.findCommonValue('tractorOperators', ['value'], e.operator);
-      if (e.chemical) {
-        e.chemical.name = this.findCommonValue('chemicals', ['value'], e.chemical.name);
-        e.chemical.unit = this.findCommonValue('chemicalRateUnits', ['value'], e.chemical.unit);
+      if (e.chemicalArray) {
+        for (const c of e.chemicalArray) {
+          c.name = this.findCommonValue('chemicals', ['value'], c.name);
+          c.unit = this.findCommonValue('chemicalRateUnits', ['value'], c.unit);
+        }
       }
-      if (e.fertilizer) {
-        e.fertilizer.name = this.findCommonValue('fertilizers', ['value'], e.fertilizer.name);
-        e.fertilizer.unit = this.findCommonValue('chemicalRateUnits', ['value'], e.fertilizer.unit);
+      if (e.fertilizerArray) {
+        for (const f of e.fertilizerArray) {
+          f.name = this.findCommonValue('fertilizers', ['value'], f.name);
+          f.unit = this.findCommonValue('chemicalRateUnits', ['value'], f.unit);
+        }
       }
     });
     card.irrigationArray.forEach(e => {
       e.method = this.findCommonValue('irrigationMethod', ['value'], e.method);
       e.irrigator = this.findCommonValue('irrigators', ['value'], e.irrigator);
-      if (e.chemical) {
-        e.chemical.name = this.findCommonValue('chemicals', ['value'], e.chemical.name);
-        e.chemical.unit = this.findCommonValue('chemicalRateUnits', ['value'], e.chemical.unit);
+      if (e.chemicalArray) {
+        for (const c of e.chemicalArray) {
+          c.name = this.findCommonValue('chemicals', ['value'], c.name);
+          c.unit = this.findCommonValue('chemicalRateUnits', ['value'], c.unit);
+        }
       }
-      if (e.fertilizer) {
-        e.fertilizer.name = this.findCommonValue('fertilizers', ['value'], e.fertilizer.name);
-        e.fertilizer.unit = this.findCommonValue('chemicalRateUnits', ['value'], e.fertilizer.unit);
+      if (e.fertilizerArray) {
+        for (const f of e.fertilizerArray) {
+          f.name = this.findCommonValue('fertilizers', ['value'], f.name);
+          f.unit = this.findCommonValue('chemicalRateUnits', ['value'], f.unit);
+        }
       }
     });
     return card;
+  }
+
+  public compareDates(a, b): number {
+    let comparison = 0;
+    const valA = a.date;
+    const valB = b.date;
+    if (valA > valB) {
+      comparison = 1;
+    } else if (valA < valB) {
+      comparison = -1;
+    }
+    return comparison;
+  }
+
+  public deleteComment(index) {
+    const comment = this.comments[index];
+    if (comment.userName !== this.auth.getUsername()) {
+      AlertService.newBasicAlert('Cannot delete comments which aren\'t your own on the entry side', true);
+      return false;
+    } else {
+      this.comments[index].deleted = true;
+      return true;
+    }
   }
 
   /*
@@ -136,6 +185,57 @@ export class OpenCardEntryComponent implements OnInit {
     const month = parts[1] - 1; // 0 based
     const year = parts[0];
     return new Date(year, month, day);
+  }
+
+  public getActiveComments() {
+    return this.comments.filter(c => !c.deleted).length;
+  }
+
+  public getAllApplied() {
+    /*
+      Format of objects
+      {
+        date: number
+        type: string
+        chemicals: Array<Chemical>(),
+        fertilizers: Array<Chemical>(),
+      }
+    */
+    const allApplied = [];
+    // Add pre plant dates and chems/ferts
+    this.card.preChemicalArray.forEach(c => {
+      if (c.chemical || c.fertilizer) {
+        allApplied.push({
+          date: c.date,
+          type: 'Pre-Plant',
+          chemicals: (c.chemical) ? [c.chemical] : [],
+          fertilizers: (c.fertilizer) ? [c.fertilizer] : []
+        });
+      }
+    });
+    // Add Tractor dates and chems/ferts
+    this.card.tractorArray.forEach(t => {
+      if (t.chemicalArray.length > 0 || t.fertilizerArray.length > 0) {
+        allApplied.push({
+          date: t.workDate,
+          type: 'Tractor',
+          chemicals: t.chemicalArray,
+          fertilizers: t.fertilizerArray
+        });
+      }
+    });
+    // Add Irrigation dates and chems/ferts
+    this.card.irrigationArray.forEach(i => {
+      if (i.chemicalArray.length > 0 || i.fertilizerArray.length > 0) {
+        allApplied.push({
+          date: i.workDate,
+          type: 'Irrigation',
+          chemicals: i.chemicalArray,
+          fertilizers: i.fertilizerArray
+        });
+      }
+    });
+    return allApplied.sort(this.compareDates);
   }
 
   public getCommon(key) {
@@ -189,7 +289,7 @@ export class OpenCardEntryComponent implements OnInit {
       data => {
         if (data.success) {
           this.card = (new Card()).copyConstructor(data.data);
-
+          this.comments = (new Card()).copyConstructor(data.data).comments;
           // For display purposes, change any common IDs to their values
           this.card = this.cardIDsToValues(this.card);
           this.card.initShippersString();
@@ -240,5 +340,65 @@ export class OpenCardEntryComponent implements OnInit {
       }
     });
     AlertService.newAlert(newAlert);
+  }
+
+  public saveComments() {
+    if (!this.setCardCommentsForUpdate()) { return; }
+
+    this.cardService.setCardComments(this.card.id, this.card.comments).subscribe(data => {
+      if (data.success) {
+        AlertService.newBasicAlert('Change saved successfully!', false);
+        this.loadCardData(this.card.id);
+      } else {
+        console.log(data);
+        AlertService.newBasicAlert('Error: ' + data.error, true);
+      }
+    },
+    failure => {
+      AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
+    });
+  }
+
+  public setCardCommentsForUpdate() {
+    let invalid = 0;
+    for (let i = 0; i < this.card.comments.length; i++) {
+      const oldComment = this.card.comments[i];
+      const newComment = this.comments[i];
+      if (newComment.userName !== oldComment.userName) {
+        AlertService.newBasicAlert('Error: The username of a comment was modified.', true);
+        return false;
+      }
+      // If the comment was marked for deletion and the user doesn't have edit permissions
+      if (newComment.deleted) {
+        // Only delete if it was their own comment
+        if (newComment.userName !== this.auth.getUsername()) {
+          this.comments[i] = oldComment;
+          invalid++;
+        } else {
+          this.comments[i].lastModified = new Date().valueOf();
+        }
+      } else {
+        // check if same data
+        let same = oldComment.author === newComment.author;
+        same = same && (oldComment.dateCreated === newComment.dateCreated);
+        same = same && (oldComment.dateModified === newComment.dateModified);
+        same = same && (oldComment.body === newComment.body);
+        same = same && (oldComment.userName === newComment.userName);
+        // if it has been modified, only accept if it is this user's comment
+        if (!same) {
+          if (newComment.userName !== this.auth.getUsername()) {
+            this.comments[i] = oldComment;
+            invalid++;
+          } else {
+            this.comments[i].lastModified = new Date().valueOf();
+          }
+        }
+      }
+    }
+    if (invalid > 0) {
+      AlertService.newBasicAlert(`${invalid} comments will not be changed due to invalid modifications`, true);
+    }
+    this.card.comments = this.comments.filter(c => !c.deleted);
+    return true;
   }
 }
