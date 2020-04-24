@@ -1,6 +1,6 @@
 <div class="jumbotron p-3">
   <h2 *ngIf="!card">Loading...</h2>
-  <div *ngIf="card" >
+  <div *ngIf="card" class="container">
     <div class="row justify-content-left">
       <div class="col-sm">
         <h5>
@@ -24,228 +24,259 @@
       </div>
     </div>
     <hr />
-    <div class="row">
-      <div class="col-md-6">
-        <button *ngIf="!card.postChemicalsFull()" type="button" class="btn btn-success float-right ml-1"
-                routerLink="./add/chemical">
-          <span class="d-md-none">+ </span>
-          <span class="d-none d-md-inline-block">Add </span>
-          <i class="fas fa-angle-double-right ml-1"></i>
-        </button>
-        <a (click)="chemicalTable.toggle()" class="text-primary">
-          <h4><i class="fas fa-caret-down mr-1"></i> Applied</h4>
-        </a>
-        <br />
-        <div mdbCollapse #chemicalTable="bs-collapse">
-          <div class="row justify-content-center mt-3">
-            <div class="col-sm">
-              <div *ngIf="card.preChemicalArray && card.preChemicalArray.length > 0" class="my-2">
-                <h5>Pre-Plant</h5>
-                <div class="col-sm border" *ngFor="let p of card.preChemicalArray">
-                  <b>Date:</b> {{p.date | date:'shortDate'}}
-                  <div *ngIf="p.fertilizer">
-                    <b>Fertilizer /ac:</b>
-                    {{p.fertilizer.name}}
-                    <span class="text-info">
-                      {{p.fertilizer.rate}}
-                      {{p.fertilizer.unit}}
-                    </span>
-                  </div>
-                  <div *ngIf="p.chemical">
-                    <b>Chemical /ac:</b>
-                    {{p.chemical.name}}
-                    <span class="text-info">
-                      {{p.chemical.rate}}
-                      {{p.chemical.unit}}
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div *ngIf="card.postChemicalArray && card.postChemicalArray.length > 0" class="my-2">
-                <h5>Post-Plant</h5>
-                <div class="col-sm border" *ngFor="let p of card.postChemicalArray">
-                  <b>Date:</b> {{p.date | date:'shortDate'}}
-                  <div *ngIf="p.fertilizer">
-                    <b>Fertilizer /ac:</b>
-                    {{p.fertilizer.name}}
-                    <span class="text-info">
-                      {{p.fertilizer.rate}}
-                      {{p.fertilizer.unit}}
-                    </span>
-                  </div>
-                  <div *ngIf="p.chemical">
-                    <b>Chemical /ac:</b>
-                    {{p.chemical.name}}
-                    <span class="text-info">
-                      {{p.chemical.rate}}
-                      {{p.chemical.unit}}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <div class="d-inline-block d-md-none w-100"><hr /></div>
+    
 
-      <div class="col-md-6">
-        <button *ngIf="!card.tractorFull()" type="button" class="btn btn-warning float-right ml-1"
-                routerLink="./add/tractor">
-          <span class="d-md-none">+ </span>
-          <span class="d-none d-md-inline-block">Add </span>
-          <i class="fas fa-tractor ml-1"></i>
-        </button>
-        <a (click)="tractorTable.toggle()" class="text-primary">
-          <h4><i class="fas fa-caret-down mr-1"></i> Tractor</h4>
-        </a>
-        <br />
-        <div mdbCollapse #tractorTable="bs-collapse">
-          <div class="row justify-content-center mt-3">
-            <div class="col-sm border" *ngFor="let p of card.tractorArray">
-              <b>Date:</b> {{p.workDate | date:'shortDate'}}
-              <br />
-              <b>Tractor Number:</b> {{p.tractorNumber}}
-              <br />
-              <b>Work Done:</b> {{p.workDone}}
-              <br />
-              <b>Operator:</b> {{p.operator}}
-              <div *ngIf="p.fertilizer">
+    <!-- Applied (All Applied Chemicals and Fertilizers) -->
+    <div>
+      <a (click)="chemicalTable.toggle()" class="text-primary">
+        <h4><i class="fas fa-caret-down mr-1"></i> All Applied ({{getAllApplied().length + ' Entries'}})</h4>
+      </a>
+      <br />
+      <div mdbCollapse #chemicalTable="bs-collapse">
+          <div class="my-2 row">
+            <div class="col-md-12 mb-1 border" *ngFor="let p of getAllApplied()">
+              <b>Date: {{p.date | date:'shortDate'}}</b><br>
+              <b>Type:</b> {{p.type}}
+              <div *ngFor="let f of p.fertilizers">
                 <b>Fertilizer /ac:</b>
-                {{p.fertilizer.name}}
+                {{f.name}}
                 <span class="text-info">
-                      {{p.fertilizer.rate}}
-                  {{p.fertilizer.unit}}
-                    </span>
-              </div>
-              <div *ngIf="p.chemical">
-                <b>Chemical /ac:</b>
-                {{p.chemical.name}}
-                <span class="text-info">
-                      {{p.chemical.rate}}
-                  {{p.chemical.unit}}
-                    </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="d-inline-block d-md-none w-100"><hr /></div>
-
-      <div class="col-md-6">
-        <button *ngIf="!card.irrigationFull()" type="button" class="btn btn-primary ml-1 float-right"
-                routerLink="./add/irrigation">
-          <span class="d-md-none">+ </span>
-          <span class="d-none d-md-inline-block">Add </span>
-          <i class="fas fa-tint ml-1"></i>
-        </button>
-        <a (click)="irrigationTable.toggle()" class="text-primary">
-          <h4><i class="fas fa-caret-down mr-1"></i> Irrigation</h4>
-        </a>
-        <br />
-        <div mdbCollapse #irrigationTable="bs-collapse">
-          <div class="row justify-content-center mt-3">
-            <div class="col-sm border" *ngFor="let p of card.irrigationArray">
-              <b>Date:</b> {{p.workDate | date:'shortDate'}}
-              <br />
-              <b>Irrigator:</b> {{p.irrigator}}
-              <br />
-              <b>Method:</b> {{p.method}}
-              <div *ngIf="p.fertilizer">
-                <b>Fertilizer /ac:</b>
-                {{p.fertilizer.name}}
-                <span class="text-info">
-                  {{p.fertilizer.rate}}
-                  {{p.fertilizer.unit}}
+                  {{f.rate}}
+                  {{f.unit}}
                 </span>
               </div>
-              <div *ngIf="p.chemical">
+              <div *ngFor="let c of p.chemicals">
                 <b>Chemical /ac:</b>
-                {{p.chemical.name}}
+                {{c.name}}
                 <span class="text-info">
-                  {{p.chemical.rate}}
-                  {{p.chemical.unit}}
+                  {{c.rate}}
+                  {{c.unit}}
                 </span>
               </div>
             </div>
           </div>
-        </div>
       </div>
+    </div>
+    <hr>
 
-      <div class="d-inline-block d-md-none w-100"><hr /></div>
-
-      <div class="col-md-6">
-        <a (click)="commodityTable.toggle()" class="text-primary">
-          <h4><i class="fas fa-caret-down mr-1"></i> Commodities</h4>
-        </a>
-        <br />
-        <div mdbCollapse #commodityTable="bs-collapse">
-          <div class="row justify-content-center mt-3">
-            <div class="col-sm border" *ngFor="let p of card.commodityArray">
-              <b>Commodity:</b> {{p.commodity}}
-              <br />
-              <b>Variety:</b> {{p.variety}}
-              <br />
-              <b>Bed Type:</b> {{p.bedType}}
-              <br />
-              <b>Bed Count:</b> {{p.bedCount}}
-              <br />
-              <b>Acres:</b> {{p.cropAcres}}
-              <br />
-              <b>Seed Lot #:</b> {{p.seedLotNumber}}
+    <!-- Tractor Entries -->
+    <div>
+      <button *ngIf="!card.tractorFull()" type="button" class="btn btn-warning float-right ml-1" routerLink="./add/tractor">
+        <span class="d-md-none"><i class="fas fa-plus"></i></span>
+        <span class="d-none d-md-inline-block">Add </span>
+        <i class="fas fa-tractor ml-1"></i>
+      </button>
+      <a (click)="tractorTable.toggle()" class="text-primary">
+        <h4><i class="fas fa-caret-down mr-1"></i> Tractor</h4>
+      </a>
+      <br />
+      <div mdbCollapse #tractorTable="bs-collapse">
+        <div class="row">
+          <div class="col-md-6 mb-1 border" *ngFor="let p of card.tractorArray">
+            <b>Date:</b> {{p.workDate | date:'shortDate'}}
+            <br />
+            <b>Tractor Number:</b> {{p.tractorNumber}}
+            <br />
+            <b>Work Done:</b> {{p.workDone}}
+            <br />
+            <b>Operator:</b> {{p.operator}}
+            <div *ngFor="let f of p.fertilizerArray">
+              <b>Fertilizer /ac:</b>
+              {{f.name}}
+              <span class="text-info">
+                {{f.rate}}
+                {{f.unit}}
+              </span>
+            </div>
+            <div *ngFor="let c of p.chemicalArray">
+              <b>Chemical /ac:</b>
+              {{c.name}}
+              <span class="text-info">
+                {{c.rate}}
+                {{c.unit}}
+              </span>
             </div>
           </div>
         </div>
       </div>
+    </div>
+    <hr>
 
-      <div class="d-inline-block d-md-none w-100"><hr /></div>
-
-      <div class="col-md-8">
-        <a (click)="cardInfo.toggle()" class="text-primary">
-          <h4><i class="fas fa-caret-down mr-1"></i> More Info</h4>
-        </a>
-        <br />
-        <div mdbCollapse #cardInfo="bs-collapse">
-          <div class="row justify-content-center mt-3">
-            <div class="col-sm">
-              <b>Ranch Name:</b> {{card.ranchName}}
-              <br />
-              <b>Ranch Manager:</b> {{card.ranchManagerName}}
-              <br />
-              <b>Crop Year:</b> {{card.cropYear}}
+    <!-- Irrigation Entries -->
+    <div>
+      <button *ngIf="!card.irrigationFull()" type="button" class="btn btn-primary ml-1 float-right"
+              routerLink="./add/irrigation">        
+        <span class="d-md-none"><i class="fas fa-plus"></i></span>
+        <span class="d-none d-md-inline-block">Add </span>
+        <i class="fas fa-tint ml-1"></i>
+      </button>
+      <a (click)="irrigationTable.toggle()" class="text-primary">
+        <h4><i class="fas fa-caret-down mr-1"></i> Irrigation</h4>
+      </a>
+      <br />
+      <div mdbCollapse #irrigationTable="bs-collapse">
+        <div class="row">
+          <div class="col-md-6 mb-1 border" *ngFor="let p of card.irrigationArray">
+            <b>Date:</b> {{p.workDate | date:'shortDate'}}
+            <br />
+            <b>Irrigator:</b> {{p.irrigator}}
+            <br />
+            <b>Method:</b> {{p.method}}
+            <br />
+            <b>Duration:</b> {{p.duration + ((p.duration === 1)? " Hour" : " Hours") }}
+            <div *ngFor="let f of p.fertilizerArray">
+              <b>Fertilizer /ac:</b>
+              {{f.name}}
+              <span class="text-info">
+                {{f.rate}}
+                {{f.unit}}
+              </span>
             </div>
-            <div class="col-sm">
-              <b>Lot #:</b> {{card.lotNumber}}
-              <br />
-              <b>Field ID:</b> {{card.fieldID}}
-              <br />
-              <b>Shippers:</b> {{card.shippersString}}
-              <br />
-              <b>Planter Number:</b> {{card.planterNumber}}
-            </div>
-            <div class="col-sm">
-              <b>Wet Date: </b>
-              <span *ngIf="datesSet">{{card.wetDate | date:'shortDate'}}</span>
-              <input *ngIf="!datesSet" class="date" [ngModel]="card.wetDate | date:'yyyy-MM-dd'" (ngModelChange)="card.wetDate = fixDate($event);" type="date"/>
-              <br />
-              <b>Thin Date:</b>
-              <span *ngIf="datesSet">{{card.thinDate | date:'shortDate'}}</span>
-              <input *ngIf="!datesSet" class="date" [ngModel]="card.thinDate | date:'yyyy-MM-dd'" (ngModelChange)="card.thinDate = fixDate($event);" type="date"/>
-              <br />
-              <b>Hoe Date:</b>
-              <span *ngIf="datesSet">{{card.hoeDate | date:'shortDate'}}</span>
-              <input *ngIf="!datesSet" class="date" [ngModel]="card.hoeDate | date:'yyyy-MM-dd'" (ngModelChange)="card.hoeDate = fixDate($event);" type="date"/>
-              <br />
-              <b>Date Created:</b> {{card.dateCreated | date:'shortDate'}}
-            </div>
-            <div class="col-sm">
-              <button *ngIf="!datesSet" type="button" class="btn btn-info float-right ml-1" (click)="saveDates()">
-                <span class="d-none d-md-inline-block">Confirm Dates</span>
-              </button>
+            <div *ngFor="let c of p.chemicalArray">
+              <b>Chemical /ac:</b>
+              {{c.name}}
+              <span class="text-info">
+                {{c.rate}}
+                {{c.unit}}
+              </span>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+    <hr>
+
+    <!-- Commodities -->
+    <div>
+      <a (click)="commodityTable.toggle()" class="text-primary">
+        <h4><i class="fas fa-caret-down mr-1"></i> Commodities</h4>
+      </a>
+      <br />
+      <div mdbCollapse #commodityTable="bs-collapse">
+        <div class="row">
+          <div class="col-md-6 mb-1 mb-1 border" *ngFor="let p of card.commodityArray">
+            <b>Commodity:</b> {{p.commodity}}
+            <br />
+            <b>Variety:</b> {{p.variety}}
+            <br />
+            <b>Bed Type:</b> {{p.bedType}}
+            <br />
+            <b>Bed Count:</b> {{p.bedCount}}
+            <br />
+            <b>Acres:</b> {{p.cropAcres}}
+            <br />
+            <b>Seed Lot #:</b> {{p.seedLotNumber}}
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr>
+
+    <!-- More Info -->
+    <div>
+      <a (click)="cardInfo.toggle()" class="text-primary">
+        <h4><i class="fas fa-caret-down mr-1"></i> More Info</h4>
+      </a>
+      <br />
+      <div mdbCollapse #cardInfo="bs-collapse">
+        <div class="row">
+          <div class="col-sm">
+            <b>Ranch Name:</b> {{card.ranchName}}
+            <br />
+            <b>Ranch Manager:</b> {{card.ranchManagerName}}
+            <br />
+            <b>Crop Year:</b> {{card.cropYear}}
+          </div>
+          <div class="col-sm">
+            <b>Lot #:</b> {{card.lotNumber}}
+            <br />
+            <b>Field ID:</b> {{card.fieldID}}
+            <br />
+            <b>Shippers:</b> {{card.shippersString}}
+            <br />
+            <b>Planter Number:</b> {{card.planterNumber}}
+          </div>
+          <div class="col-sm">
+            <b>Wet Date: </b>
+            <span *ngIf="datesSet">{{card.wetDate | date:'shortDate'}}</span>
+            <input *ngIf="!datesSet" class="date" [ngModel]="card.wetDate | date:'yyyy-MM-dd'" (ngModelChange)="card.wetDate = fixDate($event);" type="date"/>
+            <br />
+            <b>Thin Date:</b>
+            <span *ngIf="datesSet">{{card.thinDate | date:'shortDate'}}</span>
+            <input *ngIf="!datesSet" class="date" [ngModel]="card.thinDate | date:'yyyy-MM-dd'" (ngModelChange)="card.thinDate = fixDate($event);" type="date"/>
+            <br />
+            <b>Hoe Date:</b>
+            <span *ngIf="datesSet">{{card.hoeDate | date:'shortDate'}}</span>
+            <input *ngIf="!datesSet" class="date" [ngModel]="card.hoeDate | date:'yyyy-MM-dd'" (ngModelChange)="card.hoeDate = fixDate($event);" type="date"/>
+            <br />
+            <b>Date Created:</b> {{card.dateCreated | date:'shortDate'}}
+          </div>
+          <div class="col-sm">
+            <button *ngIf="!datesSet" type="button" class="btn btn-primary float-right ml-1" (click)="saveDates()">
+              <span class="d-none d-md-inline-block">Confirm Dates</span>
+              <span class="d-md-none"><i class="fas fa-check"></i></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr>
+
+    <!-- Comments -->
+    <div>        
+      <button type="button" class="btn btn-success ml-1 float-right" (click)="addComment()">
+        <span class="d-none d-md-inline-block">Add &nbsp;</span>
+        <i class="fa fa-plus" aria-hidden="true"></i>
+      </button>
+      <button type="button" class="btn btn-primary ml-1 float-right" (click)="saveComments()">
+        <span class="d-none d-md-inline-block">Save Comments </span>
+        <span class="d-md-none"><i class="fas fa-check"></i></span>
+      </button>
+      <a (click)="cardComments.toggle()" class="text-primary">
+        <h4><i class="fas fa-caret-down mr-1"></i> Comments | Total: <i>{{getActiveComments()}}</i></h4>
+      </a>
+      <br />
+      <div mdbCollapse #cardComments="bs-collapse">
+        <div class="row">
+          <table mdbTable *ngIf="card" class="table" [class.collapse]="commentsCollapsed">
+            <thead>
+            <tr>
+              <th scope="col" class="small" style="width:15%;max-width:15%;">Last Modified</th>
+              <th scope="col" class="small" style="width:15%;max-width:15%;">Author</th>
+              <th scope="col" class="small" style="width:60%;max-width:60%;">Message</th>
+              <th scope="col" class="small" >Options</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr mdbTableCol *ngFor="let c of comments; let i = index">
+              <ng-container *ngIf="!c.deleted">
+                <td>
+                  {{c.dateModified | date:'long'}}
+                </td>
+                <td>
+                  {{c.author}}
+                </td>
+                <td>
+                  <textarea type="text" [(ngModel)]="c.body" [disabled]="!canEditComment(c)" class="form-control form-control-sm"
+                      [placeholder]="editing ? 'Enter Any Comments' : ''" maxlength="200" autosize>
+                  </textarea>
+                </td>
+                <td>
+                  <button *ngIf="!canEditComment(c)" type="button" (click)="deleteComment(i)" mdbBtn floating="true"
+                          size="sm" mdbWavesEffect disabled>
+                          <span class="d-none d-md-inline-block">Delete </span>
+                           <i class="ml-1 fa fa-trash" aria-hidden="true"></i>
+                        </button>
+                  <button *ngIf="canEditComment(c)" type="button" color="danger" (click)="deleteComment(i)" mdbBtn floating="true"
+                          size="sm" mdbWavesEffect>
+                          <span class="d-none d-md-inline-block">Delete </span>
+                          <i class="ml-1 fa fa-trash" aria-hidden="true"></i>
+                        </button>
+                </td>
+              </ng-container>
+            </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

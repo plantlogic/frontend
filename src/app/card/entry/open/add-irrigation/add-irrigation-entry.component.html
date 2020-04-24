@@ -4,6 +4,7 @@
       <span>Work Date</span><br />
       <input class="date" [ngModel]="irrigation.workDate | date:'yyyy-MM-dd'" (ngModelChange)="irrigation.workDate = fixDate($event)" type="date"/>
       <input class="form-control"  list="irrigators" [(ngModel)]="irrigation.irrigator" placeholder="Enter Irrigator">
+      <input class="form-control"  [(ngModel)]="irrigation.duration" placeholder="Duration (In Hours)" type="number">
       <datalist id="irrigators">
         <option *ngFor="let r of getCommon('irrigators'); let i = index;" data-id="{{r.id}}" [value]="(i+1) + ' - ' + r.value">
       </datalist>
@@ -18,32 +19,31 @@
     <div class="col-md my-3">
       <div class="mb-5 align-text-bottom">
         <span class="float-right">
-          <button *ngIf="!irrigation.chemical" type="button" color="primary" (click)="irrigation.chemical = newChemical()"
+          <button *ngIf="!irrigation.chemicalsFull()" type="button" color="primary" (click)="addIrrigationChemical()"
                   mdbBtn floating="true" size="lg" mdbWavesEffect>
             <i class="fa fa-plus" aria-hidden="true"></i>
           </button>
-          <button *ngIf="irrigation.chemical" type="button" color="warning" (click)="irrigation.chemical = undefined"
-                  mdbBtn floating="true" size="lg" mdbWavesEffect>
-              <i class="fa fa-times" aria-hidden="true"></i>
-            </button>
         </span>
-        <h5>Chemical</h5>
+        <h5>Chemicals <span class="mr-2">{{irrigation.chemicalArray.length}}/{{irrigation.chemicalsMax}}</span></h5>
       </div>
-      <div class="col-sm px-2 text-right" *ngIf="irrigation.chemical">
+      <div class="col-sm px-2 text-right" *ngFor="let c of irrigation.chemicalArray; let i = index;">
         <div class="row px-2">
-          <select class="form-control" [(ngModel)]="irrigation.chemical.name">
-            <option *ngIf="!irrigation.chemical.name" [value]="undefined" disabled selected>Select Chemical</option>
+          <select class="form-control" [(ngModel)]="c.name">
+            <option *ngIf="!c.name" [value]="undefined" disabled selected>Select Chemical</option>
             <option *ngFor="let r of getCommon('chemicals')" [value]="r.id">{{r.value}}</option>
           </select>
           <div class="form-inline">
             <div class="form-group">
-              <input type="number" [(ngModel)]="irrigation.chemical.rate" class="form-control" pattern="\d*" placeholder="Rate (Per Acre)" />
+              <input type="number" [(ngModel)]="c.rate" class="form-control" pattern="\d*" placeholder="Rate (Per Acre)"/>
             </div>
             <div class="form-group">
-              <select class="form-control" [(ngModel)]="irrigation.chemical.unit" >
-                <option *ngIf="!irrigation.chemical.unit" [value]="undefined" disabled selected>Select Rate Unit</option>
+              <select class="form-control" [(ngModel)]="c.unit" >
+                <option *ngIf="!c.unit" [value]="undefined" disabled selected>Select Rate Unit</option>
                 <option *ngFor="let r of getCommon('chemicalRateUnits')" [value]="r.id">{{r.value}}</option>
               </select>
+              <button type="button" color="warning" (click)="irrigation.chemicalArray.splice(i, 1)" mdbBtn floating="true" size="md" mdbWavesEffect>
+                <i class="fa fa-times" aria-hidden="true"></i>
+              </button>
             </div>
           </div>
         </div>
@@ -55,37 +55,38 @@
     <div class="col-md my-3">
       <div class="mb-5 align-text-bottom">
         <span class="float-right">
-          <button *ngIf="!irrigation.fertilizer" type="button" color="primary" (click)="irrigation.fertilizer = newChemical()"
+          <button *ngIf="!irrigation.fertilizersFull()" type="button" color="primary" (click)="addIrrigationFertilizer()"
                   mdbBtn floating="true" size="lg" mdbWavesEffect>
             <i class="fa fa-plus" aria-hidden="true"></i>
           </button>
-          <button *ngIf="irrigation.fertilizer" type="button" color="warning" (click)="irrigation.fertilizer = undefined"
-                  mdbBtn floating="true" size="lg" mdbWavesEffect>
-              <i class="fa fa-times" aria-hidden="true"></i>
-            </button>
         </span>
-        <h5>Fertilizer</h5>
+        <h5>Fertilizers <span class="mr-2">{{irrigation.fertilizerArray.length}}/{{irrigation.fertilizersMax}}</span></h5>
       </div>
-      <div class="col-sm px-2 text-right" *ngIf="irrigation.fertilizer">
+      <div class="col-sm px-2 text-right" *ngFor="let f of irrigation.fertilizerArray; let i = index;">
         <div class="row px-2">
-          <select class="form-control" [(ngModel)]="irrigation.fertilizer.name">
-            <option *ngIf="!irrigation.fertilizer.name" [value]="undefined" disabled selected>Select Fertilizer</option>
+          <select class="form-control" [(ngModel)]="f.name">
+            <option *ngIf="!f.name" [value]="undefined" disabled selected>Select Fertilizer</option>
             <option *ngFor="let r of getCommon('fertilizers')" [value]="r.id">{{r.value}}</option>
           </select>
           <div class="form-inline">
             <div class="form-group">
-              <input type="number" [(ngModel)]="irrigation.fertilizer.rate" class="form-control" pattern="\d*" placeholder="Rate (Per Acre)" />
+              <input type="number" [(ngModel)]="f.rate" class="form-control" pattern="\d*" placeholder="Rate (Per Acre)"/>
             </div>
             <div class="form-group">
-              <select class="form-control" [(ngModel)]="irrigation.fertilizer.unit" >
-                <option *ngIf="!irrigation.fertilizer.unit" [value]="undefined" disabled selected>Select Rate Unit</option>
+              <select class="form-control" [(ngModel)]="f.unit" >
+                <option *ngIf="!f.unit" [value]="undefined" disabled selected>Select Rate Unit</option>
                 <option *ngFor="let r of getCommon('chemicalRateUnits')" [value]="r.id">{{r.value}}</option>
               </select>
+              <button type="button" color="warning" (click)="irrigation.fertilizerArray.splice(i, 1)" mdbBtn floating="true" size="md" mdbWavesEffect>
+                <i class="fa fa-times" aria-hidden="true"></i>
+              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
+
+
   </div>
   <button  mdbBtn color="primary" class="mt-4" (click)="submit()">Save</button>
 </div>

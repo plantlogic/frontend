@@ -34,6 +34,18 @@ export class AddTractorEntryComponent implements OnInit {
     });
   }
 
+  private addTractorChemical(): void {
+    if (!this.tractor.chemicalsFull()) {
+      this.tractor.chemicalArray.push(new Chemical());
+    }
+  }
+
+  private addTractorFertilizer(): void {
+    if (!this.tractor.fertilizersFull()) {
+      this.tractor.fertilizerArray.push(new Chemical());
+    }
+  }
+
   public dataListOptionValueToID(optionValue, dataListID) {
     const option = document.querySelector('#' + dataListID + ' [value="' + optionValue + '"]') as HTMLElement;
     return (option) ? option.id : null;
@@ -74,36 +86,55 @@ export class AddTractorEntryComponent implements OnInit {
 
   submit() {
     // Check Tractor Info
-    const c = this.tractor;
-    c.workDate = (new Date(c.workDate)).valueOf();
-    const operatorID = this.dataListOptionValueToID(c.operator, 'tractorOperators');
+    const t = Object.assign(new TractorEntry(), this.tractor);
+    t.workDate = (new Date(t.workDate)).valueOf();
+    const operatorID = this.dataListOptionValueToID(t.operator, 'tractorOperators');
     if (!operatorID || !this[`tractorOperators`].find(e => e.id === operatorID)) {
       AlertService.newBasicAlert('Invalid Tractor Operator - please fix and try again.', true);
       return;
     }
-    c.operator = operatorID;
-    if (c.chemical) {
-      if (!c.chemical.name || !this[`chemicals`].find(c2 => c2.id === c.chemical.name)) {
-        AlertService.newBasicAlert('Invalid Chemical Entered - please fix and try again.', true);
-        return;
-      }
-      if (!c.chemical.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === c.chemical.unit)) {
-        AlertService.newBasicAlert('Invalid Chemical Rate Unit Entered - please fix and try again.', true);
-        return;
+    t.operator = operatorID;
+    // Check Tractor Work
+    if (!t.workDone || !this[`tractorWork`].find(tw => tw.id === t.workDone)) {
+      AlertService.newBasicAlert('Invalid Tractor Work Entered - please fix and try again.', true);
+      return;
+    }
+    // Check Chemical
+    if (t.chemicalArray) {
+      for (const c of t.chemicalArray) {
+        if (!c.name || !this[`chemicals`].find(c2 => c2.id === c.name)) {
+          AlertService.newBasicAlert('Invalid Chemical Entered - please fix and try again.', true);
+          return;
+        }
+        if (!c.rate) {
+          AlertService.newBasicAlert('Invalid Chemical Rate Entered - please fix and try again.', true);
+          return;
+        }
+        if (!c.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === c.unit)) {
+          AlertService.newBasicAlert('Invalid Chemical Rate Unit Entered - please fix and try again.', true);
+          return;
+        }
       }
     }
-    if (c.fertilizer) {
-      if (!c.fertilizer.name || !this[`fertilizers`].find(c2 => c2.id === c.fertilizer.name)) {
-        AlertService.newBasicAlert('Invalid Fertilizer Entered - please fix and try again.', true);
-        return;
-      }
-      if (!c.fertilizer.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === c.fertilizer.unit)) {
-        AlertService.newBasicAlert('Invalid Fertilizer Rate Unit Entered - please fix and try again.', true);
-        return;
+    // Check Fertilizer Info
+    if (t.fertilizerArray) {
+      for (const f of t.fertilizerArray) {
+        if (!f.name || !this[`fertilizers`].find(c2 => c2.id === f.name)) {
+          AlertService.newBasicAlert('Invalid Fertilizer Entered - please fix and try again.', true);
+          return;
+        }
+        if (!f.rate) {
+          AlertService.newBasicAlert('Invalid Chemical Rate Entered - please fix and try again.', true);
+          return;
+        }
+        if (!f.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === f.unit)) {
+          AlertService.newBasicAlert('Invalid Fertilizer Rate Unit Entered - please fix and try again.', true);
+          return;
+        }
       }
     }
 
-    this.cardEntryService.addTractorData(this.cardId, c).subscribe(
+    this.cardEntryService.addTractorData(this.cardId, t).subscribe(
       data => {
         if (data.success) {
           AlertService.newBasicAlert('Saved successfully!', false);

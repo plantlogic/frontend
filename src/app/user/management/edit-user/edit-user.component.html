@@ -49,6 +49,7 @@
           <div class="form-group">
             <label for="shipperID">Shipper ID</label>
             <select class="form-control" id="shipperID" name="shipperID" formControlName="shipperID">
+              <option *ngIf="!user.shipperID" [value]="undefined" disabled selected>Select Shipper</option>
               <option *ngFor="let r of commonData.getValues('shippers')" [value]="r.id">{{r.value}}</option>
             </select>
             <div class="invalid-feedback" role="alert">Invalid Shipper ID</div>

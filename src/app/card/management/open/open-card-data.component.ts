@@ -81,6 +81,10 @@ export class OpenCardDataComponent implements OnInit {
     this.comments.push(c);
   }
 
+  private addCommodities(): void {
+    this.card.commodityArray.push(new Commodities());
+  }
+
   private addTractorData(): void {
     this.card.tractorArray.push(new TractorEntry());
   }
@@ -94,11 +98,36 @@ export class OpenCardDataComponent implements OnInit {
   }
 
   private addPostChemicals(): void {
+    return;
     this.card.postChemicalArray.push(new Chemicals());
   }
 
-  private addCommodities(): void {
-    this.card.commodityArray.push(new Commodities());
+  private addTractorChemical(index): void {
+    const length = this.card.tractorArray.length;
+    if (length > 0 && !this.card.tractorArray[0].chemicalsFull()) {
+      this.card.tractorArray[index].chemicalArray.push(new Chemical());
+    }
+  }
+
+  private addTractorFertilizer(index): void {
+    const length = this.card.tractorArray.length;
+    if (length > 0 && !this.card.tractorArray[0].fertilizersFull()) {
+      this.card.tractorArray[index].fertilizerArray.push(new Chemical());
+    }
+  }
+
+  private addIrrigationChemical(index): void {
+    const length = this.card.irrigationArray.length;
+    if (length > 0 && !this.card.irrigationArray[0].chemicalsFull()) {
+      this.card.irrigationArray[index].chemicalArray.push(new Chemical());
+    }
+  }
+
+  private addIrrigationFertilizer(index): void {
+    const length = this.card.irrigationArray.length;
+    if (length > 0 && !this.card.irrigationArray[0].fertilizersFull()) {
+      this.card.irrigationArray[index].fertilizerArray.push(new Chemical());
+    }
   }
 
   public canEditComment(comment): boolean {
@@ -525,6 +554,10 @@ export class OpenCardDataComponent implements OnInit {
             AlertService.newBasicAlert('Invalid Chemical Entered - please fix and try again.', true);
             return false;
           }
+          if (!c.chemical.rate) {
+            AlertService.newBasicAlert('Invalid Chemical Rate Entered - please fix and try again.', true);
+            return;
+          }
           if (!c.chemical.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === c.chemical.unit)) {
             AlertService.newBasicAlert('Invalid Chemical Rate Unit Entered - please fix and try again.', true);
             return false;
@@ -533,6 +566,10 @@ export class OpenCardDataComponent implements OnInit {
         if (c.fertilizer) {
           if (!c.fertilizer.name || !this[`fertilizers`].find(c2 => c2.id === c.fertilizer.name)) {
             AlertService.newBasicAlert('Invalid Fertilizer Entered - please fix and try again.', true);
+            return false;
+          }
+          if (!c.fertilizer.rate) {
+            AlertService.newBasicAlert('Invalid Chemical Rate Entered - please fix and try again.', true);
             return false;
           }
           if (!c.fertilizer.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === c.fertilizer.unit)) {
@@ -545,88 +582,126 @@ export class OpenCardDataComponent implements OnInit {
           return false;
         }
       }
-      for (const c of card.postChemicalArray) {
-        c.date = (new Date(c.date)).valueOf();
-        if (c.chemical) {
-          if (!c.chemical.name || !this[`chemicals`].find(c2 => c2.id === c.chemical.name)) {
-            AlertService.newBasicAlert('Invalid Chemical Entered - please fix and try again.', true);
-            return false;
-          }
-          if (!c.chemical.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === c.chemical.unit)) {
-            AlertService.newBasicAlert('Invalid Chemical Rate Unit Entered - please fix and try again.', true);
-            return false;
-          }
-        }
-        if (c.fertilizer) {
-          if (!c.fertilizer.name || !this[`fertilizers`].find(c2 => c2.id === c.fertilizer.name)) {
-            AlertService.newBasicAlert('Invalid Fertilizer Entered - please fix and try again.', true);
-            return false;
-          }
-          if (!c.fertilizer.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === c.fertilizer.unit)) {
-            AlertService.newBasicAlert('Invalid Fertilizer Rate Unit Entered - please fix and try again.', true);
-            return false;
-          }
-        }
-        if (!c.chemical && !c.fertilizer) {
-          AlertService.newBasicAlert('No Chemical or Fertilizer Entered - please fix and try again.', true);
-          return false;
-        }
-      }
+      // for (const c of card.postChemicalArray) {
+      //   c.date = (new Date(c.date)).valueOf();
+      //   if (c.chemical) {
+      //     if (!c.chemical.name || !this[`chemicals`].find(c2 => c2.id === c.chemical.name)) {
+      //       AlertService.newBasicAlert('Invalid Chemical Entered - please fix and try again.', true);
+      //       return false;
+      //     }
+      //     if (!c.chemical.rate) {
+      //       AlertService.newBasicAlert('Invalid Chemical Rate Entered - please fix and try again.', true);
+      //       return false;
+      //     }
+      //     if (!c.chemical.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === c.chemical.unit)) {
+      //       AlertService.newBasicAlert('Invalid Chemical Rate Unit Entered - please fix and try again.', true);
+      //       return false;
+      //     }
+      //   }
+      //   if (c.fertilizer) {
+      //     if (!c.fertilizer.name || !this[`fertilizers`].find(c2 => c2.id === c.fertilizer.name)) {
+      //       AlertService.newBasicAlert('Invalid Fertilizer Entered - please fix and try again.', true);
+      //       return false;
+      //     }
+      //     if (!c.fertilizer.rate) {
+      //       AlertService.newBasicAlert('Invalid Fertilizer Rate Entered - please fix and try again.', true);
+      //       return false;
+      //     }
+      //     if (!c.fertilizer.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === c.fertilizer.unit)) {
+      //       AlertService.newBasicAlert('Invalid Fertilizer Rate Unit Entered - please fix and try again.', true);
+      //       return false;
+      //     }
+      //   }
+      //   if (!c.chemical && !c.fertilizer) {
+      //     AlertService.newBasicAlert('No Chemical or Fertilizer Entered - please fix and try again.', true);
+      //     return false;
+      //   }
+      // }
+
       // Check Tractor Info
       for (const t of card.tractorArray) {
         t.workDate = (new Date(t.workDate)).valueOf();
         const operatorID = this.dataListOptionValueToID(t.operator, 'tractorOperators');
-        if (!operatorID || !this[`tractorOperators`].find(e => e.id === operatorID)) {
+        if (!operatorID) {
           AlertService.newBasicAlert('Invalid Tractor Operator - please fix and try again.', true);
           return false;
         }
         t.operator = operatorID;
-        if (t.chemical) {
-          if (!t.chemical.name || !this[`chemicals`].find(t2 => t2.id === t.chemical.name)) {
-            AlertService.newBasicAlert('Invalid Chemical Entered - please fix and try again.', true);
-            return;
-          }
-          if (!t.chemical.unit || !this[`chemicalRateUnits`].find(t2 => t2.id === t.chemical.unit)) {
-            AlertService.newBasicAlert('Invalid Chemical Rate Unit Entered - please fix and try again.', true);
-            return;
+        // Check Tractor Work
+        if (!t.workDone || !this[`tractorWork`].find(tw => tw.id === t.workDone)) {
+          AlertService.newBasicAlert('Invalid Tractor Work Entered - please fix and try again.', true);
+          return false;
+        }
+        // Check Chemical
+        if (t.chemicalArray) {
+          for (const c of t.chemicalArray) {
+            if (!c.name || !this[`chemicals`].find(c2 => c2.id === c.name)) {
+              AlertService.newBasicAlert('Invalid Chemical Entered - please fix and try again.', true);
+              return false;
+            }
+            if (!c.rate) {
+              AlertService.newBasicAlert('Invalid Chemical Rate Entered - please fix and try again.', true);
+              return false;
+            }
+            if (!c.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === c.unit)) {
+              AlertService.newBasicAlert('Invalid Chemical Rate Unit Entered - please fix and try again.', true);
+              return false;
+            }
           }
         }
-        if (t.fertilizer) {
-          if (!t.fertilizer.name || !this[`fertilizers`].find(t2 => t2.id === t.fertilizer.name)) {
-            AlertService.newBasicAlert('Invalid Fertilizer Entered - please fix and try again.', true);
-            return;
-          }
-          if (!t.fertilizer.unit || !this[`chemicalRateUnits`].find(t2 => t2.id === t.fertilizer.unit)) {
-            AlertService.newBasicAlert('Invalid Fertilizer Rate Unit Entered - please fix and try again.', true);
-            return;
+        // Check Fertilizer Info
+        if (t.fertilizerArray) {
+          for (const f of t.fertilizerArray) {
+            if (!f.name || !this[`fertilizers`].find(c2 => c2.id === f.name)) {
+              AlertService.newBasicAlert('Invalid Fertilizer Entered - please fix and try again.', true);
+              return false;
+            }
+            if (!f.rate) {
+              AlertService.newBasicAlert('Invalid Fertilizer Rate Entered - please fix and try again.', true);
+              return false;
+            }
+            if (!f.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === f.unit)) {
+              AlertService.newBasicAlert('Invalid Fertilizer Rate Unit Entered - please fix and try again.', true);
+              return false;
+            }
           }
         }
       }
       // Check Irrigation Info
       for (const e of card.irrigationArray) {
         e.workDate = (new Date(e.workDate)).valueOf();
-        if (e.chemical) {
-          if (!e.chemical.name || !this[`chemicals`].find(e2 => e2.id === e.chemical.name)) {
-            AlertService.newBasicAlert('Invalid Chemical Entered - please fix and try again.', true);
-            return;
-          }
-          if (!e.chemical.unit || !this[`chemicalRateUnits`].find(e2 => e2.id === e.chemical.unit)) {
-            AlertService.newBasicAlert('Invalid Chemical Rate Unit Entered - please fix and try again.', true);
-            return;
-          }
-          if (!e.irrigator) {
-            AlertService.newBasicAlert('Irrigator is required when adding chemicals - please fix and try again.', true);
-            return;
+        // Check Chemical
+        if (e.chemicalArray) {
+          for (const c of e.chemicalArray) {
+            if (!c.name || !this[`chemicals`].find(c2 => c2.id === c.name)) {
+              AlertService.newBasicAlert('Invalid Chemical Entered - please fix and try again.', true);
+              return false;
+            }
+            if (!c.rate) {
+              AlertService.newBasicAlert('Invalid Chemical Rate Entered - please fix and try again.', true);
+              return false;
+            }
+            if (!c.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === c.unit)) {
+              AlertService.newBasicAlert('Invalid Chemical Rate Unit Entered - please fix and try again.', true);
+              return false;
+            }
           }
         }
-        if (e.fertilizer) {
-          if (!e.fertilizer.name || !this[`fertilizers`].find(e2 => e2.id === e.fertilizer.name)) {
-            AlertService.newBasicAlert('Invalid Fertilizer Entered - please fix and try again.', true);
-            return;
-          }
-          if (!e.fertilizer.unit || !this[`chemicalRateUnits`].find(e2 => e2.id === e.fertilizer.unit)) {
-            AlertService.newBasicAlert('Invalid Fertilizer Rate Unit Entered - please fix and try again.', true);
-            return;
+        // Check Fertilizer Info
+        if (e.fertilizerArray) {
+          for (const f of e.fertilizerArray) {
+            if (!f.name || !this[`fertilizers`].find(c2 => c2.id === f.name)) {
+              AlertService.newBasicAlert('Invalid Fertilizer Entered - please fix and try again.', true);
+              return false;
+            }
+            if (!f.rate) {
+              AlertService.newBasicAlert('Invalid Fertilizer Rate Entered - please fix and try again.', true);
+              return false;
+            }
+            if (!f.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === f.unit)) {
+              AlertService.newBasicAlert('Invalid Fertilizer Rate Unit Entered - please fix and try again.', true);
+              return false;
+            }
           }
         }
         if (e.irrigator) {
@@ -652,6 +727,7 @@ export class OpenCardDataComponent implements OnInit {
       card.shippers = this.getSelectedShippers();
       return card;
     } catch (e) {
+      console.log(e);
       AlertService.newBasicAlert('Error When Validating Card Data', true);
       return false;
     }

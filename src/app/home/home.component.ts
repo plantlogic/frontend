@@ -52,12 +52,18 @@ export class HomeComponent implements OnInit {
     if (this.auth.hasPermission(PlRole.DATA_ENTRY)) {
       // If on a mobile device, redirect to data entry
       if (window.matchMedia('only screen and (max-width: 760px)').matches) {
-        this.router.navigate(['/entry']);
+        setTimeout( () => { this.router.navigate(['/entry']); }, 1000);
+        this.message = 'Redirecting...';
+        this.redirecting = true;
+        // this.router.navigate(['/entry']);
       }
 
       // Go straight to the create card page if only permission is data entry
       if (this.auth.permissionCount() === 1) {
-        this.router.navigate(['/entry']);
+        setTimeout( () => { this.router.navigate(['/entry']); }, 1000);
+        this.message = 'Redirecting...';
+        this.redirecting = true;
+        // this.router.navigate(['/entry']);
       }
     } else if (this.auth.hasPermission(PlRole.SHIPPER)) {
      // Go straight to the data page if only permission is shipper

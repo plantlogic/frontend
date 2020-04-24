@@ -76,25 +76,33 @@ export class EntryDashboardComponent implements OnInit {
     card.tractorArray.forEach(e => {
       e.workDone = this.findCommonValue('tractorWork', ['value'], e.workDone);
       e.operator = this.findCommonValue('tractorOperators', ['value'], e.operator);
-      if (e.chemical) {
-        e.chemical.name = this.findCommonValue('chemicals', ['value'], e.chemical.name);
-        e.chemical.unit = this.findCommonValue('chemicalRateUnits', ['value'], e.chemical.unit);
+      if (e.chemicalArray) {
+        for (const c of e.chemicalArray) {
+          c.name = this.findCommonValue('chemicals', ['value'], c.name);
+          c.unit = this.findCommonValue('chemicalRateUnits', ['value'], c.unit);
+        }
       }
-      if (e.fertilizer) {
-        e.fertilizer.name = this.findCommonValue('fertilizers', ['value'], e.fertilizer.name);
-        e.fertilizer.unit = this.findCommonValue('chemicalRateUnits', ['value'], e.fertilizer.unit);
+      if (e.fertilizerArray) {
+        for (const f of e.fertilizerArray) {
+          f.name = this.findCommonValue('fertilizers', ['value'], f.name);
+          f.unit = this.findCommonValue('chemicalRateUnits', ['value'], f.unit);
+        }
       }
     });
     card.irrigationArray.forEach(e => {
       e.method = this.findCommonValue('irrigationMethod', ['value'], e.method);
       e.irrigator = this.findCommonValue('irrigators', ['value'], e.irrigator);
-      if (e.chemical) {
-        e.chemical.name = this.findCommonValue('chemicals', ['value'], e.chemical.name);
-        e.chemical.unit = this.findCommonValue('chemicalRateUnits', ['value'], e.chemical.unit);
+      if (e.chemicalArray) {
+        for (const c of e.chemicalArray) {
+          c.name = this.findCommonValue('chemicals', ['value'], c.name);
+          c.unit = this.findCommonValue('chemicalRateUnits', ['value'], c.unit);
+        }
       }
-      if (e.fertilizer) {
-        e.fertilizer.name = this.findCommonValue('fertilizers', ['value'], e.fertilizer.name);
-        e.fertilizer.unit = this.findCommonValue('chemicalRateUnits', ['value'], e.fertilizer.unit);
+      if (e.fertilizerArray) {
+        for (const f of e.fertilizerArray) {
+          f.name = this.findCommonValue('fertilizers', ['value'], f.name);
+          f.unit = this.findCommonValue('chemicalRateUnits', ['value'], f.unit);
+        }
       }
     });
     return card;

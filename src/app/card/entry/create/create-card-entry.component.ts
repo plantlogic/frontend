@@ -60,14 +60,24 @@ export class CreateCardEntryComponent implements OnInit {
     this.card.commodityArray.push(new Commodities());
   }
 
-  private addPreChemicals(): void {
-    this.card.preChemicalArray.push(new Chemicals());
-  }
-
   private addTractor(): void {
     if (this.card.tractorArray.length < 1) {
       const t = new TractorEntry();
       this.card.tractorArray.push(t);
+    }
+  }
+
+  private addTractorChemical(): void {
+    const length = this.card.tractorArray.length;
+    if (length > 0 && !this.card.tractorArray[0].chemicalsFull()) {
+      this.card.tractorArray[0].chemicalArray.push(new Chemical());
+    }
+  }
+
+  private addTractorFertilizer(): void {
+    const length = this.card.tractorArray.length;
+    if (length > 0 && !this.card.tractorArray[0].fertilizersFull()) {
+      this.card.tractorArray[0].fertilizerArray.push(new Chemical());
     }
   }
 
@@ -140,13 +150,9 @@ export class CreateCardEntryComponent implements OnInit {
     });
   }
 
-  private newChemical(): Chemical {
-    return new Chemical();
-  }
-
   public submit() {
     // Shallow Copy Card Object
-    const card = this.card;
+    const card = new Card().copyConstructor(this.card);
 
     // Check Ranch Info
     if (!card.ranchName || !(this[`ranches`].find(r => r.id === card.ranchName))) {
@@ -168,35 +174,6 @@ export class CreateCardEntryComponent implements OnInit {
       }
     }
 
-    // Check Chemical / Fertilizer Info
-    for (const c of card.preChemicalArray) {
-      c.date = (new Date(c.date)).valueOf();
-      if (c.chemical) {
-        if (!c.chemical.name || !this[`chemicals`].find(c2 => c2.id === c.chemical.name)) {
-          AlertService.newBasicAlert('Invalid Chemical Entered - please fix and try again.', true);
-          return;
-        }
-        if (!c.chemical.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === c.chemical.unit)) {
-          AlertService.newBasicAlert('Invalid Chemical Rate Unit Entered - please fix and try again.', true);
-          return;
-        }
-      }
-      if (c.fertilizer) {
-        if (!c.fertilizer.name || !this[`fertilizers`].find(c2 => c2.id === c.fertilizer.name)) {
-          AlertService.newBasicAlert('Invalid Fertilizer Entered - please fix and try again.', true);
-          return;
-        }
-        if (!c.fertilizer.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === c.fertilizer.unit)) {
-          AlertService.newBasicAlert('Invalid Fertilizer Rate Unit Entered - please fix and try again.', true);
-          return;
-        }
-      }
-      if (!c.chemical && !c.fertilizer) {
-        AlertService.newBasicAlert('No Chemical or Fertilizer Entered - please fix and try again.', true);
-        return;
-      }
-    }
-
     // Check Tractor Info
     for (const t of card.tractorArray) {
       t.workDate = (new Date(t.workDate)).valueOf();
@@ -206,6 +183,45 @@ export class CreateCardEntryComponent implements OnInit {
         return;
       }
       t.operator = operatorID;
+      // Check Tractor Work
+      if (!t.workDone || !this[`tractorWork`].find(tw => tw.id === t.workDone)) {
+        AlertService.newBasicAlert('Invalid Tractor Work Entered - please fix and try again.', true);
+        return;
+      }
+      // Check Chemical
+      if (t.chemicalArray) {
+        for (const c of t.chemicalArray) {
+          if (!c.name || !this[`chemicals`].find(c2 => c2.id === c.name)) {
+            AlertService.newBasicAlert('Invalid Chemical Entered - please fix and try again.', true);
+            return;
+          }
+          if (!c.rate) {
+            AlertService.newBasicAlert('Invalid Chemical Rate Entered - please fix and try again.', true);
+            return;
+          }
+          if (!c.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === c.unit)) {
+            AlertService.newBasicAlert('Invalid Chemical Rate Unit Entered - please fix and try again.', true);
+            return;
+          }
+        }
+      }
+      // Check Fertilizer Info
+      if (t.fertilizerArray) {
+        for (const f of t.fertilizerArray) {
+          if (!f.name || !this[`fertilizers`].find(c2 => c2.id === f.name)) {
+            AlertService.newBasicAlert('Invalid Fertilizer Entered - please fix and try again.', true);
+            return;
+          }
+          if (!f.rate) {
+            AlertService.newBasicAlert('Invalid Fertilizer Rate Entered - please fix and try again.', true);
+            return;
+          }
+          if (!f.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === f.unit)) {
+            AlertService.newBasicAlert('Invalid Fertilizer Rate Unit Entered - please fix and try again.', true);
+            return;
+          }
+        }
+      }
     }
     // Replace Lot Number Whitespace
     card.lotNumber = card.lotNumber.replace(/\s/g, '');
