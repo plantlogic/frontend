@@ -21,7 +21,7 @@ export class IrrigationEntry {
     if (this.chemicals.length > this.chemicalsMax) {
       this.chemicals = this.chemicals.slice(0, this.chemicalsMax);
     }
-    return this.chemicals;
+    return (this.chemicals) ? this.chemicals : new Array<Chemical>();
   }
   set setChemicalArray(value: Array<Chemical>) {
     if (value.length > this.chemicalsMax) {
@@ -37,7 +37,7 @@ export class IrrigationEntry {
     if (this.fertilizers.length > this.fertilizersMax) {
       this.fertilizers = this.fertilizers.slice(0, this.fertilizersMax);
     }
-    return this.fertilizers;
+    return (this.fertilizers) ? this.fertilizers : new Array<Chemical>();
   }
   set setFertilizerArray(value: Array<Chemical>) {
     if (value.length > this.fertilizersMax) {
