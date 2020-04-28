@@ -18,13 +18,16 @@ export class TractorEntry {
   tractorNumber: string;
 
   get chemicalArray(): Array<Chemical> {
+    if (!this.chemicals) {
+      this.chemicals = new Array<Chemical>();
+    }
     if (this.chemicals.length > this.chemicalsMax) {
       this.chemicals = this.chemicals.slice(0, this.chemicalsMax);
     }
-    return (this.chemicals) ? this.chemicals : new Array<Chemical>();
+    return this.chemicals;
   }
 
-  set setChemicalArray(value: Array<Chemical>) {
+  set chemicalArray(value: Array<Chemical>) {
     if (value.length > this.chemicalsMax) {
       this.chemicals = value.slice(0, this.chemicalsMax);
     } else {
@@ -35,12 +38,15 @@ export class TractorEntry {
     return this.chemicals.length >= this.chemicalsMax;
   }
   get fertilizerArray(): Array<Chemical> {
+    if (!this.fertilizers) {
+      this.fertilizers = new Array<Chemical>();
+    }
     if (this.fertilizers.length > this.fertilizersMax) {
       this.fertilizers = this.fertilizers.slice(0, this.fertilizersMax);
     }
-    return (this.fertilizers) ? this.fertilizers : new Array<Chemical>();
+    return this.fertilizers;
   }
-  set setFertilizerArray(value: Array<Chemical>) {
+  set fertilizerArray(value: Array<Chemical>) {
     if (value.length > this.fertilizersMax) {
       this.fertilizers = value.slice(0, this.fertilizersMax);
     } else {
