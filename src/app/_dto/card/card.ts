@@ -4,6 +4,7 @@ import {Commodities} from './commodities';
 import {Chemicals} from './chemicals';
 import {Comment} from './comment';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { Chemical } from './chemical';
 
 export class Card {
   // Limits
@@ -99,7 +100,10 @@ export class Card {
     if (card.irrigation) {
       const temp: Array<IrrigationEntry> = new Array<IrrigationEntry>();
       card.irrigation.forEach(t => {
-        temp.push(Object.assign(new IrrigationEntry(), t));
+        const temp2 = Object.assign(new IrrigationEntry(), t);
+        if (!temp2.chemicalArray) { temp2.chemicalArray = new Array<Chemical>(); }
+        if (!temp2.fertilizerArray) { temp2.fertilizerArray = new Array<Chemical>(); }
+        temp.push(temp2);
       });
       this.irrigation = temp;
     }
@@ -107,7 +111,10 @@ export class Card {
     if (card.tractor) {
       const temp: Array<TractorEntry> = new Array<TractorEntry>();
       card.tractor.forEach(t => {
-        temp.push(Object.assign(new TractorEntry(), t));
+        const temp2 = Object.assign(new TractorEntry(), t);
+        if (!temp2.chemicalArray) { temp2.chemicalArray = new Array<Chemical>(); }
+        if (!temp2.fertilizerArray) { temp2.fertilizerArray = new Array<Chemical>(); }
+        temp.push(temp2);
       });
       this.tractor = temp;
     }
