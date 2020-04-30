@@ -28,7 +28,12 @@
     </div>
     <div class="col d-none d-md-inline-block mt-2">
       <button type="button" class="float-right" color="primary" name="addCard" (click)="generate()"
-              mdbBtn floating="true" size="sm" mdbWavesEffect>Generate & Save</button>
+              mdbBtn floating="true" size="sm" mdbWavesEffect>Export All</button>
+    </div>
+    <div class="w-100"></div>
+    <div class="col d-none d-md-inline-block mt-2">
+      <button type="button" class="float-right" color="warning" (click)="generateAllApplied()"
+              mdbBtn floating="true" size="sm" mdbWavesEffect>Export Applied</button>
     </div>
   </div>
   <div class="row">

@@ -111,6 +111,18 @@ export class CardExportService {
     return displayString;
   }
 
+  public compareDates(a, b): number {
+    let comparison = 0;
+    const valA = a.date;
+    const valB = b.date;
+    if (valA > valB) {
+      comparison = 1;
+    } else if (valA < valB) {
+      comparison = -1;
+    }
+    return comparison;
+  }
+
   public dateToDisplay(dateInput, time?: boolean): string {
     // Modify how the date appears in the export
     // Convert to Date object for nicer print
@@ -136,6 +148,12 @@ export class CardExportService {
     });
   }
 
+  public exportAllApplied(from: number, to: number, ranches: Array<string>, commodities: Array<string>, includeUnharvested: boolean): void {
+    this.initCommon(commonData => {
+      this.generateAppliedExport(commonData, from, to, ranches, commodities, includeUnharvested);
+    });
+  }
+
   /*
     Searches common values in [key] list where value.id === targetID
     returns value.valuePropertyArr where valuePropertyArr = array of nesting properties
@@ -158,6 +176,160 @@ export class CardExportService {
   }
   return (commonValue) ? commonValue : '';
 }
+
+findMinNumForCols(cards: Array<Card>) {
+    let numFerts = 0;
+    let numChems = 0;
+    let numCommodities = 0;
+    cards.forEach(card => {
+      let tempNumFert = 0;
+      let tempNumChem = 0;
+      let tempNumCommodities = 0;
+      card.preChemicalArray.forEach(e => {
+        if (e.fertilizer) { tempNumFert++; }
+        if (e.chemical) { tempNumChem++; }
+      });
+      card.tractorArray.forEach(e => {
+        tempNumFert += e.fertilizerArray.length;
+        tempNumChem += e.chemicalArray.length;
+      });
+      card.irrigationArray.forEach(e => {
+        tempNumFert += e.fertilizerArray.length;
+        tempNumChem += e.chemicalArray.length;
+      });
+      tempNumCommodities = card.commodityArray.length;
+      if (tempNumFert > numFerts) { numFerts = tempNumFert; }
+      if (tempNumChem > numChems) { numChems = tempNumChem; }
+      if (tempNumCommodities > numCommodities) { numCommodities = tempNumCommodities; }
+    });
+    return {
+      numFertilizers: numFerts,
+      numChemicals: numChems,
+      numCommodities
+    };
+  }
+
+  public generateAppliedExport(commonData, from: number, to: number, ranches: Array<string>,
+                               commodities: Array<string>, includeUnharvested: boolean): void {
+    this.http.get<BasicDTO<Card[]>>(environment.ApiUrl + '/data/view/ranches', this.httpOptions).subscribe(
+      data => {
+        // If data is successful retrieved
+        if (data.success) {
+          const cards = data.data.map(x => (new Card()).copyConstructor(x)).filter(x => {
+            // If card doesn't contain any of our selected ranches
+            if (!x.ranchName || !ranches.includes(x.ranchName)) { return false; }
+            // If card doesn't contain any of our selected commodities
+            if (!x.commodityArray.map(c => commodities.includes(c.commodity)).some(c => c)) { return false; }
+            // If we're including open cards
+            if (includeUnharvested && (!x.harvestDate || !x.closed)) { return true; }
+            // If the harvest date is outside the requested date range
+            if (!x.harvestDate || from > (new Date(x.harvestDate)).valueOf() || to < (new Date(x.harvestDate)).valueOf()) {
+              return false;
+            }
+            return true;
+          });
+
+          // Format is [x][y]: [x] is a row and [y] is a column. Commas and newlines will automatically be added.
+          const table: Array<Array<string>> = [];
+          let dataLine = [];
+
+          // Add blank header for general ranch info (3)
+          dataLine.push('', '', '');
+
+          // Add minimum number of commodity columns needed
+          const size = this.findMinNumForCols(cards);
+
+          const numCommodityColumns = size[`numCommodities`];
+          for (let i = 0; i < numCommodityColumns; i++) { dataLine.push(''); }
+
+          // For each chem/fert there will be 6 columns: date, name, method, material, rate/acre, unit
+          const numFertilizerColumns = size[`numFertilizers`] * 6;
+          const numChemicalColumns = size[`numChemicals`] * 6;
+
+          // Add headers for Fertilizer and Chemical sections
+          dataLine.push('Fertilizers');
+          for (let i = 0; i < (numFertilizerColumns - 1); i++) { dataLine.push(''); }
+          dataLine.push('Chemicals');
+          for (let i = 0; i < (numChemicalColumns - 1); i++) { dataLine.push(''); }
+
+          // Add top headers and start new line
+          table.push(dataLine);
+
+          // Clear line and add secondary headers
+          // General info headers
+          dataLine = ['Field ID', 'Lot #', 'Ranch Name'];
+          // Commodity headers
+          for (let i = 1; i <= numCommodityColumns; i++) { dataLine.push(`Commodity ${i}`); }
+          // Fertilizer headers
+          for (let i = 0; i < size[`numFertilizers`]; i++) {
+            dataLine.push('Date', 'Name', 'Method', 'Material', 'Rate/ Acre', 'Unit');
+          }
+          // Chemical headers
+          for (let i = 0; i < size[`numChemicals`]; i++) {
+            dataLine.push('Date', 'Name', 'Method', 'Material', 'Rate/ Acre', 'Unit');
+          }
+          table.push(dataLine);
+
+          // Add card information
+          cards.forEach(card => {
+            // Wipe line and convert card ids to display values
+            dataLine = [];
+            card = this.cardIDsToValues(card, commonData);
+            const applied = this.getAppliedFertilizersAndChemicals(card);
+            // Push general ranch info
+            dataLine.push(
+              (card.fieldID) ? String(card.fieldID) : '',
+              (card.lotNumber) ? card.lotNumber : '',
+              (card.ranchName) ? card.ranchName : ''
+            );
+
+            // Push dynamically set commodity info
+            for (let i = 0; i < numCommodityColumns; i++) {
+              if (i >= card.commodityArray.length) {
+                dataLine.push('');
+              } else {
+                dataLine.push(card.commodityArray[i].commodity);
+              }
+            }
+
+            // Push dynamically set fertilizer info
+            for (let i = 0; i < size[`numFertilizers`]; i++) {
+              if (i >= applied[`fertilizers`].length) {
+                dataLine.push('', '', '', '', '', '');
+              } else {
+                const temp = applied[`fertilizers`][i];
+                dataLine.push(temp[`date`], temp[`name`], temp[`method`], temp[`material`], temp[`rate`], temp[`unit`]);
+              }
+            }
+
+            // Push dynamically set chemical info
+            for (let i = 0; i < size[`numChemicals`]; i++) {
+              if (i >= applied[`chemicals`].length) {
+                dataLine.push('', '', '', '', '', '');
+              } else {
+                const temp = applied[`chemicals`][i];
+                dataLine.push(temp[`date`], temp[`name`], temp[`method`], temp[`material`], temp[`rate`], temp[`unit`]);
+              }
+            }
+
+            // Push card info and start new line
+            table.push(dataLine);
+          });
+
+          // Initiate generation and download
+          this.generateAndDownload(table, environment.AppName + '-applied-export');
+
+        } else {
+          // Show server error
+          AlertService.newBasicAlert('Error: ' + data.error, true);
+        }
+      },
+      failure => {
+        // Show connection error
+        AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
+      }
+    );
+  }
 
   public generateExport(commonData, from: number, to: number, ranches: Array<string>, commodities: Array<string>,
                         includeUnharvested: boolean): void {
@@ -531,6 +703,116 @@ export class CardExportService {
     );
   }
 
+
+  // Helper - generates the CSV and invokes the file download
+  private generateAndDownload(table: Array<Array<string>>, fileName: string): void {
+    FileDownload(
+      // Generate the CSV from the table
+      table.map(x => x.map(y => this.replaceBadCharacters(y)).join(',')).join('\n'),
+      // Filename
+      fileName + '.csv'
+    );
+  }
+
+
+  private getAppliedFertilizersAndChemicals(card: Card) {
+    // 'Date', 'Name', 'Method', 'Material', 'Rate/ Acre', 'Unit'
+    let fertilizers = [];
+    let chemicals = [];
+
+    card.preChemicalArray.forEach(e => {
+      if (e.fertilizer) {
+        fertilizers.push({
+          date: e.date,
+          name: 'Pre-plant',
+          method: 'Pre-plant',
+          material: e.fertilizer.name,
+          rate: String(e.fertilizer.rate),
+          unit: e.fertilizer.unit
+        });
+      }
+      if (e.chemical) {
+        chemicals.push({
+          date: e.date,
+          name: 'Pre-plant',
+          method: 'Pre-plant',
+          material: e.chemical.name,
+          rate: String(e.chemical.rate),
+          unit: e.chemical.unit
+        });
+      }
+    });
+
+    card.tractorArray.forEach( e => {
+      e.fertilizerArray.forEach(x => {
+        fertilizers.push({
+          date: e.workDate,
+          name: e.operator,
+          method: 'Tractor',
+          material: x.name,
+          rate: String(x.rate),
+          unit: x.unit
+        });
+      });
+      e.chemicalArray.forEach(x => {
+        chemicals.push({
+          date: e.workDate,
+          name: e.operator,
+          method: 'Tractor',
+          material: x.name,
+          rate: String(x.rate),
+          unit: x.unit
+        });
+      });
+    });
+
+    card.irrigationArray.forEach( e => {
+      e.fertilizerArray.forEach(x => {
+        fertilizers.push({
+          date: e.workDate,
+          name: e.irrigator,
+          method: 'Irrigation',
+          material: x.name,
+          rate: String(x.rate),
+          unit: x.unit
+        });
+      });
+      e.chemicalArray.forEach(x => {
+        chemicals.push({
+          date: e.workDate,
+          name: e.irrigator,
+          method: 'Irrigation',
+          material: x.name,
+          rate: String(x.rate),
+          unit: x.unit
+        });
+      });
+    });
+
+    fertilizers = fertilizers.sort(this.compareDates).map(e => {
+      e.date = this.dateToDisplay(e.date);
+      return e;
+    });
+    chemicals = chemicals.sort(this.compareDates).map(e => {
+      e.date = this.dateToDisplay(e.date);
+      return e;
+    });
+
+    return { fertilizers, chemicals };
+  }
+
+  hasDripTape(e): boolean {
+    if (e.method) {
+      // Irrigation Entry
+      return String(e.method).toLowerCase().includes('drip');
+    } else if (e.workDone) {
+      // Tractor Entry
+      return String(e.workDone).toLowerCase().includes('drip');
+    } else {
+      return false;
+    }
+  }
+
   public initCommon(f): void {
     const tempThis = this;
     const sortedCommon = {};
@@ -555,28 +837,6 @@ export class CardExportService {
       });
       f(sortedCommon);
     });
-  }
-
-  // Helper - generates the CSV and invokes the file download
-  private generateAndDownload(table: Array<Array<string>>, fileName: string): void {
-    FileDownload(
-      // Generate the CSV from the table
-      table.map(x => x.map(y => this.replaceBadCharacters(y)).join(',')).join('\n'),
-      // Filename
-      fileName + '.csv'
-    );
-  }
-
-  hasDripTape(e): boolean {
-    if (e.method) {
-      // Irrigation Entry
-      return String(e.method).toLowerCase().includes('drip');
-    } else if (e.workDone) {
-      // Tractor Entry
-      return String(e.workDone).toLowerCase().includes('drip');
-    } else {
-      return false;
-    }
   }
 
   // Takes care of commas and quotations that may occur in any cells, following RFC 4180
