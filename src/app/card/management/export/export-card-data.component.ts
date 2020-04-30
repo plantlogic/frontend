@@ -74,6 +74,16 @@ export class ExportCardDataComponent implements OnInit {
     this.generating = false;
   }
 
+  generateAllApplied(): void {
+    this.generating = true;
+    this.fromDate = (new Date(this.fromDate)).valueOf();
+    this.toDate = (new Date(this.toDate)).valueOf();
+    const ranchIDS = this.selectedRanches.map(e => e.id);
+    const commodityIDS = this.selectedCommodities.map(e => e.id);
+    this.cardExport.exportAllApplied(this.fromDate, this.toDate, ranchIDS, commodityIDS, this.includeUnharvested);
+    this.generating = false;
+  }
+
   public getCommon(key) {
     if (this.commonKeys.includes(key) || key === 'ranches') {
       return (this[key]) ? this[key] : [];
