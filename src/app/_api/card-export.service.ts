@@ -465,7 +465,6 @@ findMinNumForCols(cards: Array<Card>) {
           ]);
           let dataLine: Array<string> = [];
           let pushCounter = 0;
-          let hasDripTape = false;
           // Take our data
           data.data
             // Convert into real card
@@ -521,7 +520,6 @@ findMinNumForCols(cards: Array<Card>) {
               } else {
                 x.irrigationArray.forEach(y => {
                   y = Object.assign(new IrrigationEntry(), y);
-                  hasDripTape = hasDripTape || this.hasDripTape(y);
                   dataLine.push('', this.dateToDisplay(y.workDate), y.irrigator, y.method, String(y.duration));
                   if (y.chemicalArray.length) {
                     y.chemicalArray.forEach(e => { dataLine.push(e.name, String(e.rate), String(e.unit)); });
@@ -554,7 +552,6 @@ findMinNumForCols(cards: Array<Card>) {
               } else {
                 x.tractorArray.forEach(z => {
                   z = Object.assign(new TractorEntry(), z);
-                  hasDripTape = hasDripTape || this.hasDripTape(z);
                   dataLine.push('', z.tractorNumber, this.dateToDisplay(z.workDate), z.workDone, z.operator);
                   if (z.chemicalArray.length) {
                     z.chemicalArray.forEach(e => { dataLine.push(e.name, String(e.rate), String(e.unit)); });
@@ -580,13 +577,7 @@ findMinNumForCols(cards: Array<Card>) {
               }
 
               // DRIP TAPE
-              if (hasDripTape) {
-                dataLine.push('', 'Yes');
-              } else {
-                dataLine.push('', 'No');
-              }
-              // RESET DRIP TAPE BOOLEAN
-              hasDripTape = false;
+              dataLine.push('', this.getDripTape(x));
 
               if (!x.commodityArray.length) {
                 dataLine.push('', '', '', '', '', '', '');
@@ -801,15 +792,33 @@ findMinNumForCols(cards: Array<Card>) {
     return { fertilizers, chemicals };
   }
 
-  hasDripTape(e): boolean {
-    if (e.method) {
-      // Irrigation Entry
-      return String(e.method).toLowerCase().includes('drip');
-    } else if (e.workDone) {
-      // Tractor Entry
-      return String(e.workDone).toLowerCase().includes('drip');
+  getDripTape(card: Card): string {
+    let driptape = false;
+    let burriedDriptape = false;
+    card.tractorArray.forEach(e => {
+      const work = String(e.workDone).toLowerCase();
+      if (work.includes('buried drip')) {
+        burriedDriptape = true;
+      } else if (work.includes('drip')) {
+        driptape = true;
+      }
+    });
+    card.irrigationArray.forEach(e => {
+      const method = String(e.method).toLowerCase();
+      if (method.includes('buried drip')) {
+        burriedDriptape = true;
+      } else if (method.includes('drip')) {
+        driptape = true;
+      }
+    });
+    if (driptape || burriedDriptape) {
+      if (driptape && burriedDriptape) {
+        return 'driptape, buried driptape';
+      } else {
+        return (driptape) ? 'driptape' : 'buried driptape';
+      }
     } else {
-      return false;
+      return 'no';
     }
   }
 
