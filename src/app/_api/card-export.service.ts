@@ -154,6 +154,13 @@ export class CardExportService {
     });
   }
 
+  public exportAllFertilizerApplied(from: number, to: number, ranches: Array<string>,
+                                    commodities: Array<string>, includeUnharvested: boolean): void {
+    this.initCommon(commonData => {
+      this.generateAppliedFertilizerExport(commonData, from, to, ranches, commodities, includeUnharvested);
+    });
+  }
+
   /*
     Searches common values in [key] list where value.id === targetID
     returns value.valuePropertyArr where valuePropertyArr = array of nesting properties
@@ -331,6 +338,111 @@ findMinNumForCols(cards: Array<Card>) {
     );
   }
 
+  public generateAppliedFertilizerExport(commonData, from: number, to: number, ranches: Array<string>,
+                                         commodities: Array<string>, includeUnharvested: boolean): void {
+    this.http.get<BasicDTO<Card[]>>(environment.ApiUrl + '/data/view/ranches', this.httpOptions).subscribe(
+      data => {
+        // If data is successful retrieved
+        if (data.success) {
+          const cards = data.data.map(x => (new Card()).copyConstructor(x)).filter(x => {
+            // If card doesn't contain any of our selected ranches
+            if (!x.ranchName || !ranches.includes(x.ranchName)) { return false; }
+            // If card doesn't contain any of our selected commodities
+            if (!x.commodityArray.map(c => commodities.includes(c.commodity)).some(c => c)) { return false; }
+            // If we're including open cards
+            if (includeUnharvested && (!x.harvestDate || !x.closed)) { return true; }
+            // If the harvest date is outside the requested date range
+            if (!x.harvestDate || from > (new Date(x.harvestDate)).valueOf() || to < (new Date(x.harvestDate)).valueOf()) {
+              return false;
+            }
+            return true;
+          });
+
+          // Format is [x][y]: [x] is a row and [y] is a column. Commas and newlines will automatically be added.
+          const table: Array<Array<string>> = [];
+          let dataLine = [];
+
+          // Add blank header for general ranch info (3)
+          dataLine.push('', '', '');
+
+          // Add minimum number of commodity columns needed
+          const size = this.findMinNumForCols(cards);
+
+          const numCommodityColumns = size[`numCommodities`];
+          for (let i = 0; i < numCommodityColumns; i++) { dataLine.push(''); }
+
+          // For each chem/fert there will be 6 columns: date, name, method, material, rate/acre, unit
+          const numFertilizerColumns = size[`numFertilizers`] * 4;
+
+          // Add headers for Fertilizer and Chemical sections
+          dataLine.push('Fertilizers');
+          for (let i = 0; i < (numFertilizerColumns - 1); i++) { dataLine.push(''); }
+
+          // Add top headers and start new line
+          table.push(dataLine);
+
+          // Clear line and add secondary headers
+          // General info headers
+          dataLine = ['Field ID', 'Lot #', 'Ranch Name'];
+          // Commodity headers
+          for (let i = 1; i <= numCommodityColumns; i++) { dataLine.push(`Commodity ${i}`); }
+          // Fertilizer headers
+          for (let i = 0; i < size[`numFertilizers`]; i++) {
+            dataLine.push('Date', 'Material', 'Rate/ Acre', 'Unit');
+          }
+          table.push(dataLine);
+
+          // Add card information
+          cards.forEach(card => {
+            // Wipe line and convert card ids to display values
+            dataLine = [];
+            card = this.cardIDsToValues(card, commonData);
+            const applied = this.getAppliedFertilizersAndChemicals(card);
+            // Push general ranch info
+            dataLine.push(
+              (card.fieldID) ? String(card.fieldID) : '',
+              (card.lotNumber) ? card.lotNumber : '',
+              (card.ranchName) ? card.ranchName : ''
+            );
+
+            // Push dynamically set commodity info
+            for (let i = 0; i < numCommodityColumns; i++) {
+              if (i >= card.commodityArray.length) {
+                dataLine.push('');
+              } else {
+                dataLine.push(card.commodityArray[i].commodity);
+              }
+            }
+
+            // Push dynamically set fertilizer info
+            for (let i = 0; i < size[`numFertilizers`]; i++) {
+            if (i >= applied[`fertilizers`].length) {
+                dataLine.push('', '', '', '');
+              } else {
+                const temp = applied[`fertilizers`][i];
+                dataLine.push(temp[`date`], temp[`material`], temp[`rate`], temp[`unit`]);
+              }
+            }
+
+            // Push card info and start new line
+            table.push(dataLine);
+          });
+
+          // Initiate generation and download
+          this.generateAndDownload(table, environment.AppName + '-applied-fertilizer-export');
+
+        } else {
+        // Show server error
+        AlertService.newBasicAlert('Error: ' + data.error, true);
+        }
+      },
+      failure => {
+        // Show connection error
+        AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
+      }
+    );
+  }
+
   public generateExport(commonData, from: number, to: number, ranches: Array<string>, commodities: Array<string>,
                         includeUnharvested: boolean): void {
     this.http.get<BasicDTO<Card[]>>(environment.ApiUrl + '/data/view/ranches', this.httpOptions).subscribe(
@@ -371,18 +483,6 @@ findMinNumForCols(cards: Array<Card>) {
                       '1st', 'Pre Plant', '', '', '', '', '', '',
                       '2nd', 'Pre Plant', '', '', '', '', '', '',
                       '3rd', 'Pre Plant', '', '', '', '', '', '',
-                      // '1st', 'At Plant', '', '', '', '', '', '',
-                      // '2nd', 'At Plant', '', '', '', '', '', '',
-                      // '3rd', 'At Plant', '', '', '', '', '', '',
-                      // '4th', 'At Plant', '', '', '', '', '', '',
-                      // '5th', 'At Plant', '', '', '', '', '', '',
-                      // '6th', 'At Plant', '', '', '', '', '', '',
-                      // '7th', 'At Plant', '', '', '', '', '', '',
-                      // '8th', 'At Plant', '', '', '', '', '', '',
-                      // '9th', 'At Plant', '', '', '', '', '', '',
-                      // '10th', 'At Plant', '', '', '', '', '', '',
-                      // '11th', 'At Plant', '', '', '', '', '', '',
-                      // '12th', 'At Plant', '', '', '', '', '', '',
           ]);
           table.push(['Field ID', 'Ranch Name', 'Ranch Manager', 'Lot Number', 'Shippers',
                       'Wet Date', 'Thin Date', 'Thin Type', 'Hoe Date', 'Hoe Type', 'Harvest Date', '',
@@ -447,19 +547,6 @@ findMinNumForCols(cards: Array<Card>) {
                       'Date', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
                       'Date', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
                       'Date', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
-                      // Postplant, 12 total
-                      // 'Date', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
-                      // 'Date', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
-                      // 'Date', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
-                      // 'Date', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
-                      // 'Date', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
-                      // 'Date', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
-                      // 'Date', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
-                      // 'Date', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
-                      // 'Date', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
-                      // 'Date', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
-                      // 'Date', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
-                      // 'Date', 'Chemical', 'Rate /ac', 'Unit', 'Fertilizer', 'Rate /ac', 'Unit', '',
                       // Comments, 1 total
                       'Comments'
           ]);
@@ -632,49 +719,11 @@ findMinNumForCols(cards: Array<Card>) {
                 }
                 pushCounter = 0;
               }
-
-              // if (!x.postChemicalArray.length) {
-              //   for (let i = 0; i < 12; i++) {
-              //     dataLine.push('', '', '', '', '', '', '', '');
-              //   }
-              // } else {
-              //   x.postChemicalArray.forEach(postC => {
-              //     const dt = this.dateToDisplay(postC.date);
-              //     if (!postC.chemical) {
-              //       if (!postC.fertilizer) {
-              //         // no chem, no fert
-              //         dataLine.push('', dt, '', '', '', '', '', '');
-              //       } else {
-              //         // no chem, has fert
-              //         dataLine.push('', dt, '', '', '', postC.fertilizer.name,
-              //                       String(postC.fertilizer.rate), String(postC.fertilizer.unit));
-              //       }
-              //     } else if (!postC.fertilizer) {
-              //       // has chem, no fert
-              //       dataLine.push('', dt, postC.chemical.name, String(postC.chemical.rate), String(postC.chemical.unit), '', '', '');
-              //     } else {
-              //       // has chem, has fert
-              //        dataLine.push('', dt, postC.chemical.name,
-              //                      String(postC.chemical.rate), String(postC.chemical.unit),
-              //                      postC.fertilizer.name, String(postC.fertilizer.rate), String(postC.fertilizer.unit));
-              //     }
-              //     pushCounter += 1;
-              //   });
-              //   if (pushCounter < 12) {
-              //     while (pushCounter < 12) {
-              //       dataLine.push('', '', '', '', '', '', '', '');
-              //       pushCounter += 1;
-              //     }
-              //   }
-              //   pushCounter = 0;
-              // }
-
               if (!x.comments) {
                 dataLine.push('', '');
               } else {
                 dataLine.push('', this.commentsToDisplayString(x.comments));
               }
-
               table.push(dataLine);
               dataLine = [];
           });
