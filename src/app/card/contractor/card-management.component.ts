@@ -35,6 +35,10 @@ import { CommonLookup } from 'src/app/_api/common-data.service';
   pages: number[];
   hiddenPages: false;
 
+  // Alternative sorting for mobile
+  mFilterSort: string;
+  mFilterOrder: string;
+
   // create array of common keys, whose data is needed for card entry. Omit restricted options.
   commonKeys = ['commodities'];
 
@@ -81,6 +85,11 @@ import { CommonLookup } from 'src/app/_api/common-data.service';
       this.tableService.setDataSource(prev);
     }
     this.updateNumPages();
+
+    // If displaying on mobile, sort with the current mobile sort settings
+    if (window.getComputedStyle(document.getElementById('mobileSorter')).display !== 'none') {
+      this.mobileSort();
+    }
   }
 
   public filterCards() {
@@ -274,6 +283,76 @@ import { CommonLookup } from 'src/app/_api/common-data.service';
   // Used for animation
   public min(x: number, y: number): number {
     return Math.min(x, y);
+  }
+
+  mobileSort(): void {
+    if (this.mFilterSort) {
+      if (!this.mFilterOrder) { this.mFilterOrder = 'asc'; }
+      switch (this.mFilterSort) {
+        case 'ranchName':
+          // Sort by ranch name
+          if (this.mFilterOrder === 'asc') {
+            // Ascending
+            this.cards = this.cards.sort((a, b) => a.ranchName > b.ranchName ? 1 : -1);
+          } else {
+            // Descending
+            this.cards = this.cards.sort((a, b) => a.ranchName > b.ranchName ? -1 : 1);
+          }
+          break;
+        case 'lotNumber':
+          // Sort by lot number
+          if (this.mFilterOrder === 'asc') {
+            // Ascending
+            this.cards = this.cards.sort((a, b) => a.lotNumber > b.lotNumber ? 1 : -1);
+          } else {
+            // Descending
+            this.cards = this.cards.sort((a, b) => a.lotNumber > b.lotNumber ? -1 : 1);
+          }
+          break;
+        case 'commodity':
+          // Sort by Commodity
+          if (this.mFilterOrder === 'asc') {
+            // Ascending
+            this.cards = this.cards.sort((a, b) => a.commodityString > b.commodityString ? 1 : -1);
+          } else {
+            // Descending
+            this.cards = this.cards.sort((a, b) => a.commodityString > b.commodityString ? -1 : 1);
+          }
+          break;
+        case 'wetDate':
+          // Sort by Commodity
+          if (this.mFilterOrder === 'asc') {
+            // Ascending
+            this.cards = this.cards.sort((a, b) => a.wetDate.num > b.wetDate.num ? 1 : -1);
+          } else {
+            // Descending
+            this.cards = this.cards.sort((a, b) => a.wetDate.num > b.wetDate.num ? -1 : 1);
+          }
+          break;
+        case 'thinDate':
+          // Sort by Commodity
+          if (this.mFilterOrder === 'asc') {
+            // Ascending
+            this.cards = this.cards.sort((a, b) => a.thinDate.num > b.thinDate.num ? 1 : -1);
+          } else {
+            // Descending
+            this.cards = this.cards.sort((a, b) => a.thinDate.num > b.thinDate.num ? -1 : 1);
+          }
+          break;
+        case 'hoeDate':
+          // Sort by Commodity
+          if (this.mFilterOrder === 'asc') {
+            // Ascending
+            this.cards = this.cards.sort((a, b) => a.hoeDate.num > b.hoeDate.num ? 1 : -1);
+          } else {
+            // Descending
+            this.cards = this.cards.sort((a, b) => a.hoeDate.num > b.hoeDate.num ? -1 : 1);
+          }
+          break;
+        default:
+          break;
+      }
+    }
   }
 
   public resetCards(): void {
