@@ -14,6 +14,88 @@ import { TractorEntry } from '../_dto/card/tractor-entry';
 import { setTimeout } from 'timers';
 import { IrrigationEntry } from '../_dto/card/irrigation-entry';
 
+/*
+  CUSTOM EXPORT FORM
+  {
+    id: boolean,
+    closed: boolean,
+    dateCreated: boolean,
+    lastUpdate: boolean,
+    ranchName: boolean,
+    fieldID: boolean,
+    ranchManagerName: boolean,
+    planterNumber: boolean,
+    lotNumber: boolean,
+    shippers: boolean,
+    comments: boolean,
+    wetDate: boolean,
+    thinDate: boolean,
+    thinType: boolean,
+    hoeDate: boolean,
+    hoeType: boolean,
+    harvestDate: boolean,
+    cropYear: boolean,
+    totalAcres: boolean,
+
+    irrigation: boolean,
+    irrigationDynamic: boolean,
+    irrigationWorkDate: boolean,
+    irrigationMethod: boolean,
+    irrigationIrrigator: boolean,
+    irrigationFertilizers: boolean,
+    irrigationFertilizersDynamic: boolean,
+    irrigationFertilizersName: boolean,
+    irrigationFertilizersRate: boolean,
+    irrigationFertilizersUnit: boolean,
+    irrigationChemicals: boolean,
+    irrigationChemicalsDynamic: boolean,
+    irrigationChemicalsName: boolean,
+    irrigationChemicalsRate: boolean,
+    irrigationChemicalsUnit: boolean,
+    irrigationDuration: boolean,
+
+    tractor: boolean,
+    tractorDynamic: boolean,
+    tractorWorkDate: boolean,
+    tractorWorkDone: boolean,
+    tractorOperator: boolean,
+    tractorFertilizers: boolean,
+    tractorFertilizersDynamic: boolean,
+    tractorFertilizersName: boolean,
+    tractorFertilizersRate: boolean,
+    tractorFertilizersUnit: boolean,
+    tractorChemicals: boolean,
+    tractorChemicalsDynamic: boolean,
+    tractorChemicalsName: boolean,
+    tractorChemicalsRate: boolean,
+    tractorChemicalsUnit: boolean,
+    tractorTractorNumber: boolean,
+
+    commodities: boolean,
+    commoditiesDynamic: boolean,
+    commoditiesCommodity: boolean,
+    commoditiesCropAcres: boolean,
+    commoditiesBedTypes: boolean,
+    commoditiesBedCount: boolean,
+    commoditiesSeedLotNumber: boolean,
+    commoditiesVariety: boolean,
+
+    preChemicals: boolean,
+    preChemicalsDynamic: boolean,
+    preChemicalsDate: boolean,
+    preChemicalsFertilizers: boolean,
+    preChemicalsFertilizersDynamic: boolean,
+    preChemicalsFertilizersName: boolean,
+    preChemicalsFertilizersRate: boolean,
+    preChemicalsFertilizersUnit: boolean,
+    preChemicalsChemicals: boolean,
+    preChemicalsChemicalsDynamic: boolean,
+    preChemicalsChemicalsName: boolean,
+    preChemicalsChemicalsRate: boolean,
+    preChemicalsChemicalsUnit: boolean,
+  }
+*/
+
 @Injectable({
   providedIn: 'root'
 })
@@ -49,16 +131,6 @@ export class CardExportService {
         e.fertilizer.unit = this.findCommonValue(commonData, 'chemicalRateUnits', ['value'], e.fertilizer.unit);
       }
     });
-    // card.postChemicalArray.forEach(e => {
-    //   if (e.chemical) {
-    //     e.chemical.name = this.findCommonValue(commonData, 'chemicals', ['value'], e.chemical.name);
-    //     e.chemical.unit = this.findCommonValue(commonData, 'chemicalRateUnits', ['value'], e.chemical.unit);
-    //   }
-    //   if (e.fertilizer) {
-    //     e.fertilizer.name = this.findCommonValue(commonData, 'fertilizers', ['value'], e.fertilizer.name);
-    //     e.fertilizer.unit = this.findCommonValue(commonData, 'chemicalRateUnits', ['value'], e.fertilizer.unit);
-    //   }
-    // });
     card.tractorArray.forEach(e => {
       e.workDone = this.findCommonValue(commonData, 'tractorWork', ['value'], e.workDone);
       e.operator = this.findCommonValue(commonData, 'tractorOperators', ['value'], e.operator);
@@ -753,7 +825,6 @@ findMinNumForCols(cards: Array<Card>) {
       fileName + '.csv'
     );
   }
-
 
   private getAppliedFertilizersAndChemicals(card: Card) {
     // 'Date', 'Name', 'Method', 'Material', 'Rate/ Acre', 'Unit'

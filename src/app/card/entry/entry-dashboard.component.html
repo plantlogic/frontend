@@ -1,113 +1,184 @@
 <div class="jumbotron p-3">
-  <div class="row">
-    <div class="col d-none d-md-inline-block text-center">
-      <button type="button"color="primary" name="cardCount" outline="true" disabled
-              mdbBtn floating="true" size="sm">
-        <span>Cards: </span>
-        <b>{{cards.length}}</b>
-      </button>
-    </div>
-  </div>
+   <div class="container">
+     <div class="row">
+       <div class="col text-center">
+         <button type="button"color="primary" name="cardCount" outline="true" disabled mdbBtn floating="true" size="sm">
+         <span>Cards: </span>
+         <b>{{cards.length}}</b>
+         </button>
+       </div>
+     </div>
+     <hr class="my-4">
+     <form class="form-inline search-form">
+       <input class="form-control form-control-sm" type="search" name="ranchName" list="ranches" placeholder="Ranch Name" aria-label="Ranch Name" [(ngModel)]="filterRanchName" mdbInput>
+       <input class="form-control form-control-sm" type="search" name="lotNumber" placeholder="Lot Number" aria-label="Lot Number" [(ngModel)]="filterLotNumber" mdbInput>
+       <input class="form-control form-control-sm" type="search" name="commodity" list="commodities" placeholder="Commodity" aria-label="Commodity" [(ngModel)]="filterCommodity" mdbInput>
+       <button class="mr-1 mb-1" type="button" color="info" (click)="filterItems()"  mdbBtn size="sm"> <i class="fas fa-search ml-1"></i> </button>
+       <button class="mr-1 mb-1" type="button" color="danger" (click)="clearFilter()"  mdbBtn size="sm"> <i class="fas fa-times m1-1"></i> </button>
+       <!-- On Mobile -->
+       <div class="col d-md-none">
+         <button type="button" class="float-right" color="primary" routerLink="/entry/create" name="addCard" mdbBtn floating="true" size="sm"><i class="fa fa-plus ml-1" aria-hidden="true"></i></button>
+       </div>
+       <!-- On Desktop -->
+       <div class="col d-none d-md-inline-block">
+         <button type="button" class="float-right" color="primary" routerLink="/entry/create" name="addCard" mdbBtn floating="true" size="sm" mdbWavesEffect>Add Card <i class="fa fa-plus ml-1" aria-hidden="true"></i></button>
+       </div>
+     </form>
+     <hr class="my-4">
+     <!-- On Mobile -->
+     <div class="d-md-none" id="mobileSorter">
+       <div class="row" style="text-align: center;">
+         <div class="col col-sm">
+           <div>Sort By</div>
+           <div>
+             <select class="form-control form-control-sm select-sm" [(ngModel)]="mFilterSort" (ngModelChange)="mobileSort()" >
+             <option value="undefined" disabled selected>None</option>
+             <option value="ranchName">Ranch Name</option>
+             <option value="lotNumber">Lot Number</option>
+             <option value="commodity">Commodity</option>
+             </select>
+           </div>
+         </div>
+         <div class="col col-sm">
+           <div>Order</div>
+           <div>
+             <select class="form-control form-control-sm select-sm" [(ngModel)]="mFilterOrder" (ngModelChange)="mobileSort()">
+             <option value="undefined" disabled selected>None</option>
+             <option value="asc">Ascending</option>
+             <option value="desc">Descending</option>
+             </select>
+           </div>
+         </div>
+         <div class="col col-sm">
+           <div>Limit</div>
+           <div>
+             <select class="form-control form-control-sm select-sm"  (ngModelChange)="updateNumPages($event)" [(ngModel)]="viewSize">
+             <option value="5">5</option>
+             <option value="10">10</option>
+             <option value="20">20</option>
+             <option value="50">50</option>
+             </select>
+           </div>
+         </div>
+       </div>
+     </div>
+     <!-- On Desktop -->
+     <div class="d-none d-md-inline-block" style="width:100%">
+       <div class="row justify-content-end">
+         <div class="col-3" style="text-align:center;">
+           <span style="vertical-align: middle;">Limit:</span>
+           <select class="form-control form-control-sm select-sm"  (ngModelChange)="updateNumPages($event)" [(ngModel)]="viewSize">
+           <option value="5">5</option>
+           <option value="10">10</option>
+           <option value="20">20</option>
+           <option value="50">50</option>
+           </select>
+         </div>
+       </div>
+     </div>
+     <!-- Desktop / Large Devices -->
+     <div class="d-none d-md-inline-block">
+       <h2 *ngIf="!cards">Loading data...</h2>
+       <table mdbTable *ngIf="cards" class="table table-responsive">
+         <thead class="text-nowrap">
+           <tr>
+             <th class="small" style="width:45%;" [mdbTableSort]="cards" [sortBy]="'ranchName'">
+             <span>Ranch <i class="fa fa-sort ml-1"></i></span>
+             </th>
+             <th class="small" style="width:40%;" [mdbTableSort]="cards" [sortBy]="'lotNumber'" >
+             <span>Lot # <i class="fa fa-sort ml-1"></i></span>
+             </th>
+             <th class="small" style="width:15%;">Options</th>
+           </tr>
+         </thead>
+         <tbody>
+           <tr mdbTableCol *ngFor="let p of cards; let i = index" class="animated fadeIn" [style.animation-delay]="this.min((30*i), 1000)+ 'ms'">
+           <ng-container *ngIf="showListing(i)">
+             <td class="hover">{{p.ranchName}}<span class="hover-text">{{p.ranchName}}</span></td>
+             <td class="hover">{{p.lotNumber}}<span class="hover-text">{{p.lotNumber}}</span></td>
+             <td>
+               <!-- On Mobile -->
+               <div class="d-md-none">
+                 <button type="button" color="success" [routerLink]="['/entry/o/', p.id]" alt="Open Card" class="float-right" mdbBtn floating="true" size="sm">
+                 <i class="ml-1 fa fa-external-link-alt" aria-hidden="true"></i>
+                 </button>
+               </div>
+               <!-- On Desktop -->
+               <div class="d-none d-md-inline-block">
+                 <button type="button" color="success" [routerLink]="['/entry/o/', p.id]" alt="Open Card" mdbBtn floating="true" size="sm">
+                 Open <i class="ml-1 fa fa-external-link-alt" aria-hidden="true"></i>
+                 </button>
+               </div>
+             </td>
+           </ng-container>
+           </tr>
+         </tbody>
+         <tfoot>
+           <tr>
+             <th scope="row" colspan="9">
+               <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(1)"><i class="fas fa-angle-double-left"></i></span>
+               <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(pageNum-1)"><i class="fas fa-angle-left"></i></span>
+               <span *ngFor="let p of pages"><span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(p)">{{p}}</span></span>
+               <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(pageNum+1)"><i class="fas fa-angle-right"></i></span>
+               <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(numPages)"><i class="fas fa-angle-double-right"></i></span>
+             </th>
+           </tr>
+         </tfoot>
+       </table>
+     </div>
 
-  <hr class="my-4">
-
-  <form class="form-inline search-form">    
-    <input class="form-control form-control-sm" type="search" name="ranchName" list="ranches" placeholder="Ranch Name" 
-      aria-label="Ranch Name" [(ngModel)]="filterRanchName" mdbInput>
-    <input class="form-control form-control-sm" type="search" name="lotNumber" placeholder="Lot Number" 
-      aria-label="Lot Number" [(ngModel)]="filterLotNumber" mdbInput>
-    <input class="form-control form-control-sm" type="search" name="commodity" list="commodities" placeholder="Commodity" 
-      aria-label="Commodity" [(ngModel)]="filterCommodity" mdbInput>
-    <button class="mr-1 mb-1" type="button" color="info" (click)="filterItems()"  mdbBtn size="sm">
-      <i class="fas fa-search ml-1"></i>
-    </button>
-    <button class="mr-1 mb-1" type="button" color="danger" (click)="clearFilter()"  mdbBtn size="sm">
-      <i class="fas fa-times m1-1"></i>
-    </button>
-
-    <!-- On Mobile -->
-    <div class="col d-md-none">
-    <button type="button" class="float-right" color="primary" routerLink="/entry/create" name="addCard"
-    mdbBtn floating="true" size="lg"><i class="fa fa-plus ml-1" aria-hidden="true"></i></button>
-    </div>
-    <!-- On Desktop -->
-    <div class="col d-none d-md-inline-block">
-    <button type="button" class="float-right" color="primary" routerLink="/entry/create" name="addCard"
-    mdbBtn floating="true" size="sm" mdbWavesEffect>Add Card <i class="fa fa-plus ml-1" aria-hidden="true"></i></button>
-    </div>
-    
-  </form>
-
-  <hr class="my-4">
-
-  <div class="col d-md-inline-block">
-    <span style="float: right; vertical-align: middle;">
-    Listings: &nbsp;
-    <select class="form-control form-control-sm select-sm"  (ngModelChange)="updateNumPages($event)" [(ngModel)]="viewSize">
-      <option value="5">5</option>
-      <option value="10">10</option>
-      <option value="20">20</option>
-      <option value="50">50</option>
-    </select>
-    </span>
-  </div>
-  <div class="row">
-      <div class="col">
-        <h2 *ngIf="!cards">Loading data...</h2>
-        <table mdbTable *ngIf="cards">
-          <thead class="text-nowrap">
-            <tr>
-              <th class="small" [mdbTableSort]="cards" [sortBy]="'ranchName'" style="width:40%;max-width:40%;">
-                <span>Ranch<span class="d-none d-md-inline-block"></span> <i class="fa fa-sort ml-1"></i></span>
-              </th>
-              <th class="small" [mdbTableSort]="cards" [sortBy]="'lotNumber'" style="width:40%;max-width:40%;">
-                <span>Lot # <i class="fa fa-sort ml-1"></i></span>
-              </th>
-              <th class="small" style="width:15%;max-width:15%;">Options</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr mdbTableCol *ngFor="let p of cards; let i = index" class="animated fadeIn" [style.animation-delay]="this.min((30*i), 1000)+ 'ms'">
-              <ng-container *ngIf="showListing(i)">              
-              <td class="hover">{{p.ranchName}}<span class="hover-text">{{p.ranchName}}</span></td>
-              <td class="hover">{{p.lotNumber}}<span class="hover-text">{{p.lotNumber}}</span></td>
-              <td>
-                <!-- On Mobile -->
-                <div class="d-md-none">
-                  <button type="button" color="success" [routerLink]="['/entry/o/', p.id]"
-                          alt="Open Card" class="float-right" mdbBtn floating="true" size="lg">
-                    <i class="ml-1 fa fa-external-link-alt" aria-hidden="true"></i>
-                  </button>
-                </div>
-                <!-- On Desktop -->
-                <div class="d-none d-md-inline-block">
-                  <button type="button" color="success" [routerLink]="['/entry/o/', p.id]"
-                          alt="Open Card" mdbBtn floating="true" size="sm">
-                    Open <i class="ml-1 fa fa-external-link-alt" aria-hidden="true"></i>
-                  </button>
-                </div>
-              </td>
-            </ng-container>
-            </tr>
-          </tbody>
-          <tfoot>
-            <tr>
-                <th scope="row" colspan="9">
-                  <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(1)"><i class="fas fa-angle-double-left"></i></span>
-                  <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(pageNum-1)"><i class="fas fa-angle-left"></i></span>
-                  <span *ngFor="let p of pages"><span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(p)">{{p}}</span></span>
-                  <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(pageNum+1)"><i class="fas fa-angle-right"></i></span>
-                  <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(numPages)"><i class="fas fa-angle-double-right"></i></span>
-                </th>
-            </tr>
-           </tfoot>
-        </table>
-      </div>
-    </div>
-</div>
-<datalist id="ranches">
-  <option *ngFor="let r of getCommon('ranches')" [value]="r.value">
-</datalist>
-<datalist id="commodities">
-  <option *ngFor="let c of getCommon('commodities')" [value]="c.value.key">
-</datalist>
+     <!-- Mobile Devices -->
+     <div class="row d-md-none">
+       <h2 *ngIf="!cards">Loading data...</h2>
+       <table mdbTable *ngIf="cards">
+         <thead>
+           <tr>
+             <th style="width:100%;">
+               <div class="row">
+                 <div class="col col-sm-10">Ranch - Lot Number - Commodity</div>
+                 <div class="col col-sm-2" style="margin-right:2px; text-align:right;">Open</div>
+               </div>
+             </th>
+           </tr>
+         </thead>
+         <tbody>
+           <tr mdbTableCol *ngFor="let p of cards; let i = index" class="animated fadeIn" [style.animation-delay]="this.min((30*i), 1000)+ 'ms'">
+           <ng-container *ngIf="showListing(i)">
+             <td>
+               <div class="row">
+                 <div class="col col-sm-10 hover">
+                   {{'' + p.ranchName + ' - ' + p.lotNumber + ' - ' + p.commodityString}}
+                   <span class="hover-text">{{'' + p.ranchName + ' - ' + p.lotNumber + ' - ' + p.commodityString}}</span>
+                 </div>
+                 <div class="col col-sm-2">
+                   <button type="button" color="success" [routerLink]="['/entry/o/', p.id]"
+                     alt="Open Card" class="float-right" mdbBtn floating="true" size="sm">
+                   <i class="ml-1 fa fa-external-link-alt" aria-hidden="true"></i>
+                   </button>
+                 </div>
+               </div>
+             </td>
+           </ng-container>
+           </tr>
+         </tbody>
+         <tfoot>
+           <tr>
+             <th scope="row" colspan="9">
+               <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(1)"><i class="fas fa-angle-double-left"></i></span>
+               <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(pageNum-1)"><i class="fas fa-angle-left"></i></span>
+               <span *ngFor="let p of pages"><span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(p)">{{p}}</span></span>
+               <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(pageNum+1)"><i class="fas fa-angle-right"></i></span>
+               <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(numPages)"><i class="fas fa-angle-double-right"></i></span>
+             </th>
+           </tr>
+         </tfoot>
+       </table>
+     </div>
+   </div>
+   <datalist id="ranches">
+     <option *ngFor="let r of getCommon('ranches')" [value]="r.value">
+   </datalist>
+   <datalist id="commodities">
+     <option *ngFor="let c of getCommon('commodities')" [value]="c.value.key">
+   </datalist>
+ </div>
