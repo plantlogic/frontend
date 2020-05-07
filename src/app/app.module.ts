@@ -38,6 +38,7 @@ import {CardContractorComponent} from './card/contractor/card-management.compone
 import {AppAdminComponent} from './card/admin/app-admin.component';
 import {BackButtonComponent} from './navbar/back-button/back-button.component';
 import {AddChemicalEntryComponent} from './card/entry/open/add-chemical/add-chemical-entry.component';
+import { NoCacheHeadersInterceptor } from './_auth/NoCacheHeadersInterceptor';
 
 
 @NgModule({
@@ -84,7 +85,9 @@ import {AddChemicalEntryComponent} from './card/entry/open/add-chemical/add-chem
   ],
   providers: [
     Title,
-    {provide: HTTP_INTERCEPTORS, useClass: AuthInjector, multi: true}
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInjector, multi: true},
+    {provide: HTTP_INTERCEPTORS, useClass: NoCacheHeadersInterceptor, multi: true}
+
   ],
   bootstrap: [AppComponent],
   schemas: [ NO_ERRORS_SCHEMA ]
