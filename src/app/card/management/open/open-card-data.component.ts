@@ -171,6 +171,11 @@ export class OpenCardDataComponent implements OnInit {
     AlertService.newAlert(newAlert);
   }
 
+  public collapseToggle(htmlId) {
+    const element = document.getElementById(htmlId);
+    if (element) {element.classList.toggle('collapse'); }
+  }
+
   public dataListOptionValueToID(optionValue, dataListID) {
     const option = document.querySelector('#' + dataListID + ' [value="' + optionValue + '"]') as HTMLElement;
     return (option) ? option.id : null;
@@ -285,6 +290,15 @@ export class OpenCardDataComponent implements OnInit {
       return searchResult;
     } catch (e) {
       return [];
+    }
+  }
+
+  public isCollapsed(htmlId) {
+    const element = document.getElementById(htmlId);
+    if (element) {
+      return element.classList.contains('collapse');
+    } else {
+      return true;
     }
   }
 

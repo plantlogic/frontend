@@ -28,3 +28,8 @@ $fa-font-path: "../node_modules/@fortawesome/fontawesome-free/webfonts";
 .logo-width {
   width: 50%;
 }
+
+input[type=date] {
+  background-color: white;
+  border: .5px solid black;
+}
