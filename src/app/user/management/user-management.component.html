@@ -27,8 +27,11 @@
       <table mdbTable *ngIf="users.local">
         <thead>
           <tr>
-            <th scope="col" [mdbTableSort]="users.local" [sortBy]="'username'">
+            <th scope="col" [mdbTableSort]="users.local" [sortBy]="'username'" class="d-none d-lg-table-cell">
               Username <i class="fa fa-sort ml-1"></i>
+            </th>
+            <th scope="col" [mdbTableSort]="users.local" [sortBy]="'username'" class="d-lg-none">
+              User <i class="fa fa-sort ml-1"></i>
             </th>
             <th scope="col" [mdbTableSort]="users.local" [sortBy]="'realName'">
               Name <i class="fa fa-sort ml-1"></i>
@@ -36,7 +39,7 @@
             <th scope="col" [mdbTableSort]="users.local" [sortBy]="'email'" class="d-none d-md-table-cell">
               Email <i class="fa fa-sort ml-1"></i>
             </th>
-            <th scope="col" [mdbTableSort]="users.local" [sortBy]="'passwordUpdated'" class="d-none d-md-table-cell">
+            <th scope="col" [mdbTableSort]="users.local" [sortBy]="'passwordUpdated'" class="d-none d-lg-table-cell">
               Password Last Updated <i class="fa fa-sort ml-1"></i>
             </th>
             <th scope="col" [mdbTableSort]="users.local" [sortBy]="'permissions'" class="d-none d-md-table-cell">
@@ -54,7 +57,7 @@
                 <span *ngIf="p.email">{{p.email}}</span>
                 <span *ngIf="!p.email" class="badge badge-dark">No Email</span>
               </td>
-              <td class="d-none d-md-table-cell">{{p.passwordUpdated | date:'longDate'}}</td>
+              <td class="d-none d-lg-table-cell">{{p.passwordUpdated | date:'longDate'}}</td>
               <td class="d-none d-md-table-cell">
                 <div *ngIf="p.permissions.length <= 0" class="badge badge-dark text-wrap">
                   User Disabled:
@@ -86,7 +89,10 @@
       <table mdbTable *ngIf="users.shippers">
         <thead>
           <tr>
-            <th scope="col" [mdbTableSort]="users.shippers" [sortBy]="'username'">
+            <th scope="col" [mdbTableSort]="users.shippers" [sortBy]="'username'" class="d-none d-lg-table-cell">
+              Username <i class="fa fa-sort ml-1"></i>
+            </th>
+            <th scope="col" [mdbTableSort]="users.shippers" [sortBy]="'username'" class="d-lg-none">
               Username <i class="fa fa-sort ml-1"></i>
             </th>
             <th scope="col" [mdbTableSort]="users.shippers" [sortBy]="'realName'">
@@ -95,7 +101,7 @@
             <th scope="col" [mdbTableSort]="users.shippers" [sortBy]="'email'" class="d-none d-md-table-cell">
               Email <i class="fa fa-sort ml-1"></i>
             </th>
-            <th scope="col" [mdbTableSort]="users.shippers" [sortBy]="'passwordUpdated'" class="d-none d-md-table-cell">
+            <th scope="col" [mdbTableSort]="users.shippers" [sortBy]="'passwordUpdated'" class="d-none d-lg-table-cell">
               Password Last Updated <i class="fa fa-sort ml-1"></i>
             </th>
             <th scope="col" [mdbTableSort]="users.shippers" [sortBy]="'permissions'" class="d-none d-md-table-cell">
@@ -113,7 +119,7 @@
                 <span *ngIf="p.email">{{p.email}}</span>
                 <span *ngIf="!p.email" class="badge badge-dark">No Email</span>
               </td>
-              <td class="d-none d-md-table-cell">{{p.passwordUpdated | date:'longDate'}}</td>
+              <td class="d-none d-lg-table-cell">{{p.passwordUpdated | date:'longDate'}}</td>
               <td class="d-none d-md-table-cell">
                 <div *ngIf="p.permissions.length <= 0" class="badge badge-dark text-wrap">
                   User Disabled:
