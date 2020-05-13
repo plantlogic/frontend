@@ -700,7 +700,7 @@
                     <div class="w-100"></div>
                     <div class="col mt-1">
                       <span class="m-1">Duration:</span>
-                      <input class="form-control" [disabled]="!editing" [(ngModel)]="p.duration" placeholder="Duration (In Hours)">
+                      <input type="number" [(ngModel)]="p.duration" class="form-control" [disabled]="!editing" [placeholder]="editing ? 'Duration (hours)' : ''" >
                       <span class="m-1">Hours</span>
                     </div>
                   </div>
@@ -858,7 +858,7 @@
                 <div class="row">
                   <div class="col col-sm-3">Duration (hours):</div>
                   <div class="col col-sm-9">
-                    <input class="form-control" [disabled]="!editing" [(ngModel)]="p.duration" placeholder="Duration (In Hours)">
+                    <input type="number" [(ngModel)]="p.duration" class="form-control" [disabled]="!editing" [placeholder]="editing ? 'Duration (hours)' : ''" >
                   </div>
                 </div>
               </div>
