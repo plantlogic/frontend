@@ -257,7 +257,7 @@
                 <tr mdbTableCol *ngFor="let c of getComments(); let i = index">
                   <ng-container *ngIf="!c.deleted">
                     <td>
-                      {{c.dateModified | date:'long'}}
+                      {{c.dateModified | date:'short'}}
                     </td>
                     <td>
                       {{c.author}}

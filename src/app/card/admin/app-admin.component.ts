@@ -2,8 +2,6 @@ import {Component, OnInit, EventEmitter} from '@angular/core';
 import {TitleService} from 'src/app/_interact/title.service';
 import {CommonData, CommonDataService, CommonLookup} from '../../_api/common-data.service';
 import {AlertService} from '../../_interact/alert/alert.service';
-// import { componentNeedsResolution } from '@angular/core/src/metadata/resource_loading';
-// import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { ObjectID } from 'bson';
 import { Alert } from 'src/app/_interact/alert/alert';
 
@@ -38,7 +36,7 @@ export class AppAdminComponent implements OnInit {
     });
   }
 
-  public addCommonFromInput(key) {
+  public addCommonFromInput(key: string): void {
     const newValue = (document.getElementById(key + 'NewValue') as HTMLInputElement).value;
     const newCommon = {id: (new ObjectID()).toHexString()};
     if (CommonLookup[key].type === 'hashTable') {
@@ -55,7 +53,7 @@ export class AppAdminComponent implements OnInit {
     (document.getElementById(key + 'NewValue') as HTMLInputElement).value = '';
   }
 
-  public addSubValue(key, c, displayIndex) {
+  public addSubValue(key: string, c, displayIndex: number): void {
     const newValue = (document.getElementById(key + 'NewSubValue' + displayIndex) as HTMLInputElement).value;
     const keyIndex = this.sortedCommonArray.findIndex(e => e.key === key);
     const valueIndex = this.sortedCommonArray[keyIndex].values.findIndex(v => v.id === c.id);
@@ -65,7 +63,7 @@ export class AppAdminComponent implements OnInit {
   }
 
   // Compare function for sorting objects with hash tables as values
-  public compareHashTableText(a, b): number {
+  private compareHashTableText(a, b): number {
     let comparison = 0;
     const valA = a.value.key.toUpperCase();
     const valB = b.value.key.toUpperCase();
@@ -78,7 +76,7 @@ export class AppAdminComponent implements OnInit {
   }
 
   // Compare function for sorting objects with numbers as values
-  public compareSimpleNumber(a, b): number {
+  private compareSimpleNumber(a, b): number {
     let comparison = 0;
     const valA = Number(a.value);
     const valB = Number(b.value);
@@ -91,7 +89,7 @@ export class AppAdminComponent implements OnInit {
   }
 
   // Compare function for sorting objects with text as values
-  public compareSimpleText(a, b): number {
+  private compareSimpleText(a, b): number {
     let comparison = 0;
     const valA = a.value.toUpperCase();
     const valB = b.value.toUpperCase();
@@ -104,7 +102,7 @@ export class AppAdminComponent implements OnInit {
   }
 
   // Returns an array of {id, value} for type key + (reformats hashTables for ease of use)
-  public getCommonValuesArray(key) {
+  private getCommonValuesArray(key: string): Array<any> {
     try {
       const common = this.commonArray.filter(c => c.key === key)[0];
       if (!common) { return []; }
@@ -137,12 +135,12 @@ export class AppAdminComponent implements OnInit {
   }
 
   // Retrieves the lookup name for a key (better for display)
-  private getLookupName(key: string): string {
+  public getLookupName(key: string): string {
     return (CommonLookup[key] && CommonLookup[key].name) ? CommonLookup[key].name : key;
   }
 
   // Retrieves the lookup type for a key
-  private getLookupType(key: string): string {
+  public getLookupType(key: string): string {
     return (CommonLookup[key] && CommonLookup[key].type) ? CommonLookup[key].type : 'text';
   }
 
@@ -151,7 +149,7 @@ export class AppAdminComponent implements OnInit {
     The outer array is sorted common keys (e.g. commodities, ranches, etc...)
     The inner array is an array of objects sorted by the object.value compare function
   */
-  public getSortedData(): Array<any> {
+  private getSortedData(): Array<any> {
     const commonSorted = [];
     this.keys.sort().forEach(key => {
       commonSorted.push({
@@ -166,7 +164,7 @@ export class AppAdminComponent implements OnInit {
     return this.displayToggles[s];
   }
 
-  public removeCommon(key, value) {
+  public removeCommon(key: string, value): void {
     const newAlert = new Alert();
     newAlert.color = 'warning';
     newAlert.title = 'Delete Common Data';
@@ -192,7 +190,7 @@ export class AppAdminComponent implements OnInit {
     AlertService.newAlert(newAlert);
   }
 
-  public removeSubValue(key, c, valToDelete) {
+  public removeSubValue(key: string, c, valToDelete): void {
     const keyIndex = this.sortedCommonArray.findIndex(e => e.key === key);
     const valueIndex = this.sortedCommonArray[keyIndex].values.findIndex(v => v.id === c.id);
     const oldValues = this.sortedCommonArray[keyIndex].values[valueIndex].value.value;
@@ -202,7 +200,7 @@ export class AppAdminComponent implements OnInit {
     this.updateCommon(key);
   }
 
-  public shiftDown(key, value) {
+  public shiftDown(key: string, value): void {
     const keyIndex = this.sortedCommonArray.findIndex(c => c.key === key);
     const keyValuesLength = this.sortedCommonArray[keyIndex].values.length;
     const oldValueIndex = this.sortedCommonArray[keyIndex].values.findIndex(v => v.id === value.id);
@@ -214,7 +212,7 @@ export class AppAdminComponent implements OnInit {
     this.updateCommon(key);
   }
 
-  public shiftUp(key, value) {
+  public shiftUp(key: string, value): void {
     const keyIndex = this.sortedCommonArray.findIndex(c => c.key === key);
     const oldValueIndex = this.sortedCommonArray[keyIndex].values.findIndex(v => v.id === value.id);
     if (oldValueIndex <= 0) { return; }
@@ -226,7 +224,7 @@ export class AppAdminComponent implements OnInit {
   }
 
   // Sort function which sorts the array based on its CommonLookup properties
-  public sortCommonArray(arr: any[], key: string): any[] {
+  private sortCommonArray(arr: any[], key: string): any[] {
     if (CommonLookup[key].sort === false) { return arr; }
     const type = this.getLookupType(key);
     if (type === 'text') {
@@ -243,7 +241,7 @@ export class AppAdminComponent implements OnInit {
     this.displayToggles[s] = !this.displayToggles[s];
   }
 
-  public updateCommon(key) {
+  public updateCommon(key: string): void {
     const arr = this.sortedCommonArray.filter(e => e.key === key)[0].values;
     let valuesToSend = [];
     if (CommonLookup[key].type === 'hashTable') {
