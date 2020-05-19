@@ -75,25 +75,7 @@ export class CardManagementComponent implements OnInit {
     this.updateNumPages();
   }
 
-  public filterItems() {
-    const prev = this.tableService.getDataSource();
-    const filter = this.filterCards();
-    if (!filter.wasFiltered) {
-      this.tableService.setDataSource(this.previous);
-      this.cards = this.tableService.getDataSource();
-    } else {
-      this.cards = filter.data;
-      this.tableService.setDataSource(prev);
-    }
-    this.updateNumPages();
-
-    // If displaying on mobile, sort with the current mobile sort settings
-    if (window.getComputedStyle(document.getElementById('mobileSorter')).display !== 'none') {
-      this.mobileSort();
-    }
-  }
-
-  public filterCards() {
+  private filterCards() {
     let filterApplied = false;
     let cards = this.tableService.getDataSource();
     const tempThis = this;
@@ -123,14 +105,32 @@ export class CardManagementComponent implements OnInit {
     return { data: cards, wasFiltered: filterApplied };
   }
 
+  public filterItems() {
+    const prev = this.tableService.getDataSource();
+    const filter = this.filterCards();
+    if (!filter.wasFiltered) {
+      this.tableService.setDataSource(this.previous);
+      this.cards = this.tableService.getDataSource();
+    } else {
+      this.cards = filter.data;
+      this.tableService.setDataSource(prev);
+    }
+    this.updateNumPages();
+
+    // If displaying on mobile, sort with the current mobile sort settings
+    if (window.getComputedStyle(document.getElementById('mobileSorter')).display !== 'none') {
+      this.mobileSort();
+    }
+  }
+
   /*
     Searches common values in [key] list where value.id === targetID
     returns value.valuePropertyArr where valuePropertyArr = array of nesting properties
     returns null in no targetID supplied
     returns targetID if key is not in commonKeys Array (don't need value)
-    returns generic message of targetID not found
+    returns generic message if targetID not found
   */
-  findCommonValue(key, valuePropertyArr, targetID?) {
+  private findCommonValue(key, valuePropertyArr, targetID?) {
     if (!targetID) { return null; }
     if (!this.commonKeys.includes(key) && key !== 'ranches') { return targetID; }
     let commonValue = this.getCommon(key).find(e => {
@@ -146,7 +146,7 @@ export class CardManagementComponent implements OnInit {
     return (commonValue) ? commonValue : 'Unknown ' + key + ' ID';
   }
 
-  findModifiedCards() {
+  private findModifiedCards() {
     const modifiedCards = [];
     try {
       // Cycle through the cards being currently displayed, check if fieldID is different from raw
@@ -173,19 +173,19 @@ export class CardManagementComponent implements OnInit {
     }
   }
 
-  hasEditPermission(): boolean {
+  public hasEditPermission(): boolean {
     return this.auth.hasPermission(PlRole.DATA_EDIT);
   }
 
-  hasShipperPermission(): boolean {
+  private hasShipperPermission(): boolean {
     return this.auth.hasPermission(PlRole.SHIPPER);
   }
 
-  hasViewPermission(): boolean {
+  public hasViewPermission(): boolean {
     return this.auth.hasPermission(PlRole.DATA_VIEW);
   }
 
-  public initCommon(f): void {
+  private initCommon(f): void {
     const tempThis = this;
     const sortedCommon = {};
     const userRanchAccess = this.auth.getRanchAccess();
@@ -269,7 +269,7 @@ export class CardManagementComponent implements OnInit {
     return Math.min(x, y);
   }
 
-  mobileSort(): void {
+  public mobileSort(): void {
     if (this.mFilterSort) {
       if (!this.mFilterOrder) { this.mFilterOrder = 'asc'; }
       switch (this.mFilterSort) {
@@ -330,14 +330,14 @@ export class CardManagementComponent implements OnInit {
     });
   }
 
-  setPage(n: number): void {
+  public setPage(n: number): void {
     if (this.pageNum === n) { return; }
     this.pageNum = n;
     if (this.pageNum > this.numPages) { this.pageNum = this.numPages; }
     if (this.pageNum < 1) { this.pageNum = 1; }
   }
 
-  showListing(index: number): boolean {
+  public showListing(index: number): boolean {
     const low = (this.pageNum - 1) * this.viewSize;
     const high = (this.pageNum * this.viewSize) - 1;
     if ((index >= low) && (index <= high)) {
@@ -380,14 +380,14 @@ export class CardManagementComponent implements OnInit {
     });
   }
 
-  updateMessage(log, expected) {
+  private updateMessage(log, expected) {
     const total = log.success + log.failure;
     if (total >= expected) {
       AlertService.newBasicAlert(`Cards updated: ${log.success} successfully, ${log.failure} unsuccessfully`, false);
     }
   }
 
-  updateNumPages(e?: number): void {
+  public updateNumPages(e?: number): void {
     // When event is called, e is new viewSize value while this.viewSize is old Value
     if (e) { this.viewSize = e; }
     this.numPages = Math.ceil(this.cards.length / this.viewSize);

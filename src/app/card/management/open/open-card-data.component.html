@@ -165,39 +165,59 @@
         <div class="d-inline-flex ml-2">
           | Total: <i>{{getActiveComments()}}</i>
         </div>
-        <table mdbTable *ngIf="card" class="table table-responsive" [class.collapse]="commentsCollapsed">
-        <thead>
-          <tr>
-            <th scope="col" class="small" style="width:15%;">Last Modified</th>
-            <th scope="col" class="small" style="width:15%;">Author</th>
-            <th scope="col" class="small" style="width:60%;">Message</th>
-            <th scope="col" class="small" >Options</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr mdbTableCol *ngFor="let c of comments; let i = index">
-            <ng-container *ngIf="!c.deleted">
-              <td>
-                {{c.dateModified | date:'short'}}
-              </td>
-              <td>
-                {{c.author}}
-              </td>
-              <td>
-                <textarea type="text" [(ngModel)]="c.body" [disabled]="!canEditComment(c)" class="form-control"
-                [placeholder]="editing ? 'Enter Any Comments' : ''" maxlength="200" autosize>
-                </textarea>
-              </td>
-              <td *ngIf="editing || editingComment">
-                <button *ngIf="!canDeleteComment(c)" type="button" (click)="deleteComment(i)" mdbBtn floating="true"
-                size="sm" mdbWavesEffect disabled>Delete <i class="ml-1 fa fa-trash" aria-hidden="true"></i></button>
-                <button *ngIf="canDeleteComment(c)" type="button" color="danger" (click)="deleteComment(i)" mdbBtn floating="true"
-                size="sm" mdbWavesEffect>Delete <i class="ml-1 fa fa-trash" aria-hidden="true"></i></button>
-              </td>
-            </ng-container>
-          </tr>
-        </tbody>
-        </table>
+
+        <div [class.collapse]="commentsCollapsed">
+          <ul class="nav nav-tabs" id="commentsTab" role="tablist" >
+            <li class="nav-item">
+              <a class="nav-link active" id="all-comments-tab" (click)="showCommentTab('all-comments-tab','all')">All ({{getActiveComments()}})</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="grower-comments-tab" (click)="showCommentTab('grower-comments-tab','grower')">Growers ({{getActiveComments('grower')}})</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="shipper-comments-tab" (click)="showCommentTab('shipper-comments-tab','shipper')">Shippers ({{getActiveComments('shipper')}})</a>
+            </li>
+          </ul>
+  
+          <div class="tab-content" id="commentsTabContent">
+            <div class="tab-pane fade show active" role="tabpanel" aria-labelledby="all-comments-tab">
+              <table mdbTable *ngIf="card" class="table table-responsive">
+                <thead>
+                  <tr>
+                    <th scope="col" class="small" style="width:15%;">Last Modified</th>
+                    <th scope="col" class="small" style="width:15%;">Author</th>
+                    <th scope="col" class="small" style="width:60%;">Message</th>
+                    <th scope="col" class="small" >Options</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr mdbTableCol *ngFor="let c of getComments(); let i = index">
+                    <ng-container *ngIf="!c.deleted">
+                      <td>
+                        {{c.dateModified | date:'short'}}
+                      </td>
+                      <td>
+                        {{c.author}}
+                      </td>
+                      <td>
+                        <textarea type="text" [(ngModel)]="c.body" [disabled]="!canEditComment(c)" class="form-control"
+                        [placeholder]="editing ? 'Any Comments' : ''" maxlength="200" autosize>
+                        </textarea>
+                      </td>
+                      <td *ngIf="editing || editingComment">
+                        <button *ngIf="!canDeleteComment(c)" type="button" (click)="deleteComment(i)" mdbBtn floating="true"
+                        size="sm" mdbWavesEffect disabled>Delete <i class="ml-1 fa fa-trash" aria-hidden="true"></i></button>
+                        <button *ngIf="canDeleteComment(c)" type="button" color="danger" (click)="deleteComment(i)" mdbBtn floating="true"
+                        size="sm" mdbWavesEffect>Delete <i class="ml-1 fa fa-trash" aria-hidden="true"></i></button>
+                      </td>
+                    </ng-container>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <!-- Mobile / Small Devices -->
@@ -220,31 +240,46 @@
         </div>
         
         <ng-container *ngIf="card">
-          <div class="row" [class.collapse]="commentsCollapsed" *ngFor="let c of comments; let i = index">
-            <ng-container *ngIf="!c.deleted">
-              <div class="col-sm-12"><div class="w-100"><hr /></div></div>
-              <div class="w-100"></div>
-              <div class="col">Modified:&nbsp;{{c.dateModified | date:'short'}}</div>
-              <div class="w-100"></div>
-              <div class="col">Author:&nbsp;<b>{{c.author}}</b></div>
-              <div class="w-100"></div>
-              <div class="col">
-                <textarea type="text" [(ngModel)]="c.body" [disabled]="!canEditComment(c)" class="form-control" autosize></textarea>
-              </div>
-              <div class="w-100"></div>
-              <div class="col-sm" >
-                <ng-container *ngIf="editing || editingComment">
-                  <div class="m-1">
-                    <button *ngIf="!canDeleteComment(c)" type="button" (click)="deleteComment(i)" mdbBtn floating="true" size="sm" mdbWavesEffect disabled>
-                      <i class="ml-1 fa fa-trash" aria-hidden="true"></i>
-                    </button>
-                    <button *ngIf="canDeleteComment(c)" type="button" color="danger" (click)="deleteComment(i)" mdbBtn floating="true" size="sm" mdbWavesEffect>
-                      <i class="ml-1 fa fa-trash" aria-hidden="true"></i>
-                    </button>
+          <div [class.collapse]="commentsCollapsed">
+            <ul class="nav nav-tabs" id="commentsTab" role="tablist" >
+              <li class="nav-item">
+                <a class="nav-link active" id="all-comments-tab-m" (click)="showCommentTabMobile('all-comments-tab-m', 'all')">All ({{getActiveComments()}})</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="grower-comments-tab-m" (click)="showCommentTabMobile('grower-comments-tab-m','grower')">Growers ({{getActiveComments('grower')}})</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="shipper-comments-tab-m" (click)="showCommentTabMobile('shipper-comments-tab-m','shipper')">Shippers ({{getActiveComments('shipper')}})</a>
+              </li>
+            </ul>
+            <div class="tab-pane fade show active" role="tabpanel" aria-labelledby="all-comments-tab-m">
+              <div class="row"  *ngFor="let c of getComments(); let i = index">
+                <ng-container *ngIf="!c.deleted">
+                  <div class="col-sm-12"><div class="w-100"><hr /></div></div>
+                  <div class="w-100"></div>
+                  <div class="col">Modified:&nbsp;{{c.dateModified | date:'short'}}</div>
+                  <div class="w-100"></div>
+                  <div class="col">Author:&nbsp;<b>{{c.author}}</b></div>
+                  <div class="w-100"></div>
+                  <div class="col">
+                    <textarea type="text" [(ngModel)]="c.body" [disabled]="!canEditComment(c)" class="form-control" autosize></textarea>
+                  </div>
+                  <div class="w-100"></div>
+                  <div class="col-sm" >
+                    <ng-container *ngIf="editing || editingComment">
+                      <div class="m-1">
+                        <button *ngIf="!canDeleteComment(c)" type="button" (click)="deleteComment(i)" mdbBtn floating="true" size="sm" mdbWavesEffect disabled>
+                          <i class="ml-1 fa fa-trash" aria-hidden="true"></i>
+                        </button>
+                        <button *ngIf="canDeleteComment(c)" type="button" color="danger" (click)="deleteComment(i)" mdbBtn floating="true" size="sm" mdbWavesEffect>
+                          <i class="ml-1 fa fa-trash" aria-hidden="true"></i>
+                        </button>
+                      </div>
+                    </ng-container>
                   </div>
                 </ng-container>
               </div>
-            </ng-container>
+            </div>
           </div>
         </ng-container>
       </div>
@@ -313,15 +348,15 @@
                 </td>
                 <td>
                   <input type="number" [(ngModel)]="p.bedCount" [disabled]="!editing" class="form-control"
-                  [placeholder]="editing ? 'Enter Bed Count' : ''" />
+                  [placeholder]="editing ? 'Bed Count' : ''" />
                 </td>
                 <td>
                   <input type="number" [(ngModel)]="p.cropAcres" [disabled]="!editing" class="form-control"
-                  [placeholder]="editing ? 'Enter Acres' : ''" />
+                  [placeholder]="editing ? 'Acres' : ''" />
                 </td>
                 <td>
                   <input type="text" [(ngModel)]="p.seedLotNumber" [disabled]="!editing" class="form-control"
-                  [placeholder]="editing ? 'Enter Seed Lot #' : ''" />
+                  [placeholder]="editing ? 'Seed Lot #' : ''" />
                 </td>
                 <td *ngIf="editing">
                   <button type="button" color="danger" (click)="card.commodityArray.splice(i, 1)" mdbBtn floating="true"
@@ -820,7 +855,7 @@
 
         <ng-container *ngIf="card">
           <div id="irrigationMobile">
-            <div class="row"><div class="col-sm-12"><div class="w-100"><hr class="divider-sm"/></div></div></div>
+            <div class="row" *ngIf="card.irrigationArray.length > 0"><div class="col-sm-12"><div class="w-100"><hr class="divider-sm"/></div></div></div>
             <div class="row" *ngFor="let p of card.irrigationArray; let i = index">
               <div class="w-100"></div>
               <div class="col">
@@ -1009,12 +1044,12 @@
                 <td>
                   <div class="row">
                     <div class="col">
-                      <input class="form-control" [disabled]="!editing" list="tractorOperators" [(ngModel)]="p.operator" placeholder="Enter Tractor Operator">
+                      <input class="form-control" [disabled]="!editing" list="tractorOperators" [(ngModel)]="p.operator" placeholder="Tractor Operator">
                     </div>
                     <div class="w-100"></div>
                     <div class="col mt-1">
                       <span class="m-1">Tractor #:</span>
-                      <input type="text" class="form-control" [disabled]="!editing" [(ngModel)]="p.tractorNumber" placeholder="Enter Tractor Number">
+                      <input type="text" class="form-control" [disabled]="!editing" [(ngModel)]="p.tractorNumber" placeholder="Tractor Number">
                     </div>
                   </div>
                 </td>
@@ -1133,7 +1168,7 @@
 
         <ng-container *ngIf="card">
           <div id="tractorMobile">
-            <div class="row"><div class="col-sm-12"><div class="w-100"><hr class="divider-sm"/></div></div></div>
+            <div class="row" *ngIf="card.tractorArray.length > 0"><div class="col-sm-12"><div class="w-100"><hr class="divider-sm"/></div></div></div>
             <div class="row" *ngFor="let p of card.tractorArray; let i = index">
               <div class="w-100"></div>
               <div class="col">
@@ -1162,7 +1197,7 @@
                 <div class="row">
                   <div class="col col-sm-3">Operator:</div>
                   <div class="col col-sm-9">
-                    <input class="form-control" [disabled]="!editing" list="tractorOperators" [(ngModel)]="p.operator" placeholder="Enter Tractor Operator">
+                    <input class="form-control" [disabled]="!editing" list="tractorOperators" [(ngModel)]="p.operator" placeholder="Tractor Operator">
                   </div>
                 </div>
               </div>
@@ -1171,7 +1206,7 @@
                 <div class="row">
                   <div class="col col-sm-3">Tractor #:</div>
                   <div class="col col-sm-9">
-                    <input type="text" class="form-control" [disabled]="!editing" [(ngModel)]="p.tractorNumber" placeholder="Enter Tractor Number">
+                    <input type="text" class="form-control" [disabled]="!editing" [(ngModel)]="p.tractorNumber" placeholder="Tractor Number">
                   </div>
                 </div>
               </div>
