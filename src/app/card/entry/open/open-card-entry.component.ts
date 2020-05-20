@@ -11,6 +11,7 @@ import { CommonLookup } from 'src/app/_api/common-data.service';
 import { AuthService } from 'src/app/_auth/auth.service';
 import { Alert } from 'src/app/_interact/alert/alert';
 import { Comment } from 'src/app/_dto/card/comment';
+import { PlRole } from 'src/app/_dto/user/pl-role.enum';
 
 @Component({
   selector: 'app-open-card-entry',
@@ -27,6 +28,7 @@ export class OpenCardEntryComponent implements OnInit {
   card: Card;
   // Additional values will be attached to comments, so use a separate variable
   comments = [];
+  commentsFilter = 'all';
   datesSet: boolean;
 
   // create array of common keys, whose data is needed. Omit restricted options.
@@ -53,6 +55,13 @@ export class OpenCardEntryComponent implements OnInit {
     c.body = '';
     c.dateCreated = new Date().valueOf();
     c.dateModified = c.dateCreated;
+    if (this.auth.hasPermission(PlRole.DATA_ENTRY)) {
+      c.role = 'grower';
+    } else if (this.auth.hasPermission(PlRole.SHIPPER)) {
+      c.role = 'shipper';
+    } else {
+      c.role = 'none';
+    }
     this.comments.push(c);
   }
 
@@ -145,6 +154,25 @@ export class OpenCardEntryComponent implements OnInit {
   }
 
   public deleteComment(index) {
+    if (this.commentsFilter !== 'all') {
+      let fixedIndex = -1;
+      let current = 0;
+      // Index references the order number relative to the filter (shipper / grower / etc...)
+      // Find index relative to all comments
+      for (let i = 0; i < this.comments.length; i++) {
+        if (fixedIndex === -1) {
+          if (this.comments[i].role === this.commentsFilter) {
+            if (current === index) { fixedIndex = i; }
+            current += 1;
+          }
+        }
+      }
+      if (fixedIndex === -1) {
+        AlertService.newBasicAlert('Error when deleting comment', true);
+        return;
+      }
+      index = fixedIndex;
+    }
     const comment = this.comments[index];
     if (comment.userName !== this.auth.getUsername()) {
       AlertService.newBasicAlert('Cannot delete comments which aren\'t your own on the entry side', true);
@@ -187,7 +215,10 @@ export class OpenCardEntryComponent implements OnInit {
     return new Date(year, month, day);
   }
 
-  public getActiveComments() {
+  public getActiveComments(filter?: string) {
+    if (filter) {
+      return this.comments.filter(c => !c.deleted && (c.role === filter)).length;
+    }
     return this.comments.filter(c => !c.deleted).length;
   }
 
@@ -236,6 +267,20 @@ export class OpenCardEntryComponent implements OnInit {
       }
     });
     return allApplied.sort(this.compareDates);
+  }
+
+  public getComments() {
+    const filter = this.commentsFilter;
+    if (filter === 'grower') {
+      return this.comments.filter(comment => comment.role === 'grower');
+    } else if (filter === 'shipper') {
+      return this.comments.filter(comment => comment.role === 'shipper');
+    } else if (filter === 'all') {
+      return this.comments;
+    } else {
+      console.log('Invalid comment filter');
+      return this.comments;
+    }
   }
 
   public getCommon(key) {
@@ -400,5 +445,16 @@ export class OpenCardEntryComponent implements OnInit {
     }
     this.card.comments = this.comments.filter(c => !c.deleted);
     return true;
+  }
+
+  public showCommentTab(linkID, commentFilter) {
+    // Remove active class from tab links
+    document.getElementById('all-comments-tab').classList.remove('active');
+    document.getElementById('grower-comments-tab').classList.remove('active');
+    document.getElementById('shipper-comments-tab').classList.remove('active');
+    // Add active class to current tab link
+    document.getElementById(linkID).classList.add('active');
+    // Update comment filter
+    this.commentsFilter = commentFilter;
   }
 }

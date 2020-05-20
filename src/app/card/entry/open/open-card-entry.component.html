@@ -24,8 +24,6 @@
       </div>
     </div>
     <hr />
-    
-
     <!-- Applied (All Applied Chemicals and Fertilizers) -->
     <div>
       <a (click)="chemicalTable.toggle()" class="text-primary">
@@ -33,38 +31,37 @@
       </a>
       <br />
       <div mdbCollapse #chemicalTable="bs-collapse">
-          <div class="my-2 row">
-            <div class="col-md-12 mb-1 border" *ngFor="let p of getAllApplied()">
-              <b>Date: {{p.date | date:'shortDate'}}</b><br>
-              <b>Type:</b> {{p.type}}
-              <div *ngFor="let f of p.fertilizers">
-                <b>Fertilizer /ac:</b>
-                {{f.name}}
-                <span class="text-info">
-                  {{f.rate}}
-                  {{f.unit}}
-                </span>
-              </div>
-              <div *ngFor="let c of p.chemicals">
-                <b>Chemical /ac:</b>
-                {{c.name}}
-                <span class="text-info">
-                  {{c.rate}}
-                  {{c.unit}}
-                </span>
-              </div>
+        <div class="my-2 row">
+          <div class="col-md-12 mb-1 border" *ngFor="let p of getAllApplied()">
+            <b>Date: {{p.date | date:'shortDate'}}</b><br>
+            <b>Type:</b> {{p.type}}
+            <div *ngFor="let f of p.fertilizers">
+              <b>Fertilizer /ac:</b>
+              {{f.name}}
+              <span class="text-info">
+              {{f.rate}}
+              {{f.unit}}
+              </span>
+            </div>
+            <div *ngFor="let c of p.chemicals">
+              <b>Chemical /ac:</b>
+              {{c.name}}
+              <span class="text-info">
+              {{c.rate}}
+              {{c.unit}}
+              </span>
             </div>
           </div>
+        </div>
       </div>
     </div>
     <hr>
-
     <!-- Tractor Entries -->
     <div>
       <button *ngIf="!card.tractorFull()" type="button" class="btn btn-warning float-right ml-1" routerLink="./add/tractor">
-        <span class="d-md-none"><i class="fas fa-plus"></i></span>
-        <span class="d-none d-md-inline-block">Add </span>
-        <i class="fas fa-tractor ml-1"></i>
+      <span class="d-md-none"><i class="fas fa-plus"></i></span>
+      <span class="d-none d-md-inline-block">Add </span>
+      <i class="fas fa-tractor ml-1"></i>
       </button>
       <a (click)="tractorTable.toggle()" class="text-primary">
         <h4><i class="fas fa-caret-down mr-1"></i> Tractor</h4>
@@ -84,16 +81,16 @@
               <b>Fertilizer /ac:</b>
               {{f.name}}
               <span class="text-info">
-                {{f.rate}}
-                {{f.unit}}
+              {{f.rate}}
+              {{f.unit}}
               </span>
             </div>
             <div *ngFor="let c of p.chemicalArray">
               <b>Chemical /ac:</b>
               {{c.name}}
               <span class="text-info">
-                {{c.rate}}
-                {{c.unit}}
+              {{c.rate}}
+              {{c.unit}}
               </span>
             </div>
           </div>
@@ -101,14 +98,13 @@
       </div>
     </div>
     <hr>
-
     <!-- Irrigation Entries -->
     <div>
       <button *ngIf="!card.irrigationFull()" type="button" class="btn btn-primary ml-1 float-right"
-              routerLink="./add/irrigation">        
-        <span class="d-md-none"><i class="fas fa-plus"></i></span>
-        <span class="d-none d-md-inline-block">Add </span>
-        <i class="fas fa-tint ml-1"></i>
+        routerLink="./add/irrigation">        
+      <span class="d-md-none"><i class="fas fa-plus"></i></span>
+      <span class="d-none d-md-inline-block">Add </span>
+      <i class="fas fa-tint ml-1"></i>
       </button>
       <a (click)="irrigationTable.toggle()" class="text-primary">
         <h4><i class="fas fa-caret-down mr-1"></i> Irrigation</h4>
@@ -128,16 +124,16 @@
               <b>Fertilizer /ac:</b>
               {{f.name}}
               <span class="text-info">
-                {{f.rate}}
-                {{f.unit}}
+              {{f.rate}}
+              {{f.unit}}
               </span>
             </div>
             <div *ngFor="let c of p.chemicalArray">
               <b>Chemical /ac:</b>
               {{c.name}}
               <span class="text-info">
-                {{c.rate}}
-                {{c.unit}}
+              {{c.rate}}
+              {{c.unit}}
               </span>
             </div>
           </div>
@@ -145,7 +141,6 @@
       </div>
     </div>
     <hr>
-
     <!-- Commodities -->
     <div>
       <a (click)="commodityTable.toggle()" class="text-primary">
@@ -171,7 +166,6 @@
       </div>
     </div>
     <hr>
-
     <!-- More Info -->
     <div>
       <a (click)="cardInfo.toggle()" class="text-primary">
@@ -213,78 +207,88 @@
           </div>
           <div class="col-sm">
             <button *ngIf="!datesSet" type="button" class="btn btn-primary float-right ml-1" (click)="saveDates()">
-              <span class="d-none d-md-inline-block">Confirm Dates</span>
-              <span class="d-md-none"><i class="fas fa-check"></i></span>
+            <span class="d-none d-md-inline-block">Confirm Dates</span>
+            <span class="d-md-none"><i class="fas fa-check"></i></span>
             </button>
           </div>
         </div>
       </div>
     </div>
     <hr>
-
     <!-- Comments -->
-    <div>        
+    <div>
       <button type="button" class="btn btn-success ml-1 float-right" (click)="addComment()">
-        <span class="d-none d-md-inline-block">Add &nbsp;</span>
-        <i class="fa fa-plus" aria-hidden="true"></i>
+      <span class="d-none d-md-inline-block">Add &nbsp;</span>
+      <i class="fa fa-plus" aria-hidden="true"></i>
       </button>
       <button type="button" class="btn btn-primary ml-1 float-right" (click)="saveComments()">
-        <span class="d-none d-md-inline-block">Save Comments </span>
-        <span class="d-md-none"><i class="fas fa-check"></i></span>
+      <span class="d-none d-md-inline-block">Save Comments </span>
+      <span class="d-md-none"><i class="fas fa-check"></i></span>
       </button>
       <a (click)="cardComments.toggle()" class="text-primary">
         <h4><i class="fas fa-caret-down mr-1"></i> Comments | Total: <i>{{getActiveComments()}}</i></h4>
       </a>
       <br />
       <div mdbCollapse #cardComments="bs-collapse">
+        <ul class="nav nav-tabs" id="commentsTab" role="tablist" >
+          <li class="nav-item">
+            <a class="nav-link active" id="all-comments-tab" (click)="showCommentTab('all-comments-tab','all')">All ({{getActiveComments()}})</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="grower-comments-tab" (click)="showCommentTab('grower-comments-tab','grower')">Growers ({{getActiveComments('grower')}})</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="shipper-comments-tab" (click)="showCommentTab('shipper-comments-tab','shipper')">Shippers ({{getActiveComments('shipper')}})</a>
+          </li>
+        </ul>
         <div class="row">
-          <table mdbTable *ngIf="card" class="table" [class.collapse]="commentsCollapsed">
-            <thead>
-            <tr>
-              <th scope="col" class="small" style="width:15%;max-width:15%;">Last Modified</th>
-              <th scope="col" class="small" style="width:15%;max-width:15%;">Author</th>
-              <th scope="col" class="small" style="width:60%;max-width:60%;">Message</th>
-              <th scope="col" class="small" >Options</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr mdbTableCol *ngFor="let c of comments; let i = index">
-              <ng-container *ngIf="!c.deleted">
-                <td>
-                  {{c.dateModified | date:'long'}}
-                </td>
-                <td>
-                  {{c.author}}
-                </td>
-                <td>
-                  <textarea type="text" [(ngModel)]="c.body" [disabled]="!canEditComment(c)" class="form-control form-control-sm"
+          <div class="tab-content" id="commentsTabContent" style="width: 100%;">
+            <div class="tab-pane fade show active" role="tabpanel" aria-labelledby="all-comments-tab">
+              <table mdbTable *ngIf="card" class="table" [class.collapse]="commentsCollapsed">
+              <thead>
+                <tr>
+                  <th scope="col" class="small" style="width:15%;max-width:15%;">Last Modified</th>
+                  <th scope="col" class="small" style="width:15%;max-width:15%;">Author</th>
+                  <th scope="col" class="small" style="width:60%;max-width:60%;">Message</th>
+                  <th scope="col" class="small" >Options</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr mdbTableCol *ngFor="let c of getComments(); let i = index">
+                  <ng-container *ngIf="!c.deleted">
+                    <td>
+                      {{c.dateModified | date:'short'}}
+                    </td>
+                    <td>
+                      {{c.author}}
+                    </td>
+                    <td>
+                      <textarea type="text" [(ngModel)]="c.body" [disabled]="!canEditComment(c)" class="form-control form-control-sm"
                       [placeholder]="editing ? 'Enter Any Comments' : ''" maxlength="200" autosize>
-                  </textarea>
-                </td>
-                <td>
-                  <button *ngIf="!canEditComment(c)" type="button" (click)="deleteComment(i)" mdbBtn floating="true"
-                          size="sm" mdbWavesEffect disabled>
-                          <span class="d-none d-md-inline-block">Delete </span>
-                           <i class="ml-1 fa fa-trash" aria-hidden="true"></i>
-                        </button>
-                  <button *ngIf="canEditComment(c)" type="button" color="danger" (click)="deleteComment(i)" mdbBtn floating="true"
-                          size="sm" mdbWavesEffect>
-                          <span class="d-none d-md-inline-block">Delete </span>
-                          <i class="ml-1 fa fa-trash" aria-hidden="true"></i>
-                        </button>
-                </td>
-              </ng-container>
-            </tr>
-            </tbody>
-          </table>
+                      </textarea>
+                    </td>
+                    <td>
+                      <button *ngIf="!canEditComment(c)" type="button" (click)="deleteComment(i)" mdbBtn floating="true" size="sm" mdbWavesEffect disabled>
+                        <span class="d-none d-md-inline-block">Delete </span>
+                        <i class="ml-1 fa fa-trash" aria-hidden="true"></i>
+                      </button>
+                      <button *ngIf="canEditComment(c)" type="button" color="danger" (click)="deleteComment(i)" mdbBtn floating="true" size="sm" mdbWavesEffect>
+                        <span class="d-none d-md-inline-block">Delete </span>
+                        <i class="ml-1 fa fa-trash" aria-hidden="true"></i>
+                      </button>
+                    </td>
+                  </ng-container>
+                </tr>
+              </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-
   </div>
 </div>
-
 <button *ngIf="card" type="button" class="btn btn-danger mt-n2 float-right" routerLink="./close">
-  <span>Harvested </span>
-  <i class="fas fa-check ml-1"></i>
+<span>Harvested </span>
+<i class="fas fa-check ml-1"></i>
 </button>

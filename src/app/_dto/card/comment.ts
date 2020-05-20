@@ -7,4 +7,6 @@ export class Comment {
     userName: string;
     // The Comment body
     body: string;
+    // The role of the poster (eg. 'grower', 'shipper', etc...)
+    role: string;
   }
