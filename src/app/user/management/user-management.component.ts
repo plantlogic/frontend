@@ -28,41 +28,6 @@ export class UserManagementComponent implements OnInit {
     this.loadUserData();
   }
 
-  private loadUserData() {
-    this.userService.getUserList().subscribe(
-      data => {
-        if (data.success) {
-          this.usersRaw = data.data;
-          this.users = this.separateLocalUsersAndShippers(this.usersRaw);
-          this.tableService.setDataSource(this.usersRaw);
-          this.usersRaw = this.tableService.getDataSource();
-          this.previous = this.tableService.getDataSource();
-        } else if (!data.success) {
-          AlertService.newBasicAlert('Error: ' + data.error, true);
-        }
-      },
-      failure => {
-        AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
-      }
-    );
-  }
-
-  public filterItems() {
-    const prev = this.tableService.getDataSource();
-
-    if (!this.filter) {
-      this.tableService.setDataSource(this.previous);
-      this.usersRaw = this.tableService.getDataSource();
-      this.users = this.separateLocalUsersAndShippers(this.usersRaw);
-    } else {
-      this.filter.toLowerCase();
-      this.usersRaw = this.tableService.searchLocalDataBy(this.filter.toLowerCase());
-      this.tableService.setDataSource(prev);
-      this.filter.toLowerCase();
-      this.users = this.separateLocalUsersAndShippers(this.usersRaw);
-    }
-  }
-
   public deleteUser(username: string) {
     if (username === this.auth.getUsername()) {
       AlertService.newBasicAlert('You can\'t delete the user that is currently logged in.', true);
@@ -96,6 +61,46 @@ export class UserManagementComponent implements OnInit {
     }
   }
 
+  public filterItems() {
+    const prev = this.tableService.getDataSource();
+
+    if (!this.filter) {
+      this.tableService.setDataSource(this.previous);
+      this.usersRaw = this.tableService.getDataSource();
+      this.users = this.separateLocalUsersAndShippers(this.usersRaw);
+    } else {
+      this.filter.toLowerCase();
+      this.usersRaw = this.tableService.searchLocalDataBy(this.filter.toLowerCase());
+      this.tableService.setDataSource(prev);
+      this.filter.toLowerCase();
+      this.users = this.separateLocalUsersAndShippers(this.usersRaw);
+    }
+  }
+
+  private loadUserData() {
+    this.userService.getUserList().subscribe(
+      data => {
+        if (data.success) {
+          this.usersRaw = data.data;
+          this.users = this.separateLocalUsersAndShippers(this.usersRaw);
+          this.tableService.setDataSource(this.usersRaw);
+          this.usersRaw = this.tableService.getDataSource();
+          this.previous = this.tableService.getDataSource();
+        } else if (!data.success) {
+          AlertService.newBasicAlert('Error: ' + data.error, true);
+        }
+      },
+      failure => {
+        AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
+      }
+    );
+  }
+
+  // Used for animation
+  public min(x: number, y: number): number {
+    return Math.min(x, y);
+  }
+
   public separateLocalUsersAndShippers(allUsers: User[]) {
     const shippersArr = [];
     const localUsersArr = [];
@@ -116,8 +121,21 @@ export class UserManagementComponent implements OnInit {
     };
   }
 
-  // Used for animation
-  public min(x: number, y: number): number {
-    return Math.min(x, y);
+  localUsersLoaded() {
+    if (this.users) {
+      if (this.users.local) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  shipperUsersLoaded() {
+    if (this.users) {
+      if (this.users.shippers) {
+        return true;
+      }
+    }
+    return false;
   }
 }

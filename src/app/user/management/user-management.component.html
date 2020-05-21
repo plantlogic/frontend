@@ -6,7 +6,7 @@
                [(ngModel)]="filter" (keyup)="filterItems()" mdbInput>
       </form>
     </div>
-    <div class="col text-center" *ngIf="users.local && users.shippers">
+    <div class="col text-center" *ngIf="localUsersLoaded() && users.shippers">
         <button type="button"color="primary" name="userCount" outline="true" disabled
         mdbBtn floating="true" size="sm">
         <span *ngIf="!filter">Total Users: </span>
@@ -22,9 +22,9 @@
   <hr class="my-4">
   <div class="col">
     <div class="row">
-      <h2 *ngIf="!users.local">Loading data...</h2>
-      <h2 *ngIf="users.local">Merrill Farm Users</h2>
-      <table mdbTable *ngIf="users.local">
+      <h2 *ngIf="!localUsersLoaded()">Loading data...</h2>
+      <h2 *ngIf="localUsersLoaded()">Merrill Farm Users</h2>
+      <table mdbTable *ngIf="localUsersLoaded()">
         <thead>
           <tr>
             <th scope="col" [mdbTableSort]="users.local" [sortBy]="'username'" class="d-none d-lg-table-cell">
@@ -64,9 +64,9 @@
                   <div *ngIf="p.passwordReset" class="mt-1">Password Change Required</div>
                   <div *ngIf="!p.passwordReset" class="mt-1">User Has No Permissions</div>
                 </div>
-                <div *ngFor="let r of p.permissions; let i = index">
-                  <span class="badge mr-1" [ngClass]="PlRoleLookup[r]['style']" [mdbTooltip]="PlRoleLookup[r]['description']">
-                    {{r.toString() | underscoreToSpace | titlecase}}
+                <div *ngFor="let r of p.permissions.sort(); let i = index">
+                  <span class="mr-1 role-display" [mdbTooltip]="PlRoleLookup[r]['description']">
+                      {{r.toString() | underscoreToSpace | titlecase}}
                   </span>
                 </div>
               </td>
@@ -84,9 +84,9 @@
     </div>
     <br/><br/>
     <div class="row">
-      <h2 *ngIf="!users.shippers">Loading data...</h2>
-      <h2 *ngIf="users.shippers">Shippers</h2>
-      <table mdbTable *ngIf="users.shippers">
+      <h2 *ngIf="!shipperUsersLoaded()">Loading data...</h2>
+      <h2 *ngIf="shipperUsersLoaded()">Shippers</h2>
+      <table mdbTable *ngIf="shipperUsersLoaded()">
         <thead>
           <tr>
             <th scope="col" [mdbTableSort]="users.shippers" [sortBy]="'username'" class="d-none d-lg-table-cell">

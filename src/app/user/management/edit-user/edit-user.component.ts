@@ -10,6 +10,7 @@ import {AuthService} from '../../../_auth/auth.service';
 import {Alert} from '../../../_interact/alert/alert';
 import {CommonFormDataService} from '../../../_api/common-form-data.service';
 import { Observable } from 'rxjs';
+import { IDropdownSettings } from 'ng-multiselect-dropdown/multiselect.model';
 
 @Component({
   selector: 'app-edit-user',
@@ -18,17 +19,15 @@ import { Observable } from 'rxjs';
 })
 export class EditUserComponent implements OnInit {
   form: FormGroup;
-  PlRoleLookup = PlRoleLookup;
   user: User = new User();
   submitAttempted = false;
-  plRole = PlRole;
-  roleList: Array<string>;
   manualPassword = false;
   hadEmail: boolean;
-  ranchDropDownSettings = {};
+  hasBeenWarned = false;
+
   ranchList = [];
   userRanches = [];
-  multiSelectSettings = {
+  multiSelectSettings: IDropdownSettings = {
     singleSelection: false,
     idField: 'id',
     textField: 'value',
@@ -37,7 +36,22 @@ export class EditUserComponent implements OnInit {
     itemsShowLimit: 5,
     allowSearchFilter: true
   };
-  hasBeenWarned = false;
+
+
+  PlRoleLookup = PlRoleLookup;
+  plRole = PlRole;
+  roleList: Array<string>;
+  roleListFormatted: Array<any>;
+  userRolesFormatted: Array<any>;
+  roleMultiSelectSettings: IDropdownSettings = {
+    singleSelection: false,
+    idField: 'id',
+    textField: 'value',
+    selectAllText: 'Select All',
+    unSelectAllText: 'Unselect All',
+    itemsShowLimit: 5,
+    allowSearchFilter: true
+  };
 
   constructor(private titleService: TitleService, private fb: FormBuilder, private userService: UserService,
               private router: Router, private route: ActivatedRoute, private auth: AuthService,
@@ -49,11 +63,10 @@ export class EditUserComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       realName: ['', [Validators.required]],
       ranchAccess: [],
-      roles: this.fb.array(this.initRoleBoolArray()),
+      permissions: [],
       shipperID: ''
     });
     this.form.disable();
-    this.roleList = this.initRoles();
   }
 
   ngOnInit() {
@@ -69,8 +82,9 @@ export class EditUserComponent implements OnInit {
               this.form.get('username').setValue(this.user.username);
               this.form.get('email').setValue(this.user.email);
               this.form.get('realName').setValue(this.user.realName);
-              this.form.get('roles').setValue(this.setSelectedRoles());
               this.form.get('shipperID').setValue(this.user.shipperID);
+
+              // Set multiselect for user ranches
               this.commonData.getValues('ranches', ranches => {
                 tempThis.userRanches = ranches.filter(e => {
                   tempThis.ranchList.push(e);
@@ -78,6 +92,11 @@ export class EditUserComponent implements OnInit {
                 });
                 tempThis.form.get('ranchAccess').setValue(tempThis.userRanches);
               });
+
+              // Init role list and initially selected roles
+              this.initRoles();
+              this.roleListFormatted = this.getRoles();
+
               if (!this.user.email) {
                 this.manualPassword = true;
                 this.hadEmail = false;
@@ -100,8 +119,20 @@ export class EditUserComponent implements OnInit {
     );
   }
 
-  isShipper(): boolean {
-    return this.getSelectedRoles().includes(PlRole[PlRole.SHIPPER.toString()]);
+  editSelfAlert(prefixMessage: string): void {
+    const newAlert = new Alert();
+    newAlert.title = 'Success';
+    newAlert.showClose = true;
+    newAlert.closeName = 'Logout';
+    newAlert.timeLeft = 10;
+    newAlert.message = prefixMessage + ' Because you edited yourself, you must log out and log back in to continue.';
+    newAlert.color = 'success';
+    newAlert.blockPageInteraction = true;
+    newAlert.onClose$ = new EventEmitter<null>();
+    newAlert.subscribedOnClose$ = newAlert.onClose$.subscribe(() => {
+      this.auth.logout();
+    });
+    AlertService.newAlert(newAlert);
   }
 
   getRanchAccess() {
@@ -114,6 +145,36 @@ export class EditUserComponent implements OnInit {
     }
   }
 
+  getRoles() {
+    return this.rolesToMultiSelectFormat(this.roleList);
+  }
+
+  getSelectedRoles() {
+    return (this.userRolesFormatted) ? this.userRolesFormatted.map(role => role.id) : [];
+  }
+
+  hasPerms(): boolean {
+    const roles = this.getSelectedRoles();
+    return roles.includes(PlRole[PlRole.DATA_ENTRY.toString()])
+    || roles.includes(PlRole[PlRole.DATA_VIEW.toString()])
+    || roles.includes(PlRole[PlRole.DATA_EDIT.toString()])
+    || roles.includes(PlRole[PlRole.CONTRACTOR_VIEW.toString()])
+    || roles.includes(PlRole[PlRole.CONTRACTOR_EDIT.toString()])
+    || roles.includes(PlRole[PlRole.IRRIGATOR.toString()]);
+  }
+
+  initRoles() {
+    const keys = Object.keys(this.plRole);
+    this.roleList = keys.slice(keys.length / 2).sort();
+    const userRoles = this.user.permissions.map(e => e.toString());
+    const selectedRoles = this.roleList.filter(role => userRoles.includes(role)).sort();
+    this.userRolesFormatted = this.rolesToMultiSelectFormat(selectedRoles);
+  }
+
+  isShipper() {
+    return this.getSelectedRoles().includes(PlRole[PlRole.SHIPPER.toString()]);
+  }
+
   passwordOrEmailInvalid(): boolean {
     if (this.manualPassword) {
       this.form.get('email').setValue('');
@@ -121,6 +182,44 @@ export class EditUserComponent implements OnInit {
     } else {
       this.form.get('password').setValue('');
       return this.form.get('email').invalid;
+    }
+  }
+
+  resetPassword() {
+    this.form.disable();
+    this.userService.resetPassword(this.user.initialUsername).subscribe(
+      data => {
+        if (data.success) {
+          if (this.user.initialUsername === this.auth.getUsername()) {
+            this.editSelfAlert('Reset successful! A temporary password has been emailed to you.');
+          } else {
+            AlertService.newBasicAlert('Reset successful! A temporary password has been emailed to the user.', false);
+            this.router.navigate(['/userManagement']);
+          }
+        } else if (!data.success) {
+          AlertService.newBasicAlert('Error: ' + data.error, true);
+          this.form.enable();
+        }
+      },
+      failure => {
+        AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
+        this.form.enable();
+      }
+    );
+  }
+
+  rolesToMultiSelectFormat(roles) {
+    try {
+      const rolesFormatted = [];
+      roles.forEach(role => {
+        rolesFormatted.push({
+          id: role,
+          value: (this.PlRoleLookup[role].display) ? this.PlRoleLookup[role].display : 'Display Value Not Found'
+        });
+      });
+      return rolesFormatted;
+    } catch (e) {
+      return [];
     }
   }
 
@@ -177,79 +276,5 @@ export class EditUserComponent implements OnInit {
         }
       );
     }
-  }
-
-  resetPassword() {
-    this.form.disable();
-    this.userService.resetPassword(this.user.initialUsername).subscribe(
-      data => {
-        if (data.success) {
-          if (this.user.initialUsername === this.auth.getUsername()) {
-            this.editSelfAlert('Reset successful! A temporary password has been emailed to you.');
-          } else {
-            AlertService.newBasicAlert('Reset successful! A temporary password has been emailed to the user.', false);
-            this.router.navigate(['/userManagement']);
-          }
-        } else if (!data.success) {
-          AlertService.newBasicAlert('Error: ' + data.error, true);
-          this.form.enable();
-        }
-      },
-      failure => {
-        AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
-        this.form.enable();
-      }
-    );
-  }
-
-  initRoles(): Array<string> {
-    const keys = Object.keys(this.plRole);
-    return keys.slice(keys.length / 2);
-  }
-
-  initRoleBoolArray(): Array<boolean> {
-    return Array((Object.keys(this.plRole).length) / 2).fill(false);
-  }
-
-  getRoleFormControls(): AbstractControl[] {
-    return (this.form.get('roles') as FormArray).controls;
-  }
-
-  setSelectedRoles(): Array<boolean> {
-    return Object.keys(this.roleList)
-      .map(key => this.user.permissions.includes(PlRole[key]));
-  }
-
-  getSelectedRoles(): Array<PlRole> {
-    return Object.keys(this.plRole)
-      .filter((d, ind) => this.form.get('roles').value[ind])
-      .map(key => PlRole[key]);
-  }
-
-  hasPerms(): boolean {
-    const roles = this.getSelectedRoles();
-    return roles.includes(PlRole[PlRole.DATA_ENTRY.toString()])
-    || roles.includes(PlRole[PlRole.DATA_VIEW.toString()])
-    || roles.includes(PlRole[PlRole.DATA_EDIT.toString()])
-    || roles.includes(PlRole[PlRole.CONTRACTOR_VIEW.toString()])
-    || roles.includes(PlRole[PlRole.CONTRACTOR_EDIT.toString()]);
-  }
-
-  editSelfAlert(prefixMessage: string): void {
-    const newAlert = new Alert();
-
-    newAlert.title = 'Success';
-    newAlert.showClose = true;
-    newAlert.closeName = 'Logout';
-    newAlert.timeLeft = 10;
-    newAlert.message = prefixMessage + ' Because you edited yourself, you must log out and log back in to continue.';
-    newAlert.color = 'success';
-    newAlert.blockPageInteraction = true;
-    newAlert.onClose$ = new EventEmitter<null>();
-    newAlert.subscribedOnClose$ = newAlert.onClose$.subscribe(() => {
-      this.auth.logout();
-    });
-
-    AlertService.newAlert(newAlert);
   }
 }

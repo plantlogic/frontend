@@ -56,9 +56,21 @@
           <div class="row">
             <div class="col-sm">
               <div class="form-group">
-                <label for="roleSelector">Permissions</label>
+                <label for="permissionSelector">Permissions</label>
                 <br />
-                <div formArrayName="roles" *ngFor="let c of getRoleFormControls(); let i = index"
+
+                <div class="form-group">
+                  <ng-multiselect-dropdown
+                    id="permissionSelector"
+                    formControlName="permissions"
+                    [placeholder]="'Select Permissions'"
+                    [data]="roleListFormatted"
+                    [(ngModel)]="userRolesFormatted"
+                    [settings]="roleMultiSelectSettings">
+                  </ng-multiselect-dropdown>
+                </div>
+
+                <!-- <div formArrayName="roles" *ngFor="let c of getRoleFormControls(); let i = index"
                   class="form-check form-check-inline" name="roleSelector" id="roleSelector">
                   <input class="form-check-input" type="checkbox" name="{{i}}" id="{{i}}" [formControlName]="i">
                   <label for="{{i}}">
@@ -67,7 +79,8 @@
                         {{roleList[i].toString() | underscoreToSpace | titlecase}}
                       </span>
                   </label>
-                </div>
+                </div> -->
+
               </div>
             </div>
             <div class="col-sm" *ngIf="hasPerms()">
