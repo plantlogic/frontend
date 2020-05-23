@@ -7,6 +7,7 @@ import {AbstractControl, FormArray, FormBuilder, FormGroup, Validators} from '@a
 import {User} from '../../../_dto/user/user';
 import {Router} from '@angular/router';
 import {CommonFormDataService} from '../../../_api/common-form-data.service';
+import { IDropdownSettings } from 'ng-multiselect-dropdown/multiselect.model';
 
 @Component({
   selector: 'app-add-user',
@@ -15,14 +16,27 @@ import {CommonFormDataService} from '../../../_api/common-form-data.service';
 })
 export class AddUserComponent implements OnInit {
   form: FormGroup;
-  PlRoleLookup = PlRoleLookup;
   submitAttempted = false;
-  plRole = PlRole;
-  roleList: Array<string>;
   manualPassword = false;
   hasBeenWarned = false;
 
-  multiselectSettings = {
+  multiselectSettings: IDropdownSettings = {
+    singleSelection: false,
+    idField: 'id',
+    textField: 'value',
+    selectAllText: 'Select All',
+    unSelectAllText: 'Unselect All',
+    itemsShowLimit: 5,
+    allowSearchFilter: true
+  };
+
+
+  PlRoleLookup = PlRoleLookup;
+  plRole = PlRole;
+  roleList: Array<string>;
+  roleListFormatted: Array<any>;
+  userRolesFormatted: Array<any>;
+  roleMultiSelectSettings: IDropdownSettings = {
     singleSelection: false,
     idField: 'id',
     textField: 'value',
@@ -41,15 +55,15 @@ export class AddUserComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       realname: ['', [Validators.required]],
       ranchAccess: [],
-      roles: this.fb.array(this.initRoleBoolArray()),
+      permissions: [],
       shipperID: ''
     });
-
-    this.roleList = this.initRoles();
   }
 
   ngOnInit() {
     this.titleService.setTitle('Add User');
+    this.initRoles();
+    this.roleListFormatted = this.getRoles();
   }
 
   passwordOrEmailInvalid(): boolean {
@@ -126,9 +140,9 @@ export class AddUserComponent implements OnInit {
     }
   }
 
-  initRoles(): Array<string> {
+  initRoles(): void {
     const keys = Object.keys(this.plRole);
-    return keys.slice(keys.length / 2);
+    this.roleList = keys.slice(keys.length / 2).sort();
   }
 
   initRoleBoolArray(): Array<boolean> {
@@ -149,14 +163,12 @@ export class AddUserComponent implements OnInit {
     }
   }
 
-  getRoleFormControls(): AbstractControl[] {
-    return (this.form.get('roles') as FormArray).controls;
+  getRoles() {
+    return this.rolesToMultiSelectFormat(this.roleList);
   }
 
-  getSelectedRoles(): Array<PlRole> {
-    return Object.keys(this.plRole)
-      .filter((d, ind) => this.form.get('roles').value[ind])
-      .map(key => PlRole[key]);
+  getSelectedRoles() {
+    return (this.userRolesFormatted) ? this.userRolesFormatted.map(role => role.id) : [];
   }
 
   hasPerms(): boolean {
@@ -165,6 +177,22 @@ export class AddUserComponent implements OnInit {
     || roles.includes(PlRole[PlRole.DATA_VIEW.toString()])
     || roles.includes(PlRole[PlRole.DATA_EDIT.toString()])
     || roles.includes(PlRole[PlRole.CONTRACTOR_VIEW.toString()])
-    || roles.includes(PlRole[PlRole.CONTRACTOR_EDIT.toString()]);
+    || roles.includes(PlRole[PlRole.CONTRACTOR_EDIT.toString()])
+    || roles.includes(PlRole[PlRole.IRRIGATOR.toString()]);
+  }
+
+  rolesToMultiSelectFormat(roles) {
+    try {
+      const rolesFormatted = [];
+      roles.forEach(role => {
+        rolesFormatted.push({
+          id: role,
+          value: (this.PlRoleLookup[role].display) ? this.PlRoleLookup[role].display : 'Display Value Not Found'
+        });
+      });
+      return rolesFormatted;
+    } catch (e) {
+      return [];
+    }
   }
 }

@@ -24,13 +24,17 @@
       </div>
     </div>
     <hr />
+
     <!-- Applied (All Applied Chemicals and Fertilizers) -->
-    <div>
-      <a (click)="chemicalTable.toggle()" class="text-primary">
-        <h4><i class="fas fa-caret-down mr-1"></i> All Applied ({{getAllApplied().length + ' Entries'}})</h4>
+    <div *ngIf="hasDateEntry()">
+      <a class="text-primary" (click)="collapseToggle('chemicals')">
+        <h4>
+          <i class="fas mr-1" [ngClass]="{ 'fa-caret-right': isCollapsed('chemicals'), 'fa-caret-down': !isCollapsed('chemicals') }"></i>
+          <span class="ml-1"> All Applied ({{getAllApplied().length + ' Entries'}})</span>
+        </h4>
       </a>
       <br />
-      <div mdbCollapse #chemicalTable="bs-collapse">
+      <div id="chemicals" class="collapse">
         <div class="my-2 row">
           <div class="col-md-12 mb-1 border" *ngFor="let p of getAllApplied()">
             <b>Date: {{p.date | date:'shortDate'}}</b><br>
@@ -55,19 +59,24 @@
         </div>
       </div>
     </div>
-    <hr>
+    <hr *ngIf="hasDateEntry()">
+
     <!-- Tractor Entries -->
-    <div>
+    <div *ngIf="hasDateEntry()">
       <button *ngIf="!card.tractorFull()" type="button" class="btn btn-warning float-right ml-1" routerLink="./add/tractor">
       <span class="d-md-none"><i class="fas fa-plus"></i></span>
       <span class="d-none d-md-inline-block">Add </span>
       <i class="fas fa-tractor ml-1"></i>
       </button>
-      <a (click)="tractorTable.toggle()" class="text-primary">
-        <h4><i class="fas fa-caret-down mr-1"></i> Tractor</h4>
+      <a class="text-primary" (click)="collapseToggle('tractorEntries')">
+        <h4>
+          <i class="fas mr-1" [ngClass]="{ 'fa-caret-right': isCollapsed('tractorEntries'), 'fa-caret-down': !isCollapsed('tractorEntries') }"></i>
+          <span class="ml-1"> Tractor</span>
+        </h4>
       </a>
+
       <br />
-      <div mdbCollapse #tractorTable="bs-collapse">
+      <div id="tractorEntries" class="collapse">
         <div class="row">
           <div class="col-md-6 mb-1 border" *ngFor="let p of card.tractorArray">
             <b>Date:</b> {{p.workDate | date:'shortDate'}}
@@ -97,20 +106,24 @@
         </div>
       </div>
     </div>
-    <hr>
+    <hr *ngIf="hasDateEntry()">
+
     <!-- Irrigation Entries -->
     <div>
-      <button *ngIf="!card.irrigationFull()" type="button" class="btn btn-primary ml-1 float-right"
-        routerLink="./add/irrigation">        
-      <span class="d-md-none"><i class="fas fa-plus"></i></span>
-      <span class="d-none d-md-inline-block">Add </span>
-      <i class="fas fa-tint ml-1"></i>
+      <button *ngIf="!card.irrigationFull()" type="button" class="btn btn-primary ml-1 float-right" routerLink="./add/irrigation">        
+        <span class="d-md-none"><i class="fas fa-plus"></i></span>
+        <span class="d-none d-md-inline-block">Add </span>
+        <i class="fas fa-tint ml-1"></i>
       </button>
-      <a (click)="irrigationTable.toggle()" class="text-primary">
-        <h4><i class="fas fa-caret-down mr-1"></i> Irrigation</h4>
+      <a class="text-primary" (click)="collapseToggle('irrigation')">
+        <h4>
+          <i class="fas mr-1" [ngClass]="{ 'fa-caret-right': isCollapsed('irrigation'), 'fa-caret-down': !isCollapsed('irrigation') }"></i>
+          <span class="ml-1">Irrigation</span>
+        </h4>
       </a>
+
       <br />
-      <div mdbCollapse #irrigationTable="bs-collapse">
+      <div id="irrigation" class="collapse">
         <div class="row">
           <div class="col-md-6 mb-1 border" *ngFor="let p of card.irrigationArray">
             <b>Date:</b> {{p.workDate | date:'shortDate'}}
@@ -141,13 +154,18 @@
       </div>
     </div>
     <hr>
+
     <!-- Commodities -->
-    <div>
-      <a (click)="commodityTable.toggle()" class="text-primary">
-        <h4><i class="fas fa-caret-down mr-1"></i> Commodities</h4>
+    <div *ngIf="hasDateEntry()">
+      <a class="text-primary" (click)="collapseToggle('commoditites')">
+        <h4>
+          <i class="fas mr-1" [ngClass]="{ 'fa-caret-right': isCollapsed('commoditites'), 'fa-caret-down': !isCollapsed('commoditites') }"></i>
+          <span class="ml-1">Commodities</span>
+        </h4>
       </a>
+
       <br />
-      <div mdbCollapse #commodityTable="bs-collapse">
+      <div id="commoditites" class="collapse">
         <div class="row">
           <div class="col-md-6 mb-1 mb-1 border" *ngFor="let p of card.commodityArray">
             <b>Commodity:</b> {{p.commodity}}
@@ -165,14 +183,19 @@
         </div>
       </div>
     </div>
-    <hr>
+    <hr *ngIf="hasDateEntry()">
+
     <!-- More Info -->
-    <div>
-      <a (click)="cardInfo.toggle()" class="text-primary">
-        <h4><i class="fas fa-caret-down mr-1"></i> More Info</h4>
+    <div *ngIf="hasDateEntry()">
+      <a class="text-primary" (click)="collapseToggle('moreInfo')">
+        <h4>
+          <i class="fas mr-1" [ngClass]="{ 'fa-caret-right': isCollapsed('moreInfo'), 'fa-caret-down': !isCollapsed('moreInfo') }"></i>
+          <span class="ml-1">More Info</span>
+        </h4>
       </a>
+
       <br />
-      <div mdbCollapse #cardInfo="bs-collapse">
+      <div id="moreInfo" class="collapse">
         <div class="row">
           <div class="col-sm">
             <b>Ranch Name:</b> {{card.ranchName}}
@@ -214,7 +237,8 @@
         </div>
       </div>
     </div>
-    <hr>
+    <hr *ngIf="hasDateEntry()">
+
     <!-- Comments -->
     <div>
       <button type="button" class="btn btn-success ml-1 float-right" (click)="addComment()">
@@ -225,11 +249,14 @@
       <span class="d-none d-md-inline-block">Save Comments </span>
       <span class="d-md-none"><i class="fas fa-check"></i></span>
       </button>
-      <a (click)="cardComments.toggle()" class="text-primary">
-        <h4><i class="fas fa-caret-down mr-1"></i> Comments | Total: <i>{{getActiveComments()}}</i></h4>
+      <a class="text-primary" (click)="collapseToggle('comments')">
+        <h4>
+          <i class="fas mr-1" [ngClass]="{ 'fa-caret-right': isCollapsed('comments'), 'fa-caret-down': !isCollapsed('comments') }"></i>
+          <span class="ml-1">Comments</span>
+        </h4>
       </a>
       <br />
-      <div mdbCollapse #cardComments="bs-collapse">
+      <div id="comments" class="collapse">
         <ul class="nav nav-tabs" id="commentsTab" role="tablist" >
           <li class="nav-item">
             <a class="nav-link active" id="all-comments-tab" (click)="showCommentTab('all-comments-tab','all')">All ({{getActiveComments()}})</a>
@@ -288,7 +315,7 @@
     </div>
   </div>
 </div>
-<button *ngIf="card" type="button" class="btn btn-danger mt-n2 float-right" routerLink="./close">
+<button *ngIf="card && hasDateEntry()" type="button" class="btn btn-danger mt-n2 float-right" routerLink="./close">
 <span>Harvested </span>
-<i class="fas fa-check ml-1"></i>
+  <i class="fas fa-check ml-1"></i>
 </button>

@@ -141,6 +141,11 @@ export class OpenCardEntryComponent implements OnInit {
     return card;
   }
 
+  public collapseToggle(htmlId: string): void {
+    const element = document.getElementById(htmlId);
+    if (element) {element.classList.toggle('collapse'); }
+  }
+
   public compareDates(a, b): number {
     let comparison = 0;
     const valA = a.date;
@@ -301,6 +306,10 @@ export class OpenCardEntryComponent implements OnInit {
     }
   }
 
+  public hasDateEntry() {
+    return this.auth.hasPermission(PlRole.DATA_ENTRY);
+  }
+
   public initCommon(f): void {
     const tempThis = this;
     const sortedCommon = {};
@@ -327,6 +336,15 @@ export class OpenCardEntryComponent implements OnInit {
       sortedCommon[`ranches`] = tempThis.common.sortCommonArray(sortedCommon[`ranches`], 'ranches');
       f(sortedCommon);
     });
+  }
+
+  public isCollapsed(htmlId: string): boolean {
+    const element = document.getElementById(htmlId);
+    if (element) {
+      return element.classList.contains('collapse');
+    } else {
+      return true;
+    }
   }
 
   private loadCardData(id: string) {
