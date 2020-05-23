@@ -67,14 +67,14 @@ export class HomeComponent implements OnInit {
           recent.push(tempThis.months[((new Date()).getMonth() - i + 12) % 12]);
         }
         tempThis.months = recent;
-  
+
         // Init our data array
         tempThis.generateChartsAndCount();
         tempThis.generateUserManagementElements();
       });
     } else {
       this.message = 'No view permission found, contact an administrator to be given access to view cards.'
-                    +'This can happen if a user has no permissions or has only edit permissions (e.g. Contractor Edit or Data Edit).';
+                    + 'This can happen if a user has no permissions or has only edit permissions (e.g. Contractor Edit or Data Edit).';
     }
   }
 
