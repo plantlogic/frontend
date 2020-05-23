@@ -177,7 +177,8 @@ export class AddUserComponent implements OnInit {
     || roles.includes(PlRole[PlRole.DATA_VIEW.toString()])
     || roles.includes(PlRole[PlRole.DATA_EDIT.toString()])
     || roles.includes(PlRole[PlRole.CONTRACTOR_VIEW.toString()])
-    || roles.includes(PlRole[PlRole.CONTRACTOR_EDIT.toString()]);
+    || roles.includes(PlRole[PlRole.CONTRACTOR_EDIT.toString()])
+    || roles.includes(PlRole[PlRole.IRRIGATOR.toString()]);
   }
 
   rolesToMultiSelectFormat(roles) {

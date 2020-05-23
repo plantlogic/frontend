@@ -228,7 +228,7 @@ export class OpenCardDataComponent implements OnInit {
       } else {
         const newAlert = new Alert();
         newAlert.color = 'danger';
-        newAlert.title = 'WARNING: Deleting Other Users Comment';
+        newAlert.title = 'WARNING: Deleting Other User\'s Comment';
         newAlert.message = 'Are you sure you want to delete another user\'s comment?';
         newAlert.timeLeft = undefined;
         newAlert.blockPageInteraction = true;

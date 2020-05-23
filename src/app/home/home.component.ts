@@ -24,7 +24,7 @@ export class HomeComponent implements OnInit {
               private cardView: CardViewService, private cardEntry: CardEntryService, private userManagement: UserService,
               public common: CommonFormDataService) { }
 
-  message = '';
+  message: string;
   appname = environment.AppName;
 
   dataEntryElements = false;
@@ -44,69 +44,38 @@ export class HomeComponent implements OnInit {
 
   redirecting = false;
 
+  permissions = {};
+
   ngOnInit() {
-    /* ----------------
-    Redirects
-    ------------------- */
-
-    if (this.auth.hasPermission(PlRole.DATA_ENTRY)) {
-      // If on a mobile device, redirect to data entry
-      // if (window.matchMedia('only screen and (max-width: 760px)').matches) {
-      //   setTimeout( () => { this.router.navigate(['/entry']); }, 1000);
-      //   this.message = 'Redirecting...';
-      //   this.redirecting = true;
-      //   // this.router.navigate(['/entry']);
-      // }
-
-      // Go straight to the create card page if only permission is data entry
-      if (this.auth.permissionCount() === 1) {
-        setTimeout( () => { this.router.navigate(['/entry']); }, 1000);
-        this.message = 'Redirecting...';
-        this.redirecting = true;
-        // this.router.navigate(['/entry']);
-      }
-    } else if (this.auth.hasPermission(PlRole.SHIPPER)) {
-     // Go straight to the data page if only permission is shipper
-     // Add small delay to fix unloaded common data issue
-      if (this.auth.permissionCount() === 1) {
-        setTimeout( () => { this.router.navigate(['/manage']); }, 1000);
-        this.message = 'Redirecting...';
-        this.redirecting = true;
-      }
-    }
 
     /* ----------------
     Page Init
     ------------------- */
 
     this.titleService.setTitle('Home');
-    const tempThis = this;
-    this.initCommon(c => {
-      tempThis.commonKeys.forEach(key => tempThis[key] = c[key]);
-      if (tempThis.auth.permissionCount() === 0) {
-        tempThis.message = 'This account is disabled and has no permissions.';
-      }
-      // Init our date array
-      const recent = [];
-      for (let i = 5; i >= 0; i--) {
-        recent.push(tempThis.months[((new Date()).getMonth() - i + 12) % 12]);
-      }
-      tempThis.months = recent;
-
-      // Init our data array
-      if (tempThis.auth.hasPermission(PlRole.DATA_ENTRY)) {
-        tempThis.generateDataEntryElements();
-      }
-      if (tempThis.auth.hasPermission(PlRole.DATA_VIEW)) {
-        tempThis.generateDataViewElements();
-      }
-      if (tempThis.auth.hasPermission(PlRole.APP_ADMIN)) {
-
-      }
-      if (tempThis.auth.hasPermission(PlRole.USER_MANAGEMENT)) {
+    this.setPermissions();
+    if (this.hasAnyViewPermission()) {
+      const tempThis = this;
+      this.initCommon(c => {
+        tempThis.commonKeys.forEach(key => tempThis[key] = c[key]);
+        if (tempThis.auth.permissionCount() === 0) {
+          tempThis.message = 'This account is disabled and has no permissions.';
+        }
+        // Init our date array
+        const recent = [];
+        for (let i = 5; i >= 0; i--) {
+          recent.push(tempThis.months[((new Date()).getMonth() - i + 12) % 12]);
+        }
+        tempThis.months = recent;
+  
+        // Init our data array
+        tempThis.generateChartsAndCount();
         tempThis.generateUserManagementElements();
-      }
-    });
+      });
+    } else {
+      this.message = 'No view permission found, contact an administrator to be given access to view cards.'
+                    +'This can happen if a user has no permissions or has only edit permissions (e.g. Contractor Edit or Data Edit).';
+    }
   }
 
   /*
@@ -132,39 +101,11 @@ export class HomeComponent implements OnInit {
     return (commonValue) ? commonValue : targetID;
   }
 
-  private generateUserManagementElements(): void {
-    this.userManagementElements = true;
-    this.userManagement.getUserList().subscribe(data => {
-        if (data.success) {
-          this.userCount = data.data.length;
-        } else if (!data.success) {
-          AlertService.newBasicAlert('Error: ' + data.error, true);
-        }
-      },
-      failure => {
-        AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
-      });
-  }
-
-  private generateDataEntryElements(): void {
-    this.dataEntryElements = true;
-    this.cardEntry.getMyCards().subscribe(data => {
+  private generateChartsAndCount() {
+    if (this.showDataEntryCountOrCharts()) {
+      this.cardEntry.getMyCards().subscribe(data => {
         if (data.success) {
           this.cardCount = data.data.length;
-        } else if (!data.success) {
-          AlertService.newBasicAlert('Error: ' + data.error, true);
-        }
-      },
-      failure => {
-        AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
-      });
-  }
-
-  private generateDataViewElements(): void {
-    this.dataViewElements = true;
-    this.cardView.getAllCards().subscribe(
-      data => {
-        if (data.success) {
           this.generateCardsHarvestedChart(data.data);
           this.generateOpenCommoditiesChart(data.data);
         } else if (!data.success) {
@@ -174,6 +115,48 @@ export class HomeComponent implements OnInit {
       failure => {
         AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
       });
+    } else if (this.showDataViewCountOrCharts()) {
+      this.cardEntry.getDataViewCards().subscribe(data => {
+        if (data.success) {
+          this.cardCount = data.data.length;
+          this.generateCardsHarvestedChart(data.data);
+          this.generateOpenCommoditiesChart(data.data);
+        } else if (!data.success) {
+          AlertService.newBasicAlert('Error: ' + data.error, true);
+        }
+      },
+      failure => {
+        AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
+      });
+    } else if (this.showShipperCountOrCharts()) {
+      this.cardEntry.getShipperCards(this.auth.getShipperID()).subscribe(data => {
+        if (data.success) {
+          this.cardCount = data.data.length;
+          this.generateCardsHarvestedChart(data.data);
+          this.generateOpenCommoditiesChart(data.data);
+        } else if (!data.success) {
+          AlertService.newBasicAlert('Error: ' + data.error, true);
+        }
+      },
+      failure => {
+        AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
+      });
+    }
+  }
+
+  private generateUserManagementElements(): void {
+    if (this.showRegisteredUsers()) {
+      this.userManagement.getUserList().subscribe(data => {
+          if (data.success) {
+            this.userCount = data.data.length;
+          } else if (!data.success) {
+            AlertService.newBasicAlert('Error: ' + data.error, true);
+          }
+        },
+        failure => {
+          AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
+        });
+    }
   }
 
   private generateOpenCommoditiesChart(data: Array<Card>): void {
@@ -283,6 +266,15 @@ export class HomeComponent implements OnInit {
       return [];
     }
   }
+
+  private hasAnyViewPermission(): boolean {
+    return (this.permissions[`CONTRACTOR_VIEW`]
+        || this.permissions[`DATA_ENTRY`]
+        || this.permissions[`DATA_VIEW`]
+        || this.permissions[`IRRIGATOR`]
+        || this.permissions[`SHIPPER`]);
+  }
+
   public initCommon(f): void {
     const tempThis = this;
     const sortedCommon = {};
@@ -308,4 +300,58 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  // Set permissions for page display items
+  private setPermissions() {
+    const keys = Object.keys(PlRole);
+    const  roles = keys.slice(keys.length / 2);
+    roles.forEach(role => {
+      if (this.auth.hasPermission(PlRole[role])) {
+        this.permissions[role] = true;
+      }
+    });
+  }
+
+  // PERMISSION CHECKS
+  public showCountOrCharts() {
+    return this.showDataEntryCountOrCharts()
+        || this.showDataViewCountOrCharts()
+        || this.showShipperCountOrCharts();
+  }
+
+  public showDataOpenButton() {
+    return !this.showEntryOpenButton()
+        && (this.permissions[`CONTRACTOR_VIEW`]
+        || this.permissions[`DATA_VIEW`]
+        || this.permissions[`SHIPPER`]);
+  }
+
+  public showDataViewCountOrCharts() {
+    return this.permissions[`DATA_VIEW`]
+        || this.permissions[`CONTRACTOR_VIEW`];
+  }
+
+  public showEntryOpenButton() {
+    return this.permissions[`DATA_ENTRY`]
+        || this.permissions[`IRRIGATOR`];
+  }
+
+  public showDataEntryCountOrCharts() {
+    return !this.showDataViewCountOrCharts()
+        && (this.permissions[`DATA_ENTRY`]
+        || this.permissions[`IRRIGATOR`]);
+  }
+
+  public showNewCardButton() {
+    return this.permissions[`DATA_ENTRY`];
+  }
+
+  public showRegisteredUsers() {
+    return this.permissions[`USER_MANAGEMENT`];
+  }
+
+  public showShipperCountOrCharts() {
+    return !this.showDataEntryCountOrCharts()
+        && !this.showDataViewCountOrCharts()
+        && this.permissions[`SHIPPER`];
+  }
 }

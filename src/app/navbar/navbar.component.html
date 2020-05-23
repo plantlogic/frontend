@@ -14,7 +14,7 @@
   </mdb-navbar-brand>
   <links *ngIf="isLoggedIn()">
       <ul class="navbar-nav ml-auto">
-        <li class="nav-item p-2" routerLinkActive="active" routerLink="/entry" *ngIf="hasRole(role.DATA_ENTRY)">
+        <li class="nav-item p-2" routerLinkActive="active" routerLink="/entry" *ngIf="hasRole(role.DATA_ENTRY) || hasRole(role.IRRIGATOR)">
           <a class="nav-link waves-light" mdbWavesEffect>Entry</a>
         </li>
         <li class="nav-item p-2" routerLinkActive="active" routerLink="/manage"

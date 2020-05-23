@@ -126,9 +126,9 @@
                   <div *ngIf="p.passwordReset" class="mt-1">Password Change Required</div>
                   <div *ngIf="!p.passwordReset" class="mt-1">User Has No Permissions</div>
                 </div>
-                <div *ngFor="let r of p.permissions; let i = index">
-                  <span class="badge mr-1" [ngClass]="PlRoleLookup[r]['style']" [mdbTooltip]="PlRoleLookup[r]['description']">
-                    {{r.toString() | underscoreToSpace | titlecase}}
+                <div *ngFor="let r of p.permissions.sort(); let i = index">
+                  <span class="mr-1 role-display" [mdbTooltip]="PlRoleLookup[r]['description']">
+                      {{r.toString() | underscoreToSpace | titlecase}}
                   </span>
                 </div>
               </td>

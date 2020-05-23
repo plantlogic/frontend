@@ -1,9 +1,4 @@
 <div class="jumbotron p-3">
-  <div *ngIf="message" class="alert alert-info" role="alert">
-    <h5>{{message}}</h5>
-  </div>
-
-  <div class="w-100" *ngIf="message"><hr /></div>
 
   <div *ngIf="!redirecting" class="row">
     <div class="col" style="text-align:center;">
@@ -11,49 +6,44 @@
       <span class="display-4 ml-3" style="vertical-align: middle;">Welcome to {{appname}}!</span>
     </div>
 
-    <!-- <div class="col">
-      <div class="row align-items-center">
-        <div class="col-3">
-          <div style="text-align: center;">
+    <ng-container *ngIf="message">
+      <div class="alert alert-info m-3" role="alert"><h5>{{message}}</h5></div>
+      <div class="w-100"><hr /></div>
+    </ng-container>
 
-          </div>
-          <img src="/assets/images/logo.svg" width="100"/>
-        </div>
-        <div class="col-9">
-          <div class="display-4 ml-3">Welcome to {{appname}}!</div>
+    <ng-container *ngIf="showCountOrCharts()">
+      <div class="w-100"><hr /></div>
+      <div class="col" style="text-align: center;">
+        <span class="h2 ml-1 font-weight-light">Your Currently Open Cards: <i>{{cardCount}}</i></span>
+        <div class="mt-2">
+          <button type="button" *ngIf="showEntryOpenButton()" color="success" routerLink="/entry" name="viewCards" mdbBtn size="lg">
+            View Open Cards <i class="fas fa-external-link-alt ml-1"></i>
+          </button>
+          <button type="button" *ngIf="showDataOpenButton()" color="success" routerLink="/manage" name="viewCards" mdbBtn size="lg">
+            View Open Cards <i class="fas fa-external-link-alt ml-1"></i>
+          </button>
+          <button type="button" *ngIf="showNewCardButton()" color="primary" routerLink="/entry/create" name="addCard" mdbBtn size="lg">
+            Create New Card <i class="fa fa-plus ml-1" aria-hidden="true"></i>
+          </button>
         </div>
       </div>
-    </div> -->
-
-    <div class="w-100" *ngIf="dataEntryElements"><hr /></div>
-
-    <div class="col-md-6" *ngIf="dataEntryElements">
-      <span class="h2 ml-1 font-weight-light">Your Currently Open Cards: <i>{{cardCount}}</i></span>
-      <div class="mt-2">
-        <button type="button" color="success" routerLink="/entry" name="addCard" mdbBtn size="lg">View Open Cards <i class="fas fa-external-link-alt ml-1"></i></button>
-        <button type="button" color="primary" routerLink="/entry/create" name="addCard" mdbBtn size="lg">Create New Card <i class="fa fa-plus ml-1" aria-hidden="true"></i></button>
+    
+      <div class="w-100"><hr /></div>
+      <div class="col-md-6">
+        <span class="h2 ml-1 font-weight-light"># of Cards Harvested</span> (in the last 6 months)
+        <canvas #cardHarvestedChartRef>{{cardHarvestedChart}}</canvas>
       </div>
-    </div>
+      <div class="col-md-6">
+        <span class="h2 ml-1 font-weight-light">Commodities in Open Cards</span>
+        <canvas #openCommoditiesChartRef>{{openCommoditiesChart}}</canvas>
+      </div>
+    </ng-container>
 
-    <div class="w-100" *ngIf="dataViewElements"><hr /></div>
-
-    <div class="col-md-6" *ngIf="dataViewElements">
-      <span class="h2 ml-1 font-weight-light"># of Cards Harvested</span> (in the last 6 months)
-      <canvas #cardHarvestedChartRef>{{cardHarvestedChart}}</canvas>
-    </div>
-    <div class="col-md-6" *ngIf="dataViewElements">
-      <span class="h2 ml-1 font-weight-light">Commodities in Open Cards</span>
-      <canvas #openCommoditiesChartRef>{{openCommoditiesChart}}</canvas>
-    </div>
-
-    <div class="w-100" *ngIf="userManagementElements">
-      <hr />
-    </div>
-
-    <div class="col-md-6" *ngIf="userManagementElements">
-      <span class="h2 ml-1 font-weight-light"># of Registered Users: <i>{{userCount}}</i></span>
-
-    </div>
+    <ng-container *ngIf="showRegisteredUsers()">
+      <div class="w-100"><hr /></div>
+      <div class="col-md-6">
+        <span class="h2 ml-1 font-weight-light"># of Registered Users: <i>{{userCount}}</i></span>
+      </div>
+    </ng-container>
   </div>
-
 </div>

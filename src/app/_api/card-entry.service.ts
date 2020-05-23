@@ -69,4 +69,12 @@ export class CardEntryService {
   public setCardComments(id: string, comments: Comment[]): Observable<BasicDTO<null>> {
     return this.http.put<BasicDTO<null>>(environment.ApiUrl + '/data/entry/ranches/' + id + '/setComments', comments, this.httpOptions);
   }
+
+  // DATA VIEW [Special Case]
+  public getShipperCards(shipperID): Observable<BasicDTO<Card[]>> {
+    return this.http.get<BasicDTO<Card[]>>(environment.ApiUrl + '/data/view/shipperRanches/' + shipperID, this.httpOptions);
+  }
+  public getDataViewCards(): Observable<BasicDTO<Card[]>> {
+    return this.http.get<BasicDTO<Card[]>>(environment.ApiUrl + '/data/view/ranches/', this.httpOptions);
+  }
 }

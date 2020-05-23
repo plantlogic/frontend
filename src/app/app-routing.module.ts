@@ -88,7 +88,7 @@ const routes: Routes = [
     component: EntryDashboardComponent,
     canActivate: [RoleGuard],
     data: {
-      role: [PlRole.DATA_ENTRY]
+      role: [PlRole.DATA_ENTRY, PlRole.IRRIGATOR]
     }
   },
   {
@@ -105,7 +105,7 @@ const routes: Routes = [
     component: EntryDashboardComponent,
     canActivate: [RoleGuard],
     data: {
-      role: [PlRole.DATA_ENTRY]
+      role: [PlRole.DATA_ENTRY, PlRole.IRRIGATOR]
     }
   },
   {
@@ -114,7 +114,7 @@ const routes: Routes = [
     canActivate: [RoleGuard],
     data: {
       parent: '/entry',
-      role: [PlRole.DATA_ENTRY]
+      role: [PlRole.DATA_ENTRY, PlRole.IRRIGATOR]
     }
   },
   {
@@ -123,7 +123,7 @@ const routes: Routes = [
     canActivate: [RoleGuard],
     data: {
       parent: '../../',
-      role: [PlRole.DATA_ENTRY]
+      role: [PlRole.DATA_ENTRY, PlRole.IRRIGATOR]
     }
   },
   {
