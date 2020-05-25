@@ -41,10 +41,6 @@
       mdbBtn floating="true" size="sm" mdbWavesEffect>Export Fertilizer Applied</button>
     </div>
     <div class="w-100"></div>
-    <div class="col d-none d-md-inline-block mt-6">
-      <button type="button" class="float-right" color="info" [routerLink]="['/manage/export/add']"
-              mdbBtn floating="true" size="sm" mdbWavesEffect>Create Preset [Preview]</button>
-    </div>
   </div>
   <div class="row">
     <div class="col">
@@ -56,6 +52,12 @@
           <label for="includeUnharvested">Include Open Cards (Not Yet Harvested)</label>
         </div>
       </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col d-none d-md-inline-block mt-6">
+      <button type="button" class="float-right" color="info" [routerLink]="['/manage/export/add']"
+              mdbBtn floating="true" size="sm" mdbWavesEffect>Create Preset [Preview]</button>
     </div>
   </div>
 </div>

@@ -200,7 +200,7 @@ export class EntryDashboardComponent implements OnInit {
 
   public hasEntryPermission() {
     return this.auth.hasPermission(PlRole.DATA_ENTRY);
-  } 
+  }
 
   public initCommon(f): void {
     const tempThis = this;
