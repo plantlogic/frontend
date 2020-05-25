@@ -38,7 +38,12 @@
     <div class="w-100"></div>
     <div class="col d-none d-md-inline-block mt-2">
       <button type="button" class="float-right" color="success" (click)="generateFertilizerApplied()"
-              mdbBtn floating="true" size="sm" mdbWavesEffect>Export Fertilizer Applied</button>
+      mdbBtn floating="true" size="sm" mdbWavesEffect>Export Fertilizer Applied</button>
+    </div>
+    <div class="w-100"></div>
+    <div class="col d-none d-md-inline-block mt-6">
+      <button type="button" class="float-right" color="info" [routerLink]="['/manage/export/add']"
+              mdbBtn floating="true" size="sm" mdbWavesEffect>Create Preset [Preview]</button>
     </div>
   </div>
   <div class="row">

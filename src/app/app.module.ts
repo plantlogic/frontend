@@ -39,6 +39,8 @@ import {AppAdminComponent} from './card/admin/app-admin.component';
 import {BackButtonComponent} from './navbar/back-button/back-button.component';
 import {AddChemicalEntryComponent} from './card/entry/open/add-chemical/add-chemical-entry.component';
 import { NoCacheHeadersInterceptor } from './_auth/NoCacheHeadersInterceptor';
+import { AddPresetComponent } from './card/management/export/add-preset/add-preset.component';
+import { EditPresetComponent } from './card/management/export/edit-preset/edit-preset.component';
 
 
 @NgModule({
@@ -69,7 +71,9 @@ import { NoCacheHeadersInterceptor } from './_auth/NoCacheHeadersInterceptor';
     AppAdminComponent,
     BackButtonComponent,
     AddChemicalEntryComponent,
-    CardContractorComponent
+    CardContractorComponent,
+    AddPresetComponent,
+    EditPresetComponent
   ],
   imports: [
     BrowserModule,

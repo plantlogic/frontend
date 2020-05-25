@@ -1035,8 +1035,8 @@
                 </td>
 
                 <td>
-                  <select class="form-control" [disabled]="!editing" [(ngModel)]="p.method" >
-                    <option *ngIf="!p.method" [value]="undefined" disabled selected>Tractor Work</option>
+                  <select class="form-control" [disabled]="!editing" [(ngModel)]="p.workDone" >
+                    <option *ngIf="!p.workDone" [value]="undefined" disabled selected>Tractor Work</option>
                     <option *ngFor="let r of getCommon('tractorWork')" [value]="r.id">{{r.value}}</option>
                   </select>
                 </td>
