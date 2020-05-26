@@ -145,7 +145,6 @@ export class ExportPreset {
         } catch (e) {
             return false;
         }
-        return false;
     }
 
     public setPropertyValue(propertyArrayName: string, key: string, value: boolean): boolean {
