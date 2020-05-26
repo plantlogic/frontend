@@ -139,7 +139,6 @@ export class ExportPreset {
                 return this[propertyArrayName][index][`value`];
             }
         } catch (e) {
-            console.log(e);
             return false;
         }
     }
@@ -154,7 +153,6 @@ export class ExportPreset {
                 return true;
             }
         } catch (e) {
-            console.log(e);
             return false;
         }
     }
