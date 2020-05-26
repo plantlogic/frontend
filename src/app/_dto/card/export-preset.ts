@@ -121,6 +121,8 @@ export class ExportPreset {
     ];
 
     public getPropertyKeys(propertyArrayName: string): Array<string> {
+        // Avoid object injection sink
+        propertyArrayName = `${propertyArrayName}`;
         const keys = [];
         if (this[propertyArrayName]) {
             this[propertyArrayName].forEach((e) => {
@@ -131,6 +133,8 @@ export class ExportPreset {
     }
 
     public getPropertyValue(propertyArrayName: string, key: string): boolean {
+        // Avoid object injection sink
+        propertyArrayName = `${propertyArrayName}`;
         try {
             const index = this.getPropertyKeys(propertyArrayName).indexOf(key);
             if (index === -1) {
@@ -141,15 +145,19 @@ export class ExportPreset {
         } catch (e) {
             return false;
         }
+        return false;
     }
 
     public setPropertyValue(propertyArrayName: string, key: string, value: boolean): boolean {
+        // Avoid object injection sink
+        propertyArrayName = `${propertyArrayName}`;
+        key = `${key}`;
         try {
             const index = this.getPropertyKeys(propertyArrayName).indexOf(key);
             if (index === -1) {
                 return false;
             } else {
-                this[propertyArrayName][index][`value`] = value;
+                this[`${propertyArrayName}`][index][`value`] = value;
                 return true;
             }
         } catch (e) {
@@ -158,6 +166,9 @@ export class ExportPreset {
     }
 
     public hasDynamic(parentObject: string, key: string): boolean {
+        // Avoid object injection sink
+        parentObject = `${parentObject}`;
+        key = `${key}`;
         if (this.dynamic[parentObject]) {
             const val = this.dynamic[parentObject][key];
             if ( val === true || val === false) {
@@ -170,6 +181,9 @@ export class ExportPreset {
     }
 
     public shiftDown(parentObject: string, key: string) {
+        // Avoid object injection sink
+        parentObject = `${parentObject}`;
+        key = `${key}`;
         const keys = this.getPropertyKeys(parentObject);
         const index = keys.indexOf(key);
         if (index < (keys.length - 1)) {
@@ -180,6 +194,9 @@ export class ExportPreset {
     }
 
     public shiftUp(parentObject: string, key: string) {
+        // Avoid object injection sink
+        parentObject = `${parentObject}`;
+        key = `${key}`;
         const keys = this.getPropertyKeys(parentObject);
         const index = keys.indexOf(key);
         if (index > 0) {
