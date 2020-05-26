@@ -126,7 +126,9 @@ export class ExportPreset {
         for (const key in this) {
             if (key === propertyArrayName) {
                 for (const e in this[key]) {
-                    keys.push(e[`key`]);
+                    if ({}.hasOwnProperty.call(this[key], e)) {
+                        keys.push(e[`key`]);
+                    }
                 }
             }
         }
