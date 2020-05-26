@@ -9,6 +9,7 @@ import {CommonFormDataService} from 'src/app/_api/common-form-data.service';
 import {AuthService} from 'src/app/_auth/auth.service';
 import {ActivatedRoute} from '@angular/router';
 import { CommonLookup } from 'src/app/_api/common-data.service';
+import { PlRole } from 'src/app/_dto/user/pl-role.enum';
 
 @Component({
   selector: 'app-entry',
@@ -195,6 +196,10 @@ export class EntryDashboardComponent implements OnInit {
       console.log('Key ' + key + ' is not in the commonKeys array.');
       return [];
     }
+  }
+
+  public hasEntryPermission() {
+    return this.auth.hasPermission(PlRole.DATA_ENTRY);
   }
 
   public initCommon(f): void {

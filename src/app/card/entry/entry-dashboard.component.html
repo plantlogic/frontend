@@ -21,7 +21,9 @@
        </div>
        <!-- On Desktop -->
        <div class="col d-none d-md-inline-block">
-         <button type="button" class="float-right" color="primary" routerLink="/entry/create" name="addCard" mdbBtn floating="true" size="sm" mdbWavesEffect>Add Card <i class="fa fa-plus ml-1" aria-hidden="true"></i></button>
+         <button type="button" *ngIf="hasEntryPermission()" class="float-right" color="primary" routerLink="/entry/create" name="addCard" mdbBtn floating="true" size="sm" mdbWavesEffect>
+          Add Card <i class="fa fa-plus ml-1" aria-hidden="true"></i>
+        </button>
        </div>
      </form>
      <hr class="my-4">

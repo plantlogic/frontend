@@ -1,0 +1,59 @@
+<div class="jumbotron p-3 container">
+
+  <div class="row m-2">
+    <div class="col">
+      <form>
+        <div class="form-group">
+          <label for="presetName">Preset Name</label>
+          <input type="text" class="form-control" name="presetName" placeholder="New Preset" [(ngModel)]="preset.presetName">
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="row ml-4 mr-4">
+    <a class="text-primary" (click)="collapseToggle('dynamicInfo')">
+      <h6>
+        <i class="fas mr-1" [ngClass]="{ 'fa-caret-right': isCollapsed('dynamicInfo'), 'fa-caret-down': !isCollapsed('dynamicInfo') }"></i>
+        <span style="color: black">Dynamic</span>
+      </h6>
+    </a>
+    <p id="dynamicInfo" class="collapse">
+      <b>Enabled:</b> The minimum number of columns will be used for a given section. (Smallest amount to accomodate for the card with the most entries of the corresponding type) 
+      <br>
+      <b>Disabled:</b> The static max number of columns will be used for this section.
+    </p>
+  </div>
+
+  <div class="row m-3 p-2" *ngFor="let key of displayOrder; let j = index">
+    <fieldset>
+      <legend>{{getDisplay(key)}}</legend>
+      <div class="row m-2" *ngFor="let e of preset[key]; let i = index">
+        <div class="col col-auto">
+          <button type="button" color="light" mdbBtn class="float-right" (click)="shiftDown(key, e.key)" size="sm" floating="true" mdbWavesEffect [disabled]="i >= preset[key].length - 1">
+            <i class="fa fa-chevron-down" aria-hidden="true"></i>
+          </button>
+          <button type="button" color="light" mdbBtn class="float-right" (click)="shiftUp(key, e.key)" size="sm" floating="true" mdbWavesEffect [disabled]="i <= 0" >
+            <i class="fa fa-chevron-up" aria-hidden="true"></i>
+          </button>
+        </div>
+        <div class="col">
+          <h5>{{e.display}}</h5>
+        </div>
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              Enabled:
+              <input type="checkbox" class="ml-1" [(ngModel)]="e.value" />
+            </div>
+            <div class="col" *ngIf="e.value && preset.hasDynamic(key, e.key)">
+              <span>Dynamic:</span>
+              <input type="checkbox" class="ml-1" [(ngModel)]="preset.dynamic[key][e.key]" />
+            </div>
+          </div>            
+        </div>
+        <div class="w-100 p-"><hr class="m-0 mt-2"></div>
+      </div>
+    </fieldset>
+  </div>
+</div>
