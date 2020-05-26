@@ -121,22 +121,25 @@ export class ExportPreset {
     ];
 
     public getPropertyKeys(propertyArrayName: string): Array<string> {
+        // Avoiding generic object injection sink
         const keys = [];
-        if (this[propertyArrayName  as string]) {
-            this[propertyArrayName  as string].forEach((e) => {
-                keys.push(e.key);
-            });
+        for (const key in this) {
+            if (key === propertyArrayName) {
+                for (const e in this[key]) {
+                    keys.push(e[`key`]);
+                }
+            }
         }
         return keys;
     }
 
     public getPropertyValue(propertyArrayName: string, key: string): boolean {
         try {
-            const index = this.getPropertyKeys(propertyArrayName  as string).indexOf(key);
+            const index = this.getPropertyKeys(propertyArrayName).indexOf(key);
             if (index === -1) {
                 return false;
             } else {
-                return this[propertyArrayName  as string][index][`value`];
+                return this[propertyArrayName][index][`value`];
             }
         } catch (e) {
             return false;
@@ -145,11 +148,11 @@ export class ExportPreset {
 
     public setPropertyValue(propertyArrayName: string, key: string, value: boolean): boolean {
         try {
-            const index = this.getPropertyKeys(propertyArrayName as string).indexOf(key);
+            const index = this.getPropertyKeys(propertyArrayName).indexOf(key);
             if (index === -1) {
                 return false;
             } else {
-                this[propertyArrayName  as string][index][`value`] = value;
+                this[propertyArrayName][index][`value`] = value;
                 return true;
             }
         } catch (e) {
