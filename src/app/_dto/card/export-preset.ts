@@ -157,7 +157,7 @@ export class ExportPreset {
             if (index === -1) {
                 return false;
             } else {
-                this[`${propertyArrayName}`][index][`value`] = value;
+                this[propertyArrayName][index][`value`] = value;
                 return true;
             }
         } catch (e) {
