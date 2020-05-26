@@ -121,16 +121,11 @@ export class ExportPreset {
     ];
 
     public getPropertyKeys(propertyArrayName: string): Array<string> {
-        // Avoiding generic object injection sink
         const keys = [];
-        for (const key in this) {
-            if (key === propertyArrayName) {
-                for (const e in this[key]) {
-                    if ({}.hasOwnProperty.call(this[key], e)) {
-                        keys.push(e[`key`]);
-                    }
-                }
-            }
+        if (this[propertyArrayName]) {
+            this[propertyArrayName].forEach((e) => {
+                keys.push(e.key);
+            });
         }
         return keys;
     }
