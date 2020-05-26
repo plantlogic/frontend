@@ -122,8 +122,8 @@ export class ExportPreset {
 
     public getPropertyKeys(propertyArrayName: string): Array<string> {
         const keys = [];
-        if (this[propertyArrayName]) {
-            this[propertyArrayName].forEach(e => {
+        if (this[propertyArrayName  as string]) {
+            this[propertyArrayName  as string].forEach((e) => {
                 keys.push(e.key);
             });
         }
@@ -132,11 +132,11 @@ export class ExportPreset {
 
     public getPropertyValue(propertyArrayName: string, key: string): boolean {
         try {
-            const index = this.getPropertyKeys(propertyArrayName).indexOf(key);
+            const index = this.getPropertyKeys(propertyArrayName  as string).indexOf(key);
             if (index === -1) {
                 return false;
             } else {
-                return this[propertyArrayName][index][`value`];
+                return this[propertyArrayName  as string][index][`value`];
             }
         } catch (e) {
             return false;
@@ -145,11 +145,11 @@ export class ExportPreset {
 
     public setPropertyValue(propertyArrayName: string, key: string, value: boolean): boolean {
         try {
-            const index = this.getPropertyKeys(propertyArrayName).indexOf(key);
+            const index = this.getPropertyKeys(propertyArrayName as string).indexOf(key);
             if (index === -1) {
                 return false;
             } else {
-                this[propertyArrayName][index][`value`] = value;
+                this[propertyArrayName  as string][index][`value`] = value;
                 return true;
             }
         } catch (e) {
