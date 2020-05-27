@@ -36,8 +36,7 @@ select {
   margin-right: 10px;
 }
 
-.hover
-.hover-text {
+.hover .hover-text {
   visibility: hidden;
   background-color: black;
   color: #fff;
@@ -48,8 +47,7 @@ select {
   z-index: 1;
 }
 
-.hover:hover
-.hover-text {
+.hover:hover .hover-text {
   visibility: visible;
 }
 
