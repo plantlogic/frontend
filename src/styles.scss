@@ -1,27 +1,29 @@
 /* Font Awesome fonts */
 $fa-font-path: "../node_modules/@fortawesome/fontawesome-free/webfonts";
+
 @import "~@fortawesome/fontawesome-free/scss/fontawesome";
 @import "~@fortawesome/fontawesome-free/scss/brands";
 @import "~@fortawesome/fontawesome-free/scss/regular";
 @import "~@fortawesome/fontawesome-free/scss/solid";
 @import "~@fortawesome/fontawesome-free/scss/v4-shims";
 
-/* Disables the forced control highlight in some browsers */
-*:focus {
-  outline: none !important;
-}
-
 /* Disable accidental double-tap to zoom behavior on mobile browsers */
 * {
   touch-action: manipulation;
 }
 
+/* Disables the forced control highlight in some browsers */
+*:focus {
+  outline: none !important;
+}
+
 /* Change the default tooltip size to fit big, important tooltips */
 .tooltip {
   min-width: 300px;
-  .tooltip-inner {
-    max-width: 500px;
-  }
+}
+
+.tooltip .tooltip-inner {
+  max-width: 500px;
 }
 
 .logo-width {
