@@ -122,10 +122,9 @@ export class ExportPreset {
 
     public getPropertyKeys(propertyArrayName: string): Array<string> {
         // Avoid object injection sink
-        propertyArrayName = `${propertyArrayName}`;
         const keys = [];
-        if (this[propertyArrayName]) {
-            this[propertyArrayName].forEach((e) => {
+        if (this[`${propertyArrayName}`]) {
+            this[`${propertyArrayName}`].forEach((e) => {
                 keys.push(e.key);
             });
         }
@@ -134,13 +133,12 @@ export class ExportPreset {
 
     public getPropertyValue(propertyArrayName: string, key: string): boolean {
         // Avoid object injection sink
-        propertyArrayName = `${propertyArrayName}`;
         try {
-            const index = this.getPropertyKeys(propertyArrayName).indexOf(key);
+            const index = this.getPropertyKeys(`${propertyArrayName}`).indexOf(key);
             if (index === -1) {
                 return false;
             } else {
-                return this[propertyArrayName][index][`value`];
+                return this[`${propertyArrayName}`][index][`value`];
             }
         } catch (e) {
             return false;
@@ -149,14 +147,12 @@ export class ExportPreset {
 
     public setPropertyValue(propertyArrayName: string, key: string, value: boolean): boolean {
         // Avoid object injection sink
-        propertyArrayName = `${propertyArrayName}`;
-        key = `${key}`;
         try {
-            const index = this.getPropertyKeys(propertyArrayName).indexOf(key);
+            const index = this.getPropertyKeys(`${propertyArrayName}`).indexOf(`${key}`);
             if (index === -1) {
                 return false;
             } else {
-                this[propertyArrayName][index][`value`] = value;
+                this[`${propertyArrayName}`][index][`value`] = value;
                 return true;
             }
         } catch (e) {
@@ -168,8 +164,8 @@ export class ExportPreset {
         // Avoid object injection sink
         parentObject = `${parentObject}`;
         key = `${key}`;
-        if (this.dynamic[parentObject]) {
-            const val = this.dynamic[parentObject][key];
+        if (this.dynamic[`${parentObject}`]) {
+            const val = this.dynamic[`${parentObject}`][key];
             if ( val === true || val === false) {
                 return true;
             } else {
@@ -181,27 +177,23 @@ export class ExportPreset {
 
     public shiftDown(parentObject: string, key: string) {
         // Avoid object injection sink
-        parentObject = `${parentObject}`;
-        key = `${key}`;
-        const keys = this.getPropertyKeys(parentObject);
-        const index = keys.indexOf(key);
+        const keys = this.getPropertyKeys(`${parentObject}`);
+        const index = keys.indexOf(`${key}`);
         if (index < (keys.length - 1)) {
-            const copy = Object.assign({}, this[parentObject][index + 1]);
-            this[parentObject][index + 1] = this[parentObject][index];
-            this[parentObject][index] = copy;
+            const copy = Object.assign({}, this[`${parentObject}`][index + 1]);
+            this[`${parentObject}`][index + 1] = this[`${parentObject}`][index];
+            this[`${parentObject}`][index] = copy;
         }
     }
 
     public shiftUp(parentObject: string, key: string) {
         // Avoid object injection sink
-        parentObject = `${parentObject}`;
-        key = `${key}`;
-        const keys = this.getPropertyKeys(parentObject);
-        const index = keys.indexOf(key);
+        const keys = this.getPropertyKeys(`${parentObject}`);
+        const index = keys.indexOf(`${key}`);
         if (index > 0) {
-            const copy = Object.assign({}, this[parentObject][index - 1]);
-            this[parentObject][index - 1] = this[parentObject][index];
-            this[parentObject][index] = copy;
+            const copy = Object.assign({}, this[`${parentObject}`][index - 1]);
+            this[`${parentObject}`][index - 1] = this[`${parentObject}`][index];
+            this[`${parentObject}`][index] = copy;
         }
     }
 }
