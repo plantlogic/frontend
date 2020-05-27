@@ -125,7 +125,7 @@ export class ExportPreset {
         const keys = [];
         if (this[`${propertyArrayName}`]) {
             this[`${propertyArrayName}`].forEach((e) => {
-                keys.push(e.key);
+                keys.push(e[`key`]);
             });
         }
         return keys;
@@ -134,11 +134,11 @@ export class ExportPreset {
     public getPropertyValue(propertyArrayName: string, key: string): boolean {
         // Avoid object injection sink
         try {
-            const index = this.getPropertyKeys(`${propertyArrayName}`).indexOf(key);
+            const index = this.getPropertyKeys(`${propertyArrayName}`).indexOf( `${key}`);
             if (index === -1) {
                 return false;
             } else {
-                return this[`${propertyArrayName}`][index][`value`];
+                return this[`${propertyArrayName}`][`${index}`][`value`];
             }
         } catch (e) {
             return false;
@@ -152,7 +152,7 @@ export class ExportPreset {
             if (index === -1) {
                 return false;
             } else {
-                this[`${propertyArrayName}`][index][`value`] = value;
+                this[`${propertyArrayName}`][`${index}`][`value`] = value;
                 return true;
             }
         } catch (e) {
@@ -162,10 +162,8 @@ export class ExportPreset {
 
     public hasDynamic(parentObject: string, key: string): boolean {
         // Avoid object injection sink
-        parentObject = `${parentObject}`;
-        key = `${key}`;
         if (this.dynamic[`${parentObject}`]) {
-            const val = this.dynamic[`${parentObject}`][key];
+            const val = this.dynamic[`${parentObject}`][`${key}`];
             if ( val === true || val === false) {
                 return true;
             } else {
@@ -180,9 +178,9 @@ export class ExportPreset {
         const keys = this.getPropertyKeys(`${parentObject}`);
         const index = keys.indexOf(`${key}`);
         if (index < (keys.length - 1)) {
-            const copy = Object.assign({}, this[`${parentObject}`][index + 1]);
-            this[`${parentObject}`][index + 1] = this[`${parentObject}`][index];
-            this[`${parentObject}`][index] = copy;
+            const copy = Object.assign({}, this[`${parentObject}`][parseInt(`${index}`) + 1]);
+            this[`${parentObject}`][parseInt(`${index}`) + 1] = this[`${parentObject}`][`${index}`];
+            this[`${parentObject}`][`${index}`] = copy;
         }
     }
 
@@ -191,9 +189,9 @@ export class ExportPreset {
         const keys = this.getPropertyKeys(`${parentObject}`);
         const index = keys.indexOf(`${key}`);
         if (index > 0) {
-            const copy = Object.assign({}, this[`${parentObject}`][index - 1]);
-            this[`${parentObject}`][index - 1] = this[`${parentObject}`][index];
-            this[`${parentObject}`][index] = copy;
+            const copy = Object.assign({}, this[`${parentObject}`][parseInt(`${index}`) - 1]);
+            this[`${parentObject}`][parseInt(`${index}`) - 1] = this[`${parentObject}`][`${index}`];
+            this[`${parentObject}`][`${index}`] = copy;
         }
     }
 }
