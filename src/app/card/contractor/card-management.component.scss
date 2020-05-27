@@ -1,8 +1,10 @@
-th, td {
+th,
+td {
   padding: 2px 6px 2px 0px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 table {
   table-layout: fixed;
 }
@@ -10,6 +12,7 @@ table {
 tfoot {
   text-align: center;
 }
+
 select {
   width: 90%;
 }
@@ -32,7 +35,9 @@ select {
   float: right;
   margin-right: 10px;
 }
-.hover .hover-text{
+
+.hover
+.hover-text {
   visibility: hidden;
   background-color: black;
   color: #fff;
@@ -41,9 +46,10 @@ select {
   border-radius: 6px;
   position: absolute;
   z-index: 1;
-
 }
-.hover:hover .hover-text{
+
+.hover:hover
+.hover-text {
   visibility: visible;
 }
 
