@@ -5,7 +5,7 @@
       <form>
         <div class="form-group">
           <label for="presetName">Preset Name</label>
-          <input type="text" class="form-control" name="presetName" placeholder="New Preset" [(ngModel)]="preset.presetName">
+          <input type="text" class="form-control" name="presetName" placeholder="New Preset" [(ngModel)]="preset.name">
         </div>
       </form>
     </div>
@@ -55,5 +55,9 @@
         <div class="w-100 p-"><hr class="m-0 mt-2"></div>
       </div>
     </fieldset>
+  </div>
+
+  <div class="row">
+    <button mdbBtn type="submit" color="primary" (click)="submit()">Create</button>
   </div>
 </div>

@@ -3,8 +3,9 @@ import { NavService } from 'src/app/_interact/nav.service';
 import { TitleService } from 'src/app/_interact/title.service';
 import { CommonFormDataService } from 'src/app/_api/common-form-data.service';
 import { AuthService } from 'src/app/_auth/auth.service';
-import { CardViewService } from 'src/app/_api/card-view.service';
 import { ExportPreset } from 'src/app/_dto/card/export-preset';
+import { ExportPresetService } from 'src/app/_api/export-preset.service';
+import { AlertService } from 'src/app/_interact/alert/alert.service';
 
 @Component({
   selector: 'app-add-preset',
@@ -13,7 +14,7 @@ import { ExportPreset } from 'src/app/_dto/card/export-preset';
 })
 export class AddPresetComponent implements OnInit {
 
-  constructor(private titleService: TitleService, public cardService: CardViewService,
+  constructor(private titleService: TitleService, public exportPresetService: ExportPresetService,
               private nav: NavService, public common: CommonFormDataService, private auth: AuthService) {}
 
   preset: ExportPreset;
@@ -66,5 +67,20 @@ export class AddPresetComponent implements OnInit {
 
   public shiftUp(parentObject: string, key: string) {
     this.preset.shiftUp(parentObject, key);
+  }
+
+  public submit() {
+    this.exportPresetService.createExportPreset(this.preset).subscribe(
+      data => {
+        if (data.success) {
+          AlertService.newBasicAlert('Export preset saved successfully!', false);
+        } else if (!data.success) {
+          AlertService.newBasicAlert('Error: ' + data.error, true);
+        }
+      },
+      failure => {
+        AlertService.newBasicAlert('Connection Error: ' + failure.message, true);
+      }
+    );
   }
 }

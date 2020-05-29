@@ -13,88 +13,9 @@ import { Chemical } from '../_dto/card/chemical';
 import { TractorEntry } from '../_dto/card/tractor-entry';
 import { setTimeout } from 'timers';
 import { IrrigationEntry } from '../_dto/card/irrigation-entry';
-
-/*
-  CUSTOM EXPORT FORM
-  {
-    id: boolean,
-    closed: boolean,
-    dateCreated: boolean,
-    lastUpdate: boolean,
-    ranchName: boolean,
-    fieldID: boolean,
-    ranchManagerName: boolean,
-    planterNumber: boolean,
-    lotNumber: boolean,
-    shippers: boolean,
-    comments: boolean,
-    wetDate: boolean,
-    thinDate: boolean,
-    thinType: boolean,
-    hoeDate: boolean,
-    hoeType: boolean,
-    harvestDate: boolean,
-    cropYear: boolean,
-    totalAcres: boolean,
-
-    irrigation: boolean,
-    irrigationDynamic: boolean,
-    irrigationWorkDate: boolean,
-    irrigationMethod: boolean,
-    irrigationIrrigator: boolean,
-    irrigationFertilizers: boolean,
-    irrigationFertilizersDynamic: boolean,
-    irrigationFertilizersName: boolean,
-    irrigationFertilizersRate: boolean,
-    irrigationFertilizersUnit: boolean,
-    irrigationChemicals: boolean,
-    irrigationChemicalsDynamic: boolean,
-    irrigationChemicalsName: boolean,
-    irrigationChemicalsRate: boolean,
-    irrigationChemicalsUnit: boolean,
-    irrigationDuration: boolean,
-
-    tractor: boolean,
-    tractorDynamic: boolean,
-    tractorWorkDate: boolean,
-    tractorWorkDone: boolean,
-    tractorOperator: boolean,
-    tractorFertilizers: boolean,
-    tractorFertilizersDynamic: boolean,
-    tractorFertilizersName: boolean,
-    tractorFertilizersRate: boolean,
-    tractorFertilizersUnit: boolean,
-    tractorChemicals: boolean,
-    tractorChemicalsDynamic: boolean,
-    tractorChemicalsName: boolean,
-    tractorChemicalsRate: boolean,
-    tractorChemicalsUnit: boolean,
-    tractorTractorNumber: boolean,
-
-    commodities: boolean,
-    commoditiesDynamic: boolean,
-    commoditiesCommodity: boolean,
-    commoditiesCropAcres: boolean,
-    commoditiesBedTypes: boolean,
-    commoditiesBedCount: boolean,
-    commoditiesSeedLotNumber: boolean,
-    commoditiesVariety: boolean,
-
-    preChemicals: boolean,
-    preChemicalsDynamic: boolean,
-    preChemicalsDate: boolean,
-    preChemicalsFertilizers: boolean,
-    preChemicalsFertilizersDynamic: boolean,
-    preChemicalsFertilizersName: boolean,
-    preChemicalsFertilizersRate: boolean,
-    preChemicalsFertilizersUnit: boolean,
-    preChemicalsChemicals: boolean,
-    preChemicalsChemicalsDynamic: boolean,
-    preChemicalsChemicalsName: boolean,
-    preChemicalsChemicalsRate: boolean,
-    preChemicalsChemicalsUnit: boolean,
-  }
-*/
+import { ExportPreset } from '../_dto/card/export-preset';
+import { Commodities } from '../_dto/card/commodities';
+import { Chemicals } from '../_dto/card/chemicals';
 
 @Injectable({
   providedIn: 'root'
@@ -230,6 +151,13 @@ export class CardExportService {
                                     commodities: Array<string>, includeUnharvested: boolean): void {
     this.initCommon(commonData => {
       this.generateAppliedFertilizerExport(commonData, from, to, ranches, commodities, includeUnharvested);
+    });
+  }
+
+  public exportCustom(from: number, to: number, ranches: Array<string>,
+                      commodities: Array<string>, includeUnharvested: boolean, exportPreset: ExportPreset): void {
+    this.initCommon(commonData => {
+      this.generateCustomExport(commonData, from, to, ranches, commodities, includeUnharvested, exportPreset);
     });
   }
 
@@ -513,6 +441,120 @@ findMinNumForCols(cards: Array<Card>) {
         AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
       }
     );
+  }
+
+  public generateCustomExport(commonData, from: number, to: number, ranches: Array<string>, commodities: Array<string>,
+                              includeUnharvested: boolean, preset: ExportPreset) {
+      preset = Object.assign(new ExportPreset(), preset);
+
+      this.http.get<BasicDTO<Card[]>>(environment.ApiUrl + '/data/view/ranches', this.httpOptions).subscribe(
+        data => {
+          // If data is successful retrieved
+          if (data.success) {
+
+            // Format is [x][y]: [x] is a row and [y] is a column. Commas and newlines will automatically be added.
+            const table: Array<Array<string>> = [];
+
+            const dataLine: Array<string> = [];
+
+            // Set defaults for the number of all entries (dynamic or static)
+            const numEntries = {
+              card: {
+                irrigation: (preset.dynamic.card.irrigation) ? 0 : 12,
+                tractor: (preset.dynamic.card.tractor) ? 0 : 12,
+                commodities: (preset.dynamic.card.commodities) ? 0 : 3,
+                preChemicals: (preset.dynamic.card.preChemicals) ? 0 : 3
+              },
+              irrigationEntry: {
+                fertilizers: (preset.dynamic.irrigationEntry.fertilizers) ? 0 : 2,
+                chemicals: (preset.dynamic.irrigationEntry.chemicals) ? 0 : 2
+              },
+              tractorEntry: {
+                fertilizers: (preset.dynamic.tractorEntry.fertilizers) ? 0 : 2,
+                chemicals: (preset.dynamic.tractorEntry.chemicals) ? 0 : 2
+              }
+            };
+
+            console.log('Starting num entries (before dynamic adjust)');
+            console.log(numEntries);
+
+            const cards: Card[] = data.data.map(x => (new Card()).copyConstructor(x)).filter(x => {
+              if (!x.ranchName || !ranches.includes(x.ranchName)) { return false; }
+              if (!x.commodityArray.map(c => commodities.includes(c.commodity)).some(c => c)) { return false; }
+              if (includeUnharvested && (!x.harvestDate || !x.closed)) { return true; }
+              if (!x.harvestDate || from > (new Date(x.harvestDate)).valueOf()
+                  || to < (new Date(x.harvestDate)).valueOf()) { return false; }
+              return true;
+            });
+
+            cards.forEach((card) => {
+              if (preset.dynamic.card.irrigation) {
+                numEntries.card.irrigation = Math.max(numEntries.card.irrigation, card.irrigationArray.length);
+              }
+              if (preset.dynamic.card.tractor) {
+                numEntries.card.tractor = Math.max(numEntries.card.tractor, card.tractorArray.length);
+              }
+              if (preset.dynamic.card.commodities) {
+                numEntries.card.commodities = Math.max(numEntries.card.commodities, card.commodityArray.length);
+              }
+              if (preset.dynamic.card.preChemicals) {
+                numEntries.card.preChemicals = Math.max(numEntries.card.preChemicals, card.preChemicalArray.length);
+              }
+              if (preset.dynamic.irrigationEntry.fertilizers) {
+                numEntries.irrigationEntry.fertilizers = Math.max(
+                    numEntries.irrigationEntry.fertilizers,
+                    Math.max.apply(Math, card.irrigationArray.map((i) => i.fertilizerArray.length))
+                    // card.irrigationArray.map((i) => i.fertilizerArray.length).sort((a, b) => b - a)[0]
+                  );
+              }
+              if (preset.dynamic.irrigationEntry.chemicals) {
+                numEntries.irrigationEntry.chemicals = Math.max(
+                  numEntries.irrigationEntry.chemicals,
+                  Math.max.apply(Math, card.irrigationArray.map((i) => i.chemicalArray.length))
+                  // card.irrigationArray.map((i) => i.chemicalArray.length).sort((a, b) => b - a)[0]
+                );
+              }
+              if (preset.dynamic.tractorEntry.fertilizers) {
+                numEntries.tractorEntry.fertilizers = Math.max(
+                  numEntries.tractorEntry.fertilizers,
+                  Math.max.apply(Math, card.tractorArray.map((i) => i.fertilizerArray.length))
+                  // card.tractorArray.map((i) => i.fertilizerArray.length).sort((a, b) => b - a)[0]
+                );
+              }
+              if (preset.dynamic.tractorEntry.chemicals) {
+                numEntries.tractorEntry.chemicals = Math.max(
+                  numEntries.tractorEntry.chemicals,
+                  Math.max.apply(Math, card.tractorArray.map((i) => i.chemicalArray.length))
+                  // card.tractorArray.map((i) => i.chemicalArray.length).sort((a, b) => b - a)[0]
+                );
+              }
+            });
+
+
+            console.log('Num Entries Object: ');
+            console.log(numEntries);
+
+            table.push(this.getTopHeader(preset, numEntries));
+            table.push(this.getSubHeader(preset, numEntries));
+
+            cards.forEach((card) => {
+              table.push(this.getBodyRow(preset, numEntries, this.cardIDsToValues(card, commonData)));
+            });
+
+            console.log('Finished preping the table, now downloading');
+            // Initiate generation and download
+            const filename = preset.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+            this.generateAndDownload(table, `${environment.AppName}-${filename}`);
+          } else {
+            // Show server error
+            AlertService.newBasicAlert('Error: ' + data.error, true);
+          }
+        },
+        failure => {
+          // Show connection error
+          AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
+        }
+      );
   }
 
   public generateExport(commonData, from: number, to: number, ranches: Array<string>, commodities: Array<string>,
@@ -815,7 +857,6 @@ findMinNumForCols(cards: Array<Card>) {
     );
   }
 
-
   // Helper - generates the CSV and invokes the file download
   private generateAndDownload(table: Array<Array<string>>, fileName: string): void {
     FileDownload(
@@ -942,6 +983,605 @@ findMinNumForCols(cards: Array<Card>) {
     }
   }
 
+  getBodyRow(preset: ExportPreset, numEntries, card: Card): Array<string> {
+    const tempThis = this;
+    const dataLine: Array<string> = [];
+    // Add Top Headers
+    preset.card.forEach((e) => {
+      if (e.value === true) {
+        if (e.key === 'commodities') {
+          dataLine.push(''); // Add Spacer
+          for (let i = 0; i < numEntries.card.commodities; i++) {
+            preset.commodities.forEach((e2) => {
+              if (e2.value === true ) {
+                if (card.commodityArray[i]) {
+                  const temp: Commodities = card.commodityArray[i];
+                  switch (e2.key) {
+                    case 'commodity':
+                      dataLine.push( (temp.commodity) ? temp.commodity : '');
+                      break;
+                    case 'variety':
+                      dataLine.push( (temp.variety) ? temp.variety : '');
+                      break;
+                    case 'seedLotNumber':
+                      dataLine.push( (temp.seedLotNumber) ? String(temp.seedLotNumber) : '');
+                      break;
+                    case 'cropAcres':
+                      dataLine.push( (temp.cropAcres) ? String(temp.cropAcres) : '');
+                      break;
+                    case 'bedCount':
+                      dataLine.push( (temp.bedCount) ? String(temp.bedCount) : '');
+                      break;
+                    case 'bedType':
+                      dataLine.push( (temp.bedType) ? temp.bedType : '');
+                      break;
+                    default:
+                      dataLine.push('Unknown Key: ' + e2.key);
+                      break;
+                  }
+                } else {
+                  dataLine.push('');
+                }
+              }
+            });
+          }
+          dataLine.push(''); // Add Spacer
+        } else if (e.key === 'irrigation') {
+          dataLine.push(''); // Add Spacer
+          for (let i = 0; i < numEntries.card.irrigation; i++) {
+            preset.irrigationEntry.forEach((e2) => {
+              if (e2.value === true) {
+                if (e2.key === 'fertilizers') {
+                  for (let j = 0; j < numEntries.irrigationEntry.fertilizers; j++) {
+                    preset.irrigationEntryFertilizers.forEach((e3) => {
+                      if (e3.value === true) {
+                        if (card.irrigationArray[i] && card.irrigationArray[i].fertilizerArray[j]) {
+                          const temp: Chemical = card.irrigationArray[i].fertilizerArray[j];
+                          switch (e3.key) {
+                            case 'name':
+                              dataLine.push( (temp.name) ? temp.name : '');
+                              break;
+                            case 'rate':
+                              dataLine.push( (temp.rate) ? String(temp.rate) : '');
+                              break;
+                            case 'unit':
+                              dataLine.push( (temp.unit) ? temp.unit : '');
+                              break;
+                            default:
+                              dataLine.push('Unknown Key: ' + e3.key);
+                              break;
+                          }
+                        } else {
+                          dataLine.push('');
+                        }
+                      }
+                    });
+                  }
+                } else if (e2.key === 'chemicals') {
+                  for (let j = 0; j < numEntries.irrigationEntry.chemicals; j++) {
+                    preset.irrigationEntryChemicals.forEach((e3) => {
+                      if (e3.value === true) {
+                        if (card.irrigationArray[i] && card.irrigationArray[i].chemicalArray[j]) {
+                          const temp: Chemical = card.irrigationArray[i].chemicalArray[j];
+                          switch (e3.key) {
+                            case 'name':
+                              dataLine.push( (temp.name) ? temp.name : '');
+                              break;
+                            case 'rate':
+                              dataLine.push( (temp.rate) ? String(temp.rate) : '');
+                              break;
+                            case 'unit':
+                              dataLine.push( (temp.unit) ? temp.unit : '');
+                              break;
+                            default:
+                              dataLine.push('Unknown Key: ' + e3.key);
+                              break;
+                          }
+                        } else {
+                          dataLine.push('');
+                        }
+                      }
+                    });
+                  }
+                } else {
+                  if (card.irrigationArray[i]) {
+                    const temp: IrrigationEntry = card.irrigationArray[i];
+                    switch (e2.key) {
+                      case 'workDate':
+                        dataLine.push((temp.workDate) ? tempThis.dateToDisplay(temp.workDate) : '');
+                        break;
+                      case 'method':
+                        dataLine.push( (temp.method) ? temp.method : '');
+                        break;
+                      case 'irrigator':
+                        dataLine.push( (temp.irrigator) ? temp.irrigator : '');
+                        break;
+                      case 'duration':
+                        dataLine.push( (temp.duration) ? String(temp.duration) : '');
+                        break;
+                      default:
+                        dataLine.push('Unknown Key: ' + e2.key);
+                        break;
+                    }
+                  } else {
+                    dataLine.push('');
+                  }
+                }
+              }
+            });
+          }
+          dataLine.push(''); // Add Spacer
+        } else if (e.key === 'tractor') {
+          dataLine.push(''); // Add Spacer
+          for (let i = 0; i < numEntries.card.tractor; i++) {
+            preset.tractorEntry.forEach((e2) => {
+              if (e2.value === true) {
+                if (e2.key === 'fertilizers') {
+                  for (let j = 0; j < numEntries.tractorEntry.fertilizers; j++) {
+                    preset.tractorEntryFertilizers.forEach((e3) => {
+                      if (e3.value === true) {
+                        if (card.tractorArray[i] && card.tractorArray[i].fertilizerArray[j]) {
+                          const temp: Chemical = card.tractorArray[i].fertilizerArray[j];
+                          switch (e3.key) {
+                            case 'name':
+                              dataLine.push( (temp.name) ? temp.name : '');
+                              break;
+                            case 'rate':
+                              dataLine.push( (temp.rate) ? String(temp.rate) : '');
+                              break;
+                            case 'unit':
+                              dataLine.push( (temp.unit) ? temp.unit : '');
+                              break;
+                            default:
+                              dataLine.push('Unknown Key: ' + e3.key);
+                              break;
+                          }
+                        } else {
+                          dataLine.push('');
+                        }
+                      }
+                    });
+                  }
+                } else if (e2.key === 'chemicals') {
+                  for (let j = 0; j < numEntries.tractorEntry.chemicals; j++) {
+                    preset.tractorEntryChemicals.forEach((e3) => {
+                      if (e3.value === true) {
+                        if (card.tractorArray[i] && card.tractorArray[i].chemicalArray[j]) {
+                          const temp: Chemical = card.tractorArray[i].chemicalArray[j];
+                          switch (e3.key) {
+                            case 'name':
+                              dataLine.push( (temp.name) ? temp.name : '');
+                              break;
+                            case 'rate':
+                              dataLine.push( (temp.rate) ? String(temp.rate) : '');
+                              break;
+                            case 'unit':
+                              dataLine.push( (temp.unit) ? temp.unit : '');
+                              break;
+                            default:
+                              dataLine.push('Unknown Key: ' + e3.key);
+                              break;
+                          }
+                        } else {
+                          dataLine.push('');
+                        }
+                      }
+                    });
+                  }
+                } else {
+                  if (card.tractorArray[i]) {
+                    const temp: TractorEntry = card.tractorArray[i];
+                    switch (e2.key) {
+                      case 'workDate':
+                        dataLine.push((temp.workDate) ? tempThis.dateToDisplay(temp.workDate) : '');
+                        break;
+                      case 'workDone':
+                        dataLine.push( (temp.workDone) ? temp.workDone : '');
+                        break;
+                      case 'operator':
+                        dataLine.push( (temp.operator) ? temp.operator : '');
+                        break;
+                      case 'tractorNumber':
+                        dataLine.push( (temp.tractorNumber) ? String(temp.tractorNumber) : '');
+                        break;
+                      default:
+                        dataLine.push('Unknown Key: ' + e2.key);
+                        break;
+                    }
+                  } else {
+                    dataLine.push('');
+                  }
+                }
+               }
+            });
+          }
+          dataLine.push(''); // Add Spacer
+        } else if (e.key === 'preChemicals') {
+          dataLine.push(''); // Add Spacer
+          for (let i = 0; i < numEntries.card.preChemicals; i++) {
+            preset.preChemicals.forEach((e2) => {
+              if (e2.value === true) {
+                if (e2.key === 'fertilizer') {
+                  preset.preChemicalsFertilizer.forEach((e3) => {
+                    if (e3.value === true) {
+                      if (card.preChemicalArray[i] && card.preChemicalArray[i].fertilizer) {
+                        const temp: Chemical = card.preChemicalArray[i].fertilizer;
+                        switch (e3.key) {
+                          case 'name':
+                            dataLine.push( (temp.name) ? temp.name : '');
+                            break;
+                          case 'rate':
+                            dataLine.push( (temp.rate) ? String(temp.rate) : '');
+                            break;
+                          case 'unit':
+                            dataLine.push( (temp.unit) ? temp.unit : '');
+                            break;
+                          default:
+                            dataLine.push('Unknown Key: ' + e3.key);
+                            break;
+                        }
+                      } else {
+                        dataLine.push('');
+                      }
+                    }
+                  });
+                } else if (e2.key === 'chemical') {
+                  preset.preChemicalsChemical.forEach((e3) => {
+                    if (e3.value === true) {
+                      if (card.preChemicalArray[i] && card.preChemicalArray[i].chemical) {
+                        const temp: Chemical = card.preChemicalArray[i].chemical;
+                        switch (e3.key) {
+                          case 'name':
+                            dataLine.push( (temp.name) ? temp.name : '');
+                            break;
+                          case 'rate':
+                            dataLine.push( (temp.rate) ? String(temp.rate) : '');
+                            break;
+                          case 'unit':
+                            dataLine.push( (temp.unit) ? temp.unit : '');
+                            break;
+                          default:
+                            dataLine.push('Unknown Key: ' + e3.key);
+                            break;
+                        }
+                      } else {
+                        dataLine.push('');
+                      }
+                    }
+                  });
+                } else {
+                  if (card.preChemicalArray[i]) {
+                    const temp: Chemicals = card.preChemicalArray[i];
+                    switch (e2.key) {
+                      case 'date':
+                        dataLine.push((temp.date) ? tempThis.dateToDisplay(temp.date) : '');
+                        break;
+                      default:
+                        dataLine.push('Unknown Key: ' + e2.key);
+                        break;
+                    }
+                  } else {
+                    dataLine.push('');
+                  }
+                }
+               }
+            });
+          }
+          dataLine.push(''); // Add Spacer
+        } else {
+          switch (e.key) {
+            case 'id':
+              dataLine.push( (card.id) ? card.id : '');
+              break;
+            case 'dateCreated':
+              dataLine.push( (card.dateCreated) ? tempThis.dateToDisplay(card.dateCreated) : '');
+              break;
+            case 'lastUpdated':
+              dataLine.push( (card.lastUpdated) ? tempThis.dateToDisplay(card.lastUpdated) : '');
+              break;
+            case 'ranchName':
+              dataLine.push( (card.ranchName) ? card.ranchName : '');
+              break;
+            case 'lotNumber':
+              dataLine.push( (card.lotNumber) ? card.lotNumber : '');
+              break;
+            case 'fieldID':
+              dataLine.push( (card.fieldID) ? String(card.fieldID) : '');
+              break;
+            case 'closed':
+              dataLine.push( (card.closed === true || card.closed === false) ? ((card.closed) ? 'Closed' : 'Open') : '');
+              break;
+            case 'ranchManagerName':
+              dataLine.push( (card.ranchManagerName) ? card.ranchManagerName : '');
+              break;
+            case 'shippers':
+              card.initShippersString();
+              dataLine.push(card.shippersString);
+              break;
+            case 'planterNumber':
+              dataLine.push( (card.planterNumber) ? card.planterNumber : '');
+              break;
+            case 'wetDate':
+              dataLine.push( (card.wetDate) ? tempThis.dateToDisplay(card.wetDate) : '');
+              break;
+            case 'thinDate':
+              dataLine.push( (card.thinDate) ? tempThis.dateToDisplay(card.thinDate) : '');
+              break;
+            case 'thinType':
+              dataLine.push( (card.thinType) ? String(card.thinType) : '');
+              break;
+            case 'hoeDate':
+              dataLine.push( (card.hoeDate) ? tempThis.dateToDisplay(card.hoeDate) : '');
+              break;
+            case 'hoeType':
+              dataLine.push( (card.hoeType) ? String(card.hoeType) : '');
+              break;
+            case 'harvestDate':
+              dataLine.push( (card.harvestDate) ? tempThis.dateToDisplay(card.harvestDate) : '');
+              break;
+            case 'cropYear':
+              dataLine.push( (card.cropYear) ? String(card.cropYear) : '');
+              break;
+            case 'totalAcres':
+              dataLine.push( (card.totalAcres) ? String(card.totalAcres) : '');
+              break;
+            case 'dripTape':
+              dataLine.push(tempThis.getDripTape(card));
+              break;
+            case 'comments':
+              dataLine.push( (card.comments) ? tempThis.commentsToDisplayString(card.comments) : '');
+              break;
+            default:
+              dataLine.push('Unknown Key: ' + e.key);
+              break;
+          }
+        }
+      }
+    });
+    return dataLine;
+  }
+
+  getSubHeader(preset: ExportPreset, numEntries): Array<string> {
+    const dataLine = [];
+    // Add Top Headers
+    preset.card.forEach((e) => {
+      if (e.value === true) {
+        if (e.key === 'commodities') {
+          dataLine.push(''); // Add Spacer
+          for (let i = 0; i < numEntries.card.commodities; i++) {
+            preset.commodities.forEach((e2) => {
+              if (e2.value === true) {
+                dataLine.push(e2.display);
+              }
+            });
+          }
+          dataLine.push(''); // Add Spacer
+        } else if (e.key === 'irrigation') {
+          dataLine.push(''); // Add Spacer
+          for (let i = 0; i < numEntries.card.irrigation; i++) {
+            preset.irrigationEntry.forEach((e2) => {
+              if (e2.value === true) {
+                if (e2.key === 'fertilizers') {
+                  for (let j = 0; j < numEntries.irrigationEntry.fertilizers; j++) {
+                    preset.irrigationEntryFertilizers.forEach((e3) => {
+                      if (e3.value === true) {
+                        dataLine.push(e3.display);
+                      }
+                    });
+                  }
+                } else if (e2.key === 'chemicals') {
+                  for (let j = 0; j < numEntries.irrigationEntry.chemicals; j++) {
+                    preset.irrigationEntryChemicals.forEach((e3) => {
+                      if (e3.value === true) {
+                        dataLine.push(e3.display);
+                      }
+                    });
+                  }
+                } else {
+                  dataLine.push(e2.display);
+                }
+               }
+            });
+          }
+          dataLine.push(''); // Add Spacer
+        } else if (e.key === 'tractor') {
+          dataLine.push(''); // Add Spacer
+          for (let i = 0; i < numEntries.card.tractor; i++) {
+            preset.tractorEntry.forEach((e2) => {
+              if (e2.value === true) {
+                if (e2.key === 'fertilizers') {
+                  for (let j = 0; j < numEntries.tractorEntry.fertilizers; j++) {
+                    preset.tractorEntryFertilizers.forEach((e3) => {
+                      if (e3.value === true) {
+                        dataLine.push(e3.display);
+                      }
+                    });
+                  }
+                } else if (e2.key === 'chemicals') {
+                  for (let j = 0; j < numEntries.tractorEntry.chemicals; j++) {
+                    preset.tractorEntryChemicals.forEach((e3) => {
+                      if (e3.value === true) {
+                        dataLine.push(e3.display);
+                      }
+                    });
+                  }
+                } else {
+                  dataLine.push(e2.display);
+                }
+               }
+            });
+          }
+          dataLine.push(''); // Add Spacer
+        } else if (e.key === 'preChemicals') {
+          dataLine.push(''); // Add Spacer
+          for (let i = 0; i < numEntries.card.preChemicals; i++) {
+            preset.preChemicals.forEach((e2) => {
+              if (e2.value === true) {
+                if (e2.key === 'fertilizer') {
+                  preset.preChemicalsFertilizer.forEach((e3) => {
+                    if (e3.value === true) {
+                      dataLine.push(e3.display);
+                    }
+                  });
+                } else if (e2.key === 'chemical') {
+                  preset.preChemicalsChemical.forEach((e3) => {
+                    if (e3.value === true) {
+                      dataLine.push(e3.display);
+                    }
+                  });
+                } else {
+                  dataLine.push(e2.display);
+                }
+               }
+            });
+          }
+          dataLine.push(''); // Add Spacer
+        } else {
+          dataLine.push(e.display);
+        }
+      }
+    });
+    return dataLine;
+  }
+
+  getTopHeader(preset: ExportPreset, numEntries): Array<string> {
+    const dataLine = [];
+    // Add Top Headers
+    // For each key value pair in the preset
+    preset.card.forEach((e) => {
+      // If the value is true (enabled)
+      if (e.value === true) {
+        // If the key represents a subclass
+        if (e.key === 'commodities') {
+          dataLine.push(''); // Add Spacer
+          // Get the number of entries to be displayed (dynamic or static)
+          const entryCount: number = numEntries.card.commodities;
+          // Get the number of columns needed for each entry (how many properties are enabled for display)
+          const colCount: number = preset.commodities.filter((e2) => e2.value === true).length;
+          // If there is atleast 1 column needed and one entry to show, display something
+          if (colCount > 0) {
+            // For each entry
+            for (let i = 1; i <= entryCount; i++) {
+              if (colCount === 1) {
+                // If there is 1 column, display "1st Commodity"
+                dataLine.push(this.indexToDisplay(i) + ' Commodity');
+              } else {
+                // If there is at least 2 columns, display "index", "Commodity"
+                dataLine.push(this.indexToDisplay(i), 'Commodity');
+                // Followed by whitespaces * the number of remaining columns for this entry
+                for (let j = 2; j < colCount; j++) { dataLine.push(''); }
+              }
+            }
+          }
+          dataLine.push(''); // Add Spacer
+        } else if (e.key === 'irrigation') {
+          dataLine.push(''); // Add Spacer
+          // Get the number of entries to be displayed (dynamic or static)
+          const entryCount: number = numEntries.card.irrigation;
+          // Get the number of columns needed for each entry (how many properties are enabled for display)
+          let colCount = preset.irrigationEntry.filter((e2) => e2.value === true).length;
+
+          // If fertilizers or chemicals are enabled, adjust the columns needed accordingly
+          if (preset.getPropertyValue('irrigationEntry', 'fertilizers')) {
+            // Get the number of columns needed for the subclass (fertilizers)
+            const subColCount = preset.irrigationEntryFertilizers.filter((e2) => e2.value === true).length;
+            // Add the number of subclass columns needed * the number of subclass entries (dynamic or static) to the total column count
+            // Subtract 1 to accomodate for the subclass columns replacing the single columns which referenced it
+            colCount += (subColCount * numEntries.irrigationEntry.fertilizers) - 1;
+          }
+          if (preset.getPropertyValue('irrigationEntry', 'chemicals')) {
+            const subColCount = preset.irrigationEntryChemicals.filter((e2) => e2.value === true).length;
+            colCount += (subColCount * numEntries.irrigationEntry.chemicals) - 1;
+          }
+          if (colCount > 0) {
+            for (let i = 1; i <= entryCount; i++) {
+              if (colCount === 1) {
+                dataLine.push(this.indexToDisplay(i) + ' Irrigation');
+              } else {
+                dataLine.push(this.indexToDisplay(i), 'Irrigation');
+                for (let j = 2; j < colCount; j++) { dataLine.push(''); }
+              }
+            }
+          }
+          dataLine.push(''); // Add Spacer
+        } else if (e.key === 'tractor') {
+          dataLine.push(''); // Add Spacer
+          const entryCount: number = numEntries.card.tractor;
+          let colCount = preset.tractorEntry.filter((e2) => e2.value === true).length;
+
+          // If fertilizers or chemicals are enabled, adjust the colCount accordingly
+          if (preset.getPropertyValue('tractorEntry', 'fertilizers')) {
+            const subColCount = preset.tractorEntryFertilizers.filter((e2) => e2.value === true).length;
+            colCount += (subColCount * numEntries.tractorEntry.fertilizers) - 1;
+          }
+          if (preset.getPropertyValue('tractorEntry', 'chemicals')) {
+            const subColCount = preset.tractorEntryChemicals.filter((e2) => e2.value === true).length;
+            colCount += (subColCount * numEntries.tractorEntry.chemicals) - 1;
+          }
+          if (colCount > 0) {
+            for (let i = 1; i <= entryCount; i++) {
+              if (colCount === 1) {
+                dataLine.push(this.indexToDisplay(i) + ' Tractor');
+              } else {
+                dataLine.push(this.indexToDisplay(i), 'Tractor');
+                for (let j = 2; j < colCount; j++) { dataLine.push(''); }
+              }
+            }
+          }
+          dataLine.push(''); // Add Spacer
+        } else if (e.key === 'preChemicals') {
+          dataLine.push(''); // Add Spacer
+          const entryCount: number = numEntries.card.preChemicals;
+          let colCount = preset.preChemicals.filter((e2) => e2.value === true).length;
+
+          // If fertilizer or chemical is enabled, adjust the colCount accordingly
+          if (preset.getPropertyValue('preChemicals', 'fertilizer')) {
+            colCount += preset.preChemicalsFertilizer.filter((e2) => e2.value === true).length - 1;
+          }
+          if (preset.getPropertyValue('preChemicals', 'chemical')) {
+            colCount += preset.preChemicalsChemical.filter((e2) => e2.value === true).length - 1;
+          }
+          if (colCount > 0) {
+            for (let i = 1; i <= entryCount; i++) {
+              if (colCount === 1) {
+                dataLine.push(this.indexToDisplay(i) + ' Pre Plant');
+              } else {
+                dataLine.push(this.indexToDisplay(i), 'Pre Plant');
+                for (let j = 2; j < colCount; j++) { dataLine.push(''); }
+              }
+            }
+          }
+          dataLine.push(''); // Add Spacer
+        } else {
+          // If the key represents a single point of data
+          dataLine.push('');
+        }
+      }
+    });
+    return dataLine;
+  }
+
+  public indexToDisplay(n: number): string {
+    switch (n) {
+      case 1:
+        return '1st';
+        break;
+      case 2:
+        return '2nd';
+        break;
+      case 3:
+        return '3rd';
+        break;
+      default:
+        if (n > 3 && n < 21) {
+          return n + 'th';
+        } else {
+          return String(n);
+        }
+        break;
+    }
+  }
+
   public initCommon(f): void {
     const tempThis = this;
     const sortedCommon = {};
@@ -966,6 +1606,16 @@ findMinNumForCols(cards: Array<Card>) {
       });
       f(sortedCommon);
     });
+  }
+
+  // Returns whether or not the key is a attribute to a card
+  public isCardAttribute(presetKey: string): boolean {
+    // Simple for now
+    if (presetKey === 'dripTape') {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   // Takes care of commas and quotations that may occur in any cells, following RFC 4180
