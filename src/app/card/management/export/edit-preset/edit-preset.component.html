@@ -45,12 +45,12 @@
           <div class="col">
             <div class="row">
               <div class="col">
-                Enabled:
-                <input type="checkbox" class="ml-1" [(ngModel)]="e.value" />
+                <label for="{{key + '-' + e.key + '-enabled'}}">Enabled:</label>
+                <input id="{{key + '-' + e.key + '-enabled'}}" type="checkbox" class="ml-1" [(ngModel)]="e.value" />
               </div>
               <div class="col" *ngIf="e.value && preset.hasDynamic(key, e.key)">
-                <span>Dynamic:</span>
-                <input type="checkbox" class="ml-1" [(ngModel)]="preset.dynamic[key][e.key]" />
+                <label for="{{key + '-' + e.key + '-dynamic'}}">Dynamic:</label>
+                <input id="{{key + '-' + e.key + '-dynamic'}}" type="checkbox" class="ml-1" [(ngModel)]="preset.dynamic[key][e.key]" />
               </div>
             </div>            
           </div>
