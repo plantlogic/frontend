@@ -15,8 +15,12 @@ import { environment } from 'src/environments/environment';
 
     private httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'})};
 
-    public createExportPreset(preset: ExportPreset): Observable<BasicDTO<null>> {
+      public createExportPreset(preset: ExportPreset): Observable<BasicDTO<null>> {
         return this.http.post<BasicDTO<null>>(environment.ApiUrl + '/data/exportPresets/add', preset, this.httpOptions);
+      }
+
+      public deleteExportPreset(id: string): Observable<BasicDTO<ExportPreset>> {
+        return this.http.delete<BasicDTO<null>>(environment.ApiUrl + '/data/exportPresets/delete/' + id, this.httpOptions);
       }
 
       public getExportPresets(): Observable<BasicDTO<ExportPreset[]>> {

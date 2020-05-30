@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter } from '@angular/core';
 import { NavService } from 'src/app/_interact/nav.service';
 import { TitleService } from 'src/app/_interact/title.service';
 import { CommonFormDataService } from 'src/app/_api/common-form-data.service';
@@ -7,6 +7,7 @@ import { ExportPreset } from 'src/app/_dto/card/export-preset';
 import { ExportPresetService } from 'src/app/_api/export-preset.service';
 import { AlertService } from 'src/app/_interact/alert/alert.service';
 import { ActivatedRoute } from '@angular/router';
+import { Alert } from 'src/app/_interact/alert/alert';
 
 @Component({
   selector: 'app-edit-preset',
@@ -85,11 +86,15 @@ export class EditPresetComponent implements OnInit {
     this.preset.shiftUp(parentObject, key);
   }
 
-  public submit() {
-    this.exportPresetService.updateExportPreset(this.preset.id, this.preset).subscribe(
+  public saveCopy() {
+    const copy = Object.assign(new ExportPreset(), this.preset);
+    copy.id = null;
+    copy.name += '_copy';
+
+    this.exportPresetService.createExportPreset(copy).subscribe(
       data => {
         if (data.success) {
-          AlertService.newBasicAlert('Export preset saved successfully!', false);
+          AlertService.newBasicAlert(`Export preset copied successfully as "${copy.name}"`, false, 30);
         } else if (!data.success) {
           AlertService.newBasicAlert('Error: ' + data.error, true);
         }
@@ -98,5 +103,49 @@ export class EditPresetComponent implements OnInit {
         AlertService.newBasicAlert('Connection Error: ' + failure.message, true);
       }
     );
+  }
+
+  public submit() {
+    this.exportPresetService.updateExportPreset(this.preset.id, this.preset).subscribe(
+      data => {
+        if (data.success) {
+          AlertService.newBasicAlert('Export preset saved successfully!', false);
+          this.nav.goBack();
+        } else if (!data.success) {
+          AlertService.newBasicAlert('Error: ' + data.error, true);
+        }
+      },
+      failure => {
+        AlertService.newBasicAlert('Connection Error: ' + failure.message, true);
+      }
+    );
+  }
+
+  public delete() {
+    const newAlert = new Alert();
+    newAlert.color = 'danger';
+    newAlert.title = 'WARNING: Deleting Preset Permanently';
+    newAlert.message = 'Are you sure you want to delete this preset? This action cannot be reversed.';
+    newAlert.timeLeft = undefined;
+    newAlert.blockPageInteraction = true;
+    newAlert.actionName = 'Permanently Delete';
+    newAlert.actionClosesAlert = true;
+    newAlert.action$ = new EventEmitter<null>();
+    newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
+      this.exportPresetService.deleteExportPreset(this.preset.id).subscribe(
+        data => {
+          if (data.success) {
+            AlertService.newBasicAlert('Export preset deleted!', false);
+            this.nav.goBack();
+          } else if (!data.success) {
+            AlertService.newBasicAlert('Error: ' + data.error, true);
+          }
+        },
+        failure => {
+          AlertService.newBasicAlert('Connection Error: ' + failure.message, true);
+        }
+      );
+    });
+    AlertService.newAlert(newAlert);
   }
 }

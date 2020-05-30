@@ -74,6 +74,7 @@ export class AddPresetComponent implements OnInit {
       data => {
         if (data.success) {
           AlertService.newBasicAlert('Export preset saved successfully!', false);
+          this.nav.goBack();
         } else if (!data.success) {
           AlertService.newBasicAlert('Error: ' + data.error, true);
         }
