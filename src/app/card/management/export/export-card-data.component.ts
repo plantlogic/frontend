@@ -9,6 +9,9 @@ import {CardViewService} from '../../../_api/card-view.service';
 import {NavService} from '../../../_interact/nav.service';
 import { CommonLookup } from 'src/app/_api/common-data.service';
 import { AuthService } from 'src/app/_auth/auth.service';
+import { ExportPresetService } from 'src/app/_api/export-preset.service';
+import {Router} from '@angular/router';
+import { PlRole } from 'src/app/_dto/user/pl-role.enum';
 
 @Component({
   selector: 'app-export',
@@ -18,7 +21,8 @@ import { AuthService } from 'src/app/_auth/auth.service';
 export class ExportCardDataComponent implements OnInit {
 
   constructor(private titleService: TitleService, private cardExport: CardExportService, public cardService: CardViewService,
-              private nav: NavService, public common: CommonFormDataService, private auth: AuthService) {}
+              private nav: NavService, public common: CommonFormDataService, private auth: AuthService,
+              public exportPresetService: ExportPresetService, private router: Router) {}
 
   loading = true;
   generating = false;
@@ -40,12 +44,16 @@ export class ExportCardDataComponent implements OnInit {
     allowSearchFilter: true
   };
 
+  presets = [];
+  selectedPresetId = 'd1';
+
   // create array of common keys, whose data is needed for card entry. Omit restricted options.
   commonKeys = ['commodities'];
 
   ngOnInit() {
     const tempThis = this;
     this.titleService.setTitle('Export Data');
+    this.initPresets();
     this.initCommon(c => {
       this.commonKeys.forEach(key => {
         tempThis[key] = c[key];
@@ -53,6 +61,42 @@ export class ExportCardDataComponent implements OnInit {
       this[`ranches`] = c[`ranches`];
       this.loadCardData();
     });
+  }
+
+  public editPreset() {
+    if (this.selectedPresetId) {
+      switch (this.selectedPresetId) {
+        case 'd1':
+        case 'd2':
+        case 'd3':
+          // Cant open defaults
+          break;
+        default:
+          this.router.navigate(['manage/export/edit/' + this.selectedPresetId]);
+          break;
+      }
+    }
+  }
+
+  public exportPreset() {
+    if (this.selectedPresetId) {
+      switch (this.selectedPresetId) {
+        case 'd1':
+          this.generate();
+          break;
+        case 'd2':
+          this.generateAllApplied();
+          break;
+        case 'd3':
+          this.generateFertilizerApplied();
+          break;
+        default:
+          // run export with custom preset
+          console.log('Custom Export Selected');
+          this.generateCustom();
+          break;
+      }
+    }
   }
 
   fixDate(d): Date {
@@ -82,6 +126,29 @@ export class ExportCardDataComponent implements OnInit {
     const commodityIDS = this.selectedCommodities.map(e => e.id);
     this.cardExport.exportAllApplied(this.fromDate, this.toDate, ranchIDS, commodityIDS, this.includeUnharvested);
     this.generating = false;
+  }
+
+  generateCustom(): void {
+    // Get selected preset
+    this.exportPresetService.getExportPresetById(this.selectedPresetId).subscribe(
+      data => {
+        if (data.success) {
+          this.generating = true;
+          this.fromDate = (new Date(this.fromDate)).valueOf();
+          this.toDate = (new Date(this.toDate)).valueOf();
+          const ranchIDS = this.selectedRanches.map(e => e.id);
+          const commodityIDS = this.selectedCommodities.map(e => e.id);
+          this.cardExport.exportCustom(this.fromDate, this.toDate, ranchIDS, commodityIDS, this.includeUnharvested, data.data);
+          this.generating = false;
+
+        } else if (!data.success) {
+          AlertService.newBasicAlert('Error when retrieving preset: ' + data.error, true);
+        }
+      },
+      failure => {
+        AlertService.newBasicAlert('Error when retrieving preset: ' + failure.message, true);
+      }
+    );
   }
 
   generateFertilizerApplied(): void {
@@ -129,6 +196,58 @@ export class ExportCardDataComponent implements OnInit {
       sortedCommon[`ranches`] = tempThis.common.sortCommonArray(sortedCommon[`ranches`], 'ranches');
       f(sortedCommon);
     });
+  }
+
+  public initPresets() {
+    this.exportPresetService.getExportPresets().subscribe(
+      data => {
+        if (data.success) {
+          this.presets = [];
+          data.data.forEach((preset) => {
+            this.presets.push({
+              id: preset.id,
+              value: preset.name
+            });
+            this.presets.sort((a, b) => {
+              let comparison = 0;
+              const valA = a.value.toUpperCase();
+              const valB = b.value.toUpperCase();
+              if (valA > valB) {
+                comparison = 1;
+              } else if (valA < valB) {
+                comparison = -1;
+              }
+              return comparison;
+            });
+          });
+        } else if (!data.success) {
+          AlertService.newBasicAlert('Error when retrieving presets: ' + data.error, true);
+        }
+      },
+      failure => {
+        AlertService.newBasicAlert('Error when retrieving presets: ' + failure.message, true);
+      }
+    );
+  }
+
+  public isAppAdmin() {
+    return this.auth.hasPermission(PlRole.APP_ADMIN);
+  }
+
+  public isCustom(): boolean {
+    if (this.selectedPresetId) {
+      switch (this.selectedPresetId) {
+        case 'd1':
+        case 'd2':
+        case 'd3':
+          return false;
+          break;
+        default:
+          return true;
+          break;
+      }
+    }
+    return false;
   }
 
   private loadCardData() {

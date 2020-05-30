@@ -25,6 +25,7 @@ import {CardContractorComponent} from './card/contractor/card-management.compone
 import {AppAdminComponent} from './card/admin/app-admin.component';
 import {AddChemicalEntryComponent} from './card/entry/open/add-chemical/add-chemical-entry.component';
 import { AddPresetComponent } from './card/management/export/add-preset/add-preset.component';
+import { EditPresetComponent } from './card/management/export/edit-preset/edit-preset.component';
 
 
 const routes: Routes = [
@@ -190,7 +191,16 @@ const routes: Routes = [
     canActivate: [RoleGuard],
     data: {
       parent: '/manage/export',
-      role: [PlRole.DATA_VIEW]
+      role: [PlRole.APP_ADMIN]
+    }
+  },
+  {
+    path: 'manage/export/edit/:id',
+    component: EditPresetComponent,
+    canActivate: [RoleGuard],
+    data: {
+      parent: '/manage/export',
+      role: [PlRole.APP_ADMIN]
     }
   },
   {

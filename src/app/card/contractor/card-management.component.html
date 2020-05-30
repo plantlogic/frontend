@@ -11,7 +11,6 @@
     <hr class="my-4">
     <form class="form-inline search-form">
       <input class="form-control form-control-sm" type="search" name="ranchName" list="ranches" placeholder="Ranch Name" aria-label="Ranch Name" [(ngModel)]="filterRanchName" mdbInput>
-      <input class="form-control form-control-sm" type="search" name="fieldID" placeholder="Field ID" aria-label="Field ID" [(ngModel)]="filterFieldID" mdbInput>
       <input class="form-control form-control-sm" type="search" name="lotNumber" placeholder="Lot Number" aria-label="Lot Number" [(ngModel)]="filterLotNumber" mdbInput>
       <input class="form-control form-control-sm" type="search" name="commodity" list="commodities" placeholder="Commodity" aria-label="Commodity" [(ngModel)]="filterCommodity" mdbInput>
       <button class="mr-1 mb-1" type="button" color="info" (click)="filterItems()"  mdbBtn size="sm"><i class="fas fa-search ml-1"></i></button>

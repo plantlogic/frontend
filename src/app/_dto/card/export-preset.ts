@@ -1,7 +1,7 @@
 export class ExportPreset {
     // Preset Info
     id: string;
-    presetName: string;
+    name: string;
     dateCreated: number;
 
     dynamic = {
@@ -35,7 +35,7 @@ export class ExportPreset {
         {key: 'shippers', value : true, display: 'Shippers'},
         {key: 'planterNumber', value : true, display: 'Planter Number'},
         {key: 'wetDate', value : true, display: 'Wet Date'},
-        {key: 'thinDate', value : true, display: 'Closed'},
+        {key: 'thinDate', value : true, display: 'Thin Date'},
         {key: 'thinType', value : true, display: 'Thin Type'},
         {key: 'hoeDate', value : true, display: 'Hoe Date'},
         {key: 'hoeType', value : true, display: 'Hoe Type'},
@@ -85,37 +85,37 @@ export class ExportPreset {
 
     // 3rd Level Depth
     irrigationEntryFertilizers = [
-        {key: 'name', value: true, display: 'Name'},
+        {key: 'name', value: true, display: 'Fertilizer'},
         {key: 'rate', value: true, display: 'Rate'},
         {key: 'unit', value: true, display: 'Unit'}
     ];
 
     irrigationEntryChemicals = [
-        {key: 'name', value: true, display: 'Name'},
+        {key: 'name', value: true, display: 'Chemical'},
         {key: 'rate', value: true, display: 'Rate'},
         {key: 'unit', value: true, display: 'Unit'}
     ];
 
     tractorEntryFertilizers = [
-        {key: 'name', value: true, display: 'Name'},
+        {key: 'name', value: true, display: 'Fertilizer'},
         {key: 'rate', value: true, display: 'Rate'},
         {key: 'unit', value: true, display: 'Unit'}
     ];
 
     tractorEntryChemicals = [
-        {key: 'name', value: true, display: 'Name'},
+        {key: 'name', value: true, display: 'Chemical'},
         {key: 'rate', value: true, display: 'Rate'},
         {key: 'unit', value: true, display: 'Unit'}
     ];
 
     preChemicalsFertilizer = [
-        {key: 'name', value: true, display: 'Name'},
+        {key: 'name', value: true, display: 'Fertilizer'},
         {key: 'rate', value: true, display: 'Rate'},
         {key: 'unit', value: true, display: 'Unit'}
     ];
 
     preChemicalsChemical = [
-        {key: 'name', value: true, display: 'Name'},
+        {key: 'name', value: true, display: 'Chemical'},
         {key: 'rate', value: true, display: 'Rate'},
         {key: 'unit', value: true, display: 'Unit'}
     ];
@@ -178,8 +178,8 @@ export class ExportPreset {
         const keys = this.getPropertyKeys(`${parentObject}`);
         const index = keys.indexOf(`${key}`);
         if (index < (keys.length - 1)) {
-            const copy = Object.assign({}, this[`${parentObject}`][parseInt(`${index}`) + 1]);
-            this[`${parentObject}`][parseInt(`${index}`) + 1] = this[`${parentObject}`][`${index}`];
+            const copy = Object.assign({}, this[`${parentObject}`][parseInt(`${index}`, 10) + 1]);
+            this[`${parentObject}`][parseInt(`${index}`, 10) + 1] = this[`${parentObject}`][`${index}`];
             this[`${parentObject}`][`${index}`] = copy;
         }
     }
@@ -189,8 +189,8 @@ export class ExportPreset {
         const keys = this.getPropertyKeys(`${parentObject}`);
         const index = keys.indexOf(`${key}`);
         if (index > 0) {
-            const copy = Object.assign({}, this[`${parentObject}`][parseInt(`${index}`) - 1]);
-            this[`${parentObject}`][parseInt(`${index}`) - 1] = this[`${parentObject}`][`${index}`];
+            const copy = Object.assign({}, this[`${parentObject}`][parseInt(`${index}`, 10) - 1]);
+            this[`${parentObject}`][parseInt(`${index}`, 10) - 1] = this[`${parentObject}`][`${index}`];
             this[`${parentObject}`][`${index}`] = copy;
         }
     }
