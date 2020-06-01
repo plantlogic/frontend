@@ -166,63 +166,44 @@ export class ExportPreset {
                 switch (key) {
                     case 'commodities':
                         return 'commodities';
-                        break;
                     case 'irrigation':
                         return 'irrigationEntry';
-                        break;
                     case 'tractor':
                         return 'tractorEntry';
-                        break;
                     case 'preChemicals':
                         return 'preChemicals';
-                        break;
                     default:
                         return null;
-                        break;
                 }
-                break;
             case 'irrigationEntry':
                 switch (key) {
                     case 'fertilizers':
                         return 'irrigationEntryFertilizers';
-                        break;
                     case 'chemicals':
                         return 'irrigationEntryChemicals';
-                        break;
                     default:
                         return null;
-                        break;
                 }
-                break;
             case 'tractorEntry':
                 switch (key) {
                     case 'fertilizers':
                         return 'tractorEntryFertilizers';
-                        break;
                     case 'chemicals':
                         return 'tractorEntryChemicals';
-                        break;
                     default:
                         return null;
-                        break;
                 }
-                break;
             case 'preChemicals':
                 switch (key) {
                     case 'fertilizer':
                         return 'preChemicalsFertilizer';
-                        break;
                     case 'chemical':
                         return 'preChemicalsChemical';
-                        break;
                     default:
                         return null;
-                        break;
                 }
-                break;
             default:
                 return null;
-                break;
         }
     }
 
@@ -235,48 +216,35 @@ export class ExportPreset {
                     case 'tractor':
                     case 'preChemicals':
                         return true;
-                        break;
                     default:
                         return false;
-                        break;
                 }
-                break;
             case 'irrigationEntry':
                 switch (key) {
                     case 'fertilizers':
                     case 'chemicals':
                         return true;
-                        break;
                     default:
                         return false;
-                        break;
                 }
-                break;
             case 'tractorEntry':
                 switch (key) {
                     case 'fertilizers':
                     case 'chemicals':
                         return true;
-                        break;
                     default:
                         return false;
-                        break;
                 }
-                break;
             case 'preChemicals':
                 switch (key) {
                     case 'fertilizer':
                     case 'chemical':
                         return true;
-                        break;
                     default:
                         return false;
-                        break;
                 }
-                break;
             default:
                 return false;
-                break;
         }
     }
 
