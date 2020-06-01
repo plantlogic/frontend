@@ -168,20 +168,20 @@ export class CardExportService {
     returns targetID if key is not in commonKeys Array (don't need value)
     returns generic message of targetID not found
   */
- findCommonValue(commonData, key, valuePropertyArr, targetID) {
-  if (!targetID) { return ''; }
-  let commonValue;
-  try {
-    commonValue = commonData[key].find(e => {
-      return e.id === targetID;
-    });
-    valuePropertyArr.forEach(p => {
-      commonValue = commonValue[p];
-    });
-  } catch (e) {
-    console.log(e);
-  }
-  return (commonValue) ? commonValue : '';
+  public findCommonValue(commonData, key, valuePropertyArr, targetID) {
+    if (!targetID) { return ''; }
+    let commonValue;
+    try {
+      commonValue = commonData[key].find(e => {
+        return e.id === targetID;
+      });
+      valuePropertyArr.forEach(p => {
+        commonValue = commonValue[p];
+      });
+    } catch (e) {
+     console.log(e);
+    }
+    return (commonValue) ? commonValue : '';
   }
 
   findMinNumForCols(cards: Array<Card>) {
