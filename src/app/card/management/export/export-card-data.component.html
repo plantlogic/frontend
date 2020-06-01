@@ -68,13 +68,17 @@
     <div class="col col-auto">
       <button type="button" color="warning" (click)="exportPreset()" mdbBtn floating="true" size="sm" mdbWavesEffect>Export</button>
     </div>
-    <div class="col col-auto">
-      <button type="button" color="info" mdbBtn floating="true" size="sm" style="cursor: not-allowed;" *ngIf="!isCustom()" title="Only custom presets can be opened">Open</button>
-      <button type="button" color="info" (click)="editPreset()" mdbBtn floating="true" size="sm" mdbWavesEffect *ngIf="isCustom()">Open</button>
+    <div *ngIf="isAppAdmin()" class="col col-auto">
+      <button type="button" color="info" mdbBtn floating="true" size="sm" style="cursor: not-allowed;" *ngIf="!isCustom()" title="Only custom presets can be opened">Edit</button>
+      <button type="button" color="info" (click)="editPreset()" mdbBtn floating="true" size="sm" mdbWavesEffect *ngIf="isCustom()">Edit</button>
+    </div>
+    <div *ngIf="!isAppAdmin()" class="col col-auto">
+      <button type="button" color="info" mdbBtn floating="true" size="sm" style="cursor: not-allowed;" *ngIf="!isCustom()" title="Only custom presets can be opened">View</button>
+      <button type="button" color="info" (click)="editPreset()" mdbBtn floating="true" size="sm" mdbWavesEffect *ngIf="isCustom()">View</button>
     </div>
     <div class="col col-auto">
-      <button type="button" class="float-right" color="success" [routerLink]="['/manage/export/add']"
-              mdbBtn floating="true" size="sm" mdbWavesEffect [disabled]="!isAppAdmin()">Create Preset</button>
+      <button *ngIf="isAppAdmin()" type="button" class="float-right" color="success" [routerLink]="['/manage/export/add']" mdbBtn floating="true" size="sm" mdbWavesEffect>Create Preset</button>
+      <button *ngIf="!isAppAdmin()" type="button" class="float-right" style="cursor: not-allowed;" title="Only App Admins can create presets" color="success" mdbBtn floating="true" size="sm" mdbWavesEffect>Create Preset</button>
     </div>
   </div>
 </div>
