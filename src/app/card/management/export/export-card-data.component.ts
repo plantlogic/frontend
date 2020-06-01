@@ -240,10 +240,8 @@ export class ExportCardDataComponent implements OnInit {
         case 'd2':
         case 'd3':
           return false;
-          break;
         default:
           return true;
-          break;
       }
     }
     return false;

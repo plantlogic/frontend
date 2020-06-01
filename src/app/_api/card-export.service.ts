@@ -1599,20 +1599,16 @@ export class CardExportService {
     switch (n) {
       case 1:
         return '1st';
-        break;
       case 2:
         return '2nd';
-        break;
       case 3:
         return '3rd';
-        break;
       default:
         if (n > 3 && n < 21) {
           return n + 'th';
         } else {
           return String(n);
         }
-        break;
     }
   }
 
