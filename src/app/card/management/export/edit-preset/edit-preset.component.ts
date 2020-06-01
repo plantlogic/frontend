@@ -8,6 +8,7 @@ import { ExportPresetService } from 'src/app/_api/export-preset.service';
 import { AlertService } from 'src/app/_interact/alert/alert.service';
 import { ActivatedRoute } from '@angular/router';
 import { Alert } from 'src/app/_interact/alert/alert';
+import { PlRole } from 'src/app/_dto/user/pl-role.enum';
 
 @Component({
   selector: 'app-edit-preset',
@@ -67,6 +68,10 @@ export class EditPresetComponent implements OnInit {
         AlertService.newBasicAlert('Connection Error: ' + failure.message, true);
       }
     );
+  }
+
+  public isAppAdmin() {
+    return this.auth.hasPermission(PlRole.APP_ADMIN);
   }
 
   public isCollapsed(htmlId: string): boolean {

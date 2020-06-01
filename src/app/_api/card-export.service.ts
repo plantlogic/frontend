@@ -168,23 +168,23 @@ export class CardExportService {
     returns targetID if key is not in commonKeys Array (don't need value)
     returns generic message of targetID not found
   */
- findCommonValue(commonData, key, valuePropertyArr, targetID) {
-  if (!targetID) { return ''; }
-  let commonValue;
-  try {
-    commonValue = commonData[key].find(e => {
-      return e.id === targetID;
-    });
-    valuePropertyArr.forEach(p => {
-      commonValue = commonValue[p];
-    });
-  } catch (e) {
-    console.log(e);
+  public findCommonValue(commonData, key, valuePropertyArr, targetID) {
+    if (!targetID) { return ''; }
+    let commonValue;
+    try {
+      commonValue = commonData[key].find(e => {
+        return e.id === targetID;
+      });
+      valuePropertyArr.forEach(p => {
+        commonValue = commonValue[p];
+      });
+    } catch (e) {
+     console.log(e);
+    }
+    return (commonValue) ? commonValue : '';
   }
-  return (commonValue) ? commonValue : '';
-}
 
-findMinNumForCols(cards: Array<Card>) {
+  findMinNumForCols(cards: Array<Card>) {
     let numFerts = 0;
     let numChems = 0;
     let numCommodities = 0;
@@ -475,9 +475,6 @@ findMinNumForCols(cards: Array<Card>) {
               }
             };
 
-            console.log('Starting num entries (before dynamic adjust)');
-            console.log(numEntries);
-
             const cards: Card[] = data.data.map(x => (new Card()).copyConstructor(x)).filter(x => {
               if (!x.ranchName || !ranches.includes(x.ranchName)) { return false; }
               if (!x.commodityArray.map(c => commodities.includes(c.commodity)).some(c => c)) { return false; }
@@ -530,10 +527,6 @@ findMinNumForCols(cards: Array<Card>) {
               }
             });
 
-
-            console.log('Num Entries Object: ');
-            console.log(numEntries);
-
             table.push(this.getTopHeader(preset, numEntries));
             table.push(this.getSubHeader(preset, numEntries));
 
@@ -541,7 +534,6 @@ findMinNumForCols(cards: Array<Card>) {
               table.push(this.getBodyRow(preset, numEntries, this.cardIDsToValues(card, commonData)));
             });
 
-            console.log('Finished preping the table, now downloading');
             // Initiate generation and download
             const filename = preset.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
             this.generateAndDownload(table, `${environment.AppName}-${filename}`);
@@ -986,11 +978,15 @@ findMinNumForCols(cards: Array<Card>) {
   getBodyRow(preset: ExportPreset, numEntries, card: Card): Array<string> {
     const tempThis = this;
     const dataLine: Array<string> = [];
+    let lastEntryWasSingleValue = false;
     // Add Top Headers
     preset.card.forEach((e) => {
       if (e.value === true) {
         if (e.key === 'commodities') {
-          dataLine.push(''); // Add Spacer
+          if (lastEntryWasSingleValue) {
+            dataLine.push('');
+            lastEntryWasSingleValue = false;
+          }
           for (let i = 0; i < numEntries.card.commodities; i++) {
             preset.commodities.forEach((e2) => {
               if (e2.value === true ) {
@@ -1024,10 +1020,13 @@ findMinNumForCols(cards: Array<Card>) {
                 }
               }
             });
+            dataLine.push(''); // Add Spacer
           }
-          dataLine.push(''); // Add Spacer
         } else if (e.key === 'irrigation') {
-          dataLine.push(''); // Add Spacer
+          if (lastEntryWasSingleValue) {
+            dataLine.push('');
+            lastEntryWasSingleValue = false;
+          }
           for (let i = 0; i < numEntries.card.irrigation; i++) {
             preset.irrigationEntry.forEach((e2) => {
               if (e2.value === true) {
@@ -1109,10 +1108,13 @@ findMinNumForCols(cards: Array<Card>) {
                 }
               }
             });
+            dataLine.push(''); // Add Spacer
           }
-          dataLine.push(''); // Add Spacer
         } else if (e.key === 'tractor') {
-          dataLine.push(''); // Add Spacer
+          if (lastEntryWasSingleValue) {
+            dataLine.push('');
+            lastEntryWasSingleValue = false;
+          }
           for (let i = 0; i < numEntries.card.tractor; i++) {
             preset.tractorEntry.forEach((e2) => {
               if (e2.value === true) {
@@ -1194,10 +1196,13 @@ findMinNumForCols(cards: Array<Card>) {
                 }
                }
             });
+            dataLine.push(''); // Add Spacer
           }
-          dataLine.push(''); // Add Spacer
         } else if (e.key === 'preChemicals') {
-          dataLine.push(''); // Add Spacer
+          if (lastEntryWasSingleValue) {
+            dataLine.push('');
+            lastEntryWasSingleValue = false;
+          }
           for (let i = 0; i < numEntries.card.preChemicals; i++) {
             preset.preChemicals.forEach((e2) => {
               if (e2.value === true) {
@@ -1266,9 +1271,10 @@ findMinNumForCols(cards: Array<Card>) {
                 }
                }
             });
+            dataLine.push(''); // Add Spacer
           }
-          dataLine.push(''); // Add Spacer
         } else {
+          lastEntryWasSingleValue = true;
           switch (e.key) {
             case 'id':
               dataLine.push( (card.id) ? card.id : '');
@@ -1343,21 +1349,28 @@ findMinNumForCols(cards: Array<Card>) {
 
   getSubHeader(preset: ExportPreset, numEntries): Array<string> {
     const dataLine = [];
+    let lastEntryWasSingleValue = false;
     // Add Top Headers
     preset.card.forEach((e) => {
       if (e.value === true) {
         if (e.key === 'commodities') {
-          dataLine.push(''); // Add Spacer
+          if (lastEntryWasSingleValue) {
+            dataLine.push('');
+            lastEntryWasSingleValue = false;
+          }
           for (let i = 0; i < numEntries.card.commodities; i++) {
             preset.commodities.forEach((e2) => {
               if (e2.value === true) {
                 dataLine.push(e2.display);
               }
             });
+            dataLine.push(''); // Add Spacer
           }
-          dataLine.push(''); // Add Spacer
         } else if (e.key === 'irrigation') {
-          dataLine.push(''); // Add Spacer
+          if (lastEntryWasSingleValue) {
+            dataLine.push('');
+            lastEntryWasSingleValue = false;
+          }
           for (let i = 0; i < numEntries.card.irrigation; i++) {
             preset.irrigationEntry.forEach((e2) => {
               if (e2.value === true) {
@@ -1382,10 +1395,13 @@ findMinNumForCols(cards: Array<Card>) {
                 }
                }
             });
+            dataLine.push(''); // Add Spacer
           }
-          dataLine.push(''); // Add Spacer
         } else if (e.key === 'tractor') {
-          dataLine.push(''); // Add Spacer
+          if (lastEntryWasSingleValue) {
+            dataLine.push('');
+            lastEntryWasSingleValue = false;
+          }
           for (let i = 0; i < numEntries.card.tractor; i++) {
             preset.tractorEntry.forEach((e2) => {
               if (e2.value === true) {
@@ -1410,10 +1426,13 @@ findMinNumForCols(cards: Array<Card>) {
                 }
                }
             });
+            dataLine.push(''); // Add Spacer
           }
-          dataLine.push(''); // Add Spacer
         } else if (e.key === 'preChemicals') {
-          dataLine.push(''); // Add Spacer
+          if (lastEntryWasSingleValue) {
+            dataLine.push('');
+            lastEntryWasSingleValue = false;
+          }
           for (let i = 0; i < numEntries.card.preChemicals; i++) {
             preset.preChemicals.forEach((e2) => {
               if (e2.value === true) {
@@ -1434,9 +1453,10 @@ findMinNumForCols(cards: Array<Card>) {
                 }
                }
             });
+            dataLine.push(''); // Add Spacer
           }
-          dataLine.push(''); // Add Spacer
         } else {
+          lastEntryWasSingleValue = true;
           dataLine.push(e.display);
         }
       }
@@ -1446,6 +1466,7 @@ findMinNumForCols(cards: Array<Card>) {
 
   getTopHeader(preset: ExportPreset, numEntries): Array<string> {
     const dataLine = [];
+    let lastEntryWasSingleValue = true;
     // Add Top Headers
     // For each key value pair in the preset
     preset.card.forEach((e) => {
@@ -1453,7 +1474,10 @@ findMinNumForCols(cards: Array<Card>) {
       if (e.value === true) {
         // If the key represents a subclass
         if (e.key === 'commodities') {
-          dataLine.push(''); // Add Spacer
+          if (lastEntryWasSingleValue) {
+            dataLine.push('');
+            lastEntryWasSingleValue = false;
+          }
           // Get the number of entries to be displayed (dynamic or static)
           const entryCount: number = numEntries.card.commodities;
           // Get the number of columns needed for each entry (how many properties are enabled for display)
@@ -1471,11 +1495,14 @@ findMinNumForCols(cards: Array<Card>) {
                 // Followed by whitespaces * the number of remaining columns for this entry
                 for (let j = 2; j < colCount; j++) { dataLine.push(''); }
               }
+              dataLine.push(''); // Add Spacer
             }
           }
-          dataLine.push(''); // Add Spacer
         } else if (e.key === 'irrigation') {
-          dataLine.push(''); // Add Spacer
+          if (lastEntryWasSingleValue) {
+            dataLine.push('');
+            lastEntryWasSingleValue = false;
+          }
           // Get the number of entries to be displayed (dynamic or static)
           const entryCount: number = numEntries.card.irrigation;
           // Get the number of columns needed for each entry (how many properties are enabled for display)
@@ -1501,11 +1528,14 @@ findMinNumForCols(cards: Array<Card>) {
                 dataLine.push(this.indexToDisplay(i), 'Irrigation');
                 for (let j = 2; j < colCount; j++) { dataLine.push(''); }
               }
+              dataLine.push(''); // Add Spacer
             }
           }
-          dataLine.push(''); // Add Spacer
         } else if (e.key === 'tractor') {
-          dataLine.push(''); // Add Spacer
+          if (lastEntryWasSingleValue) {
+            dataLine.push('');
+            lastEntryWasSingleValue = false;
+          }
           const entryCount: number = numEntries.card.tractor;
           let colCount = preset.tractorEntry.filter((e2) => e2.value === true).length;
 
@@ -1526,11 +1556,14 @@ findMinNumForCols(cards: Array<Card>) {
                 dataLine.push(this.indexToDisplay(i), 'Tractor');
                 for (let j = 2; j < colCount; j++) { dataLine.push(''); }
               }
+              dataLine.push(''); // Add Spacer
             }
           }
-          dataLine.push(''); // Add Spacer
         } else if (e.key === 'preChemicals') {
-          dataLine.push(''); // Add Spacer
+          if (lastEntryWasSingleValue) {
+            dataLine.push('');
+            lastEntryWasSingleValue = false;
+          }
           const entryCount: number = numEntries.card.preChemicals;
           let colCount = preset.preChemicals.filter((e2) => e2.value === true).length;
 
@@ -1549,10 +1582,11 @@ findMinNumForCols(cards: Array<Card>) {
                 dataLine.push(this.indexToDisplay(i), 'Pre Plant');
                 for (let j = 2; j < colCount; j++) { dataLine.push(''); }
               }
+              dataLine.push(''); // Add Spacer
             }
           }
-          dataLine.push(''); // Add Spacer
         } else {
+          lastEntryWasSingleValue = true;
           // If the key represents a single point of data
           dataLine.push('');
         }

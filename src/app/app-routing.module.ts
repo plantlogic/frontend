@@ -200,7 +200,8 @@ const routes: Routes = [
     canActivate: [RoleGuard],
     data: {
       parent: '/manage/export',
-      role: [PlRole.APP_ADMIN]
+      // Only App Admin can save any changes when viewing
+      role: [PlRole.APP_ADMIN, PlRole.DATA_VIEW]
     }
   },
   {

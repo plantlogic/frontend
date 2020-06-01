@@ -92,7 +92,6 @@ export class ExportCardDataComponent implements OnInit {
           break;
         default:
           // run export with custom preset
-          console.log('Custom Export Selected');
           this.generateCustom();
           break;
       }
