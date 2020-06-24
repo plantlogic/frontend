@@ -61,10 +61,12 @@
         <br />
         <input type="text" [(ngModel)]="card.lotNumber" [disabled]="!editing" class="form-control" />
         <br />
-        <b>Field ID:</b>
-        <br />
-        <input type="number" [(ngModel)]="card.fieldID" [disabled]="!editing" class="form-control" />
-        <br />
+        <ng-container *ngIf="!isShipper()">
+          <b>Field ID:</b>
+          <br />
+          <input type="number" [(ngModel)]="card.fieldID" [disabled]="!editing" class="form-control" />
+          <br />
+        </ng-container>
         <b>Shippers:</b>
         <br />
         <div class="form-group">
