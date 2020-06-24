@@ -410,6 +410,7 @@ export class OpenCardDataComponent implements OnInit {
               tempThis.card.postChemicalArray = [];
               tempThis.card.tractorArray = [];
               tempThis.card.irrigationArray = [];
+              tempThis.card.fieldID = null;
             } else {
               // Fix Datalist Display
               tempThis.card.tractorArray.forEach(e => {

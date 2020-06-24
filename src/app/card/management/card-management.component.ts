@@ -177,8 +177,8 @@ export class CardManagementComponent implements OnInit {
     return this.auth.hasPermission(PlRole.DATA_EDIT);
   }
 
-  private hasShipperPermission(): boolean {
-    return this.auth.hasPermission(PlRole.SHIPPER);
+  public hasShipperPermission(): boolean {
+    return this.auth.hasPermission(PlRole.SHIPPER) && !this.hasViewPermission() && !this.hasEditPermission();
   }
 
   public hasViewPermission(): boolean {
@@ -207,7 +207,7 @@ export class CardManagementComponent implements OnInit {
           sortedCommon[key] = tempThis.common.sortCommonArray(data[key], key);
         }
       });
-      if (this.hasShipperPermission() && !this.hasViewPermission()) {
+      if (this.hasShipperPermission()) {
         sortedCommon[`ranches`] = data[`ranches`];
       } else {
         sortedCommon[`ranches`] = data[`ranches`].filter(e => userRanchAccess.includes(e.id));
@@ -218,7 +218,7 @@ export class CardManagementComponent implements OnInit {
   }
 
   private loadCardData() {
-    const shipperRestricted: boolean = this.hasShipperPermission() && !this.hasViewPermission();
+    const shipperRestricted: boolean = this.hasShipperPermission();
     const shipperID = (shipperRestricted) ? this.auth.getShipperID() : null;
     this.cardService.getAllCards(shipperRestricted, shipperID).subscribe(
       data => {
