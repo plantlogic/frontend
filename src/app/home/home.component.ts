@@ -37,7 +37,7 @@ export class HomeComponent implements OnInit {
   @ViewChild('openCommoditiesChartRef') private openCommoditiesChartRef;
   commodityAcresChart: Chart;
   @ViewChild('commodityAcresChartRef') private commodityAcresChartRef;
-  totalCommodityAcres: number = 0;
+  totalCommodityAcres = 0;
 
   userManagementElements = false;
   userCount: number;
@@ -170,9 +170,9 @@ export class HomeComponent implements OnInit {
     const commodities = [];
     const counts = [];
 
-    data.map(c => (new Card()).copyConstructor(c))
-      .filter(c => !c.closed)
-      .forEach(c => c.commodityArray.forEach(co => {
+    data.map((c) => (new Card()).copyConstructor(c))
+      .filter((c) => !c.closed)
+      .forEach((c) => c.commodityArray.forEach(co => {
         const val = tempThis.findCommonValue('commodities', ['value', 'key'], co.commodity);
         const indx = commodities.indexOf(val);
         c.initTotalAcres();
@@ -189,11 +189,11 @@ export class HomeComponent implements OnInit {
     tempThis.totalCommodityAcres = Number(tempThis.totalCommodityAcres.toFixed(2));
 
     // sort arrays
-    let sortedCommodities = Object.assign([], commodities).sort();
-    let sortedCounts = [];
-    for (let commodity of sortedCommodities) {
-      let originalIndex = commodities.indexOf(commodity);
-      let count = counts[originalIndex];
+    const sortedCommodities = Object.assign([], commodities).sort();
+    const sortedCounts = [];
+    for (const commodity of sortedCommodities) {
+      const originalIndex = commodities.indexOf(commodity);
+      const count = counts[originalIndex];
       sortedCounts.push(count);
     }
 
@@ -247,11 +247,11 @@ export class HomeComponent implements OnInit {
       }));
 
     // sort arrays
-    let sortedCommodities = Object.assign([], commodities).sort();
-    let sortedCounts = [];
-    for (let commodity of sortedCommodities) {
-      let originalIndex = commodities.indexOf(commodity);
-      let count = counts[originalIndex];
+    const sortedCommodities = Object.assign([], commodities).sort();
+    const sortedCounts = [];
+    for (const commodity of sortedCommodities) {
+      const originalIndex = commodities.indexOf(commodity);
+      const count = counts[originalIndex];
       sortedCounts.push(count);
     }
 
