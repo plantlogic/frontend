@@ -35,6 +35,9 @@ export class HomeComponent implements OnInit {
   @ViewChild('cardHarvestedChartRef') private cardHarvestedChartRef;
   openCommoditiesChart: Chart;
   @ViewChild('openCommoditiesChartRef') private openCommoditiesChartRef;
+  commodityAcresChart: Chart;
+  @ViewChild('commodityAcresChartRef') private commodityAcresChartRef;
+  totalCommodityAcres = 0;
 
   userManagementElements = false;
   userCount: number;
@@ -108,6 +111,7 @@ export class HomeComponent implements OnInit {
           this.cardCount = data.data.length;
           this.generateCardsHarvestedChart(data.data);
           this.generateOpenCommoditiesChart(data.data);
+          this.generateCommoditieAcresChart(data.data);
         } else if (!data.success) {
           AlertService.newBasicAlert('Error: ' + data.error, true);
         }
@@ -121,6 +125,7 @@ export class HomeComponent implements OnInit {
           this.cardCount = data.data.length;
           this.generateCardsHarvestedChart(data.data);
           this.generateOpenCommoditiesChart(data.data);
+          this.generateCommoditieAcresChart(data.data);
         } else if (!data.success) {
           AlertService.newBasicAlert('Error: ' + data.error, true);
         }
@@ -134,6 +139,7 @@ export class HomeComponent implements OnInit {
           this.cardCount = data.data.length;
           this.generateCardsHarvestedChart(data.data);
           this.generateOpenCommoditiesChart(data.data);
+          this.generateCommoditieAcresChart(data.data);
         } else if (!data.success) {
           AlertService.newBasicAlert('Error: ' + data.error, true);
         }
@@ -159,6 +165,69 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  private generateCommoditieAcresChart(data: Array<Card>): void {
+    const tempThis = this;
+    const commodities = [];
+    const counts = [];
+
+    data.map((c) => (new Card()).copyConstructor(c))
+      .filter((c) => !c.closed)
+      .forEach((c) => c.commodityArray.forEach(co => {
+        const val = tempThis.findCommonValue('commodities', ['value', 'key'], co.commodity);
+        const indx = commodities.indexOf(val);
+        c.initTotalAcres();
+        tempThis.totalCommodityAcres += c.totalAcres;
+        if (indx < 0) {
+          commodities.push(val);
+          counts.push(c.totalAcres);
+        } else {
+          counts[indx] += c.totalAcres;
+        }
+      }));
+
+    // Round Total Acre Value
+    tempThis.totalCommodityAcres = Number(tempThis.totalCommodityAcres.toFixed(2));
+
+    // sort arrays
+    const sortedCommodities = Object.assign([], commodities).sort();
+    const sortedCounts = [];
+    for (const commodity of sortedCommodities) {
+      const originalIndex = commodities.indexOf(commodity);
+      const count = counts[originalIndex];
+      sortedCounts.push(count);
+    }
+
+    this.commodityAcresChart = new Chart(this.commodityAcresChartRef.nativeElement, {
+      type: 'bar',
+      data: {
+        type: 'line',
+        labels: sortedCommodities,
+        datasets: [
+          {
+            data: sortedCounts,
+            borderColor: '#00AEFF',
+            backgroundColor: 'rgba(0,174,255,0.42)',
+          }
+        ]
+      },
+      options: {
+        legend: {
+          display: false
+        },
+        scales: {
+          xAxes: [{
+            display: true
+          }],
+          yAxes: [{
+            display: true,
+            ticks: {
+              precision: 0
+            }
+          }],
+        }
+      }
+    });
+  }
   private generateOpenCommoditiesChart(data: Array<Card>): void {
     const tempThis = this;
     const commodities = [];
@@ -177,14 +246,23 @@ export class HomeComponent implements OnInit {
         }
       }));
 
+    // sort arrays
+    const sortedCommodities = Object.assign([], commodities).sort();
+    const sortedCounts = [];
+    for (const commodity of sortedCommodities) {
+      const originalIndex = commodities.indexOf(commodity);
+      const count = counts[originalIndex];
+      sortedCounts.push(count);
+    }
+
     this.openCommoditiesChart = new Chart(this.openCommoditiesChartRef.nativeElement, {
       type: 'bar',
       data: {
         type: 'line',
-        labels: commodities,
+        labels: sortedCommodities,
         datasets: [
           {
-            data: counts,
+            data: sortedCounts,
             borderColor: '#00AEFF',
             backgroundColor: 'rgba(0,174,255,0.42)',
           }

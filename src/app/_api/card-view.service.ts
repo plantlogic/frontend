@@ -22,6 +22,14 @@ export class CardViewService {
     }
   }
 
+  public getCardsFiltered(shipperRestricted?: boolean, shipperID?: string): Observable<BasicDTO<Card[]>> {
+    if (shipperRestricted && shipperID) {
+      return this.http.get<BasicDTO<Card[]>>(environment.ApiUrl + '/data/view/shipperRanches/' + shipperID, this.httpOptions);
+    } else {
+      return this.http.get<BasicDTO<Card[]>>(environment.ApiUrl + '/data/view/ranches', this.httpOptions);
+    }
+  }
+
   public getCardById(id: string): Observable<BasicDTO<Card>> {
     return this.http.get<BasicDTO<Card>>(environment.ApiUrl + '/data/view/ranches/' + id, this.httpOptions);
   }

@@ -37,6 +37,10 @@
         <span class="h2 ml-1 font-weight-light">Commodities in Open Cards</span>
         <canvas #openCommoditiesChartRef>{{openCommoditiesChart}}</canvas>
       </div>
+      <div class="col-md-6">
+        <span class="h2 ml-1 font-weight-light">Acres/Commodity, Total: {{totalCommodityAcres}}</span>
+        <canvas #commodityAcresChartRef>{{commodityAcresChart}}</canvas>
+      </div>
     </ng-container>
 
     <ng-container *ngIf="showRegisteredUsers()">
