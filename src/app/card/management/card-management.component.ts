@@ -277,7 +277,7 @@ export class CardManagementComponent implements OnInit {
         }
         return comparison;
       });
-      console.log(commodityPairs);
+      // console.log(commodityPairs);
       filter.allCommoditiesOrdered = commodityPairs.map((e) => e.id);
 
       // Permission Filters
@@ -288,7 +288,7 @@ export class CardManagementComponent implements OnInit {
         e => {
           if (e.success) {
             const response: DbFilterResponse = e.data;
-            console.log(response);
+            // console.log(response);
             this.cards = response.cards.map(c => (new Card()).copyConstructor(c));
             this.cardSizeNonLimited = response.size;
 
