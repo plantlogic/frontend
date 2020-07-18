@@ -11,6 +11,8 @@ import {PlRole} from '../../_dto/user/pl-role.enum';
 import {CommonFormDataService} from 'src/app/_api/common-form-data.service';
 import {ActivatedRoute} from '@angular/router';
 import { CommonLookup } from 'src/app/_api/common-data.service';
+import { DbFilterResponse } from 'src/app/_dto/card/dbFilterResponse';
+import { DbFilter } from 'src/app/_dto/card/dbFilter';
 
 @Component({
   selector: 'app-management',
@@ -24,6 +26,7 @@ export class CardManagementComponent implements OnInit {
 
   cards: Card[] = [];
   cardsRaw: Card[] = [];
+  cardSizeNonLimited: number;
   filterRanchName: string;
   filterFieldID: string;
   filterLotNumber: string;
@@ -31,13 +34,13 @@ export class CardManagementComponent implements OnInit {
   previous: string;
   viewSize = 20;
   numPages: number;
-  pageNum: number;
+  pageNum = 1;
   pages: number[];
   hiddenPages: false;
 
   // Alternative sorting for mobile
-  mFilterSort: string;
-  mFilterOrder: string;
+  filterSort: string;
+  filterOrder: string;
 
   // create array of common keys, whose data is needed for card entry. Omit restricted options.
   commonKeys = ['commodities'];
@@ -50,8 +53,8 @@ export class CardManagementComponent implements OnInit {
         tempThis[key] = c[key];
       });
       this[`ranches`] = c[`ranches`];
-      this.loadCardData();
-      this.setPage(1);
+      this.loadCachedFilters();
+      this.loadCardDataFiltered();
     });
   }
 
@@ -72,29 +75,11 @@ export class CardManagementComponent implements OnInit {
     localStorage.removeItem('managementQuery');
     this.tableService.setDataSource(this.previous);
     this.cards = this.tableService.getDataSource();
-    this.updateNumPages();
+    // this.updateNumPages();
+    this.loadCardDataFiltered();
   }
 
-  private filterCards() {
-    let filterApplied = false;
-    let cards = this.tableService.getDataSource();
-    const tempThis = this;
-    if (this.filterRanchName) {
-      cards = cards.filter(card => (card.ranchName) && card.ranchName.toLowerCase().includes(tempThis.filterRanchName.toLowerCase()));
-      filterApplied = true;
-    }
-    if (this.filterFieldID) {
-      cards = cards.filter(card => (card.fieldID) && (card.fieldID + '').includes(tempThis.filterFieldID.toLowerCase()));
-      filterApplied = true;
-    }
-    if (this.filterLotNumber) {
-      cards = cards.filter(card => (card.lotNumber) && card.lotNumber.toLowerCase().includes(tempThis.filterLotNumber.toLowerCase()));
-      filterApplied = true;
-    }
-    if (this.filterCommodity) {
-      cards = cards.filter(c => (c.commodityString) && c.commodityString.toLowerCase().includes(tempThis.filterCommodity.toLowerCase()));
-      filterApplied = true;
-    }
+  public filterItems() {
     // Update local storage to save query
     localStorage.setItem('managementQuery', JSON.stringify({
       ranchName: this.filterRanchName,
@@ -102,25 +87,7 @@ export class CardManagementComponent implements OnInit {
       lotNumber: this.filterLotNumber,
       commodity: this.filterCommodity
     }));
-    return { data: cards, wasFiltered: filterApplied };
-  }
-
-  public filterItems() {
-    const prev = this.tableService.getDataSource();
-    const filter = this.filterCards();
-    if (!filter.wasFiltered) {
-      this.tableService.setDataSource(this.previous);
-      this.cards = this.tableService.getDataSource();
-    } else {
-      this.cards = filter.data;
-      this.tableService.setDataSource(prev);
-    }
-    this.updateNumPages();
-
-    // If displaying on mobile, sort with the current mobile sort settings
-    if (window.getComputedStyle(document.getElementById('mobileSorter')).display !== 'none') {
-      this.mobileSort();
-    }
+    this.loadCardDataFiltered();
   }
 
   /*
@@ -217,106 +184,143 @@ export class CardManagementComponent implements OnInit {
     });
   }
 
-  private loadCardData() {
-    const shipperRestricted: boolean = this.hasShipperPermission();
-    const shipperID = (shipperRestricted) ? this.auth.getShipperID() : null;
-    this.cardService.getAllCards(shipperRestricted, shipperID).subscribe(
-      data => {
-        if (data.success) {
-          this.cards = data.data.map(c => (new Card()).copyConstructor(c));
-
-          // For display purposes, change any common IDs to their values
-          this.cards.forEach(card => {
-            card = this.cardIDsToValues(card);
-            card.initCommodityString();
-          });
-          // Keep a raw copy of the data
-          this.cardsRaw = data.data.map(c => (new Card()).copyConstructor(c));
-          this.tableService.setDataSource(this.cards);
-          this.previous = this.tableService.getDataSource();
-          this.updateNumPages();
-
-          if (this.route.snapshot.queryParams.saveFilter) {
-            let previousQuery: any = localStorage.getItem('managementQuery');
-            if (previousQuery) {
-              previousQuery = JSON.parse(previousQuery);
-              this.filterRanchName = previousQuery.ranchName;
-              this.filterFieldID = previousQuery.fieldID;
-              this.filterLotNumber = previousQuery.lotNumber;
-              this.filterCommodity = previousQuery.commodity;
-              this.filterItems();
-            }
-          } else {
-            this.filterRanchName = '';
-            this.filterFieldID = '';
-            this.filterLotNumber = '';
-            this.filterCommodity = '';
-            localStorage.removeItem('managementQuery');
-          }
-
-        } else if (!data.success) {
-          AlertService.newBasicAlert('Error: ' + data.error, true);
-        }
-      },
-      failure => {
-        AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
+  private loadCachedFilters(): void {
+    if (this.route.snapshot.queryParams.saveFilter) {
+      let previousQuery: any = localStorage.getItem('managementQuery');
+      if (previousQuery) {
+        previousQuery = JSON.parse(previousQuery);
+        this.filterRanchName = previousQuery.ranchName;
+        this.filterFieldID = previousQuery.fieldID;
+        this.filterLotNumber = previousQuery.lotNumber;
+        this.filterCommodity = previousQuery.commodity;
       }
-    );
+    } else {
+      this.filterRanchName = '';
+      this.filterFieldID = '';
+      this.filterLotNumber = '';
+      this.filterCommodity = '';
+      localStorage.removeItem('managementQuery');
+    }
+  }
+
+  public updateSortOrder(sort: string) {
+    console.log(sort);
+    if (this.filterSort === sort) {
+      if (this.filterOrder === 'asc') {
+        this.filterOrder = 'desc';
+      } else {
+        this.filterOrder = 'asc';
+      }
+    } else {
+      this.filterSort = sort;
+      this.filterOrder = 'asc';
+    }
+    this.loadCardDataFiltered(false);
+  }
+
+  public loadCardDataFiltered(pageSelect?: boolean) {
+    const previousPage = this.pageNum;
+    if (!pageSelect) { this.pageNum = 1; }
+
+    // Create the db filter
+    const filter: DbFilter = new DbFilter();
+    filter.fieldID = (this.filterFieldID) ? this.filterFieldID : '';
+    filter.lotNumber = (this.filterLotNumber) ? this.filterLotNumber : '';
+    filter.sort = (this.filterSort) ? this.filterSort : 'lastUpdated';
+    this.filterSort = filter.sort;
+    filter.order = (this.filterOrder) ? this.filterOrder : 'desc';
+    this.filterOrder = filter.order;
+    filter.start = (this.pageNum - 1) * Number(this.viewSize);
+    filter.stop = Number(filter.start) + Number(this.viewSize);
+
+    const ranches = [];
+    const commodities = [];
+    const commodityPairs = [];
+    this.common.getAllValues((data) => {
+      // Ranch Ids
+      const ranchName = (this.filterRanchName) ? this.filterRanchName : '';
+      if (ranchName === '') { filter.isAllRanches = true; }
+      data.ranches.forEach((ranch) => {
+        if (ranchName !== '' && ranchName !== null) {
+          if (ranch.value.toLowerCase().includes(ranchName.toLowerCase())) {
+            ranches.push(ranch.id);
+          }
+        } else {
+          ranches.push(ranch.id);
+        }
+      });
+      filter.ranches = ranches;
+      // Commodity Ids
+      const commodity = (this.filterCommodity) ? this.filterCommodity : '';
+      if (commodity === '') { filter.isAllCommodities = true; }
+      data.commodities.forEach((c) => {
+        const id = c.id;
+        const value = Object.keys(c.value)[0];
+        commodityPairs.push({id, value});
+        if (commodity !== '' && commodity !== null) {
+          if (value.toLowerCase().includes(commodity.toLowerCase())) {
+            commodities.push(id);
+          }
+        } else {
+          commodities.push(id);
+        }
+      });
+      filter.commodities = commodities;
+      commodityPairs.sort((a, b) => {
+        let comparison = 0;
+        const valA = a.value;
+        const valB = b.value;
+        if (valA > valB) {
+          comparison = 1;
+        } else if (valA < valB) {
+          comparison = -1;
+        }
+        return comparison;
+      });
+      console.log(commodityPairs);
+      filter.allCommoditiesOrdered = commodityPairs.map((e) => e.id);
+
+      // Permission Filters
+      const shipperRestricted: boolean = this.hasShipperPermission();
+      const shipperID = (shipperRestricted) ? this.auth.getShipperID() : null;
+
+      this.cardService.getCardsFiltered(filter, shipperRestricted, shipperID).subscribe(
+        e => {
+          if (e.success) {
+            const response: DbFilterResponse = e.data;
+            console.log(response);
+            this.cards = response.cards.map(c => (new Card()).copyConstructor(c));
+            this.cardSizeNonLimited = response.size;
+
+            // For display purposes, change any common IDs to their values
+            this.cards.forEach(card => {
+              card = this.cardIDsToValues(card);
+              card.initCommodityString();
+            });
+            // Keep a raw copy of the data
+            this.cardsRaw = response.cards.map(c => (new Card()).copyConstructor(c));
+            this.tableService.setDataSource(this.cards);
+            this.previous = this.tableService.getDataSource();
+            this.updateNumPages();
+            if (pageSelect) {
+              this.setPage(previousPage, false);
+            } else {
+              this.setPage(1, false);
+            }
+          } else if (!e.success) {
+            AlertService.newBasicAlert('Error: ' + e.error, true);
+          }
+        },
+        failure => {
+          AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
+        }
+      );
+    });
   }
 
   // Used for animation
   public min(x: number, y: number): number {
     return Math.min(x, y);
-  }
-
-  public mobileSort(): void {
-    if (this.mFilterSort) {
-      if (!this.mFilterOrder) { this.mFilterOrder = 'asc'; }
-      switch (this.mFilterSort) {
-        case 'ranchName':
-          // Sort by ranch name
-          if (this.mFilterOrder === 'asc') {
-            // Ascending
-            this.cards = this.cards.sort((a, b) => a.ranchName > b.ranchName ? 1 : -1);
-          } else {
-            // Descending
-            this.cards = this.cards.sort((a, b) => a.ranchName > b.ranchName ? -1 : 1);
-          }
-          break;
-        case 'lotNumber':
-          // Sort by lot number
-          if (this.mFilterOrder === 'asc') {
-            // Ascending
-            this.cards = this.cards.sort((a, b) => a.lotNumber > b.lotNumber ? 1 : -1);
-          } else {
-            // Descending
-            this.cards = this.cards.sort((a, b) => a.lotNumber > b.lotNumber ? -1 : 1);
-          }
-          break;
-        case 'commodity':
-          // Sort by Commodity
-          if (this.mFilterOrder === 'asc') {
-            // Ascending
-            this.cards = this.cards.sort((a, b) => a.commodityString > b.commodityString ? 1 : -1);
-          } else {
-            // Descending
-            this.cards = this.cards.sort((a, b) => a.commodityString > b.commodityString ? -1 : 1);
-          }
-          break;
-        case 'fieldID':
-          // Sort by Commodity
-          if (this.mFilterOrder === 'asc') {
-            // Ascending
-            this.cards = this.cards.sort((a, b) => a.fieldID > b.fieldID ? 1 : -1);
-          } else {
-            // Descending
-            this.cards = this.cards.sort((a, b) => a.fieldID > b.fieldID ? -1 : 1);
-          }
-          break;
-        default:
-          break;
-      }
-    }
   }
 
   public resetFieldIds(): void {
@@ -330,14 +334,16 @@ export class CardManagementComponent implements OnInit {
     });
   }
 
-  public setPage(n: number): void {
+  public setPage(n: number, updateFilter?: boolean): void {
     if (this.pageNum === n) { return; }
     this.pageNum = n;
     if (this.pageNum > this.numPages) { this.pageNum = this.numPages; }
     if (this.pageNum < 1) { this.pageNum = 1; }
+    if (updateFilter) { this.loadCardDataFiltered(true); }
   }
 
   public showListing(index: number): boolean {
+    return true;
     const low = (this.pageNum - 1) * this.viewSize;
     const high = (this.pageNum * this.viewSize) - 1;
     if ((index >= low) && (index <= high)) {
@@ -390,8 +396,7 @@ export class CardManagementComponent implements OnInit {
   public updateNumPages(e?: number): void {
     // When event is called, e is new viewSize value while this.viewSize is old Value
     if (e) { this.viewSize = e; }
-    this.numPages = Math.ceil(this.cards.length / this.viewSize);
+    this.numPages = Math.ceil(this.cardSizeNonLimited / this.viewSize);
     this.pages = Array(this.numPages).fill(0).map((x, i) => i + 1);
-    this.setPage(1);
   }
 }

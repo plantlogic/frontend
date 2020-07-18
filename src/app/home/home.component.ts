@@ -172,7 +172,7 @@ export class HomeComponent implements OnInit {
 
     data.map((c) => (new Card()).copyConstructor(c))
       .filter((c) => !c.closed)
-      .forEach((c) => c.commodityArray.forEach(co => {
+      .forEach((c) => c.commodityArray.forEach((co) => {
         const val = tempThis.findCommonValue('commodities', ['value', 'key'], co.commodity);
         const indx = commodities.indexOf(val);
         c.initTotalAcres();
