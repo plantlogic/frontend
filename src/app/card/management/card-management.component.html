@@ -4,7 +4,7 @@
       <div class="col text-center">
         <button type="button"color="primary" name="cardCount" outline="true" disabled mdbBtn floating="true" size="sm">
         <span>Cards: </span>
-        <b>{{cards.length}}</b>
+        <b>{{cardSizeNonLimited}}</b>
         </button>
       </div>
     </div>
@@ -37,19 +37,20 @@
         <div class="col col-sm">
           <div>Sort By</div>
           <div>
-            <select class="form-control form-control-sm select-sm" [(ngModel)]="mFilterSort" (ngModelChange)="mobileSort()" >
+            <select class="form-control form-control-sm select-sm" [(ngModel)]="filterSort" (ngModelChange)="loadCardDataFiltered()" >
             <option value="undefined" disabled selected>None</option>
             <option value="ranchName">Ranch Name</option>
             <option value="fieldID" *ngIf="!hasShipperPermission()">Field ID</option>
             <option value="lotNumber">Lot Number</option>
-            <option value="commodity">Commodity</option>
+            <option value="commodities">Commodity</option>
+            <option value="lastUpdated">Last Updated</option>
             </select>
           </div>
         </div>
         <div class="col col-sm">
           <div>Order</div>
           <div>
-            <select class="form-control form-control-sm select-sm" [(ngModel)]="mFilterOrder" (ngModelChange)="mobileSort()">
+            <select class="form-control form-control-sm select-sm" [(ngModel)]="filterOrder" (ngModelChange)="loadCardDataFiltered()">
             <option value="undefined" disabled selected>None</option>
             <option value="asc">Ascending</option>
             <option value="desc">Descending</option>
@@ -59,7 +60,7 @@
         <div class="col col-sm">
           <div>Limit</div>
           <div>
-            <select class="form-control form-control-sm select-sm"  (ngModelChange)="updateNumPages($event)" [(ngModel)]="viewSize">
+            <select class="form-control form-control-sm select-sm"  [(ngModel)]="viewSize" (ngModelChange)="loadCardDataFiltered(false)">
             <option value="5">5</option>
             <option value="10">10</option>
             <option value="20">20</option>
@@ -69,20 +70,23 @@
         </div>
       </div>
     </div>
+    
     <!-- On Desktop -->
     <div class="d-none d-md-inline-block" style="width:100%">
       <span style="float: left; vertical-align: middle;">
-      <button type="button" color="success" (click)="updateFieldIds()" class="mr-1 mb-1" mdbBtn floating="true" size="sm" style="display: inline-block; margin-right: 5px"
-      [disabled]="!hasEditPermission()">
-      Update All Field IDs
-      </button>
-      <button type="button" color="danger" (click)="resetFieldIds()" class="mr-1 mb-1" mdbBtn floating="true" size="sm" style="display: inline-block;">
-      Clear Changes
-      </button>
+        <ng-container *ngIf="!hasShipperPermission()">
+          <button type="button" color="success" (click)="updateFieldIds()" class="mr-1 mb-1" mdbBtn floating="true" size="sm" style="display: inline-block; margin-right: 5px"
+          [disabled]="!hasEditPermission()">
+          Update All Field IDs
+          </button>
+          <button type="button" color="danger" (click)="resetFieldIds()" class="mr-1 mb-1" mdbBtn floating="true" size="sm" style="display: inline-block;">
+          Clear Changes
+          </button>
+        </ng-container>
       </span>
       <span style="float: right; vertical-align: middle;">
-        Listings: &nbsp;
-        <select class="form-control form-control-sm select-sm"  (ngModelChange)="updateNumPages($event)" [(ngModel)]="viewSize">
+        Limit: &nbsp;
+        <select class="form-control form-control-sm select-sm" [(ngModel)]="viewSize" (ngModelChange)="loadCardDataFiltered(false)">
         <option value="5">5</option>
         <option value="10">10</option>
         <option value="20">20</option>
@@ -90,34 +94,35 @@
         </select>
       </span>
     </div>
+
     <!-- Desktop / Large Devices -->
     <div class="d-none d-md-inline-block">
       <h2 *ngIf="!cards">Loading data...</h2>
       <table mdbTable *ngIf="cards" class="table table-responsive">
         <thead class="text-nowrap">
           <tr>
-            <th scope="col" class="small" *ngIf="!hasShipperPermission()" [mdbTableSort]="cards" [sortBy]="'fieldID'" style="width:20%;">
+            <th scope="col" class="small" *ngIf="!hasShipperPermission()" style="width:20%;" (click)="updateSortOrder('fieldID')">
             <span>Field ID <i class="fa fa-sort ml-1"></i></span>
             </th>
-            <th *ngIf="!hasShipperPermission()" class="small" [mdbTableSort]="cards" [sortBy]="'ranchName'" style="width:15%;">
+            <th *ngIf="!hasShipperPermission()" class="small" style="width:15%;" (click)="updateSortOrder('ranchName')">
             <span>Ranch<span class="d-none d-md-inline-block"></span> <i class="fa fa-sort ml-1"></i></span>
             </th>
-            <th *ngIf="hasShipperPermission()" class="small" [mdbTableSort]="cards" [sortBy]="'ranchName'" style="width:25%;">
+            <th *ngIf="hasShipperPermission()" class="small" style="width:25%;" (click)="updateSortOrder('ranchName')">
             <span>Ranch<span class="d-none d-md-inline-block"></span> <i class="fa fa-sort ml-1"></i></span>
             </th>
-            <th class="small" [mdbTableSort]="cards" [sortBy]="'lotNumber'" style="width:15%;">
+            <th class="small" style="width:15%;" (click)="updateSortOrder('lotNumber')">
             <span>Lot # <i class="fa fa-sort ml-1"></i></span>
             </th>
-            <th *ngIf="!hasShipperPermission()" class="small" [mdbTableSort]="cards" [sortBy]="'commodityString'" style="width:20%;">
+            <th *ngIf="!hasShipperPermission()" class="small" style="width:20%;" (click)="updateSortOrder('commodities')">
             <span>Commodities <i class="fa fa-sort ml-1"></i></span>
             </th>
-            <th *ngIf="hasShipperPermission()"class="small" [mdbTableSort]="cards" [sortBy]="'commodityString'" style="width:30%;">
+            <th *ngIf="hasShipperPermission()"class="small" style="width:30%;" (click)="updateSortOrder('commodities')">
             <span>Commodities <i class="fa fa-sort ml-1"></i></span>
             </th>
-            <th class="small" [mdbTableSort]="cards" [sortBy]="'lastUpdated'" style="width:10%;">
+            <th class="small" style="width:10%;" (click)="updateSortOrder('lastUpdated')">
             Updated <i class="fa fa-sort ml-1"></i>
             </th>
-            <th class="small" [mdbTableSort]="cards" [sortBy]="'closed'" style="width:10%;">
+            <th class="small" style="width:10%;" (click)="updateSortOrder('isClosed')">
             State <i class="fa fa-sort ml-1"></i>
             </th>
             <th class="small" style="width:10%;">Options</th>
@@ -158,11 +163,11 @@
         <tfoot>
           <tr>
             <th scope="row" colspan="9">
-              <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(1)"><i class="fas fa-angle-double-left"></i></span>
-              <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(pageNum-1)"><i class="fas fa-angle-left"></i></span>
-              <span *ngFor="let p of pages"><span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(p)">{{p}}</span></span>
-              <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(pageNum+1)"><i class="fas fa-angle-right"></i></span>
-              <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(numPages)"><i class="fas fa-angle-double-right"></i></span>
+              <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(1, true)"><i class="fas fa-angle-double-left"></i></span>
+              <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(pageNum-1, true)"><i class="fas fa-angle-left"></i></span>
+              <span *ngFor="let p of pages"><span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(p, true)">{{p}}</span></span>
+              <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(pageNum+1, true)"><i class="fas fa-angle-right"></i></span>
+              <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(numPages, true)"><i class="fas fa-angle-double-right"></i></span>
             </th>
           </tr>
         </tfoot>
@@ -177,9 +182,14 @@
           <tr>
             <th style="width:100%;">
               <div class="row">
-                <div *ngIf="!hasShipperPermission()" class="col col-sm-3">Field ID</div>
-                <div class="col col-sm-7">Ranch - Lot Number - Commodity</div>
-                <div class="col col-sm-2">Open</div>
+                <ng-container *ngIf="!hasShipperPermission()">
+                  <div class="col col-3">Field ID</div>
+                  <div class="col col-7">Ranch - Lot Number - Commodity</div>
+                </ng-container>
+                <ng-container *ngIf="hasShipperPermission()">
+                  <div class="col col-10">Ranch - Lot Number - Commodity</div>
+                </ng-container>
+                <div class="col col-2">Open</div>
               </div>
             </th>
           </tr>
@@ -189,14 +199,20 @@
           <ng-container *ngIf="showListing(i)">
             <td>
               <div class="row">
-                <div *ngIf="!hasShipperPermission()" class="col col-sm-3">
+                <ng-container *ngIf="!hasShipperPermission()">
                   <input type="number" [(ngModel)]="p.fieldID" class="form-control form-control-sm" [disabled]="!hasEditPermission()"/> 
-                </div>
-                <div class="col col-sm-7 hover">
-                  {{'' + p.ranchName + ' - ' + p.lotNumber + ' - ' + p.commodityString}}
-                  <span class="hover-text">{{'' + p.ranchName + ' - ' + p.lotNumber + ' - ' + p.commodityString}}</span>
-                </div>
-                <div class="col col-sm-2">
+                  <div class="col col-sm-7 hover">
+                    {{'' + p.ranchName + ' - ' + p.lotNumber + ' - ' + p.commodityString}}
+                    <span class="hover-text">{{'' + p.ranchName + ' - ' + p.lotNumber + ' - ' + p.commodityString}}</span>
+                  </div>
+                </ng-container>
+                <ng-container *ngIf="hasShipperPermission()">
+                  <div class="col col-10 hover">
+                    {{'' + p.ranchName + ' - ' + p.lotNumber + ' - ' + p.commodityString}}
+                    <span class="hover-text">{{'' + p.ranchName + ' - ' + p.lotNumber + ' - ' + p.commodityString}}</span>
+                  </div>
+                </ng-container>
+                <div class="col col-2">
                   <button type="button" color="success" [routerLink]="['/manage/o/', p.id]"
                     alt="View Card" class="mr-1 mb-1" mdbBtn floating="true" size="sm">
                   <i class="ml-1 fa fa-external-link-alt" aria-hidden="true"></i>
@@ -210,11 +226,11 @@
         <tfoot>
           <tr>
             <th scope="row" colspan="9">
-              <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(1)"><i class="fas fa-angle-double-left"></i></span>
-              <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(pageNum-1)"><i class="fas fa-angle-left"></i></span>
-              <span *ngFor="let p of pages"><span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(p)">{{p}}</span></span>
-              <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(pageNum+1)"><i class="fas fa-angle-right"></i></span>
-              <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(numPages)"><i class="fas fa-angle-double-right"></i></span>
+              <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(1, true)"><i class="fas fa-angle-double-left"></i></span>
+              <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(pageNum-1, true)"><i class="fas fa-angle-left"></i></span>
+              <span *ngFor="let p of pages"><span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(p, true)">{{p}}</span></span>
+              <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(pageNum+1, true)"><i class="fas fa-angle-right"></i></span>
+              <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(numPages, true)"><i class="fas fa-angle-double-right"></i></span>
             </th>
           </tr>
         </tfoot>
