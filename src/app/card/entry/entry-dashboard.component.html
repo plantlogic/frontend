@@ -4,7 +4,7 @@
        <div class="col text-center">
          <button type="button"color="primary" name="cardCount" outline="true" disabled mdbBtn floating="true" size="sm">
          <span>Cards: </span>
-         <b>{{cards.length}}</b>
+         <b>{{cardSizeNonLimited}}</b>
          </button>
        </div>
      </div>
@@ -33,7 +33,7 @@
          <div class="col col-sm">
            <div>Sort By</div>
            <div>
-             <select class="form-control form-control-sm select-sm" [(ngModel)]="mFilterSort" (ngModelChange)="mobileSort()" >
+             <select class="form-control form-control-sm select-sm" [(ngModel)]="filterSort" (ngModelChange)="loadCardDataFiltered()" >
              <option value="undefined" disabled selected>None</option>
              <option value="ranchName">Ranch Name</option>
              <option value="lotNumber">Lot Number</option>
@@ -44,7 +44,7 @@
          <div class="col col-sm">
            <div>Order</div>
            <div>
-             <select class="form-control form-control-sm select-sm" [(ngModel)]="mFilterOrder" (ngModelChange)="mobileSort()">
+             <select class="form-control form-control-sm select-sm" [(ngModel)]="filterOrder" (ngModelChange)="loadCardDataFiltered()">
              <option value="undefined" disabled selected>None</option>
              <option value="asc">Ascending</option>
              <option value="desc">Descending</option>
@@ -54,7 +54,7 @@
          <div class="col col-sm">
            <div>Limit</div>
            <div>
-             <select class="form-control form-control-sm select-sm"  (ngModelChange)="updateNumPages($event)" [(ngModel)]="viewSize">
+             <select class="form-control form-control-sm select-sm" [(ngModel)]="viewSize" (ngModelChange)="loadCardDataFiltered(false)">
              <option value="5">5</option>
              <option value="10">10</option>
              <option value="20">20</option>
@@ -69,7 +69,7 @@
        <div class="row justify-content-end">
          <div class="col-3" style="text-align:center;">
            <span style="vertical-align: middle;">Limit:</span>
-           <select class="form-control form-control-sm select-sm"  (ngModelChange)="updateNumPages($event)" [(ngModel)]="viewSize">
+           <select class="form-control form-control-sm select-sm" [(ngModel)]="viewSize" (ngModelChange)="loadCardDataFiltered(false)">
            <option value="5">5</option>
            <option value="10">10</option>
            <option value="20">20</option>
@@ -84,10 +84,10 @@
        <table mdbTable *ngIf="cards" class="table table-responsive">
          <thead class="text-nowrap">
            <tr>
-             <th class="small" style="width:45%;" [mdbTableSort]="cards" [sortBy]="'ranchName'">
+             <th class="small" style="width:45%;" (click)="updateSortOrder('ranchName')">
              <span>Ranch <i class="fa fa-sort ml-1"></i></span>
              </th>
-             <th class="small" style="width:40%;" [mdbTableSort]="cards" [sortBy]="'lotNumber'" >
+             <th class="small" style="width:40%;" (click)="updateSortOrder('lotNumber')">
              <span>Lot # <i class="fa fa-sort ml-1"></i></span>
              </th>
              <th class="small" style="width:15%;">Options</th>
@@ -95,7 +95,6 @@
          </thead>
          <tbody>
            <tr mdbTableCol *ngFor="let p of cards; let i = index" class="animated fadeIn" [style.animation-delay]="this.min((30*i), 1000)+ 'ms'">
-           <ng-container *ngIf="showListing(i)">
              <td class="hover">{{p.ranchName}}<span class="hover-text">{{p.ranchName}}</span></td>
              <td class="hover">{{p.lotNumber}}<span class="hover-text">{{p.lotNumber}}</span></td>
              <td>
@@ -112,18 +111,17 @@
                  </button>
                </div>
              </td>
-           </ng-container>
            </tr>
          </tbody>
          <tfoot>
            <tr>
-             <th scope="row" colspan="9">
-               <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(1)"><i class="fas fa-angle-double-left"></i></span>
-               <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(pageNum-1)"><i class="fas fa-angle-left"></i></span>
-               <span *ngFor="let p of pages"><span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(p)">{{p}}</span></span>
-               <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(pageNum+1)"><i class="fas fa-angle-right"></i></span>
-               <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(numPages)"><i class="fas fa-angle-double-right"></i></span>
-             </th>
+            <th scope="row" colspan="9">
+              <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(1, true)"><i class="fas fa-angle-double-left"></i></span>
+              <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(pageNum-1, true)"><i class="fas fa-angle-left"></i></span>
+              <span *ngFor="let p of pages"><span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(p, true)">{{p}}</span></span>
+              <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(pageNum+1, true)"><i class="fas fa-angle-right"></i></span>
+              <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(numPages, true)"><i class="fas fa-angle-double-right"></i></span>
+            </th>
            </tr>
          </tfoot>
        </table>
@@ -145,7 +143,6 @@
          </thead>
          <tbody>
            <tr mdbTableCol *ngFor="let p of cards; let i = index" class="animated fadeIn" [style.animation-delay]="this.min((30*i), 1000)+ 'ms'">
-           <ng-container *ngIf="showListing(i)">
              <td>
                <div class="row">
                  <div class="col col-sm-10 hover">
@@ -160,18 +157,17 @@
                  </div>
                </div>
              </td>
-           </ng-container>
            </tr>
          </tbody>
          <tfoot>
            <tr>
-             <th scope="row" colspan="9">
-               <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(1)"><i class="fas fa-angle-double-left"></i></span>
-               <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(pageNum-1)"><i class="fas fa-angle-left"></i></span>
-               <span *ngFor="let p of pages"><span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(p)">{{p}}</span></span>
-               <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(pageNum+1)"><i class="fas fa-angle-right"></i></span>
-               <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(numPages)"><i class="fas fa-angle-double-right"></i></span>
-             </th>
+            <th scope="row" colspan="9">
+              <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(1, true)"><i class="fas fa-angle-double-left"></i></span>
+              <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(pageNum-1, true)"><i class="fas fa-angle-left"></i></span>
+              <span *ngFor="let p of pages"><span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(p, true)">{{p}}</span></span>
+              <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(pageNum+1, true)"><i class="fas fa-angle-right"></i></span>
+              <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(numPages, true)"><i class="fas fa-angle-double-right"></i></span>
+            </th>
            </tr>
          </tfoot>
        </table>

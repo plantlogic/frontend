@@ -13,12 +13,12 @@ export class CommonFormDataService {
   public getValues(key: string, f?) {
     if (!CommonFormDataService.timestamp
         || CommonFormDataService.timestamp < Date.now() - (1000 * 1 * 30)
-        || !CommonFormDataService.common[key]) {
+        || !CommonFormDataService.common[`${key}`]) {
       CommonFormDataService.timestamp = Date.now();
       this.commonService.getByKey(key).subscribe(data => {
         if (data.success) {
-          CommonFormDataService.common[key] = data.data.values;
-          return (f) ? f(CommonFormDataService.common[key]) : CommonFormDataService.common[key];
+          CommonFormDataService.common[`${key}`] = data.data.values;
+          return (f) ? f(CommonFormDataService.common[`${key}`]) : CommonFormDataService.common[`${key}`];
         } else {
           CommonFormDataService.timestamp = undefined;
           return this.getValues(key);
@@ -28,7 +28,7 @@ export class CommonFormDataService {
         return this.getValues(key);
       });
     } else {
-      return (f) ? f(CommonFormDataService.common[key]) : CommonFormDataService.common[key];
+      return (f) ? f(CommonFormDataService.common[`${key}`]) : CommonFormDataService.common[`${key}`];
     }
   }
 
@@ -103,8 +103,8 @@ export class CommonFormDataService {
 
   // Sort function which sorts the array based on its CommonLookup properties
   public sortCommonArray(arr: any[], key: string): any[] {
-    if (CommonLookup[key].sort === false) { return arr; }
-    const type = (CommonLookup[key] && CommonLookup[key].type) ? CommonLookup[key].type : 'text';
+    if (CommonLookup[`${key}`].sort === false) { return arr; }
+    const type = (CommonLookup[`${key}`] && CommonLookup[`${key}`].type) ? CommonLookup[`${key}`].type : 'text';
     if (type === 'text') {
       return arr.sort(this.compareSimpleText);
     } else if (type === 'number') {

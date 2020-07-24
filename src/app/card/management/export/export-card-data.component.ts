@@ -251,37 +251,40 @@ export class ExportCardDataComponent implements OnInit {
     const tempThis = this;
     const ranchList = [];
     const commodityList = [];
-    this.cardService.getAllCards().subscribe(
-      data => {
-        if (data.success) {
-          data.data.map(c => (new Card()).copyConstructor(c)).forEach(c => {
 
-            // Get all ranch names
-            if (!ranchList.find(e => e.id === c.ranchName)) {
-              ranchList.push(tempThis[`ranches`].find(e => e.id === c.ranchName));
-            }
-            // Get all commodity names
-            c.commodityArray.forEach( v => {
-              if (!commodityList.find(e => e.id === v.commodity)) {
-                commodityList.push(tempThis[`commodities`].find(e => e.id === v.commodity));
-              }
-            });
-          });
-          // Reassign common values to values found in at least one card
-          this[`ranches`] = tempThis.common.sortCommonArray(ranchList, 'ranches');
-          // format commodities array for multi-select option, varieties aren't needed
-          this[`commodities`] = tempThis.common.sortCommonArray(commodityList, 'commodities').map(e => {
-            return {id: e.id, value: e.value.key};
-          });
-          this.loading = false;
-        } else if (!data.success) {
-          AlertService.newBasicAlert('Error: ' + data.error, true);
-          this.nav.goBack();
-        }
+    this.cardService.getUniqueRanches().subscribe(
+      (data) => {
+        data.data.forEach((ranchId) => {
+          if (!ranchList.find(e => e.id === ranchId)) {
+            ranchList.push(tempThis[`ranches`].find(e => e.id === ranchId));
+          }
+        });
+        // Reassign common values to values found in at least one card
+        this[`ranches`] = tempThis.common.sortCommonArray(ranchList, 'ranches');
+        this.loading = false;
       },
       failure => {
         AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
         this.nav.goBack();
-      });
+      }
+    );
+
+    this.cardService.getUniqueCommodities().subscribe(
+      (data) => {
+        data.data.forEach((commodityId) => {
+          if (!commodityList.find(e => e.id === commodityId)) {
+            commodityList.push(tempThis[`commodities`].find(e => e.id === commodityId));
+          }
+        });
+        this[`commodities`] = tempThis.common.sortCommonArray(commodityList, 'commodities').map(e => {
+          return {id: e.id, value: e.value.key};
+        });
+        this.loading = false;
+      },
+      failure => {
+        AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
+        this.nav.goBack();
+      }
+    );
   }
 }

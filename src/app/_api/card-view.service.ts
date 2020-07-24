@@ -38,4 +38,12 @@ export class CardViewService {
   public getCardById(id: string): Observable<BasicDTO<Card>> {
     return this.http.get<BasicDTO<Card>>(environment.ApiUrl + '/data/view/ranches/' + id, this.httpOptions);
   }
+
+  public getUniqueRanches(): Observable<BasicDTO<string[]>> {
+    return this.http.get<BasicDTO<string[]>>(environment.ApiUrl + '/data/view/uniqueRanchList', this.httpOptions);
+  }
+
+  public getUniqueCommodities(): Observable<BasicDTO<string[]>> {
+    return this.http.get<BasicDTO<string[]>>(environment.ApiUrl + '/data/view/uniqueCommodityList', this.httpOptions);
+  }
 }

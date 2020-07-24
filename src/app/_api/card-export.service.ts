@@ -162,7 +162,7 @@ export class CardExportService {
   }
 
   /*
-    Searches common values in [key] list where value.id === targetID
+    Searches common values in [`${key}`] list where value.id === targetID
     returns value.valuePropertyArr where valuePropertyArr = array of nesting properties
     returns null in no targetID supplied
     returns targetID if key is not in commonKeys Array (don't need value)
@@ -172,7 +172,7 @@ export class CardExportService {
     if (!targetID) { return ''; }
     let commonValue;
     try {
-      commonValue = commonData[key].find(e => {
+      commonValue = commonData[`${key}`].find(e => {
         return e.id === targetID;
       });
       valuePropertyArr.forEach(p => {
@@ -1035,7 +1035,7 @@ export class CardExportService {
                     preset.irrigationEntryFertilizers.forEach((e3) => {
                       if (e3.value === true) {
                         if (card.irrigationArray[i] && card.irrigationArray[i].fertilizerArray[j]) {
-                          const temp: Chemical = card.irrigationArray[i].fertilizerArray[j];
+                          const temp: Chemical = card.irrigationArray[`${i}`].fertilizerArray[`${j}`];
                           switch (e3.key) {
                             case 'name':
                               dataLine.push( (temp.name) ? temp.name : '');
@@ -1083,7 +1083,7 @@ export class CardExportService {
                     });
                   }
                 } else {
-                  if (card.irrigationArray[i]) {
+                  if (card.irrigationArray[`${i}`]) {
                     const temp: IrrigationEntry = card.irrigationArray[i];
                     switch (e2.key) {
                       case 'workDate':
@@ -1618,9 +1618,9 @@ export class CardExportService {
     const userRanchAccess = this.auth.getRanchAccess();
     this.common.getAllValues(data => {
       Object.keys(CommonLookup).forEach(key => {
-        if (CommonLookup[key].type === 'hashTable') {
+        if (CommonLookup[`${key}`].type === 'hashTable') {
           const temp = [];
-          data[key].forEach(entry => {
+          data[`${key}`].forEach(entry => {
             temp.push({
               id: entry.id,
               value : {
@@ -1629,9 +1629,9 @@ export class CardExportService {
               }
             });
           });
-          sortedCommon[key] = tempThis.common.sortCommonArray(temp, key);
+          sortedCommon[`${key}`] = tempThis.common.sortCommonArray(temp, key);
         } else {
-          sortedCommon[key] = tempThis.common.sortCommonArray(data[key], key);
+          sortedCommon[`${key}`] = tempThis.common.sortCommonArray(data[`${key}`], key);
         }
       });
       f(sortedCommon);

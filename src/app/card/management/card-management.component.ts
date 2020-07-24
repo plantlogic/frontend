@@ -73,9 +73,6 @@ export class CardManagementComponent implements OnInit {
     this.filterLotNumber = '';
     this.filterCommodity = '';
     localStorage.removeItem('managementQuery');
-    this.tableService.setDataSource(this.previous);
-    this.cards = this.tableService.getDataSource();
-    // this.updateNumPages();
     this.loadCardDataFiltered();
   }
 
@@ -117,12 +114,9 @@ export class CardManagementComponent implements OnInit {
     const modifiedCards = [];
     try {
       // Cycle through the cards being currently displayed, check if fieldID is different from raw
-      for (let i = 0; i < this.cards.length; i++) {
-        if (this.showListing(i)) {
-          const cardID = this.cards[i].id;
-          if (this.cardsRaw.find(c => c.id === cardID).fieldID !== this.cards[i].fieldID) {
-            modifiedCards.push(this.cards[i]);
-          }
+      for (const c of this.cards) {
+        if (this.cardsRaw.find(c2 => c2.id === c.id).fieldID !== c.fieldID) {
+          modifiedCards.push(c);
         }
       }
       return modifiedCards;
@@ -201,21 +195,6 @@ export class CardManagementComponent implements OnInit {
       this.filterCommodity = '';
       localStorage.removeItem('managementQuery');
     }
-  }
-
-  public updateSortOrder(sort: string) {
-    console.log(sort);
-    if (this.filterSort === sort) {
-      if (this.filterOrder === 'asc') {
-        this.filterOrder = 'desc';
-      } else {
-        this.filterOrder = 'asc';
-      }
-    } else {
-      this.filterSort = sort;
-      this.filterOrder = 'asc';
-    }
-    this.loadCardDataFiltered(false);
   }
 
   public loadCardDataFiltered(pageSelect?: boolean) {
@@ -299,8 +278,6 @@ export class CardManagementComponent implements OnInit {
             });
             // Keep a raw copy of the data
             this.cardsRaw = response.cards.map(c => (new Card()).copyConstructor(c));
-            this.tableService.setDataSource(this.cards);
-            this.previous = this.tableService.getDataSource();
             this.updateNumPages();
             if (pageSelect) {
               this.setPage(previousPage, false);
@@ -398,5 +375,19 @@ export class CardManagementComponent implements OnInit {
     if (e) { this.viewSize = e; }
     this.numPages = Math.ceil(this.cardSizeNonLimited / this.viewSize);
     this.pages = Array(this.numPages).fill(0).map((x, i) => i + 1);
+  }
+
+  public updateSortOrder(sort: string) {
+    if (this.filterSort === sort) {
+      if (this.filterOrder === 'asc') {
+        this.filterOrder = 'desc';
+      } else {
+        this.filterOrder = 'asc';
+      }
+    } else {
+      this.filterSort = sort;
+      this.filterOrder = 'asc';
+    }
+    this.loadCardDataFiltered(false);
   }
 }

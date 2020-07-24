@@ -11,6 +11,8 @@ import {PlRole} from '../../_dto/user/pl-role.enum';
 import {CommonFormDataService} from 'src/app/_api/common-form-data.service';
 import {ActivatedRoute} from '@angular/router';
 import { CommonLookup } from 'src/app/_api/common-data.service';
+import { DbFilter } from 'src/app/_dto/card/dbFilter';
+import { DbFilterResponse } from 'src/app/_dto/card/dbFilterResponse';
 
 @Component({
     selector: 'app-contractor',
@@ -24,20 +26,19 @@ import { CommonLookup } from 'src/app/_api/common-data.service';
 
   cards: any[] = [];
   cardsRaw: Card[] = [];
+  cardSizeNonLimited: number;
   filterRanchName: string;
-  filterFieldID: string;
   filterLotNumber: string;
   filterCommodity: string;
   previous: string;
   viewSize = 20;
   numPages: number;
-  pageNum: number;
+  pageNum = 1;
   pages: number[];
   hiddenPages: false;
 
-  // Alternative sorting for mobile
-  mFilterSort: string;
-  mFilterOrder: string;
+  filterSort: string;
+  filterOrder: string;
 
   // create array of common keys, whose data is needed for card entry. Omit restricted options.
   commonKeys = ['commodities'];
@@ -50,8 +51,8 @@ import { CommonLookup } from 'src/app/_api/common-data.service';
         tempThis[key] = c[key];
       });
       this[`ranches`] = c[`ranches`];
-      this.loadCardData();
-      this.setPage(1);
+      this.loadCachedFilters();
+      this.loadCardDataFiltered();
     });
   }
 
@@ -65,56 +66,20 @@ import { CommonLookup } from 'src/app/_api/common-data.service';
 
   public clearFilter() {
     this.filterRanchName = '';
-    this.filterFieldID = '';
     this.filterLotNumber = '';
     this.filterCommodity = '';
     localStorage.removeItem('contractorQuery');
-    this.tableService.setDataSource(this.previous);
-    this.cards = this.tableService.getDataSource();
-    this.updateNumPages();
+    this.loadCardDataFiltered();
   }
 
   public filterItems() {
-    const prev = this.tableService.getDataSource();
-    const filter = this.filterCards();
-    if (!filter.wasFiltered) {
-      this.tableService.setDataSource(this.previous);
-      this.cards = this.tableService.getDataSource();
-    } else {
-      this.cards = filter.data;
-      this.tableService.setDataSource(prev);
-    }
-    this.updateNumPages();
-
-    // If displaying on mobile, sort with the current mobile sort settings
-    if (window.getComputedStyle(document.getElementById('mobileSorter')).display !== 'none') {
-      this.mobileSort();
-    }
-  }
-
-  public filterCards() {
-    let filterApplied = false;
-    let cards = this.tableService.getDataSource();
-    const tempThis = this;
-    if (this.filterRanchName) {
-      cards = cards.filter(card => (card.ranchName) && card.ranchName.toLowerCase().includes(tempThis.filterRanchName.toLowerCase()));
-      filterApplied = true;
-    }
-    if (this.filterLotNumber) {
-      cards = cards.filter(card => (card.lotNumber) && card.lotNumber.toLowerCase().includes(tempThis.filterLotNumber.toLowerCase()));
-      filterApplied = true;
-    }
-    if (this.filterCommodity) {
-      cards = cards.filter(c => (c.commodityString) && c.commodityString.toLowerCase().includes(tempThis.filterCommodity.toLowerCase()));
-      filterApplied = true;
-    }
     // Update local storage to save query
     localStorage.setItem('contractorQuery', JSON.stringify({
       ranchName: this.filterRanchName,
       lotNumber: this.filterLotNumber,
       commodity: this.filterCommodity
     }));
-    return { data: cards, wasFiltered: filterApplied };
+    this.loadCardDataFiltered();
   }
 
   /*
@@ -143,18 +108,15 @@ import { CommonLookup } from 'src/app/_api/common-data.service';
   findModifiedCards() {
     const modifiedCards = [];
     try {
-      for (let i = 0; i < this.cards.length; i++) {
-        if (this.showListing(i)) {
-          const card1 = this.cardsRaw.find(c => c.id === this.cards[i].id);
-          const card2 = this.cards[i];
-          const hoeDate1 = (card1.hoeDate) ? new Date(card1.hoeDate).valueOf() : null;
-          const hoeDate2 = (card2.hoeDate.val) ? new Date(card2.hoeDate.val).valueOf() : null;
-          const thinDate1 = (card1.thinDate) ? new Date(card1.thinDate).valueOf() : null;
-          const thinDate2 = (card2.thinDate.val) ? new Date(card2.thinDate.val).valueOf() : null;
-          if ((hoeDate1 !== hoeDate2) || (thinDate1 !== thinDate2)
-          || (card1.hoeType !== card2.hoeType) || (card1.thinType !== card2.thinType)) {
-            modifiedCards.push(this.cards[i]);
-          }
+      for (const card2 of this.cards) {
+        const card1 = this.cardsRaw.find(c => c.id === card2.id);
+        const hoeDate1 = (card1.hoeDate) ? new Date(card1.hoeDate).valueOf() : null;
+        const hoeDate2 = (card2.hoeDate) ? new Date(card2.hoeDate).valueOf() : null;
+        const thinDate1 = (card1.thinDate) ? new Date(card1.thinDate).valueOf() : null;
+        const thinDate2 = (card2.thinDate) ? new Date(card2.thinDate).valueOf() : null;
+        if ((hoeDate1 !== hoeDate2) || (thinDate1 !== thinDate2)
+        || (card1.hoeType !== card2.hoeType) || (card1.thinType !== card2.thinType)) {
+          modifiedCards.push(card2);
         }
       }
       return modifiedCards;
@@ -222,137 +184,120 @@ import { CommonLookup } from 'src/app/_api/common-data.service';
     return keys.slice(keys.length / 2);
   }
 
-  private loadCardData() {
-    this.cardService.getAllCards().subscribe(
-      data => {
-        if (data.success) {
-          this.cards = data.data.map(c => (new Card()).copyConstructor(c));
-
-          // For display purposes, change any common IDs to their values
-          this.cards.forEach(card => {
-            card = this.cardIDsToValues(card);
-            card.initCommodityString();
-            // Modify hoe and thin dates to hold both their input value (val) and the value used to sort by (num)
-            card.wetDate = {
-                val: card.wetDate,
-                num: (card.wetDate) ? new Date(card.wetDate).valueOf() : ''
-            };
-            card.hoeDate = {
-                val: card.hoeDate,
-                num: (card.hoeDate) ? new Date(card.hoeDate).valueOf() : ''
-            };
-            card.thinDate = {
-              val: card.thinDate,
-              num: (card.thinDate) ? new Date(card.thinDate).valueOf() : ''
-           };
-          });
-          // Keep a raw copy of the data
-          this.cardsRaw = data.data.map(c => (new Card()).copyConstructor(c));
-          this.tableService.setDataSource(this.cards);
-          this.previous = this.tableService.getDataSource();
-          this.updateNumPages();
-
-          if (this.route.snapshot.queryParams.saveFilter) {
-            let previousQuery: any = localStorage.getItem('contractorQuery');
-            if (previousQuery) {
-              previousQuery = JSON.parse(previousQuery);
-              this.filterRanchName = previousQuery.ranchName;
-              this.filterFieldID = previousQuery.fieldID;
-              this.filterLotNumber = previousQuery.lotNumber;
-              this.filterCommodity = previousQuery.commodity;
-              this.filterItems();
-            }
-          } else {
-            this.filterRanchName = '';
-            this.filterFieldID = '';
-            this.filterLotNumber = '';
-            this.filterCommodity = '';
-            localStorage.removeItem('managementQuery');
-          }
-
-        } else if (!data.success) {
-          AlertService.newBasicAlert('Error: ' + data.error, true);
-        }
-      },
-      failure => {
-        AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
+  private loadCachedFilters(): void {
+    if (this.route.snapshot.queryParams.saveFilter) {
+      let previousQuery: any = localStorage.getItem('contractorQuery');
+      if (previousQuery) {
+        previousQuery = JSON.parse(previousQuery);
+        this.filterRanchName = previousQuery.ranchName;
+        this.filterLotNumber = previousQuery.lotNumber;
+        this.filterCommodity = previousQuery.commodity;
       }
-    );
+    } else {
+      this.filterRanchName = '';
+      this.filterLotNumber = '';
+      this.filterCommodity = '';
+      localStorage.removeItem('contractorQuery');
+    }
+  }
+
+  public loadCardDataFiltered(pageSelect?: boolean) {
+    const previousPage = this.pageNum;
+    if (!pageSelect) { this.pageNum = 1; }
+
+    // Create the db filter
+    const filter: DbFilter = new DbFilter();
+    filter.fieldID =  '';
+    filter.lotNumber = (this.filterLotNumber) ? this.filterLotNumber : '';
+    filter.sort = (this.filterSort) ? this.filterSort : 'lastUpdated';
+    this.filterSort = filter.sort;
+    filter.order = (this.filterOrder) ? this.filterOrder : 'desc';
+    this.filterOrder = filter.order;
+    filter.start = (this.pageNum - 1) * Number(this.viewSize);
+    filter.stop = Number(filter.start) + Number(this.viewSize);
+
+    const ranches = [];
+    const commodities = [];
+    const commodityPairs = [];
+    this.common.getAllValues((data) => {
+      // Ranch Ids
+      const ranchName = (this.filterRanchName) ? this.filterRanchName : '';
+      if (ranchName === '') { filter.isAllRanches = true; }
+      data.ranches.forEach((ranch) => {
+        if (ranchName !== '' && ranchName !== null) {
+          if (ranch.value.toLowerCase().includes(ranchName.toLowerCase())) {
+            ranches.push(ranch.id);
+          }
+        } else {
+          ranches.push(ranch.id);
+        }
+      });
+      filter.ranches = ranches;
+      // Commodity Ids
+      const commodity = (this.filterCommodity) ? this.filterCommodity : '';
+      if (commodity === '') { filter.isAllCommodities = true; }
+      data.commodities.forEach((c) => {
+        const id = c.id;
+        const value = Object.keys(c.value)[0];
+        commodityPairs.push({id, value});
+        if (commodity !== '' && commodity !== null) {
+          if (value.toLowerCase().includes(commodity.toLowerCase())) {
+            commodities.push(id);
+          }
+        } else {
+          commodities.push(id);
+        }
+      });
+      filter.commodities = commodities;
+      commodityPairs.sort((a, b) => {
+        let comparison = 0;
+        const valA = a.value;
+        const valB = b.value;
+        if (valA > valB) {
+          comparison = 1;
+        } else if (valA < valB) {
+          comparison = -1;
+        }
+        return comparison;
+      });
+      // console.log(commodityPairs);
+      filter.allCommoditiesOrdered = commodityPairs.map((e) => e.id);
+
+      this.cardService.getCardsFiltered(filter, false).subscribe(
+        e => {
+          if (e.success) {
+            const response: DbFilterResponse = e.data;
+            // console.log(response);
+            this.cards = response.cards.map(c => (new Card()).copyConstructor(c));
+            this.cardSizeNonLimited = response.size;
+
+            // For display purposes, change any common IDs to their values
+            this.cards.forEach(card => {
+              card = this.cardIDsToValues(card);
+              card.initCommodityString();
+            });
+            // Keep a raw copy of the data
+            this.cardsRaw = response.cards.map(c => (new Card()).copyConstructor(c));
+            this.updateNumPages();
+            if (pageSelect) {
+              this.setPage(previousPage, false);
+            } else {
+              this.setPage(1, false);
+            }
+          } else if (!e.success) {
+            AlertService.newBasicAlert('Error: ' + e.error, true);
+          }
+        },
+        failure => {
+          AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
+        }
+      );
+    });
   }
 
   // Used for animation
   public min(x: number, y: number): number {
     return Math.min(x, y);
-  }
-
-  mobileSort(): void {
-    if (this.mFilterSort) {
-      if (!this.mFilterOrder) { this.mFilterOrder = 'asc'; }
-      switch (this.mFilterSort) {
-        case 'ranchName':
-          // Sort by ranch name
-          if (this.mFilterOrder === 'asc') {
-            // Ascending
-            this.cards = this.cards.sort((a, b) => a.ranchName > b.ranchName ? 1 : -1);
-          } else {
-            // Descending
-            this.cards = this.cards.sort((a, b) => a.ranchName > b.ranchName ? -1 : 1);
-          }
-          break;
-        case 'lotNumber':
-          // Sort by lot number
-          if (this.mFilterOrder === 'asc') {
-            // Ascending
-            this.cards = this.cards.sort((a, b) => a.lotNumber > b.lotNumber ? 1 : -1);
-          } else {
-            // Descending
-            this.cards = this.cards.sort((a, b) => a.lotNumber > b.lotNumber ? -1 : 1);
-          }
-          break;
-        case 'commodity':
-          // Sort by Commodity
-          if (this.mFilterOrder === 'asc') {
-            // Ascending
-            this.cards = this.cards.sort((a, b) => a.commodityString > b.commodityString ? 1 : -1);
-          } else {
-            // Descending
-            this.cards = this.cards.sort((a, b) => a.commodityString > b.commodityString ? -1 : 1);
-          }
-          break;
-        case 'wetDate':
-          // Sort by Commodity
-          if (this.mFilterOrder === 'asc') {
-            // Ascending
-            this.cards = this.cards.sort((a, b) => a.wetDate.num > b.wetDate.num ? 1 : -1);
-          } else {
-            // Descending
-            this.cards = this.cards.sort((a, b) => a.wetDate.num > b.wetDate.num ? -1 : 1);
-          }
-          break;
-        case 'thinDate':
-          // Sort by Commodity
-          if (this.mFilterOrder === 'asc') {
-            // Ascending
-            this.cards = this.cards.sort((a, b) => a.thinDate.num > b.thinDate.num ? 1 : -1);
-          } else {
-            // Descending
-            this.cards = this.cards.sort((a, b) => a.thinDate.num > b.thinDate.num ? -1 : 1);
-          }
-          break;
-        case 'hoeDate':
-          // Sort by Commodity
-          if (this.mFilterOrder === 'asc') {
-            // Ascending
-            this.cards = this.cards.sort((a, b) => a.hoeDate.num > b.hoeDate.num ? 1 : -1);
-          } else {
-            // Descending
-            this.cards = this.cards.sort((a, b) => a.hoeDate.num > b.hoeDate.num ? -1 : 1);
-          }
-          break;
-        default:
-          break;
-      }
-    }
   }
 
   public resetCards(): void {
@@ -361,15 +306,9 @@ import { CommonLookup } from 'src/app/_api/common-data.service';
       try {
         const rawCard = tempThis.cardsRaw.find(e => e.id === card.id);
         // Modify hoe and thin dates to hold both their input value (val) and the value used to sort by (num)
-        card.hoeDate = {
-          val: rawCard.hoeDate,
-          num: (rawCard.hoeDate) ? new Date(rawCard.hoeDate).valueOf() : ''
-        };
+        card.hoeDate = rawCard.hoeDate;
         card.hoeType = rawCard.hoeType;
-        card.thinDate = {
-          val: rawCard.thinDate,
-          num: (rawCard.thinDate) ? new Date(rawCard.thinDate).valueOf() : ''
-        };
+        card.thinDate = rawCard.thinDate;
         card.thinType = rawCard.thinType;
       } catch (e) {
         console.log('Error resetting card fieldID');
@@ -377,20 +316,12 @@ import { CommonLookup } from 'src/app/_api/common-data.service';
     });
   }
 
-  setPage(n: number): void {
+  public setPage(n: number, updateFilter?: boolean): void {
     if (this.pageNum === n) { return; }
     this.pageNum = n;
     if (this.pageNum > this.numPages) { this.pageNum = this.numPages; }
     if (this.pageNum < 1) { this.pageNum = 1; }
-  }
-
-  showListing(index: number): boolean {
-    const low = (this.pageNum - 1) * this.viewSize;
-    const high = (this.pageNum * this.viewSize) - 1;
-    if ((index >= low) && (index <= high)) {
-      return true;
-    }
-    return false;
+    if (updateFilter) { this.loadCardDataFiltered(true); }
   }
 
   public updateCards(): void {
@@ -410,10 +341,10 @@ import { CommonLookup } from 'src/app/_api/common-data.service';
         log.failure += 1;
         tempThis.updateMessage(log, modified.length);
       } else {
-        card.wetDate = (m.wetDate.val) ? (new Date(m.wetDate.val)).valueOf() : null;
-        card.hoeDate = (m.hoeDate.val) ? (new Date(m.hoeDate.val)).valueOf() : null;
+        card.wetDate = (m.wetDate) ? (new Date(m.wetDate)).valueOf() : null;
+        card.hoeDate = (m.hoeDate) ? (new Date(m.hoeDate)).valueOf() : null;
         card.hoeType = m.hoeType;
-        card.thinDate = (m.thinDate.val) ? (new Date(m.thinDate.val)).valueOf() : null;
+        card.thinDate = (m.thinDate) ? (new Date(m.thinDate)).valueOf() : null;
         card.thinType = m.thinType;
         tempThis.cardEdit.updateCard(card as Card).subscribe(data => {
           if (data.success) {
@@ -438,11 +369,24 @@ import { CommonLookup } from 'src/app/_api/common-data.service';
     }
   }
 
-  updateNumPages(e?: number): void {
+  public updateNumPages(e?: number): void {
     // When event is called, e is new viewSize value while this.viewSize is old Value
     if (e) { this.viewSize = e; }
-    this.numPages = Math.ceil(this.cards.length / this.viewSize);
+    this.numPages = Math.ceil(this.cardSizeNonLimited / this.viewSize);
     this.pages = Array(this.numPages).fill(0).map((x, i) => i + 1);
-    this.setPage(1);
+  }
+
+  public updateSortOrder(sort: string) {
+    if (this.filterSort === sort) {
+      if (this.filterOrder === 'asc') {
+        this.filterOrder = 'desc';
+      } else {
+        this.filterOrder = 'asc';
+      }
+    } else {
+      this.filterSort = sort;
+      this.filterOrder = 'asc';
+    }
+    this.loadCardDataFiltered(false);
   }
 }
