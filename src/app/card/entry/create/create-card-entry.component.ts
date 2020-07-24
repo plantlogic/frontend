@@ -99,7 +99,7 @@ export class CreateCardEntryComponent implements OnInit {
     if (this.commonKeys.includes(key) || key === 'ranches') {
       return (this[`${key}`]) ? this[`${key}`] : [];
     } else {
-      console.log('Key ' + key + ' is not in the commonKeys array.');
+      // console.log('Key ' + key + ' is not in the commonKeys array.');
       return [];
     }
   }
@@ -162,13 +162,13 @@ export class CreateCardEntryComponent implements OnInit {
 
     // Check Commodity Info
     for (const c of card.commodityArray) {
-      if (!c.commodity || !this[`commodities`].find(c2 => {
+      if (!c.commodity || !this[`commodities`].find((c2) => {
         return c2.id === c.commodity && (c.variety) ? c2.value.value.includes(c.variety) : true;
       })) {
         AlertService.newBasicAlert('Invalid Commodity Information - please fix and try again.', true);
         return;
       }
-      if (!c.bedType || !this[`bedTypes`].find(c2 => c2.id === c.bedType)) {
+      if (!c.bedType || !this[`bedTypes`].find((c2) => c2.id === c.bedType)) {
         AlertService.newBasicAlert('Invalid Commodity Bed Type - please fix and try again.', true);
         return;
       }
@@ -191,7 +191,7 @@ export class CreateCardEntryComponent implements OnInit {
       // Check Chemical
       if (t.chemicalArray) {
         for (const c of t.chemicalArray) {
-          if (!c.name || !this[`chemicals`].find(c2 => c2.id === c.name)) {
+          if (!c.name || !this[`chemicals`].find((c2) => c2.id === c.name)) {
             AlertService.newBasicAlert('Invalid Chemical Entered - please fix and try again.', true);
             return;
           }
@@ -199,7 +199,7 @@ export class CreateCardEntryComponent implements OnInit {
             AlertService.newBasicAlert('Invalid Chemical Rate Entered - please fix and try again.', true);
             return;
           }
-          if (!c.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === c.unit)) {
+          if (!c.unit || !this[`chemicalRateUnits`].find((c2) => c2.id === c.unit)) {
             AlertService.newBasicAlert('Invalid Chemical Rate Unit Entered - please fix and try again.', true);
             return;
           }
@@ -208,7 +208,7 @@ export class CreateCardEntryComponent implements OnInit {
       // Check Fertilizer Info
       if (t.fertilizerArray) {
         for (const f of t.fertilizerArray) {
-          if (!f.name || !this[`fertilizers`].find(c2 => c2.id === f.name)) {
+          if (!f.name || !this[`fertilizers`].find((c2) => c2.id === f.name)) {
             AlertService.newBasicAlert('Invalid Fertilizer Entered - please fix and try again.', true);
             return;
           }
@@ -216,7 +216,7 @@ export class CreateCardEntryComponent implements OnInit {
             AlertService.newBasicAlert('Invalid Fertilizer Rate Entered - please fix and try again.', true);
             return;
           }
-          if (!f.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === f.unit)) {
+          if (!f.unit || !this[`chemicalRateUnits`].find((c2) => c2.id === f.unit)) {
             AlertService.newBasicAlert('Invalid Fertilizer Rate Unit Entered - please fix and try again.', true);
             return;
           }
@@ -228,7 +228,7 @@ export class CreateCardEntryComponent implements OnInit {
     card.shippers = this.getSelectedShippers();
     // Create Card
     this.cardEntryService.createCard(card).subscribe(
-      data => {
+      (data) => {
         if (data.success) {
           AlertService.newBasicAlert('Card saved successfully!', false);
           this.nav.goBack();
@@ -236,7 +236,7 @@ export class CreateCardEntryComponent implements OnInit {
           AlertService.newBasicAlert('Error: ' + data.error, true);
         }
       },
-      failure => {
+      (failure) => {
         AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
       }
     );

@@ -71,7 +71,7 @@ export class AddPresetComponent implements OnInit {
 
   public submit() {
     this.exportPresetService.createExportPreset(this.preset).subscribe(
-      data => {
+      (data) => {
         if (data.success) {
           AlertService.newBasicAlert('Export preset saved successfully!', false);
           this.nav.goBack();
@@ -79,7 +79,7 @@ export class AddPresetComponent implements OnInit {
           AlertService.newBasicAlert('Error: ' + data.error, true);
         }
       },
-      failure => {
+      (failure) => {
         AlertService.newBasicAlert('Connection Error: ' + failure.message, true);
       }
     );

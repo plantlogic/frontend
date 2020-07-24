@@ -192,7 +192,7 @@ export class OpenCardDataComponent implements OnInit {
             AlertService.newBasicAlert('Error: ' + data.error, true);
           }
         },
-        failure => {
+        (failure) => {
           AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
         });
     });
@@ -282,7 +282,7 @@ export class OpenCardDataComponent implements OnInit {
     } else if (filter === 'all') {
       return this.comments;
     } else {
-      console.log('Invalid comment filter');
+      // console.log('Invalid comment filter');
       return this.comments;
     }
   }
@@ -291,7 +291,7 @@ export class OpenCardDataComponent implements OnInit {
     if (this.commonKeys.includes(key) || key === 'ranches') {
       return (this[`${key}`]) ? this[`${key}`] : [];
     } else {
-      console.log('Key ' + key + ' is not in the commonKeys array.');
+      // console.log('Key ' + key + ' is not in the commonKeys array.');
       return [];
     }
   }
@@ -394,7 +394,7 @@ export class OpenCardDataComponent implements OnInit {
     const tempThis = this;
     this.route.params.subscribe(cr => {
       this.cardView.getCardById(cr.id).subscribe(
-        data => {
+        (data) => {
           if (data.success) {
             tempThis.card = (new Card()).copyConstructor(data.data);
             tempThis.comments = (new Card()).copyConstructor(data.data).comments;
@@ -425,7 +425,7 @@ export class OpenCardDataComponent implements OnInit {
             tempThis.nav.goBack();
           }
         },
-        failure => {
+        (failure) => {
           AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
           tempThis.nav.goBack();
         }
@@ -466,7 +466,7 @@ export class OpenCardDataComponent implements OnInit {
             AlertService.newBasicAlert('Error: ' + data.error, true);
           }
         },
-        failure => {
+        (failure) => {
           AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
         });
     });
@@ -483,11 +483,11 @@ export class OpenCardDataComponent implements OnInit {
         if (this.editing) { this.toggleEditing(); }
         if (this.editingComment) { this.toggleEditingComment(); }
       } else {
-        console.log(data);
+        // console.log(data);
         AlertService.newBasicAlert('Error: ' + data.error, true);
       }
     },
-    failure => {
+    (failure) => {
       AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
     });
   }
@@ -585,7 +585,7 @@ export class OpenCardDataComponent implements OnInit {
             AlertService.newBasicAlert('Error: ' + data.error, true);
           }
         },
-        failure => {
+        (failure) => {
           AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
         });
     });
@@ -611,13 +611,13 @@ export class OpenCardDataComponent implements OnInit {
       }
       // Check Commodity Info
       for (const c of card.commodityArray) {
-        if (!c.commodity || !this[`commodities`].find(c2 => {
+        if (!c.commodity || !this[`commodities`].find((c2) => {
           return c2.id === c.commodity && (c.variety) ? c2.value.value.includes(c.variety) : true;
         })) {
           AlertService.newBasicAlert('Invalid Commodity Information - please fix and try again.', true);
           return;
         }
-        if (!c.bedType || !this[`bedTypes`].find(c2 => c2.id === c.bedType)) {
+        if (!c.bedType || !this[`bedTypes`].find((c2) => c2.id === c.bedType)) {
           AlertService.newBasicAlert('Invalid Commodity Bed Type - please fix and try again.', true);
           return;
         }
@@ -626,7 +626,7 @@ export class OpenCardDataComponent implements OnInit {
       for (const c of card.preChemicalArray) {
         c.date = (new Date(c.date)).valueOf();
         if (c.chemical) {
-          if (!c.chemical.name || !this[`chemicals`].find(c2 => c2.id === c.chemical.name)) {
+          if (!c.chemical.name || !this[`chemicals`].find((c2) => c2.id === c.chemical.name)) {
             AlertService.newBasicAlert('Invalid Chemical Entered - please fix and try again.', true);
             return;
           }
@@ -634,13 +634,13 @@ export class OpenCardDataComponent implements OnInit {
             AlertService.newBasicAlert('Invalid Chemical Rate Entered - please fix and try again.', true);
             return;
           }
-          if (!c.chemical.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === c.chemical.unit)) {
+          if (!c.chemical.unit || !this[`chemicalRateUnits`].find((c2) => c2.id === c.chemical.unit)) {
             AlertService.newBasicAlert('Invalid Chemical Rate Unit Entered - please fix and try again.', true);
             return;
           }
         }
         if (c.fertilizer) {
-          if (!c.fertilizer.name || !this[`fertilizers`].find(c2 => c2.id === c.fertilizer.name)) {
+          if (!c.fertilizer.name || !this[`fertilizers`].find((c2) => c2.id === c.fertilizer.name)) {
             AlertService.newBasicAlert('Invalid Fertilizer Entered - please fix and try again.', true);
             return;
           }
@@ -648,7 +648,7 @@ export class OpenCardDataComponent implements OnInit {
             AlertService.newBasicAlert('Invalid Chemical Rate Entered - please fix and try again.', true);
             return;
           }
-          if (!c.fertilizer.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === c.fertilizer.unit)) {
+          if (!c.fertilizer.unit || !this[`chemicalRateUnits`].find((c2) => c2.id === c.fertilizer.unit)) {
             AlertService.newBasicAlert('Invalid Fertilizer Rate Unit Entered - please fix and try again.', true);
             return;
           }
@@ -676,7 +676,7 @@ export class OpenCardDataComponent implements OnInit {
         // Check Chemical
         if (t.chemicalArray) {
           for (const c of t.chemicalArray) {
-            if (!c.name || !this[`chemicals`].find(c2 => c2.id === c.name)) {
+            if (!c.name || !this[`chemicals`].find((c2) => c2.id === c.name)) {
               AlertService.newBasicAlert('Invalid Chemical Entered - please fix and try again.', true);
               return;
             }
@@ -684,7 +684,7 @@ export class OpenCardDataComponent implements OnInit {
               AlertService.newBasicAlert('Invalid Chemical Rate Entered - please fix and try again.', true);
               return;
             }
-            if (!c.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === c.unit)) {
+            if (!c.unit || !this[`chemicalRateUnits`].find((c2) => c2.id === c.unit)) {
               AlertService.newBasicAlert('Invalid Chemical Rate Unit Entered - please fix and try again.', true);
               return;
             }
@@ -693,7 +693,7 @@ export class OpenCardDataComponent implements OnInit {
         // Check Fertilizer Info
         if (t.fertilizerArray) {
           for (const f of t.fertilizerArray) {
-            if (!f.name || !this[`fertilizers`].find(c2 => c2.id === f.name)) {
+            if (!f.name || !this[`fertilizers`].find((c2) => c2.id === f.name)) {
               AlertService.newBasicAlert('Invalid Fertilizer Entered - please fix and try again.', true);
               return;
             }
@@ -701,7 +701,7 @@ export class OpenCardDataComponent implements OnInit {
               AlertService.newBasicAlert('Invalid Fertilizer Rate Entered - please fix and try again.', true);
               return;
             }
-            if (!f.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === f.unit)) {
+            if (!f.unit || !this[`chemicalRateUnits`].find((c2) => c2.id === f.unit)) {
               AlertService.newBasicAlert('Invalid Fertilizer Rate Unit Entered - please fix and try again.', true);
               return;
             }
@@ -714,7 +714,7 @@ export class OpenCardDataComponent implements OnInit {
         // Check Chemical
         if (e.chemicalArray) {
           for (const c of e.chemicalArray) {
-            if (!c.name || !this[`chemicals`].find(c2 => c2.id === c.name)) {
+            if (!c.name || !this[`chemicals`].find((c2) => c2.id === c.name)) {
               AlertService.newBasicAlert('Invalid Chemical Entered - please fix and try again.', true);
               return;
             }
@@ -722,7 +722,7 @@ export class OpenCardDataComponent implements OnInit {
               AlertService.newBasicAlert('Invalid Chemical Rate Entered - please fix and try again.', true);
               return;
             }
-            if (!c.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === c.unit)) {
+            if (!c.unit || !this[`chemicalRateUnits`].find((c2) => c2.id === c.unit)) {
               AlertService.newBasicAlert('Invalid Chemical Rate Unit Entered - please fix and try again.', true);
               return;
             }
@@ -731,7 +731,7 @@ export class OpenCardDataComponent implements OnInit {
         // Check Fertilizer Info
         if (e.fertilizerArray) {
           for (const f of e.fertilizerArray) {
-            if (!f.name || !this[`fertilizers`].find(c2 => c2.id === f.name)) {
+            if (!f.name || !this[`fertilizers`].find((c2) => c2.id === f.name)) {
               AlertService.newBasicAlert('Invalid Fertilizer Entered - please fix and try again.', true);
               return;
             }
@@ -739,7 +739,7 @@ export class OpenCardDataComponent implements OnInit {
               AlertService.newBasicAlert('Invalid Fertilizer Rate Entered - please fix and try again.', true);
               return;
             }
-            if (!f.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === f.unit)) {
+            if (!f.unit || !this[`chemicalRateUnits`].find((c2) => c2.id === f.unit)) {
               AlertService.newBasicAlert('Invalid Fertilizer Rate Unit Entered - please fix and try again.', true);
               return;
             }
@@ -768,7 +768,7 @@ export class OpenCardDataComponent implements OnInit {
       card.shippers = this.getSelectedShippers();
       return card;
     } catch (e) {
-      console.log(e);
+      // console.log(e);
       AlertService.newBasicAlert('Error When Validating Card Data', true);
       return;
     }

@@ -150,7 +150,7 @@ export class EntryDashboardComponent implements OnInit {
       commonValue = commonValue[p];
     });
   } catch (e) {
-    console.log(e);
+    // console.log(e);
   }
   return (commonValue) ? commonValue : 'Unknown ' + key + ' ID';
 }
@@ -159,7 +159,7 @@ export class EntryDashboardComponent implements OnInit {
     if (this.commonKeys.includes(key) || key === 'ranches') {
       return (this[`${key}`]) ? this[`${key}`] : [];
     } else {
-      console.log('Key ' + key + ' is not in the commonKeys array.');
+      // console.log('Key ' + key + ' is not in the commonKeys array.');
       return [];
     }
   }
@@ -298,7 +298,7 @@ export class EntryDashboardComponent implements OnInit {
             AlertService.newBasicAlert('Error: ' + e.error, true);
           }
         },
-        failure => {
+        (failure) => {
           AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
         }
       );
@@ -308,7 +308,7 @@ export class EntryDashboardComponent implements OnInit {
   private loadCardData() {
     const tempThis = this;
     this.cardService.getMyCards().subscribe(
-      data => {
+      (data) => {
         if (data.success) {
           tempThis.cards = data.data.map((c) => (new Card()).copyConstructor(c));
           tempThis.cards.forEach((c) => {
@@ -338,7 +338,7 @@ export class EntryDashboardComponent implements OnInit {
           AlertService.newBasicAlert('Error: ' + data.error, true);
         }
       },
-      failure => {
+      (failure) => {
         AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
       }
     );

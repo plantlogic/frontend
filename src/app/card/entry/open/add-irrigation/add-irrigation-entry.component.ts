@@ -64,7 +64,7 @@ export class AddIrrigationEntryComponent implements OnInit {
     if (this.commonKeys.includes(key)) {
       return (this[`${key}`]) ? this[`${key}`] : [];
     } else {
-      console.log('Key ' + key + ' is not in the commonKeys array.');
+      // console.log('Key ' + key + ' is not in the commonKeys array.');
       return [];
     }
   }
@@ -96,14 +96,14 @@ export class AddIrrigationEntryComponent implements OnInit {
       }
       i.irrigator = irrigatorID;
     }
-    if (!i.method || !this[`irrigationMethod`].find(c2 => c2.id === i.method)) {
+    if (!i.method || !this[`irrigationMethod`].find((c2) => c2.id === i.method)) {
       AlertService.newBasicAlert('Invalid Irrigation Method - please fix and try again.', true);
       return;
     }
     // Check Chemical
     if (i.chemicalArray) {
       for (const c of i.chemicalArray) {
-        if (!c.name || !this[`chemicals`].find(c2 => c2.id === c.name)) {
+        if (!c.name || !this[`chemicals`].find((c2) => c2.id === c.name)) {
           AlertService.newBasicAlert('Invalid Chemical Entered - please fix and try again.', true);
           return;
         }
@@ -111,7 +111,7 @@ export class AddIrrigationEntryComponent implements OnInit {
           AlertService.newBasicAlert('Invalid Chemical Rate Entered - please fix and try again.', true);
           return;
         }
-        if (!c.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === c.unit)) {
+        if (!c.unit || !this[`chemicalRateUnits`].find((c2) => c2.id === c.unit)) {
           AlertService.newBasicAlert('Invalid Chemical Rate Unit Entered - please fix and try again.', true);
           return;
         }
@@ -120,7 +120,7 @@ export class AddIrrigationEntryComponent implements OnInit {
     // Check Fertilizer Info
     if (i.fertilizerArray) {
       for (const f of i.fertilizerArray) {
-        if (!f.name || !this[`fertilizers`].find(c2 => c2.id === f.name)) {
+        if (!f.name || !this[`fertilizers`].find((c2) => c2.id === f.name)) {
           AlertService.newBasicAlert('Invalid Fertilizer Entered - please fix and try again.', true);
           return;
         }
@@ -128,7 +128,7 @@ export class AddIrrigationEntryComponent implements OnInit {
           AlertService.newBasicAlert('Invalid Chemical Rate Entered - please fix and try again.', true);
           return;
         }
-        if (!f.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === f.unit)) {
+        if (!f.unit || !this[`chemicalRateUnits`].find((c2) => c2.id === f.unit)) {
           AlertService.newBasicAlert('Invalid Fertilizer Rate Unit Entered - please fix and try again.', true);
           return;
         }
@@ -136,7 +136,7 @@ export class AddIrrigationEntryComponent implements OnInit {
     }
 
     this.cardEntryService.addIrrigationData(this.cardId, i).subscribe(
-      data => {
+      (data) => {
         if (data.success) {
           AlertService.newBasicAlert('Saved successfully!', false);
           this.nav.goBack();
@@ -144,7 +144,7 @@ export class AddIrrigationEntryComponent implements OnInit {
           AlertService.newBasicAlert('Error: ' + data.error, true);
         }
       },
-      failure => {
+      (failure) => {
         AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
       }
     );

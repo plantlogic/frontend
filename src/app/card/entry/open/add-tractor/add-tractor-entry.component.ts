@@ -64,7 +64,7 @@ export class AddTractorEntryComponent implements OnInit {
     if (this.commonKeys.includes(key)) {
       return (this[`${key}`]) ? this[`${key}`] : [];
     } else {
-      console.log('Key ' + key + ' is not in the commonKeys array.');
+      // console.log('Key ' + key + ' is not in the commonKeys array.');
       return [];
     }
   }
@@ -102,7 +102,7 @@ export class AddTractorEntryComponent implements OnInit {
     // Check Chemical
     if (t.chemicalArray) {
       for (const c of t.chemicalArray) {
-        if (!c.name || !this[`chemicals`].find(c2 => c2.id === c.name)) {
+        if (!c.name || !this[`chemicals`].find((c2) => c2.id === c.name)) {
           AlertService.newBasicAlert('Invalid Chemical Entered - please fix and try again.', true);
           return;
         }
@@ -110,7 +110,7 @@ export class AddTractorEntryComponent implements OnInit {
           AlertService.newBasicAlert('Invalid Chemical Rate Entered - please fix and try again.', true);
           return;
         }
-        if (!c.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === c.unit)) {
+        if (!c.unit || !this[`chemicalRateUnits`].find((c2) => c2.id === c.unit)) {
           AlertService.newBasicAlert('Invalid Chemical Rate Unit Entered - please fix and try again.', true);
           return;
         }
@@ -119,7 +119,7 @@ export class AddTractorEntryComponent implements OnInit {
     // Check Fertilizer Info
     if (t.fertilizerArray) {
       for (const f of t.fertilizerArray) {
-        if (!f.name || !this[`fertilizers`].find(c2 => c2.id === f.name)) {
+        if (!f.name || !this[`fertilizers`].find((c2) => c2.id === f.name)) {
           AlertService.newBasicAlert('Invalid Fertilizer Entered - please fix and try again.', true);
           return;
         }
@@ -127,7 +127,7 @@ export class AddTractorEntryComponent implements OnInit {
           AlertService.newBasicAlert('Invalid Chemical Rate Entered - please fix and try again.', true);
           return;
         }
-        if (!f.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === f.unit)) {
+        if (!f.unit || !this[`chemicalRateUnits`].find((c2) => c2.id === f.unit)) {
           AlertService.newBasicAlert('Invalid Fertilizer Rate Unit Entered - please fix and try again.', true);
           return;
         }
@@ -135,7 +135,7 @@ export class AddTractorEntryComponent implements OnInit {
     }
 
     this.cardEntryService.addTractorData(this.cardId, t).subscribe(
-      data => {
+      (data) => {
         if (data.success) {
           AlertService.newBasicAlert('Saved successfully!', false);
           this.nav.goBack();
@@ -143,7 +143,7 @@ export class AddTractorEntryComponent implements OnInit {
           AlertService.newBasicAlert('Error: ' + data.error, true);
         }
       },
-      failure => {
+      (failure) => {
         AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
       }
     );

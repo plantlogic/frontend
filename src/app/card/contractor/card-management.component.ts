@@ -100,7 +100,7 @@ import { DbFilterResponse } from 'src/app/_dto/card/dbFilterResponse';
         commonValue = commonValue[p];
       });
     } catch (e) {
-      console.log(e);
+      // console.log(e);
     }
     return (commonValue) ? commonValue : 'Unknown ' + key + ' ID';
   }
@@ -288,7 +288,7 @@ import { DbFilterResponse } from 'src/app/_dto/card/dbFilterResponse';
             AlertService.newBasicAlert('Error: ' + e.error, true);
           }
         },
-        failure => {
+        (failure) => {
           AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
         }
       );
@@ -354,7 +354,7 @@ import { DbFilterResponse } from 'src/app/_dto/card/dbFilterResponse';
           }
           tempThis.updateMessage(log, modified.length);
         },
-        failure => {
+        (failure) => {
           log.failure += 1;
           tempThis.updateMessage(log, modified.length);
         });

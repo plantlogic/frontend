@@ -73,7 +73,7 @@ export class EditUserComponent implements OnInit {
     const tempThis = this;
     this.titleService.setTitle('Edit User');
     this.route.params.subscribe(
-      data => {
+      (data) => {
         this.user = (new User()).editConstruct(data.username);
         this.userService.getUser(this.user.initialUsername, true).subscribe(
           apiData => {
@@ -110,7 +110,7 @@ export class EditUserComponent implements OnInit {
               this.router.navigate(['/userManagement']);
             }
           },
-          failure => {
+          (failure) => {
             AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
             this.router.navigate(['/userManagement']);
           }
@@ -188,7 +188,7 @@ export class EditUserComponent implements OnInit {
   resetPassword() {
     this.form.disable();
     this.userService.resetPassword(this.user.initialUsername).subscribe(
-      data => {
+      (data) => {
         if (data.success) {
           if (this.user.initialUsername === this.auth.getUsername()) {
             this.editSelfAlert('Reset successful! A temporary password has been emailed to you.');
@@ -201,7 +201,7 @@ export class EditUserComponent implements OnInit {
           this.form.enable();
         }
       },
-      failure => {
+      (failure) => {
         AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
         this.form.enable();
       }
@@ -252,7 +252,7 @@ export class EditUserComponent implements OnInit {
       this.user.permissions = this.getSelectedRoles();
       this.user.shipperID = (this.isShipper() && this.form.value.shipperID) ? this.form.value.shipperID : null;
       this.userService.editUser(this.user).subscribe(
-        data => {
+        (data) => {
           if (data.success) {
             if (this.user.initialUsername === this.auth.getUsername()) {
               this.editSelfAlert('Changes have been saved successfully!');
@@ -270,7 +270,7 @@ export class EditUserComponent implements OnInit {
             this.form.enable();
           }
         },
-        failure => {
+        (failure) => {
           AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
           this.form.enable();
         }

@@ -34,7 +34,7 @@ export class CardExportService {
         });
         card.shippers = shippers;
       } catch (e) {
-        console.log(e);
+        // console.log(e);
       }
       card.initShippersString();
     }
@@ -179,7 +179,7 @@ export class CardExportService {
         commonValue = commonValue[p];
       });
     } catch (e) {
-     console.log(e);
+    //  console.log(e);
     }
     return (commonValue) ? commonValue : '';
   }
@@ -219,7 +219,7 @@ export class CardExportService {
   public generateAppliedExport(commonData, from: number, to: number, ranches: Array<string>,
                                commodities: Array<string>, includeUnharvested: boolean): void {
     this.http.get<BasicDTO<Card[]>>(environment.ApiUrl + '/data/view/ranches', this.httpOptions).subscribe(
-      data => {
+      (data) => {
         // If data is successful retrieved
         if (data.success) {
           const cards = data.data.map((x) => (new Card()).copyConstructor(x)).filter((x) => {
@@ -331,7 +331,7 @@ export class CardExportService {
           AlertService.newBasicAlert('Error: ' + data.error, true);
         }
       },
-      failure => {
+      (failure) => {
         // Show connection error
         AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
       }
@@ -341,7 +341,7 @@ export class CardExportService {
   public generateAppliedFertilizerExport(commonData, from: number, to: number, ranches: Array<string>,
                                          commodities: Array<string>, includeUnharvested: boolean): void {
     this.http.get<BasicDTO<Card[]>>(environment.ApiUrl + '/data/view/ranches', this.httpOptions).subscribe(
-      data => {
+      (data) => {
         // If data is successful retrieved
         if (data.success) {
           const cards = data.data.map((x) => (new Card()).copyConstructor(x)).filter((x) => {
@@ -436,7 +436,7 @@ export class CardExportService {
         AlertService.newBasicAlert('Error: ' + data.error, true);
         }
       },
-      failure => {
+      (failure) => {
         // Show connection error
         AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
       }
@@ -448,7 +448,7 @@ export class CardExportService {
       preset = Object.assign(new ExportPreset(), preset);
 
       this.http.get<BasicDTO<Card[]>>(environment.ApiUrl + '/data/view/ranches', this.httpOptions).subscribe(
-        data => {
+        (data) => {
           // If data is successful retrieved
           if (data.success) {
 
@@ -542,7 +542,7 @@ export class CardExportService {
             AlertService.newBasicAlert('Error: ' + data.error, true);
           }
         },
-        failure => {
+        (failure) => {
           // Show connection error
           AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
         }
@@ -552,7 +552,7 @@ export class CardExportService {
   public generateExport(commonData, from: number, to: number, ranches: Array<string>, commodities: Array<string>,
                         includeUnharvested: boolean): void {
     this.http.get<BasicDTO<Card[]>>(environment.ApiUrl + '/data/view/ranches', this.httpOptions).subscribe(
-      data => {
+      (data) => {
         // If data is successful retrieved
         if (data.success) {
           // Format is [x][y]: [x] is a row and [y] is a column. Commas and newlines will automatically be added.
@@ -842,7 +842,7 @@ export class CardExportService {
           AlertService.newBasicAlert('Error: ' + data.error, true);
         }
       },
-      failure => {
+      (failure) => {
         // Show connection error
         AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
       }

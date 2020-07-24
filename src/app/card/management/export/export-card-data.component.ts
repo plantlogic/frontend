@@ -130,7 +130,7 @@ export class ExportCardDataComponent implements OnInit {
   generateCustom(): void {
     // Get selected preset
     this.exportPresetService.getExportPresetById(this.selectedPresetId).subscribe(
-      data => {
+      (data) => {
         if (data.success) {
           this.generating = true;
           this.fromDate = (new Date(this.fromDate)).valueOf();
@@ -144,7 +144,7 @@ export class ExportCardDataComponent implements OnInit {
           AlertService.newBasicAlert('Error when retrieving preset: ' + data.error, true);
         }
       },
-      failure => {
+      (failure) => {
         AlertService.newBasicAlert('Error when retrieving preset: ' + failure.message, true);
       }
     );
@@ -164,7 +164,7 @@ export class ExportCardDataComponent implements OnInit {
     if (this.commonKeys.includes(key) || key === 'ranches') {
       return (this[`${key}`]) ? this[`${key}`] : [];
     } else {
-      console.log('Key ' + key + ' is not in the commonKeys array.');
+      // console.log('Key ' + key + ' is not in the commonKeys array.');
       return [];
     }
   }
@@ -199,7 +199,7 @@ export class ExportCardDataComponent implements OnInit {
 
   public initPresets() {
     this.exportPresetService.getExportPresets().subscribe(
-      data => {
+      (data) => {
         if (data.success) {
           this.presets = [];
           data.data.forEach((preset) => {
@@ -223,7 +223,7 @@ export class ExportCardDataComponent implements OnInit {
           AlertService.newBasicAlert('Error when retrieving presets: ' + data.error, true);
         }
       },
-      failure => {
+      (failure) => {
         AlertService.newBasicAlert('Error when retrieving presets: ' + failure.message, true);
       }
     );
@@ -263,7 +263,7 @@ export class ExportCardDataComponent implements OnInit {
         this[`ranches`] = tempThis.common.sortCommonArray(ranchList, 'ranches');
         this.loading = false;
       },
-      failure => {
+      (failure) => {
         AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
         this.nav.goBack();
       }
@@ -281,7 +281,7 @@ export class ExportCardDataComponent implements OnInit {
         });
         this.loading = false;
       },
-      failure => {
+      (failure) => {
         AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
         this.nav.goBack();
       }

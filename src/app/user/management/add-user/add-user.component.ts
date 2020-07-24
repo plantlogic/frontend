@@ -119,7 +119,7 @@ export class AddUserComponent implements OnInit {
         );
       }
       this.userService.addUser(user).subscribe(
-        data => {
+        (data) => {
           if (data.success) {
             if (!this.manualPassword) {
               AlertService.newBasicAlert('User created successfully! Their temporary password was emailed to them.', false);
@@ -132,7 +132,7 @@ export class AddUserComponent implements OnInit {
             this.form.enable();
           }
         },
-        failure => {
+        (failure) => {
           AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
           this.form.enable();
         }

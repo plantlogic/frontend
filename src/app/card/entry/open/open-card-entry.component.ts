@@ -79,7 +79,7 @@ export class OpenCardEntryComponent implements OnInit {
         });
         card.shippers = shippers;
       } catch (e) {
-        console.log(e);
+        // console.log(e);
       }
     }
     card.commodityArray.forEach((e) => {
@@ -206,7 +206,7 @@ export class OpenCardEntryComponent implements OnInit {
         commonValue = commonValue[p];
       });
     } catch (e) {
-      console.log(e);
+      // console.log(e);
     }
     return (commonValue) ? commonValue : 'Unknown ' + key + ' ID';
   }
@@ -283,7 +283,7 @@ export class OpenCardEntryComponent implements OnInit {
     } else if (filter === 'all') {
       return this.comments;
     } else {
-      console.log('Invalid comment filter');
+      // console.log('Invalid comment filter');
       return this.comments;
     }
   }
@@ -292,7 +292,7 @@ export class OpenCardEntryComponent implements OnInit {
     if (this.commonKeys.includes(key) || key === 'ranches') {
       return (this[`${key}`]) ? this[`${key}`] : [];
     } else {
-      console.log('Key ' + key + ' is not in the commonKeys array.');
+      // console.log('Key ' + key + ' is not in the commonKeys array.');
       return [];
     }
   }
@@ -349,7 +349,7 @@ export class OpenCardEntryComponent implements OnInit {
 
   private loadCardData(id: string) {
     this.cardService.getCardById(id).subscribe(
-      data => {
+      (data) => {
         if (data.success) {
           this.card = (new Card()).copyConstructor(data.data);
           this.comments = (new Card()).copyConstructor(data.data).comments;
@@ -364,7 +364,7 @@ export class OpenCardEntryComponent implements OnInit {
           this.nav.goBack();
         }
       },
-      failure => {
+      (failure) => {
         AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
         this.nav.goBack();
       }
@@ -413,11 +413,11 @@ export class OpenCardEntryComponent implements OnInit {
         AlertService.newBasicAlert('Change saved successfully!', false);
         this.loadCardData(this.card.id);
       } else {
-        console.log(data);
+        // console.log(data);
         AlertService.newBasicAlert('Error: ' + data.error, true);
       }
     },
-    failure => {
+    (failure) => {
       AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
     });
   }

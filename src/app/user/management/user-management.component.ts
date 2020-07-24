@@ -45,7 +45,7 @@ export class UserManagementComponent implements OnInit {
 
       newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
         this.userService.deleteUser((new User()).usernameConstruct(username)).subscribe(
-          data => {
+          (data) => {
             if (data.success) {
               AlertService.newBasicAlert('User deleted successfully!', false);
             } else if (!data.success) {
@@ -53,7 +53,7 @@ export class UserManagementComponent implements OnInit {
             }
             this.ngOnInit();
           },
-          failure => {
+          (failure) => {
             AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
           }
         );
@@ -79,7 +79,7 @@ export class UserManagementComponent implements OnInit {
 
   private loadUserData() {
     this.userService.getUserList().subscribe(
-      data => {
+      (data) => {
         if (data.success) {
           this.usersRaw = data.data;
           this.users = this.separateLocalUsersAndShippers(this.usersRaw);
@@ -90,7 +90,7 @@ export class UserManagementComponent implements OnInit {
           AlertService.newBasicAlert('Error: ' + data.error, true);
         }
       },
-      failure => {
+      (failure) => {
         AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
       }
     );

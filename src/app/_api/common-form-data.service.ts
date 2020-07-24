@@ -23,7 +23,7 @@ export class CommonFormDataService {
           CommonFormDataService.timestamp = undefined;
           return this.getValues(key);
         }
-      }, failure => {
+      }, (failure) => {
         CommonFormDataService.timestamp = undefined;
         return this.getValues(key);
       });
@@ -45,7 +45,7 @@ export class CommonFormDataService {
           CommonFormDataService.timestamp = undefined;
           return this.getAllValues();
         }
-      }, failure => {
+      }, (failure) => {
         CommonFormDataService.timestamp = undefined;
         return this.getAllValues();
       });

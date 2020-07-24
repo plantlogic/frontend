@@ -31,7 +31,7 @@ export class AppAdminComponent implements OnInit {
       } else if (!data.success) {
         AlertService.newBasicAlert('Error: ' + data.error, true);
       }
-    }, failure => {
+    }, (failure) => {
       AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
     });
   }
@@ -122,7 +122,7 @@ export class AppAdminComponent implements OnInit {
       }
       return commonValues;
     } catch (e) {
-      console.log(e);
+      // console.log(e);
       return [];
     }
   }
@@ -268,7 +268,7 @@ export class AppAdminComponent implements OnInit {
           this.sortedCommonArray[keyIndex].values = this.sortCommonArray(this.sortedCommonArray[keyIndex].values, key);
         }
       }
-    }, failure => {
+    }, (failure) => {
       AlertService.newBasicAlert('There was a connection error while saving the changes: ' + failure.message + ' (Try Again)', true, 10);
     });
   }

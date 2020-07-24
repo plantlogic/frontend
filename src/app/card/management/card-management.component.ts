@@ -105,7 +105,7 @@ export class CardManagementComponent implements OnInit {
         commonValue = commonValue[p];
       });
     } catch (e) {
-      console.log(e);
+      // console.log(e);
     }
     return (commonValue) ? commonValue : 'Unknown ' + key + ' ID';
   }
@@ -115,7 +115,7 @@ export class CardManagementComponent implements OnInit {
     try {
       // Cycle through the cards being currently displayed, check if fieldID is different from raw
       for (const c of this.cards) {
-        if (this.cardsRaw.find(c2 => c2.id === c.id).fieldID !== c.fieldID) {
+        if (this.cardsRaw.find((c2) => c2.id === c.id).fieldID !== c.fieldID) {
           modifiedCards.push(c);
         }
       }
@@ -129,7 +129,7 @@ export class CardManagementComponent implements OnInit {
     if (this.commonKeys.includes(key) || key === 'ranches') {
       return (this[`${key}`]) ? this[`${key}`] : [];
     } else {
-      console.log('Key ' + key + ' is not in the commonKeys array.');
+      // console.log('Key ' + key + ' is not in the commonKeys array.');
       return [];
     }
   }
@@ -288,7 +288,7 @@ export class CardManagementComponent implements OnInit {
             AlertService.newBasicAlert('Error: ' + e.error, true);
           }
         },
-        failure => {
+        (failure) => {
           AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
         }
       );
@@ -306,7 +306,7 @@ export class CardManagementComponent implements OnInit {
       try {
         card.fieldID = tempThis.cardsRaw.find((e) => e.id === card.id).fieldID;
       } catch (e) {
-        console.log('Error resetting card fieldID');
+        // console.log('Error resetting card fieldID');
       }
     });
   }
@@ -355,7 +355,7 @@ export class CardManagementComponent implements OnInit {
           }
           tempThis.updateMessage(log, modified.length);
         },
-        failure => {
+        (failure) => {
           log.failure += 1;
           tempThis.updateMessage(log, modified.length);
         });

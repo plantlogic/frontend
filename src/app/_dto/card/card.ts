@@ -252,7 +252,9 @@ export class Card {
       } else {
         this.commodityString = '';
       }
-    } catch { console.log('Error when initializing commodity string'); }
+    } catch {
+      // console.log('Error when initializing commodity string');
+    }
   }
 
   initShippersString(): void {

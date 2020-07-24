@@ -89,7 +89,7 @@ export class HomeComponent implements OnInit {
         commonValue = commonValue[p];
       });
     } catch (e) {
-      console.log(e);
+      // console.log(e);
     }
     return (commonValue) ? commonValue : targetID;
   }
@@ -103,7 +103,7 @@ export class HomeComponent implements OnInit {
             AlertService.newBasicAlert('Error when retrieving user information', true);
           }
         },
-        failure => {
+        (failure) => {
           AlertService.newBasicAlert('Connection Error', true);
         });
     }
@@ -126,7 +126,7 @@ export class HomeComponent implements OnInit {
       return;
     }
     this.cardEntry.getCommodityAcres(permission, shipperID).subscribe(
-      data => {
+      (data) => {
         if (data.success) {
           const pairs: Map<string, number> = data.data;
           for (const [k, v] of Object.entries(pairs)) {
@@ -180,11 +180,11 @@ export class HomeComponent implements OnInit {
             }
           });
         } else {
-          console.log('Error');
+          // console.log('Error');
           AlertService.newBasicAlert("There was an error when retrieving commodity acres", true);
         }
       },
-      failure => {}
+      (failure) => {}
     );
   }
 
@@ -205,7 +205,7 @@ export class HomeComponent implements OnInit {
       return;
     }
     this.cardEntry.getCommodityCardCount(permission, shipperID).subscribe(
-      data => {
+      (data) => {
         if (data.success) {
           const pairs: Map<string, number> = data.data;
           for (const [k, v] of Object.entries(pairs)) {
@@ -258,11 +258,11 @@ export class HomeComponent implements OnInit {
             }
           });
         } else {
-          console.log('Error');
+          // console.log('Error');
         }
       },
-      failure => {
-        console.log('Error');
+      (failure) => {
+        // console.log('Error');
       }
     );
   }
@@ -288,7 +288,7 @@ export class HomeComponent implements OnInit {
       return;
     }
     this.cardEntry.getRecentlyHarvested(permission, shipperID).subscribe(
-      data => {
+      (data) => {
         if (data.success) {
           this.cardHarvestedChart = new Chart(this.cardHarvestedChartRef.nativeElement, {
             type: 'line',
@@ -327,11 +327,11 @@ export class HomeComponent implements OnInit {
             }
           });
         } else {
-          console.log('Error');
+          // console.log('Error');
         }
       },
-      failure => {
-        console.log('Error');
+      (failure) => {
+        // console.log('Error');
       }
     );
   }
@@ -350,14 +350,14 @@ export class HomeComponent implements OnInit {
     } else {
       return;
     }
-    this.cardEntry.getCardCount(permission, shipperID).subscribe( data => {
+    this.cardEntry.getCardCount(permission, shipperID).subscribe( (data) => {
       if (data.success) {
         this.cardCount = data.data;
       } else {
-        console.log(data.error);
+        // console.log(data.error);
       }
-    }, failure => {
-      console.log('Connection Error');
+    }, (failure) => {
+      // console.log('Connection Error');
     });
   }
 
@@ -365,7 +365,7 @@ export class HomeComponent implements OnInit {
     if (this.commonKeys.includes(key) || key === 'ranches') {
       return (this[`${key}`]) ? this[`${key}`] : [];
     } else {
-      console.log('Key ' + key + ' is not in the commonKeys array.');
+      // console.log('Key ' + key + ' is not in the commonKeys array.');
       return [];
     }
   }

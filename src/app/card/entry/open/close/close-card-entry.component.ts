@@ -32,7 +32,7 @@ export class CloseCardEntryComponent implements OnInit {
     }
     this.card.harvestDate = (new Date(this.harvestDate)).valueOf();
     this.cardService.closeCard(this.card).subscribe(
-      data => {
+      (data) => {
         if (data.success) {
           AlertService.newBasicAlert('Card set as harvested!', false);
           this.router.navigateByUrl('/entry');
@@ -40,7 +40,7 @@ export class CloseCardEntryComponent implements OnInit {
           AlertService.newBasicAlert('Error: ' + data.error, true);
         }
       },
-      failure => {
+      (failure) => {
         AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
       }
     );
