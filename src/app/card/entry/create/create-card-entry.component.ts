@@ -155,7 +155,7 @@ export class CreateCardEntryComponent implements OnInit {
     const card = new Card().copyConstructor(this.card);
 
     // Check Ranch Info
-    if (!card.ranchName || !(this[`ranches`].find(r => r.id === card.ranchName))) {
+    if (!card.ranchName || !(this[`ranches`].find((r) => r.id === card.ranchName))) {
       AlertService.newBasicAlert('Invalid Ranch - please fix and try again.', true);
       return;
     }

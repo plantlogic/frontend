@@ -60,7 +60,7 @@ export class RoleGuard implements CanActivate {
   constructor(private auth: AuthService, private router: Router) {}
 
   canActivate(route: ActivatedRouteSnapshot) {
-    if (this.auth.isLoggedIn() && route.data.role.map(r => this.auth.hasPermission(r)).includes(true)) {
+    if (this.auth.isLoggedIn() && route.data.role.map((r) => this.auth.hasPermission(r)).includes(true)) {
       return true;
     } else {
       this.router.navigate(['/']);

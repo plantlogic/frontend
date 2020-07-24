@@ -104,9 +104,9 @@ export class UserManagementComponent implements OnInit {
   public separateLocalUsersAndShippers(allUsers: User[]) {
     const shippersArr = [];
     const localUsersArr = [];
-    allUsers.forEach(user => {
+    allUsers.forEach((user) => {
       let isShipper = false;
-      user.permissions.forEach(p => {
+      user.permissions.forEach((p) => {
         // Checking for SHIPPER role not working?
         if (String(p) === 'SHIPPER') {
           isShipper = true;

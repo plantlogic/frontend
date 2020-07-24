@@ -175,8 +175,8 @@ export class CardExportService {
       commonValue = commonData[`${key}`].find((e) => {
         return e.id === targetID;
       });
-      valuePropertyArr.forEach(p => {
-        commonValue = commonValue[p];
+      valuePropertyArr.forEach((p) => {
+        commonValue = commonValue[`${p}`];
       });
     } catch (e) {
     //  console.log(e);
@@ -887,7 +887,7 @@ export class CardExportService {
       }
     });
 
-    card.tractorArray.forEach( e => {
+    card.tractorArray.forEach( (e) => {
       e.fertilizerArray.forEach((x) => {
         fertilizers.push({
           date: e.workDate,
@@ -910,7 +910,7 @@ export class CardExportService {
       });
     });
 
-    card.irrigationArray.forEach( e => {
+    card.irrigationArray.forEach( (e) => {
       e.fertilizerArray.forEach((x) => {
         fertilizers.push({
           date: e.workDate,

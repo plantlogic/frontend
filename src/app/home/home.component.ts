@@ -85,8 +85,8 @@ export class HomeComponent implements OnInit {
       return e.id === targetID;
     });
     try {
-      valuePropertyArr.forEach(p => {
-        commonValue = commonValue[p];
+      valuePropertyArr.forEach((p) => {
+        commonValue = commonValue[`${p}`];
       });
     } catch (e) {
       // console.log(e);
@@ -408,8 +408,8 @@ export class HomeComponent implements OnInit {
     const keys = Object.keys(PlRole);
     const  roles = keys.slice(keys.length / 2);
     roles.forEach((role) => {
-      if (this.auth.hasPermission(PlRole[role])) {
-        this.permissions[role] = true;
+      if (this.auth.hasPermission(PlRole[`${role}`])) {
+        this.permissions[`${role}`] = true;
       }
     });
   }

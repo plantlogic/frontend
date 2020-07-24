@@ -146,8 +146,8 @@ export class EntryDashboardComponent implements OnInit {
     return e.id === targetID;
   });
   try {
-    valuePropertyArr.forEach(p => {
-      commonValue = commonValue[p];
+    valuePropertyArr.forEach((p) => {
+      commonValue = commonValue[`${p}`];
     });
   } catch (e) {
     // console.log(e);

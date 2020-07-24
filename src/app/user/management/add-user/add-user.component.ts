@@ -132,7 +132,7 @@ export class AddUserComponent implements OnInit {
             this.form.enable();
           }
         },
-        (failure) => {
+        failure => {
           AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
           this.form.enable();
         }
@@ -187,7 +187,7 @@ export class AddUserComponent implements OnInit {
       roles.forEach((role) => {
         rolesFormatted.push({
           id: role,
-          value: (this.PlRoleLookup[role].display) ? this.PlRoleLookup[role].display : 'Display Value Not Found'
+          value: (this.PlRoleLookup[`${role}`].display) ? this.PlRoleLookup[`${role}`].display : 'Display Value Not Found'
         });
       });
       return rolesFormatted;

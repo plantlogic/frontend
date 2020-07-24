@@ -101,8 +101,8 @@ export class CardManagementComponent implements OnInit {
       return e.id === targetID;
     });
     try {
-      valuePropertyArr.forEach(p => {
-        commonValue = commonValue[p];
+      valuePropertyArr.forEach((p) => {
+        commonValue = commonValue[`${p}`];
       });
     } catch (e) {
       // console.log(e);
@@ -264,7 +264,7 @@ export class CardManagementComponent implements OnInit {
       const shipperID = (shipperRestricted) ? this.auth.getShipperID() : null;
 
       this.cardService.getCardsFiltered(filter, shipperRestricted, shipperID).subscribe(
-        e => {
+        (e) => {
           if (e.success) {
             const response: DbFilterResponse = e.data;
             // console.log(response);

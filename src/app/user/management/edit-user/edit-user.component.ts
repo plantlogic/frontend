@@ -76,7 +76,7 @@ export class EditUserComponent implements OnInit {
       (data) => {
         this.user = (new User()).editConstruct(data.username);
         this.userService.getUser(this.user.initialUsername, true).subscribe(
-          apiData => {
+          (apiData) => {
             if (apiData.success) {
               this.user.importInfo(apiData.data);
               this.form.get('username').setValue(this.user.username);
@@ -85,7 +85,7 @@ export class EditUserComponent implements OnInit {
               this.form.get('shipperID').setValue(this.user.shipperID);
 
               // Set multiselect for user ranches
-              this.commonData.getValues('ranches', ranches => {
+              this.commonData.getValues('ranches', (ranches) => {
                 tempThis.userRanches = ranches.filter((e) => {
                   tempThis.ranchList.push(e);
                   return tempThis.user.ranchAccess.includes(e.id);
@@ -214,7 +214,7 @@ export class EditUserComponent implements OnInit {
       roles.forEach((role) => {
         rolesFormatted.push({
           id: role,
-          value: (this.PlRoleLookup[role].display) ? this.PlRoleLookup[role].display : 'Display Value Not Found'
+          value: (this.PlRoleLookup[`${role}`].display) ? this.PlRoleLookup[`${role}`].display : 'Display Value Not Found'
         });
       });
       return rolesFormatted;

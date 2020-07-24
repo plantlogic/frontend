@@ -96,8 +96,8 @@ import { DbFilterResponse } from 'src/app/_dto/card/dbFilterResponse';
       return e.id === targetID;
     });
     try {
-      valuePropertyArr.forEach(p => {
-        commonValue = commonValue[p];
+      valuePropertyArr.forEach((p) => {
+        commonValue = commonValue[`${p}`];
       });
     } catch (e) {
       // console.log(e);

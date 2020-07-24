@@ -297,7 +297,7 @@ export class OpenCardDataComponent implements OnInit {
   }
 
   public getRanchName(id: string): string {
-    return this[`ranches`].find(r => r.id === id).value;
+    return this[`ranches`].find((r) => r.id === id).value;
   }
 
   private getSelectedShippers(): Array<string> {
@@ -392,7 +392,7 @@ export class OpenCardDataComponent implements OnInit {
 
   private loadCardData(): void {
     const tempThis = this;
-    this.route.params.subscribe(cr => {
+    this.route.params.subscribe((cr) => {
       this.cardView.getCardById(cr.id).subscribe(
         (data) => {
           if (data.success) {
@@ -400,7 +400,7 @@ export class OpenCardDataComponent implements OnInit {
             tempThis.comments = (new Card()).copyConstructor(data.data).comments;
             tempThis.card.initTotalAcres();
             // Set up shippers multiselect
-            tempThis.common.getValues('shippers', shippers => {
+            tempThis.common.getValues('shippers', (shippers) => {
               tempThis.cardShippers = shippers.filter((e) => {
                 return (tempThis.card.shippers) ? tempThis.card.shippers.includes(e.id) : false;
               });
@@ -605,7 +605,7 @@ export class OpenCardDataComponent implements OnInit {
     try {
       const card = (new Card()).copyConstructor(cardRaw);
       // Check Ranch Info
-      if (!card.ranchName || !(this[`ranches`].find(r => r.id === card.ranchName))) {
+      if (!card.ranchName || !(this[`ranches`].find((r) => r.id === card.ranchName))) {
         AlertService.newBasicAlert('Invalid Ranch - please fix and try again.', true);
         return;
       }

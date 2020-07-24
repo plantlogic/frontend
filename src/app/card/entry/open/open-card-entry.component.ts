@@ -202,8 +202,8 @@ export class OpenCardEntryComponent implements OnInit {
       return e.id === targetID;
     });
     try {
-      valuePropertyArr.forEach(p => {
-        commonValue = commonValue[p];
+      valuePropertyArr.forEach((p) => {
+        commonValue = commonValue[`${p}`];
       });
     } catch (e) {
       // console.log(e);
@@ -261,7 +261,7 @@ export class OpenCardEntryComponent implements OnInit {
       }
     });
     // Add Irrigation dates and chems/ferts
-    this.card.irrigationArray.forEach(i => {
+    this.card.irrigationArray.forEach((i) => {
       if (i.chemicalArray.length > 0 || i.fertilizerArray.length > 0) {
         allApplied.push({
           date: i.workDate,

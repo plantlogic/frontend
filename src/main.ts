@@ -14,5 +14,5 @@ environmentLoader.then(env => {
   environment.AppName = env.AppName;
   environment.disableAuth = env.disableAuth;
 
-  platformBrowserDynamic().bootstrapModule(AppModule).catch(err => console.error(err));
+  platformBrowserDynamic().bootstrapModule(AppModule).catch((err) => console.error(err));
 });
