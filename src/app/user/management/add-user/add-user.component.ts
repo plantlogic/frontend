@@ -156,7 +156,7 @@ export class AddUserComponent implements OnInit {
   getRanchAccess() {
     if (!this.hasPerms()) {return []; }
     try {
-      return (this.form.value.ranchAccess) ? this.form.value.ranchAccess.map(e => e.id) : [];
+      return (this.form.value.ranchAccess) ? this.form.value.ranchAccess.map((e) => e.id) : [];
     } catch (e) {
       AlertService.newBasicAlert('Error When Reading Ranch Access', true);
       return [];
@@ -168,7 +168,7 @@ export class AddUserComponent implements OnInit {
   }
 
   getSelectedRoles() {
-    return (this.userRolesFormatted) ? this.userRolesFormatted.map(role => role.id) : [];
+    return (this.userRolesFormatted) ? this.userRolesFormatted.map((role) => role.id) : [];
   }
 
   hasPerms(): boolean {
@@ -184,7 +184,7 @@ export class AddUserComponent implements OnInit {
   rolesToMultiSelectFormat(roles) {
     try {
       const rolesFormatted = [];
-      roles.forEach(role => {
+      roles.forEach((role) => {
         rolesFormatted.push({
           id: role,
           value: (this.PlRoleLookup[role].display) ? this.PlRoleLookup[role].display : 'Display Value Not Found'

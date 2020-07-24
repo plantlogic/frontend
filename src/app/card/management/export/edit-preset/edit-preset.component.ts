@@ -36,7 +36,7 @@ export class EditPresetComponent implements OnInit {
   ];
 
   ngOnInit() {
-    this.route.params.subscribe(data => this.initPreset(data.id));
+    this.route.params.subscribe((data) => this.initPreset(data.id));
   }
 
   public collapseToggle(htmlId: string): void {

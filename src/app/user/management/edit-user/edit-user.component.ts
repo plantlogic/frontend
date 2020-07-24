@@ -86,7 +86,7 @@ export class EditUserComponent implements OnInit {
 
               // Set multiselect for user ranches
               this.commonData.getValues('ranches', ranches => {
-                tempThis.userRanches = ranches.filter(e => {
+                tempThis.userRanches = ranches.filter((e) => {
                   tempThis.ranchList.push(e);
                   return tempThis.user.ranchAccess.includes(e.id);
                 });
@@ -138,7 +138,7 @@ export class EditUserComponent implements OnInit {
   getRanchAccess() {
     if (!this.hasPerms()) {return []; }
     try {
-      return (this.form.value.ranchAccess) ? this.form.value.ranchAccess.map(e => e.id) : [];
+      return (this.form.value.ranchAccess) ? this.form.value.ranchAccess.map((e) => e.id) : [];
     } catch (e) {
       AlertService.newBasicAlert('Error When Reading Ranch Access', true);
       return [];
@@ -150,7 +150,7 @@ export class EditUserComponent implements OnInit {
   }
 
   getSelectedRoles() {
-    return (this.userRolesFormatted) ? this.userRolesFormatted.map(role => role.id) : [];
+    return (this.userRolesFormatted) ? this.userRolesFormatted.map((role) => role.id) : [];
   }
 
   hasPerms(): boolean {
@@ -166,8 +166,8 @@ export class EditUserComponent implements OnInit {
   initRoles() {
     const keys = Object.keys(this.plRole);
     this.roleList = keys.slice(keys.length / 2).sort();
-    const userRoles = this.user.permissions.map(e => e.toString());
-    const selectedRoles = this.roleList.filter(role => userRoles.includes(role)).sort();
+    const userRoles = this.user.permissions.map((e) => e.toString());
+    const selectedRoles = this.roleList.filter((role) => userRoles.includes(role)).sort();
     this.userRolesFormatted = this.rolesToMultiSelectFormat(selectedRoles);
   }
 
@@ -211,7 +211,7 @@ export class EditUserComponent implements OnInit {
   rolesToMultiSelectFormat(roles) {
     try {
       const rolesFormatted = [];
-      roles.forEach(role => {
+      roles.forEach((role) => {
         rolesFormatted.push({
           id: role,
           value: (this.PlRoleLookup[role].display) ? this.PlRoleLookup[role].display : 'Display Value Not Found'

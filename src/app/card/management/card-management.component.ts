@@ -48,9 +48,9 @@ export class CardManagementComponent implements OnInit {
   ngOnInit() {
     const tempThis = this;
     this.titleService.setTitle('All Cards');
-    this.initCommon(c => {
+    this.initCommon((c) => {
       this.commonKeys.forEach(key => {
-        tempThis[key] = c[key];
+        tempThis[`${key}`] = c[`${key}`];
       });
       this[`ranches`] = c[`ranches`];
       this.loadCachedFilters();
@@ -61,7 +61,7 @@ export class CardManagementComponent implements OnInit {
   private cardIDsToValues(card: Card): Card {
     // Only convert what is needed on this page
     card.ranchName = this.findCommonValue('ranches', ['value'], card.ranchName);
-    card.commodityArray.forEach(e => {
+    card.commodityArray.forEach((e) => {
       e.commodity = this.findCommonValue('commodities', ['value', 'key'], e.commodity);
     });
     return card;
@@ -88,7 +88,7 @@ export class CardManagementComponent implements OnInit {
   }
 
   /*
-    Searches common values in [key] list where value.id === targetID
+    Searches common values in [`${key}`] list where value.id === targetID
     returns value.valuePropertyArr where valuePropertyArr = array of nesting properties
     returns null in no targetID supplied
     returns targetID if key is not in commonKeys Array (don't need value)
@@ -97,7 +97,7 @@ export class CardManagementComponent implements OnInit {
   private findCommonValue(key, valuePropertyArr, targetID?) {
     if (!targetID) { return null; }
     if (!this.commonKeys.includes(key) && key !== 'ranches') { return targetID; }
-    let commonValue = this.getCommon(key).find(e => {
+    let commonValue = this.getCommon(key).find((e) => {
       return e.id === targetID;
     });
     try {
@@ -127,7 +127,7 @@ export class CardManagementComponent implements OnInit {
 
   public getCommon(key) {
     if (this.commonKeys.includes(key) || key === 'ranches') {
-      return (this[key]) ? this[key] : [];
+      return (this[`${key}`]) ? this[`${key}`] : [];
     } else {
       console.log('Key ' + key + ' is not in the commonKeys array.');
       return [];
@@ -150,11 +150,11 @@ export class CardManagementComponent implements OnInit {
     const tempThis = this;
     const sortedCommon = {};
     const userRanchAccess = this.auth.getRanchAccess();
-    this.common.getAllValues(data => {
+    this.common.getAllValues((data) => {
       this.commonKeys.forEach(key => {
-        if (CommonLookup[key].type === 'hashTable') {
+        if (CommonLookup[`${key}`].type === 'hashTable') {
           const temp = [];
-          data[key].forEach(entry => {
+          data[`${key}`].forEach(entry => {
             temp.push({
               id: entry.id,
               value : {
@@ -163,15 +163,15 @@ export class CardManagementComponent implements OnInit {
               }
             });
           });
-          sortedCommon[key] = tempThis.common.sortCommonArray(temp, key);
+          sortedCommon[`${key}`] = tempThis.common.sortCommonArray(temp, key);
         } else {
-          sortedCommon[key] = tempThis.common.sortCommonArray(data[key], key);
+          sortedCommon[`${key}`] = tempThis.common.sortCommonArray(data[`${key}`], key);
         }
       });
       if (this.hasShipperPermission()) {
         sortedCommon[`ranches`] = data[`ranches`];
       } else {
-        sortedCommon[`ranches`] = data[`ranches`].filter(e => userRanchAccess.includes(e.id));
+        sortedCommon[`ranches`] = data[`ranches`].filter((e) => userRanchAccess.includes(e.id));
       }
       sortedCommon[`ranches`] = tempThis.common.sortCommonArray(sortedCommon[`ranches`], 'ranches');
       f(sortedCommon);
@@ -268,16 +268,16 @@ export class CardManagementComponent implements OnInit {
           if (e.success) {
             const response: DbFilterResponse = e.data;
             // console.log(response);
-            this.cards = response.cards.map(c => (new Card()).copyConstructor(c));
+            this.cards = response.cards.map((c) => (new Card()).copyConstructor(c));
             this.cardSizeNonLimited = response.size;
 
             // For display purposes, change any common IDs to their values
-            this.cards.forEach(card => {
+            this.cards.forEach((card) => {
               card = this.cardIDsToValues(card);
               card.initCommodityString();
             });
             // Keep a raw copy of the data
-            this.cardsRaw = response.cards.map(c => (new Card()).copyConstructor(c));
+            this.cardsRaw = response.cards.map((c) => (new Card()).copyConstructor(c));
             this.updateNumPages();
             if (pageSelect) {
               this.setPage(previousPage, false);
@@ -302,9 +302,9 @@ export class CardManagementComponent implements OnInit {
 
   public resetFieldIds(): void {
     const tempThis = this;
-    this.cards.forEach(card => {
+    this.cards.forEach((card) => {
       try {
-        card.fieldID = tempThis.cardsRaw.find(e => e.id === card.id).fieldID;
+        card.fieldID = tempThis.cardsRaw.find((e) => e.id === card.id).fieldID;
       } catch (e) {
         console.log('Error resetting card fieldID');
       }
@@ -341,13 +341,13 @@ export class CardManagementComponent implements OnInit {
     };
     const modified = this.findModifiedCards();
     modified.forEach(m => {
-      const card = tempThis.cardsRaw.find(c => c.id === m.id);
+      const card = tempThis.cardsRaw.find((c) => c.id === m.id);
       if (!card) {
         log.failure += 1;
         tempThis.updateMessage(log, modified.length);
       } else {
         card.fieldID = m.fieldID;
-        tempThis.cardEdit.updateCard(card).subscribe(data => {
+        tempThis.cardEdit.updateCard(card).subscribe((data) => {
           if (data.success) {
             log.success += 1;
           } else {

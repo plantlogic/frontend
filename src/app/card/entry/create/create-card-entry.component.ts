@@ -48,9 +48,9 @@ export class CreateCardEntryComponent implements OnInit {
     this.titleService.setTitle('Create Card');
     this.card.ranchManagerName = this.auth.getName();
     this.card.lotNumber = '';
-    this.initCommon(c => {
+    this.initCommon((c) => {
       this.commonKeys.forEach(key => {
-        tempThis[key] = c[key];
+        tempThis[`${key}`] = c[`${key}`];
       });
       this[`ranches`] = c[`ranches`];
     });
@@ -97,7 +97,7 @@ export class CreateCardEntryComponent implements OnInit {
 
   public getCommon(key) {
     if (this.commonKeys.includes(key) || key === 'ranches') {
-      return (this[key]) ? this[key] : [];
+      return (this[`${key}`]) ? this[`${key}`] : [];
     } else {
       console.log('Key ' + key + ' is not in the commonKeys array.');
       return [];
@@ -106,7 +106,7 @@ export class CreateCardEntryComponent implements OnInit {
 
   getSelectedShippers(): Array<string> {
     try {
-      return (this.cardShippers) ? this.cardShippers.map(e => e.id) : [];
+      return (this.cardShippers) ? this.cardShippers.map((e) => e.id) : [];
     } catch (e) {
       AlertService.newBasicAlert('Error When Reading Shippers', true);
       return [];
@@ -115,7 +115,7 @@ export class CreateCardEntryComponent implements OnInit {
 
   public getVarieties(commodityID) {
     try {
-      const searchResult = this[`commodities`].find(e => e.id === commodityID).value.value;
+      const searchResult = this[`commodities`].find((e) => e.id === commodityID).value.value;
       return searchResult;
     } catch (e) {
       return [];
@@ -126,11 +126,11 @@ export class CreateCardEntryComponent implements OnInit {
     const tempThis = this;
     const sortedCommon = {};
     const userRanchAccess = this.auth.getRanchAccess();
-    this.common.getAllValues(data => {
+    this.common.getAllValues((data) => {
       this.commonKeys.forEach(key => {
-        if (CommonLookup[key].type === 'hashTable') {
+        if (CommonLookup[`${key}`].type === 'hashTable') {
           const temp = [];
-          data[key].forEach(entry => {
+          data[`${key}`].forEach(entry => {
             temp.push({
               id: entry.id,
               value : {
@@ -139,12 +139,12 @@ export class CreateCardEntryComponent implements OnInit {
               }
             });
           });
-          sortedCommon[key] = tempThis.common.sortCommonArray(temp, key);
+          sortedCommon[`${key}`] = tempThis.common.sortCommonArray(temp, key);
         } else {
-          sortedCommon[key] = tempThis.common.sortCommonArray(data[key], key);
+          sortedCommon[`${key}`] = tempThis.common.sortCommonArray(data[`${key}`], key);
         }
       });
-      sortedCommon[`ranches`] = data[`ranches`].filter(e => userRanchAccess.includes(e.id));
+      sortedCommon[`ranches`] = data[`ranches`].filter((e) => userRanchAccess.includes(e.id));
       sortedCommon[`ranches`] = tempThis.common.sortCommonArray(sortedCommon[`ranches`], 'ranches');
       f(sortedCommon);
     });

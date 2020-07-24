@@ -15,7 +15,7 @@ export class CommonFormDataService {
         || CommonFormDataService.timestamp < Date.now() - (1000 * 1 * 30)
         || !CommonFormDataService.common[`${key}`]) {
       CommonFormDataService.timestamp = Date.now();
-      this.commonService.getByKey(key).subscribe(data => {
+      this.commonService.getByKey(key).subscribe((data) => {
         if (data.success) {
           CommonFormDataService.common[`${key}`] = data.data.values;
           return (f) ? f(CommonFormDataService.common[`${key}`]) : CommonFormDataService.common[`${key}`];
@@ -35,9 +35,9 @@ export class CommonFormDataService {
   public getAllValues(f?) {
     if (!CommonFormDataService.timestamp || CommonFormDataService.timestamp < Date.now() - (1000 * 1 * 30)) {
       CommonFormDataService.timestamp = Date.now();
-      this.commonService.getAllData().subscribe(data => {
+      this.commonService.getAllData().subscribe((data) => {
         if (data.success) {
-          data.data.forEach(c => {
+          data.data.forEach((c) => {
             CommonFormDataService.common[c.key] = c.values;
           });
           return (f) ? f(CommonFormDataService.common) : CommonFormDataService.common;

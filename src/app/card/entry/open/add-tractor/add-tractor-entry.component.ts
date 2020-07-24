@@ -28,9 +28,9 @@ export class AddTractorEntryComponent implements OnInit {
   ngOnInit() {
     const tempThis = this;
     this.titleService.setTitle('Tractor');
-    this.initCommon(c => {
-      this.commonKeys.forEach(key => tempThis[key] = c[key] );
-      this.route.params.subscribe(data => this.cardId = data.id);
+    this.initCommon((c) => {
+      this.commonKeys.forEach(key => tempThis[`${key}`] = c[`${key}`] );
+      this.route.params.subscribe((data) => this.cardId = data.id);
     });
   }
 
@@ -62,7 +62,7 @@ export class AddTractorEntryComponent implements OnInit {
 
   public getCommon(key) {
     if (this.commonKeys.includes(key)) {
-      return (this[key]) ? this[key] : [];
+      return (this[`${key}`]) ? this[`${key}`] : [];
     } else {
       console.log('Key ' + key + ' is not in the commonKeys array.');
       return [];
@@ -72,9 +72,9 @@ export class AddTractorEntryComponent implements OnInit {
   public initCommon(f): void {
     const tempThis = this;
     const sortedCommon = {};
-    this.common.getAllValues(data => {
+    this.common.getAllValues((data) => {
       this.commonKeys.forEach(key => {
-        sortedCommon[key] = tempThis.common.sortCommonArray(data[key], key);
+        sortedCommon[`${key}`] = tempThis.common.sortCommonArray(data[`${key}`], key);
       });
       f(sortedCommon);
     });
@@ -89,7 +89,7 @@ export class AddTractorEntryComponent implements OnInit {
     const t = Object.assign(new TractorEntry(), this.tractor);
     t.workDate = (new Date(t.workDate)).valueOf();
     const operatorID = this.dataListOptionValueToID(t.operator, 'tractorOperators');
-    if (!operatorID || !this[`tractorOperators`].find(e => e.id === operatorID)) {
+    if (!operatorID || !this[`tractorOperators`].find((e) => e.id === operatorID)) {
       AlertService.newBasicAlert('Invalid Tractor Operator - please fix and try again.', true);
       return;
     }

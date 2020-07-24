@@ -57,9 +57,9 @@ export class OpenCardDataComponent implements OnInit {
   ngOnInit() {
     const tempThis = this;
     this.titleService.setTitle('View Card');
-    this.initCommon(c => {
+    this.initCommon((c) => {
       this.commonKeys.forEach(key => {
-        tempThis[key] = c[key];
+        tempThis[`${key}`] = c[`${key}`];
       });
       this[`ranches`] = c[`ranches`];
       this.loadCardData();
@@ -184,7 +184,7 @@ export class OpenCardDataComponent implements OnInit {
     newAlert.actionClosesAlert = true;
     newAlert.action$ = new EventEmitter<null>();
     newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
-      this.cardEdit.deleteCard(this.card.id).subscribe(data => {
+      this.cardEdit.deleteCard(this.card.id).subscribe((data) => {
           if (data.success) {
             AlertService.newBasicAlert('Card deleted successfully!', false);
             this.nav.goBack();
@@ -258,9 +258,9 @@ export class OpenCardDataComponent implements OnInit {
 
   public getActiveComments(filter?: string): number {
     if (filter) {
-      return this.comments.filter(c => !c.deleted && (c.role === filter)).length;
+      return this.comments.filter((c) => !c.deleted && (c.role === filter)).length;
     }
-    return this.comments.filter(c => !c.deleted).length;
+    return this.comments.filter((c) => !c.deleted).length;
   }
 
   private getCommentRole(): string {
@@ -289,7 +289,7 @@ export class OpenCardDataComponent implements OnInit {
 
   public getCommon(key): Array<any> {
     if (this.commonKeys.includes(key) || key === 'ranches') {
-      return (this[key]) ? this[key] : [];
+      return (this[`${key}`]) ? this[`${key}`] : [];
     } else {
       console.log('Key ' + key + ' is not in the commonKeys array.');
       return [];
@@ -302,7 +302,7 @@ export class OpenCardDataComponent implements OnInit {
 
   private getSelectedShippers(): Array<string> {
     try {
-      return (this.cardShippers) ? this.cardShippers.map(e => e.id) : [];
+      return (this.cardShippers) ? this.cardShippers.map((e) => e.id) : [];
     } catch (e) {
       AlertService.newBasicAlert('Error When Reading Shippers', true);
       return [];
@@ -312,7 +312,7 @@ export class OpenCardDataComponent implements OnInit {
   private getShipper(id: string): string {
     if (this.isShipper()) {
       try {
-        const shipper = this[`shippers`].find(e => e.id === id). value;
+        const shipper = this[`shippers`].find((e) => e.id === id). value;
         return shipper;
       } catch (e) {
         return null;
@@ -324,7 +324,7 @@ export class OpenCardDataComponent implements OnInit {
 
   public getVarieties(commodityID: string): Array<string> {
     try {
-      const searchResult = this[`commodities`].find(e => e.id === commodityID).value.value;
+      const searchResult = this[`commodities`].find((e) => e.id === commodityID).value.value;
       return searchResult;
     } catch (e) {
       return [];
@@ -344,11 +344,11 @@ export class OpenCardDataComponent implements OnInit {
     const tempThis = this;
     const sortedCommon = {};
     const userRanchAccess = this.auth.getRanchAccess();
-    this.common.getAllValues(data => {
+    this.common.getAllValues((data) => {
       this.commonKeys.forEach(key => {
-        if (CommonLookup[key].type === 'hashTable') {
+        if (CommonLookup[`${key}`].type === 'hashTable') {
           const temp = [];
-          data[key].forEach(entry => {
+          data[`${key}`].forEach(entry => {
             temp.push({
               id: entry.id,
               value : {
@@ -357,15 +357,15 @@ export class OpenCardDataComponent implements OnInit {
               }
             });
           });
-          sortedCommon[key] = tempThis.common.sortCommonArray(temp, key);
+          sortedCommon[`${key}`] = tempThis.common.sortCommonArray(temp, key);
         } else {
-          sortedCommon[key] = tempThis.common.sortCommonArray(data[key], key);
+          sortedCommon[`${key}`] = tempThis.common.sortCommonArray(data[`${key}`], key);
         }
       });
       if (this.isShipper()) {
         sortedCommon[`ranches`] = data[`ranches`];
       } else {
-        sortedCommon[`ranches`] = data[`ranches`].filter(e => userRanchAccess.includes(e.id));
+        sortedCommon[`ranches`] = data[`ranches`].filter((e) => userRanchAccess.includes(e.id));
         sortedCommon[`ranches`] = tempThis.common.sortCommonArray(sortedCommon[`ranches`], 'ranches');
       }
       f(sortedCommon);
@@ -401,7 +401,7 @@ export class OpenCardDataComponent implements OnInit {
             tempThis.card.initTotalAcres();
             // Set up shippers multiselect
             tempThis.common.getValues('shippers', shippers => {
-              tempThis.cardShippers = shippers.filter(e => {
+              tempThis.cardShippers = shippers.filter((e) => {
                 return (tempThis.card.shippers) ? tempThis.card.shippers.includes(e.id) : false;
               });
             });
@@ -413,10 +413,10 @@ export class OpenCardDataComponent implements OnInit {
               tempThis.card.fieldID = null;
             } else {
               // Fix Datalist Display
-              tempThis.card.tractorArray.forEach(e => {
+              tempThis.card.tractorArray.forEach((e) => {
                 e.operator = tempThis.iDToDataListOption(e.operator, 'tractorOperators');
               });
-              tempThis.card.irrigationArray.forEach(e => {
+              tempThis.card.irrigationArray.forEach((e) => {
                 e.irrigator = tempThis.iDToDataListOption(e.irrigator, 'irrigators');
               });
             }
@@ -456,7 +456,7 @@ export class OpenCardDataComponent implements OnInit {
     newAlert.action$ = new EventEmitter<null>();
 
     newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
-      this.cardEdit.updateCard(card).subscribe(data => {
+      this.cardEdit.updateCard(card).subscribe((data) => {
           if (data.success) {
             AlertService.newBasicAlert('Change saved successfully!', false);
             this.loadCardData();
@@ -476,7 +476,7 @@ export class OpenCardDataComponent implements OnInit {
   public saveComments(): void {
     if (!this.setCardCommentsForUpdate()) { return; }
 
-    this.cardEdit.setCardComments(this.card.id, this.card.comments).subscribe(data => {
+    this.cardEdit.setCardComments(this.card.id, this.card.comments).subscribe((data) => {
       if (data.success) {
         AlertService.newBasicAlert('Change saved successfully!', false);
         this.loadCardData();
@@ -533,7 +533,7 @@ export class OpenCardDataComponent implements OnInit {
     if (invalid > 0) {
       AlertService.newBasicAlert(`${invalid} comments will not be changed due to invalid modifications`, true);
     }
-    this.card.comments = this.comments.filter(c => !c.deleted);
+    this.card.comments = this.comments.filter((c) => !c.deleted);
     return true;
   }
 
@@ -577,7 +577,7 @@ export class OpenCardDataComponent implements OnInit {
     newAlert.closeName = 'Cancel';
     newAlert.action$ = new EventEmitter<null>();
     newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
-      this.cardEdit.setCardState(this.card.id, !this.card.closed).subscribe(data => {
+      this.cardEdit.setCardState(this.card.id, !this.card.closed).subscribe((data) => {
           if (data.success) {
             this.card.closed = !this.card.closed;
             AlertService.newBasicAlert('Change saved successfully!', false);

@@ -46,9 +46,9 @@ import { DbFilterResponse } from 'src/app/_dto/card/dbFilterResponse';
   ngOnInit() {
     const tempThis = this;
     this.titleService.setTitle('All Cards');
-    this.initCommon(c => {
+    this.initCommon((c) => {
       this.commonKeys.forEach(key => {
-        tempThis[key] = c[key];
+        tempThis[`${key}`] = c[`${key}`];
       });
       this[`ranches`] = c[`ranches`];
       this.loadCachedFilters();
@@ -58,7 +58,7 @@ import { DbFilterResponse } from 'src/app/_dto/card/dbFilterResponse';
 
   private cardIDsToValues(card: Card): Card {
     card.ranchName = this.findCommonValue('ranches', ['value'], card.ranchName);
-    card.commodityArray.forEach(e => {
+    card.commodityArray.forEach((e) => {
       e.commodity = this.findCommonValue('commodities', ['value', 'key'], e.commodity);
     });
     return card;
@@ -83,7 +83,7 @@ import { DbFilterResponse } from 'src/app/_dto/card/dbFilterResponse';
   }
 
   /*
-    Searches common values in [key] list where value.id === targetID
+    Searches common values in [`${key}`] list where value.id === targetID
     returns value.valuePropertyArr where valuePropertyArr = array of nesting properties
     returns null in no targetID supplied
     returns targetID if key is not in commonKeys Array (don't need value)
@@ -92,7 +92,7 @@ import { DbFilterResponse } from 'src/app/_dto/card/dbFilterResponse';
   findCommonValue(key, valuePropertyArr, targetID?) {
     if (!targetID) { return null; }
     if (!this.commonKeys.includes(key) && key !== 'ranches') { return targetID; }
-    let commonValue = this.getCommon(key).find(e => {
+    let commonValue = this.getCommon(key).find((e) => {
       return e.id === targetID;
     });
     try {
@@ -109,7 +109,7 @@ import { DbFilterResponse } from 'src/app/_dto/card/dbFilterResponse';
     const modifiedCards = [];
     try {
       for (const card2 of this.cards) {
-        const card1 = this.cardsRaw.find(c => c.id === card2.id);
+        const card1 = this.cardsRaw.find((c) => c.id === card2.id);
         const hoeDate1 = (card1.hoeDate) ? new Date(card1.hoeDate).valueOf() : null;
         const hoeDate2 = (card2.hoeDate) ? new Date(card2.hoeDate).valueOf() : null;
         const thinDate1 = (card1.thinDate) ? new Date(card1.thinDate).valueOf() : null;
@@ -136,7 +136,7 @@ import { DbFilterResponse } from 'src/app/_dto/card/dbFilterResponse';
 
   public getCommon(key) {
     if (this.commonKeys.includes(key) || key === 'ranches') {
-      return (this[key]) ? this[key] : [];
+      return (this[`${key}`]) ? this[`${key}`] : [];
     } else {
       console.log('Key ' + key + ' is not in the commonKeys array.');
       return [];
@@ -155,11 +155,11 @@ import { DbFilterResponse } from 'src/app/_dto/card/dbFilterResponse';
     const tempThis = this;
     const sortedCommon = {};
     const userRanchAccess = this.auth.getRanchAccess();
-    this.common.getAllValues(data => {
+    this.common.getAllValues((data) => {
       this.commonKeys.forEach(key => {
-        if (CommonLookup[key].type === 'hashTable') {
+        if (CommonLookup[`${key}`].type === 'hashTable') {
           const temp = [];
-          data[key].forEach(entry => {
+          data[`${key}`].forEach(entry => {
             temp.push({
               id: entry.id,
               value : {
@@ -168,12 +168,12 @@ import { DbFilterResponse } from 'src/app/_dto/card/dbFilterResponse';
               }
             });
           });
-          sortedCommon[key] = tempThis.common.sortCommonArray(temp, key);
+          sortedCommon[`${key}`] = tempThis.common.sortCommonArray(temp, key);
         } else {
-          sortedCommon[key] = tempThis.common.sortCommonArray(data[key], key);
+          sortedCommon[`${key}`] = tempThis.common.sortCommonArray(data[`${key}`], key);
         }
       });
-      sortedCommon[`ranches`] = data[`ranches`].filter(e => userRanchAccess.includes(e.id));
+      sortedCommon[`ranches`] = data[`ranches`].filter((e) => userRanchAccess.includes(e.id));
       sortedCommon[`ranches`] = tempThis.common.sortCommonArray(sortedCommon[`ranches`], 'ranches');
       f(sortedCommon);
     });
@@ -268,16 +268,16 @@ import { DbFilterResponse } from 'src/app/_dto/card/dbFilterResponse';
           if (e.success) {
             const response: DbFilterResponse = e.data;
             // console.log(response);
-            this.cards = response.cards.map(c => (new Card()).copyConstructor(c));
+            this.cards = response.cards.map((c) => (new Card()).copyConstructor(c));
             this.cardSizeNonLimited = response.size;
 
             // For display purposes, change any common IDs to their values
-            this.cards.forEach(card => {
+            this.cards.forEach((card) => {
               card = this.cardIDsToValues(card);
               card.initCommodityString();
             });
             // Keep a raw copy of the data
-            this.cardsRaw = response.cards.map(c => (new Card()).copyConstructor(c));
+            this.cardsRaw = response.cards.map((c) => (new Card()).copyConstructor(c));
             this.updateNumPages();
             if (pageSelect) {
               this.setPage(previousPage, false);
@@ -302,9 +302,9 @@ import { DbFilterResponse } from 'src/app/_dto/card/dbFilterResponse';
 
   public resetCards(): void {
     const tempThis = this;
-    this.cards.forEach(card => {
+    this.cards.forEach((card) => {
       try {
-        const rawCard = tempThis.cardsRaw.find(e => e.id === card.id);
+        const rawCard = tempThis.cardsRaw.find((e) => e.id === card.id);
         // Modify hoe and thin dates to hold both their input value (val) and the value used to sort by (num)
         card.hoeDate = rawCard.hoeDate;
         card.hoeType = rawCard.hoeType;
@@ -336,7 +336,7 @@ import { DbFilterResponse } from 'src/app/_dto/card/dbFilterResponse';
     };
     const modified = this.findModifiedCards();
     modified.forEach(m => {
-      const card = tempThis.cardsRaw.find(c => c.id === m.id);
+      const card = tempThis.cardsRaw.find((c) => c.id === m.id);
       if (!card) {
         log.failure += 1;
         tempThis.updateMessage(log, modified.length);
@@ -346,7 +346,7 @@ import { DbFilterResponse } from 'src/app/_dto/card/dbFilterResponse';
         card.hoeType = m.hoeType;
         card.thinDate = (m.thinDate) ? (new Date(m.thinDate)).valueOf() : null;
         card.thinType = m.thinType;
-        tempThis.cardEdit.updateCard(card as Card).subscribe(data => {
+        tempThis.cardEdit.updateCard(card as Card).subscribe((data) => {
           if (data.success) {
             log.success += 1;
           } else {

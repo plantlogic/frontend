@@ -57,8 +57,8 @@ export class HomeComponent implements OnInit {
     this.setPermissions();
     if (this.hasAnyViewPermission()) {
       const tempThis = this;
-      this.initCommon(c => {
-        tempThis.commonKeys.forEach(key => tempThis[key] = c[key]);
+      this.initCommon((c) => {
+        tempThis.commonKeys.forEach(key => tempThis[`${key}`] = c[`${key}`]);
         tempThis.getCardCount();
         tempThis.generateCardsHarvestedChart();
         tempThis.generateCommodityAcresChart();
@@ -72,7 +72,7 @@ export class HomeComponent implements OnInit {
   }
 
   /*
-    Searches common values in [key] list where value.id === targetID
+    Searches common values in [`${key}`] list where value.id === targetID
     returns value.valuePropertyArr where valuePropertyArr = array of nesting properties
     returns null in no targetID supplied
     returns targetID if key is not in commonKeys Array (don't need value)
@@ -81,7 +81,7 @@ export class HomeComponent implements OnInit {
   findCommonValue(key, valuePropertyArr, targetID?) {
     if (!targetID) { return null; }
     if (!this.commonKeys.includes(key) && key !== 'ranches') { return targetID; }
-    let commonValue = this.getCommon(key).find(e => {
+    let commonValue = this.getCommon(key).find((e) => {
       return e.id === targetID;
     });
     try {
@@ -96,7 +96,7 @@ export class HomeComponent implements OnInit {
 
   private generateUserManagementElements(): void {
     if (this.showRegisteredUsers()) {
-      this.userManagement.getUserList().subscribe(data => {
+      this.userManagement.getUserList().subscribe((data) => {
           if (data.success) {
             this.userCount = data.data.length;
           } else if (!data.success) {
@@ -364,7 +364,7 @@ export class HomeComponent implements OnInit {
 
   public getCommon(key) {
     if (this.commonKeys.includes(key) || key === 'ranches') {
-      return (this[key]) ? this[key] : [];
+      return (this[`${key}`]) ? this[`${key}`] : [];
     } else {
       console.log('Key ' + key + ' is not in the commonKeys array.');
       return [];
@@ -382,11 +382,11 @@ export class HomeComponent implements OnInit {
   public initCommon(f): void {
     const tempThis = this;
     const sortedCommon = {};
-    this.common.getAllValues(data => {
+    this.common.getAllValues((data) => {
       this.commonKeys.forEach(key => {
-        if (CommonLookup[key].type === 'hashTable') {
+        if (CommonLookup[`${key}`].type === 'hashTable') {
           const temp = [];
-          data[key].forEach(entry => {
+          data[`${key}`].forEach(entry => {
             temp.push({
               id: entry.id,
               value : {
@@ -395,9 +395,9 @@ export class HomeComponent implements OnInit {
               }
             });
           });
-          sortedCommon[key] = tempThis.common.sortCommonArray(temp, key);
+          sortedCommon[`${key}`] = tempThis.common.sortCommonArray(temp, key);
         } else {
-          sortedCommon[key] = tempThis.common.sortCommonArray(data[key], key);
+          sortedCommon[`${key}`] = tempThis.common.sortCommonArray(data[`${key}`], key);
         }
       });
       f(sortedCommon);
@@ -408,7 +408,7 @@ export class HomeComponent implements OnInit {
   private setPermissions() {
     const keys = Object.keys(PlRole);
     const  roles = keys.slice(keys.length / 2);
-    roles.forEach(role => {
+    roles.forEach((role) => {
       if (this.auth.hasPermission(PlRole[role])) {
         this.permissions[role] = true;
       }

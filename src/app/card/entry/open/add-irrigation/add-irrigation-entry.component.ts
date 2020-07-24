@@ -28,9 +28,9 @@ export class AddIrrigationEntryComponent implements OnInit {
   ngOnInit() {
     const tempThis = this;
     this.titleService.setTitle('Irrigation');
-    this.initCommon(c => {
-      this.commonKeys.forEach(key => tempThis[key] = c[key] );
-      this.route.params.subscribe(data => this.cardId = data.id);
+    this.initCommon((c) => {
+      this.commonKeys.forEach(key => tempThis[`${key}`] = c[`${key}`] );
+      this.route.params.subscribe((data) => this.cardId = data.id);
     });
   }
 
@@ -62,7 +62,7 @@ export class AddIrrigationEntryComponent implements OnInit {
 
   public getCommon(key) {
     if (this.commonKeys.includes(key)) {
-      return (this[key]) ? this[key] : [];
+      return (this[`${key}`]) ? this[`${key}`] : [];
     } else {
       console.log('Key ' + key + ' is not in the commonKeys array.');
       return [];
@@ -72,9 +72,9 @@ export class AddIrrigationEntryComponent implements OnInit {
   public initCommon(f): void {
     const tempThis = this;
     const sortedCommon = {};
-    this.common.getAllValues(data => {
+    this.common.getAllValues((data) => {
       this.commonKeys.forEach(key => {
-        sortedCommon[key] = tempThis.common.sortCommonArray(data[key], key);
+        sortedCommon[`${key}`] = tempThis.common.sortCommonArray(data[`${key}`], key);
       });
       f(sortedCommon);
     });
@@ -90,7 +90,7 @@ export class AddIrrigationEntryComponent implements OnInit {
     i.workDate = (new Date(i.workDate)).valueOf();
     if (i.irrigator) {
       const irrigatorID = this.dataListOptionValueToID(i.irrigator, 'irrigators');
-      if (!irrigatorID || !this[`irrigators`].find(e => e.id === irrigatorID)) {
+      if (!irrigatorID || !this[`irrigators`].find((e) => e.id === irrigatorID)) {
         AlertService.newBasicAlert('Invalid Irrigator - please fix and try again.', true);
         return;
       }

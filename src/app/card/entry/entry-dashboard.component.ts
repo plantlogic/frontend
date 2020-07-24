@@ -43,9 +43,9 @@ export class EntryDashboardComponent implements OnInit {
   ngOnInit() {
     const tempThis = this;
     this.titleService.setTitle('Open Cards');
-    this.initCommon(c => {
+    this.initCommon((c) => {
       this.commonKeys.forEach(key => {
-        tempThis[key] = c[key];
+        tempThis[`${key}`] = c[`${key}`];
       });
       this[`ranches`] = c[`ranches`];
       this.loadCachedFilters();
@@ -55,11 +55,11 @@ export class EntryDashboardComponent implements OnInit {
 
   private cardIDsToValues(card: Card): Card {
     card.ranchName = this.findCommonValue('ranches', ['value'], card.ranchName);
-    card.commodityArray.forEach(e => {
+    card.commodityArray.forEach((e) => {
       e.commodity = this.findCommonValue('commodities', ['value', 'key'], e.commodity);
       e.bedType = this.findCommonValue('bedTypes', ['value'], e.bedType);
     });
-    card.preChemicalArray.forEach(e => {
+    card.preChemicalArray.forEach((e) => {
       if (e.chemical) {
         e.chemical.name = this.findCommonValue('chemicals', ['value'], e.chemical.name);
         e.chemical.unit = this.findCommonValue('chemicalRateUnits', ['value'], e.chemical.unit);
@@ -69,7 +69,7 @@ export class EntryDashboardComponent implements OnInit {
         e.fertilizer.unit = this.findCommonValue('chemicalRateUnits', ['value'], e.fertilizer.unit);
       }
     });
-    card.postChemicalArray.forEach(e => {
+    card.postChemicalArray.forEach((e) => {
       if (e.chemical) {
         e.chemical.name = this.findCommonValue('chemicals', ['value'], e.chemical.name);
         e.chemical.unit = this.findCommonValue('chemicalRateUnits', ['value'], e.chemical.unit);
@@ -79,7 +79,7 @@ export class EntryDashboardComponent implements OnInit {
         e.fertilizer.unit = this.findCommonValue('chemicalRateUnits', ['value'], e.fertilizer.unit);
       }
     });
-    card.tractorArray.forEach(e => {
+    card.tractorArray.forEach((e) => {
       e.workDone = this.findCommonValue('tractorWork', ['value'], e.workDone);
       e.operator = this.findCommonValue('tractorOperators', ['value'], e.operator);
       if (e.chemicalArray) {
@@ -95,7 +95,7 @@ export class EntryDashboardComponent implements OnInit {
         }
       }
     });
-    card.irrigationArray.forEach(e => {
+    card.irrigationArray.forEach((e) => {
       e.method = this.findCommonValue('irrigationMethod', ['value'], e.method);
       e.irrigator = this.findCommonValue('irrigators', ['value'], e.irrigator);
       if (e.chemicalArray) {
@@ -133,7 +133,7 @@ export class EntryDashboardComponent implements OnInit {
   }
 
   /*
-    Searches common values in [key] list where value.id === targetID
+    Searches common values in [`${key}`] list where value.id === targetID
     returns value.valuePropertyArr where valuePropertyArr = array of nesting properties
     returns null in no targetID supplied
     returns targetID if key is not in commonKeys Array (don't need value)
@@ -142,7 +142,7 @@ export class EntryDashboardComponent implements OnInit {
  findCommonValue(key, valuePropertyArr, targetID?) {
   if (!targetID) { return null; }
   if (!this.commonKeys.includes(key) && key !== 'ranches') { return targetID; }
-  let commonValue = this.getCommon(key).find(e => {
+  let commonValue = this.getCommon(key).find((e) => {
     return e.id === targetID;
   });
   try {
@@ -157,7 +157,7 @@ export class EntryDashboardComponent implements OnInit {
 
   public getCommon(key) {
     if (this.commonKeys.includes(key) || key === 'ranches') {
-      return (this[key]) ? this[key] : [];
+      return (this[`${key}`]) ? this[`${key}`] : [];
     } else {
       console.log('Key ' + key + ' is not in the commonKeys array.');
       return [];
@@ -172,11 +172,11 @@ export class EntryDashboardComponent implements OnInit {
     const tempThis = this;
     const sortedCommon = {};
     const userRanchAccess = this.auth.getRanchAccess();
-    this.common.getAllValues(data => {
+    this.common.getAllValues((data) => {
       this.commonKeys.forEach(key => {
-        if (CommonLookup[key].type === 'hashTable') {
+        if (CommonLookup[`${key}`].type === 'hashTable') {
           const temp = [];
-          data[key].forEach(entry => {
+          data[`${key}`].forEach(entry => {
             temp.push({
               id: entry.id,
               value : {
@@ -185,12 +185,12 @@ export class EntryDashboardComponent implements OnInit {
               }
             });
           });
-          sortedCommon[key] = tempThis.common.sortCommonArray(temp, key);
+          sortedCommon[`${key}`] = tempThis.common.sortCommonArray(temp, key);
         } else {
-          sortedCommon[key] = tempThis.common.sortCommonArray(data[key], key);
+          sortedCommon[`${key}`] = tempThis.common.sortCommonArray(data[`${key}`], key);
         }
       });
-      sortedCommon[`ranches`] = data[`ranches`].filter(e => userRanchAccess.includes(e.id));
+      sortedCommon[`ranches`] = data[`ranches`].filter((e) => userRanchAccess.includes(e.id));
       sortedCommon[`ranches`] = tempThis.common.sortCommonArray(sortedCommon[`ranches`], 'ranches');
       f(sortedCommon);
     });
@@ -280,11 +280,11 @@ export class EntryDashboardComponent implements OnInit {
           if (e.success) {
             const response: DbFilterResponse = e.data;
             // console.log(response);
-            this.cards = response.cards.map(c => (new Card()).copyConstructor(c));
+            this.cards = response.cards.map((c) => (new Card()).copyConstructor(c));
             this.cardSizeNonLimited = response.size;
 
             // For display purposes, change any common IDs to their values
-            this.cards.forEach(card => {
+            this.cards.forEach((card) => {
               card = this.cardIDsToValues(card);
               card.initCommodityString();
             });
@@ -310,8 +310,8 @@ export class EntryDashboardComponent implements OnInit {
     this.cardService.getMyCards().subscribe(
       data => {
         if (data.success) {
-          tempThis.cards = data.data.map(c => (new Card()).copyConstructor(c));
-          tempThis.cards.forEach(c => {
+          tempThis.cards = data.data.map((c) => (new Card()).copyConstructor(c));
+          tempThis.cards.forEach((c) => {
             // For display purposes, change any common IDs to their values
             c = tempThis.cardIDsToValues(c);
             c.initCommodityString();
