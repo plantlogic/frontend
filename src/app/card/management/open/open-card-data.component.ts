@@ -99,26 +99,26 @@ export class OpenCardDataComponent implements OnInit {
   }
 
   public addTractorChemical(index: number): void {
-    if (this.card.tractorArray.length > 0 && !this.card.tractorArray[index].chemicalsFull()) {
-      this.card.tractorArray[index].chemicalArray.push(new Chemical());
+    if (this.card.tractorArray.length > 0 && !this.card.tractorArray[`${index}`].chemicalsFull()) {
+      this.card.tractorArray[`${index}`].chemicalArray.push(new Chemical());
     }
   }
 
   public addTractorFertilizer(index: number): void {
-    if (this.card.tractorArray.length > 0 && !this.card.tractorArray[index].fertilizersFull()) {
-      this.card.tractorArray[index].fertilizerArray.push(new Chemical());
+    if (this.card.tractorArray.length > 0 && !this.card.tractorArray[`${index}`].fertilizersFull()) {
+      this.card.tractorArray[`${index}`].fertilizerArray.push(new Chemical());
     }
   }
 
   public addIrrigationChemical(index: number): void {
-    if (this.card.irrigationArray.length > 0 && !this.card.irrigationArray[index].chemicalsFull()) {
-      this.card.irrigationArray[index].chemicalArray.push(new Chemical());
+    if (this.card.irrigationArray.length > 0 && !this.card.irrigationArray[`${index}`].chemicalsFull()) {
+      this.card.irrigationArray[`${index}`].chemicalArray.push(new Chemical());
     }
   }
 
   public addIrrigationFertilizer(index: number): void {
-    if (this.card.irrigationArray.length > 0 && !this.card.irrigationArray[index].fertilizersFull()) {
-      this.card.irrigationArray[index].fertilizerArray.push(new Chemical());
+    if (this.card.irrigationArray.length > 0 && !this.card.irrigationArray[`${index}`].fertilizersFull()) {
+      this.card.irrigationArray[`${index}`].fertilizerArray.push(new Chemical());
     }
   }
 
@@ -208,7 +208,7 @@ export class OpenCardDataComponent implements OnInit {
       // Find index relative to all comments
       for (let i = 0; i < this.comments.length; i++) {
         if (fixedIndex === -1) {
-          if (this.comments[i].role === this.commentsFilter) {
+          if (this.comments[`${i}`].role === this.commentsFilter) {
             if (current === index) { fixedIndex = i; }
             current += 1;
           }
@@ -220,7 +220,7 @@ export class OpenCardDataComponent implements OnInit {
       }
       index = fixedIndex;
     }
-    const comment = this.comments[index];
+    const comment = this.comments[`${index}`];
     if (comment.userName !== this.auth.getUsername()) {
       if (!this.auth.hasPermission(PlRole.DATA_EDIT) && !this.auth.hasPermission(PlRole.CONTRACTOR_EDIT)) {
         AlertService.newBasicAlert('Edit permission is needed to delete comments which aren\'t your own', true);
@@ -236,13 +236,13 @@ export class OpenCardDataComponent implements OnInit {
         newAlert.actionClosesAlert = true;
         newAlert.action$ = new EventEmitter<null>();
         newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
-          this.comments[index].deleted = true;
+          this.comments[`${index}`].deleted = true;
           return true;
         });
         AlertService.newAlert(newAlert);
       }
     } else {
-      this.comments[index].deleted = true;
+      this.comments[`${index}`].deleted = true;
       return true;
     }
   }
@@ -276,9 +276,9 @@ export class OpenCardDataComponent implements OnInit {
   public getComments(): Array<Comment> {
     const filter = this.commentsFilter;
     if (filter === 'grower') {
-      return this.comments.filter(comment => comment.role === 'grower');
+      return this.comments.filter((comment) => comment.role === 'grower');
     } else if (filter === 'shipper') {
-      return this.comments.filter(comment => comment.role === 'shipper');
+      return this.comments.filter((comment) => comment.role === 'shipper');
     } else if (filter === 'all') {
       return this.comments;
     } else {
@@ -334,8 +334,8 @@ export class OpenCardDataComponent implements OnInit {
   private iDToDataListOption(commonID: string, commonKey: string): string {
     const values = this.getCommon(commonKey);
     for (let i = 0; i < values.length; i++) {
-      if (values[i].id === commonID) {
-        return (i + 1) + ' - ' + values[i].value;
+      if (values[`${i}`].id === commonID) {
+        return (i + 1) + ' - ' + values[`${i}`].value;
       }
     }
   }
@@ -496,8 +496,8 @@ export class OpenCardDataComponent implements OnInit {
     let invalid = 0;
     const elevatedPerms = this.auth.hasPermission(PlRole.DATA_EDIT) || this.auth.hasPermission(PlRole.CONTRACTOR_EDIT);
     for (let i = 0; i < this.card.comments.length; i++) {
-      const oldComment = this.card.comments[i];
-      const newComment = this.comments[i];
+      const oldComment = this.card.comments[`${i}`];
+      const newComment = this.comments[`${i}`];
       if (newComment.userName !== oldComment.userName) {
         AlertService.newBasicAlert('Error: The username of a comment was modified.', true);
         return false;
@@ -506,10 +506,10 @@ export class OpenCardDataComponent implements OnInit {
       if (newComment.deleted && !elevatedPerms) {
         // Only delete if it was their own comment
         if (newComment.userName !== this.auth.getUsername()) {
-          this.comments[i] = oldComment;
+          this.comments[`${i}`] = oldComment;
           invalid++;
         } else {
-          this.comments[i].lastModified = new Date().valueOf();
+          this.comments[`${i}`].lastModified = new Date().valueOf();
         }
       } else {
         // check if same data
@@ -522,10 +522,10 @@ export class OpenCardDataComponent implements OnInit {
         // if it has been modified, only accept if it is this user's comment
         if (!same) {
           if (newComment.userName !== this.auth.getUsername()) {
-            this.comments[i] = oldComment;
+            this.comments[`${i}`] = oldComment;
             invalid++;
           } else {
-            this.comments[i].lastModified = new Date().valueOf();
+            this.comments[`${i}`].lastModified = new Date().valueOf();
           }
         }
       }

@@ -166,7 +166,7 @@ export class OpenCardEntryComponent implements OnInit {
       // Find index relative to all comments
       for (let i = 0; i < this.comments.length; i++) {
         if (fixedIndex === -1) {
-          if (this.comments[i].role === this.commentsFilter) {
+          if (this.comments[`${i}`].role === this.commentsFilter) {
             if (current === index) { fixedIndex = i; }
             current += 1;
           }
@@ -178,12 +178,12 @@ export class OpenCardEntryComponent implements OnInit {
       }
       index = fixedIndex;
     }
-    const comment = this.comments[index];
+    const comment = this.comments[`${index}`];
     if (comment.userName !== this.auth.getUsername()) {
       AlertService.newBasicAlert('Cannot delete comments which aren\'t your own on the entry side', true);
       return false;
     } else {
-      this.comments[index].deleted = true;
+      this.comments[`${index}`].deleted = true;
       return true;
     }
   }
@@ -250,7 +250,7 @@ export class OpenCardEntryComponent implements OnInit {
       }
     });
     // Add Tractor dates and chems/ferts
-    this.card.tractorArray.forEach(t => {
+    this.card.tractorArray.forEach((t) => {
       if (t.chemicalArray.length > 0 || t.fertilizerArray.length > 0) {
         allApplied.push({
           date: t.workDate,
@@ -277,9 +277,9 @@ export class OpenCardEntryComponent implements OnInit {
   public getComments() {
     const filter = this.commentsFilter;
     if (filter === 'grower') {
-      return this.comments.filter(comment => comment.role === 'grower');
+      return this.comments.filter((comment) => comment.role === 'grower');
     } else if (filter === 'shipper') {
-      return this.comments.filter(comment => comment.role === 'shipper');
+      return this.comments.filter((comment) => comment.role === 'shipper');
     } else if (filter === 'all') {
       return this.comments;
     } else {
@@ -425,8 +425,8 @@ export class OpenCardEntryComponent implements OnInit {
   public setCardCommentsForUpdate() {
     let invalid = 0;
     for (let i = 0; i < this.card.comments.length; i++) {
-      const oldComment = this.card.comments[i];
-      const newComment = this.comments[i];
+      const oldComment = this.card.comments[`${i}`];
+      const newComment = this.comments[`${i}`];
       if (newComment.userName !== oldComment.userName) {
         AlertService.newBasicAlert('Error: The username of a comment was modified.', true);
         return false;
@@ -435,10 +435,10 @@ export class OpenCardEntryComponent implements OnInit {
       if (newComment.deleted) {
         // Only delete if it was their own comment
         if (newComment.userName !== this.auth.getUsername()) {
-          this.comments[i] = oldComment;
+          this.comments[`${i}`] = oldComment;
           invalid++;
         } else {
-          this.comments[i].lastModified = new Date().valueOf();
+          this.comments[`${i}`].lastModified = new Date().valueOf();
         }
       } else {
         // check if same data
@@ -450,10 +450,10 @@ export class OpenCardEntryComponent implements OnInit {
         // if it has been modified, only accept if it is this user's comment
         if (!same) {
           if (newComment.userName !== this.auth.getUsername()) {
-            this.comments[i] = oldComment;
+            this.comments[`${i}`] = oldComment;
             invalid++;
           } else {
-            this.comments[i].lastModified = new Date().valueOf();
+            this.comments[`${i}`].lastModified = new Date().valueOf();
           }
         }
       }

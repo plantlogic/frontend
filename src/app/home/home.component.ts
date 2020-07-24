@@ -181,7 +181,7 @@ export class HomeComponent implements OnInit {
           });
         } else {
           // console.log('Error');
-          AlertService.newBasicAlert("There was an error when retrieving commodity acres", true);
+          AlertService.newBasicAlert('There was an error when retrieving commodity acres', true);
         }
       },
       (failure) => {}

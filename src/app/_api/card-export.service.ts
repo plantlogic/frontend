@@ -88,7 +88,7 @@ export class CardExportService {
   public commentsToDisplayString(comments: Array<Comment>): string {
     let displayString = '';
     for (let i = 0; i < comments.length; i++) {
-      const c = comments[i];
+      const c = comments[`${i}`];
       let cString = '';
       try {
         cString = `[${this.dateToDisplay(c.dateModified, true)}] ${c.author}: ${c.body}`;
@@ -295,7 +295,7 @@ export class CardExportService {
               if (i >= card.commodityArray.length) {
                 dataLine.push('');
               } else {
-                dataLine.push(card.commodityArray[i].commodity);
+                dataLine.push(card.commodityArray[`${i}`].commodity);
               }
             }
 
@@ -304,7 +304,7 @@ export class CardExportService {
               if (i >= applied[`fertilizers`].length) {
                 dataLine.push('', '', '', '', '', '');
               } else {
-                const temp = applied[`fertilizers`][i];
+                const temp = applied[`fertilizers`][`${i}`];
                 dataLine.push(temp[`date`], temp[`name`], temp[`method`], temp[`material`], temp[`rate`], temp[`unit`]);
               }
             }
@@ -314,7 +314,7 @@ export class CardExportService {
               if (i >= applied[`chemicals`].length) {
                 dataLine.push('', '', '', '', '', '');
               } else {
-                const temp = applied[`chemicals`][i];
+                const temp = applied[`chemicals`][`${i}`];
                 dataLine.push(temp[`date`], temp[`name`], temp[`method`], temp[`material`], temp[`rate`], temp[`unit`]);
               }
             }
@@ -410,7 +410,7 @@ export class CardExportService {
               if (i >= card.commodityArray.length) {
                 dataLine.push('');
               } else {
-                dataLine.push(card.commodityArray[i].commodity);
+                dataLine.push(card.commodityArray[`${i}`].commodity);
               }
             }
 
@@ -419,7 +419,7 @@ export class CardExportService {
             if (i >= applied[`fertilizers`].length) {
                 dataLine.push('', '', '', '');
               } else {
-                const temp = applied[`fertilizers`][i];
+                const temp = applied[`fertilizers`][`${i}`];
                 dataLine.push(temp[`date`], temp[`material`], temp[`rate`], temp[`unit`]);
               }
             }
@@ -711,7 +711,7 @@ export class CardExportService {
                   dataLine.push('', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '');
                 }
               } else {
-                x.irrigationArray.forEach(y => {
+                x.irrigationArray.forEach((y) => {
                   y = Object.assign(new IrrigationEntry(), y);
                   dataLine.push('', this.dateToDisplay(y.workDate), y.irrigator, y.method, String(y.duration));
                   if (y.chemicalArray.length) {
@@ -853,7 +853,7 @@ export class CardExportService {
   private generateAndDownload(table: Array<Array<string>>, fileName: string): void {
     FileDownload(
       // Generate the CSV from the table
-      table.map((x) => x.map(y => this.replaceBadCharacters(y)).join(',')).join('\n'),
+      table.map((x) => x.map((y) => this.replaceBadCharacters(y)).join(',')).join('\n'),
       // Filename
       fileName + '.csv'
     );
@@ -990,8 +990,8 @@ export class CardExportService {
           for (let i = 0; i < numEntries.card.commodities; i++) {
             preset.commodities.forEach((e2) => {
               if (e2.value === true ) {
-                if (card.commodityArray[i]) {
-                  const temp: Commodities = card.commodityArray[i];
+                if (card.commodityArray[`${i}`]) {
+                  const temp: Commodities = card.commodityArray[`${i}`];
                   switch (e2.key) {
                     case 'commodity':
                       dataLine.push( (temp.commodity) ? temp.commodity : '');
@@ -1034,7 +1034,7 @@ export class CardExportService {
                   for (let j = 0; j < numEntries.irrigationEntry.fertilizers; j++) {
                     preset.irrigationEntryFertilizers.forEach((e3) => {
                       if (e3.value === true) {
-                        if (card.irrigationArray[i] && card.irrigationArray[i].fertilizerArray[j]) {
+                        if (card.irrigationArray[`${i}`] && card.irrigationArray[`${i}`].fertilizerArray[j]) {
                           const temp: Chemical = card.irrigationArray[`${i}`].fertilizerArray[`${j}`];
                           switch (e3.key) {
                             case 'name':
@@ -1060,8 +1060,8 @@ export class CardExportService {
                   for (let j = 0; j < numEntries.irrigationEntry.chemicals; j++) {
                     preset.irrigationEntryChemicals.forEach((e3) => {
                       if (e3.value === true) {
-                        if (card.irrigationArray[i] && card.irrigationArray[i].chemicalArray[j]) {
-                          const temp: Chemical = card.irrigationArray[i].chemicalArray[j];
+                        if (card.irrigationArray[`${i}`] && card.irrigationArray[`${i}`].chemicalArray[j]) {
+                          const temp: Chemical = card.irrigationArray[`${i}`].chemicalArray[j];
                           switch (e3.key) {
                             case 'name':
                               dataLine.push( (temp.name) ? temp.name : '');
@@ -1084,7 +1084,7 @@ export class CardExportService {
                   }
                 } else {
                   if (card.irrigationArray[`${i}`]) {
-                    const temp: IrrigationEntry = card.irrigationArray[i];
+                    const temp: IrrigationEntry = card.irrigationArray[`${i}`];
                     switch (e2.key) {
                       case 'workDate':
                         dataLine.push((temp.workDate) ? tempThis.dateToDisplay(temp.workDate) : '');
@@ -1122,8 +1122,8 @@ export class CardExportService {
                   for (let j = 0; j < numEntries.tractorEntry.fertilizers; j++) {
                     preset.tractorEntryFertilizers.forEach((e3) => {
                       if (e3.value === true) {
-                        if (card.tractorArray[i] && card.tractorArray[i].fertilizerArray[j]) {
-                          const temp: Chemical = card.tractorArray[i].fertilizerArray[j];
+                        if (card.tractorArray[`${i}`] && card.tractorArray[`${i}`].fertilizerArray[j]) {
+                          const temp: Chemical = card.tractorArray[`${i}`].fertilizerArray[j];
                           switch (e3.key) {
                             case 'name':
                               dataLine.push( (temp.name) ? temp.name : '');
@@ -1148,8 +1148,8 @@ export class CardExportService {
                   for (let j = 0; j < numEntries.tractorEntry.chemicals; j++) {
                     preset.tractorEntryChemicals.forEach((e3) => {
                       if (e3.value === true) {
-                        if (card.tractorArray[i] && card.tractorArray[i].chemicalArray[j]) {
-                          const temp: Chemical = card.tractorArray[i].chemicalArray[j];
+                        if (card.tractorArray[`${i}`] && card.tractorArray[`${i}`].chemicalArray[j]) {
+                          const temp: Chemical = card.tractorArray[`${i}`].chemicalArray[j];
                           switch (e3.key) {
                             case 'name':
                               dataLine.push( (temp.name) ? temp.name : '');
@@ -1171,8 +1171,8 @@ export class CardExportService {
                     });
                   }
                 } else {
-                  if (card.tractorArray[i]) {
-                    const temp: TractorEntry = card.tractorArray[i];
+                  if (card.tractorArray[`${i}`]) {
+                    const temp: TractorEntry = card.tractorArray[`${i}`];
                     switch (e2.key) {
                       case 'workDate':
                         dataLine.push((temp.workDate) ? tempThis.dateToDisplay(temp.workDate) : '');
@@ -1209,8 +1209,8 @@ export class CardExportService {
                 if (e2.key === 'fertilizer') {
                   preset.preChemicalsFertilizer.forEach((e3) => {
                     if (e3.value === true) {
-                      if (card.preChemicalArray[i] && card.preChemicalArray[i].fertilizer) {
-                        const temp: Chemical = card.preChemicalArray[i].fertilizer;
+                      if (card.preChemicalArray[`${i}`] && card.preChemicalArray[`${i}`].fertilizer) {
+                        const temp: Chemical = card.preChemicalArray[`${i}`].fertilizer;
                         switch (e3.key) {
                           case 'name':
                             dataLine.push( (temp.name) ? temp.name : '');
@@ -1233,8 +1233,8 @@ export class CardExportService {
                 } else if (e2.key === 'chemical') {
                   preset.preChemicalsChemical.forEach((e3) => {
                     if (e3.value === true) {
-                      if (card.preChemicalArray[i] && card.preChemicalArray[i].chemical) {
-                        const temp: Chemical = card.preChemicalArray[i].chemical;
+                      if (card.preChemicalArray[`${i}`] && card.preChemicalArray[`${i}`].chemical) {
+                        const temp: Chemical = card.preChemicalArray[`${i}`].chemical;
                         switch (e3.key) {
                           case 'name':
                             dataLine.push( (temp.name) ? temp.name : '');
@@ -1255,8 +1255,8 @@ export class CardExportService {
                     }
                   });
                 } else {
-                  if (card.preChemicalArray[i]) {
-                    const temp: Chemicals = card.preChemicalArray[i];
+                  if (card.preChemicalArray[`${i}`]) {
+                    const temp: Chemicals = card.preChemicalArray[`${i}`];
                     switch (e2.key) {
                       case 'date':
                         dataLine.push((temp.date) ? tempThis.dateToDisplay(temp.date) : '');

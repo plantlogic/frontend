@@ -335,7 +335,7 @@ import { DbFilterResponse } from 'src/app/_dto/card/dbFilterResponse';
       failure: 0
     };
     const modified = this.findModifiedCards();
-    modified.forEach(m => {
+    modified.forEach((m) => {
       const card = tempThis.cardsRaw.find((c) => c.id === m.id);
       if (!card) {
         log.failure += 1;

@@ -319,16 +319,6 @@ export class CardManagementComponent implements OnInit {
     if (updateFilter) { this.loadCardDataFiltered(true); }
   }
 
-  public showListing(index: number): boolean {
-    return true;
-    const low = (this.pageNum - 1) * this.viewSize;
-    const high = (this.pageNum * this.viewSize) - 1;
-    if ((index >= low) && (index <= high)) {
-      return true;
-    }
-    return false;
-  }
-
   public updateFieldIds(): void {
     if (!this.hasEditPermission()) {
       AlertService.newBasicAlert('Failed to Edit: DATA EDIT Permission Required', true);
@@ -340,7 +330,7 @@ export class CardManagementComponent implements OnInit {
       failure: 0
     };
     const modified = this.findModifiedCards();
-    modified.forEach(m => {
+    modified.forEach((m) => {
       const card = tempThis.cardsRaw.find((c) => c.id === m.id);
       if (!card) {
         log.failure += 1;
