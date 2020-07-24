@@ -669,7 +669,7 @@ export class OpenCardDataComponent implements OnInit {
         }
         t.operator = operatorID;
         // Check Tractor Work
-        if (!t.workDone || !this[`tractorWork`].find(tw => tw.id === t.workDone)) {
+        if (!t.workDone || !this[`tractorWork`].find((tw) => tw.id === t.workDone)) {
           AlertService.newBasicAlert('Invalid Tractor Work Entered - please fix and try again.', true);
           return;
         }
@@ -747,13 +747,13 @@ export class OpenCardDataComponent implements OnInit {
         }
         if (e.irrigator) {
           const irrigatorID = this.dataListOptionValueToID(e.irrigator, 'irrigators');
-          if (irrigatorID && !this[`irrigators`].find(e2 => e2.id === irrigatorID)) {
+          if (irrigatorID && !this[`irrigators`].find((e2) => e2.id === irrigatorID)) {
             AlertService.newBasicAlert('Invalid Irrigator - please fix and try again.', true);
             return;
           }
           e.irrigator = irrigatorID;
         }
-        if (!e.method || !this[`irrigationMethod`].find(e2 => e2.id === e.method)) {
+        if (!e.method || !this[`irrigationMethod`].find((e2) => e2.id === e.method)) {
           AlertService.newBasicAlert('Invalid Irrigation Method Entered - please fix and try again.', true);
           return;
         }

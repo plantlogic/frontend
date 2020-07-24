@@ -184,7 +184,7 @@ export class CreateCardEntryComponent implements OnInit {
       }
       t.operator = operatorID;
       // Check Tractor Work
-      if (!t.workDone || !this[`tractorWork`].find(tw => tw.id === t.workDone)) {
+      if (!t.workDone || !this[`tractorWork`].find((tw) => tw.id === t.workDone)) {
         AlertService.newBasicAlert('Invalid Tractor Work Entered - please fix and try again.', true);
         return;
       }
