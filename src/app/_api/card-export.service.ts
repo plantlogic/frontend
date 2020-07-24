@@ -1617,10 +1617,10 @@ export class CardExportService {
     const sortedCommon = {};
     const userRanchAccess = this.auth.getRanchAccess();
     this.common.getAllValues((data) => {
-      Object.keys(CommonLookup).forEach(key => {
+      Object.keys(CommonLookup).forEach((key) => {
         if (CommonLookup[`${key}`].type === 'hashTable') {
           const temp = [];
-          data[`${key}`].forEach(entry => {
+          data[`${key}`].forEach((entry) => {
             temp.push({
               id: entry.id,
               value : {

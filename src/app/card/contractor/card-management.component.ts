@@ -47,7 +47,7 @@ import { DbFilterResponse } from 'src/app/_dto/card/dbFilterResponse';
     const tempThis = this;
     this.titleService.setTitle('All Cards');
     this.initCommon((c) => {
-      this.commonKeys.forEach(key => {
+      this.commonKeys.forEach((key) => {
         tempThis[`${key}`] = c[`${key}`];
       });
       this[`ranches`] = c[`ranches`];
@@ -156,10 +156,10 @@ import { DbFilterResponse } from 'src/app/_dto/card/dbFilterResponse';
     const sortedCommon = {};
     const userRanchAccess = this.auth.getRanchAccess();
     this.common.getAllValues((data) => {
-      this.commonKeys.forEach(key => {
+      this.commonKeys.forEach((key) => {
         if (CommonLookup[`${key}`].type === 'hashTable') {
           const temp = [];
-          data[`${key}`].forEach(entry => {
+          data[`${key}`].forEach((entry) => {
             temp.push({
               id: entry.id,
               value : {
@@ -264,7 +264,7 @@ import { DbFilterResponse } from 'src/app/_dto/card/dbFilterResponse';
       filter.allCommoditiesOrdered = commodityPairs.map((e) => e.id);
 
       this.cardService.getCardsFiltered(filter, false).subscribe(
-        e => {
+        (e) => {
           if (e.success) {
             const response: DbFilterResponse = e.data;
             // console.log(response);

@@ -44,7 +44,7 @@ export class EntryDashboardComponent implements OnInit {
     const tempThis = this;
     this.titleService.setTitle('Open Cards');
     this.initCommon((c) => {
-      this.commonKeys.forEach(key => {
+      this.commonKeys.forEach((key) => {
         tempThis[`${key}`] = c[`${key}`];
       });
       this[`ranches`] = c[`ranches`];
@@ -173,10 +173,10 @@ export class EntryDashboardComponent implements OnInit {
     const sortedCommon = {};
     const userRanchAccess = this.auth.getRanchAccess();
     this.common.getAllValues((data) => {
-      this.commonKeys.forEach(key => {
+      this.commonKeys.forEach((key) => {
         if (CommonLookup[`${key}`].type === 'hashTable') {
           const temp = [];
-          data[`${key}`].forEach(entry => {
+          data[`${key}`].forEach((entry) => {
             temp.push({
               id: entry.id,
               value : {
@@ -276,7 +276,7 @@ export class EntryDashboardComponent implements OnInit {
       filter.allCommoditiesOrdered = commodityPairs.map((e) => e.id);
 
       this.cardService.getMyCardsFiltered(filter).subscribe(
-        e => {
+        (e) => {
           if (e.success) {
             const response: DbFilterResponse = e.data;
             // console.log(response);

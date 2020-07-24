@@ -25,7 +25,7 @@ export class AppAdminComponent implements OnInit {
         this.keys = Object.keys(CommonLookup);
         this.commonArray = data.data;
         this.sortedCommonArray = this.getSortedData();
-        this.keys.forEach(key => {
+        this.keys.forEach((key) => {
           this.displayToggles[`${key}`] = true;
         });
       } else if (!data.success) {
@@ -109,7 +109,7 @@ export class AppAdminComponent implements OnInit {
       const commonValues = common.values;
       if (this.getLookupType(key) === 'hashTable') {
         const arr = [];
-        commonValues.forEach(entry => {
+        commonValues.forEach((entry) => {
           arr.push({
             id: entry.id,
             value : {
@@ -151,7 +151,7 @@ export class AppAdminComponent implements OnInit {
   */
   private getSortedData(): Array<any> {
     const commonSorted = [];
-    this.keys.sort().forEach(key => {
+    this.keys.sort().forEach((key) => {
       commonSorted.push({
         key,
         values: this.sortCommonArray(this.getCommonValuesArray(key), key)

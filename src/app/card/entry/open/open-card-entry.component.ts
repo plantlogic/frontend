@@ -39,7 +39,7 @@ export class OpenCardEntryComponent implements OnInit {
     const tempThis = this;
     this.titleService.setTitle('View Card');
     this.initCommon((c) => {
-      this.commonKeys.forEach(key => {
+      this.commonKeys.forEach((key) => {
         tempThis[`${key}`] = c[`${key}`];
       });
       this[`ranches`] = c[`ranches`];
@@ -315,10 +315,10 @@ export class OpenCardEntryComponent implements OnInit {
     const sortedCommon = {};
     const userRanchAccess = this.auth.getRanchAccess();
     this.common.getAllValues((data) => {
-      this.commonKeys.forEach(key => {
+      this.commonKeys.forEach((key) => {
         if (CommonLookup[`${key}`].type === 'hashTable') {
           const temp = [];
-          data[`${key}`].forEach(entry => {
+          data[`${key}`].forEach((entry) => {
             temp.push({
               id: entry.id,
               value : {

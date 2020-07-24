@@ -29,7 +29,7 @@ export class AddTractorEntryComponent implements OnInit {
     const tempThis = this;
     this.titleService.setTitle('Tractor');
     this.initCommon((c) => {
-      this.commonKeys.forEach(key => tempThis[`${key}`] = c[`${key}`] );
+      this.commonKeys.forEach((key) => tempThis[`${key}`] = c[`${key}`] );
       this.route.params.subscribe((data) => this.cardId = data.id);
     });
   }
@@ -73,7 +73,7 @@ export class AddTractorEntryComponent implements OnInit {
     const tempThis = this;
     const sortedCommon = {};
     this.common.getAllValues((data) => {
-      this.commonKeys.forEach(key => {
+      this.commonKeys.forEach((key) => {
         sortedCommon[`${key}`] = tempThis.common.sortCommonArray(data[`${key}`], key);
       });
       f(sortedCommon);

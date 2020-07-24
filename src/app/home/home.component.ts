@@ -58,7 +58,7 @@ export class HomeComponent implements OnInit {
     if (this.hasAnyViewPermission()) {
       const tempThis = this;
       this.initCommon((c) => {
-        tempThis.commonKeys.forEach(key => tempThis[`${key}`] = c[`${key}`]);
+        tempThis.commonKeys.forEach((key) => tempThis[`${key}`] = c[`${key}`]);
         tempThis.getCardCount();
         tempThis.generateCardsHarvestedChart();
         tempThis.generateCommodityAcresChart();
@@ -181,11 +181,10 @@ export class HomeComponent implements OnInit {
           });
         } else {
           console.log('Error');
+          AlertService.newBasicAlert("There was an error when retrieving commodity acres", true);
         }
       },
-      failure => {
-        console.log('Error');
-      }
+      failure => {}
     );
   }
 
@@ -383,10 +382,10 @@ export class HomeComponent implements OnInit {
     const tempThis = this;
     const sortedCommon = {};
     this.common.getAllValues((data) => {
-      this.commonKeys.forEach(key => {
+      this.commonKeys.forEach((key) => {
         if (CommonLookup[`${key}`].type === 'hashTable') {
           const temp = [];
-          data[`${key}`].forEach(entry => {
+          data[`${key}`].forEach((entry) => {
             temp.push({
               id: entry.id,
               value : {
