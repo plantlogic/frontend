@@ -48,9 +48,9 @@ export class CardManagementComponent implements OnInit {
   ngOnInit() {
     const tempThis = this;
     this.titleService.setTitle('All Cards');
-    this.initCommon(c => {
-      this.commonKeys.forEach(key => {
-        tempThis[key] = c[key];
+    this.initCommon((c) => {
+      this.commonKeys.forEach((key) => {
+        tempThis[`${key}`] = c[`${key}`];
       });
       this[`ranches`] = c[`ranches`];
       this.loadCachedFilters();
@@ -61,7 +61,7 @@ export class CardManagementComponent implements OnInit {
   private cardIDsToValues(card: Card): Card {
     // Only convert what is needed on this page
     card.ranchName = this.findCommonValue('ranches', ['value'], card.ranchName);
-    card.commodityArray.forEach(e => {
+    card.commodityArray.forEach((e) => {
       e.commodity = this.findCommonValue('commodities', ['value', 'key'], e.commodity);
     });
     return card;
@@ -73,9 +73,6 @@ export class CardManagementComponent implements OnInit {
     this.filterLotNumber = '';
     this.filterCommodity = '';
     localStorage.removeItem('managementQuery');
-    this.tableService.setDataSource(this.previous);
-    this.cards = this.tableService.getDataSource();
-    // this.updateNumPages();
     this.loadCardDataFiltered();
   }
 
@@ -91,7 +88,7 @@ export class CardManagementComponent implements OnInit {
   }
 
   /*
-    Searches common values in [key] list where value.id === targetID
+    Searches common values in [`${key}`] list where value.id === targetID
     returns value.valuePropertyArr where valuePropertyArr = array of nesting properties
     returns null in no targetID supplied
     returns targetID if key is not in commonKeys Array (don't need value)
@@ -100,15 +97,15 @@ export class CardManagementComponent implements OnInit {
   private findCommonValue(key, valuePropertyArr, targetID?) {
     if (!targetID) { return null; }
     if (!this.commonKeys.includes(key) && key !== 'ranches') { return targetID; }
-    let commonValue = this.getCommon(key).find(e => {
+    let commonValue = this.getCommon(key).find((e) => {
       return e.id === targetID;
     });
     try {
-      valuePropertyArr.forEach(p => {
-        commonValue = commonValue[p];
+      valuePropertyArr.forEach((p) => {
+        commonValue = commonValue[`${p}`];
       });
     } catch (e) {
-      console.log(e);
+      // console.log(e);
     }
     return (commonValue) ? commonValue : 'Unknown ' + key + ' ID';
   }
@@ -117,12 +114,9 @@ export class CardManagementComponent implements OnInit {
     const modifiedCards = [];
     try {
       // Cycle through the cards being currently displayed, check if fieldID is different from raw
-      for (let i = 0; i < this.cards.length; i++) {
-        if (this.showListing(i)) {
-          const cardID = this.cards[i].id;
-          if (this.cardsRaw.find(c => c.id === cardID).fieldID !== this.cards[i].fieldID) {
-            modifiedCards.push(this.cards[i]);
-          }
+      for (const c of this.cards) {
+        if (this.cardsRaw.find((c2) => c2.id === c.id).fieldID !== c.fieldID) {
+          modifiedCards.push(c);
         }
       }
       return modifiedCards;
@@ -133,9 +127,9 @@ export class CardManagementComponent implements OnInit {
 
   public getCommon(key) {
     if (this.commonKeys.includes(key) || key === 'ranches') {
-      return (this[key]) ? this[key] : [];
+      return (this[`${key}`]) ? this[`${key}`] : [];
     } else {
-      console.log('Key ' + key + ' is not in the commonKeys array.');
+      // console.log('Key ' + key + ' is not in the commonKeys array.');
       return [];
     }
   }
@@ -156,11 +150,11 @@ export class CardManagementComponent implements OnInit {
     const tempThis = this;
     const sortedCommon = {};
     const userRanchAccess = this.auth.getRanchAccess();
-    this.common.getAllValues(data => {
-      this.commonKeys.forEach(key => {
-        if (CommonLookup[key].type === 'hashTable') {
+    this.common.getAllValues((data) => {
+      this.commonKeys.forEach((key) => {
+        if (CommonLookup[`${key}`].type === 'hashTable') {
           const temp = [];
-          data[key].forEach(entry => {
+          data[`${key}`].forEach((entry) => {
             temp.push({
               id: entry.id,
               value : {
@@ -169,15 +163,15 @@ export class CardManagementComponent implements OnInit {
               }
             });
           });
-          sortedCommon[key] = tempThis.common.sortCommonArray(temp, key);
+          sortedCommon[`${key}`] = tempThis.common.sortCommonArray(temp, key);
         } else {
-          sortedCommon[key] = tempThis.common.sortCommonArray(data[key], key);
+          sortedCommon[`${key}`] = tempThis.common.sortCommonArray(data[`${key}`], key);
         }
       });
       if (this.hasShipperPermission()) {
         sortedCommon[`ranches`] = data[`ranches`];
       } else {
-        sortedCommon[`ranches`] = data[`ranches`].filter(e => userRanchAccess.includes(e.id));
+        sortedCommon[`ranches`] = data[`ranches`].filter((e) => userRanchAccess.includes(e.id));
       }
       sortedCommon[`ranches`] = tempThis.common.sortCommonArray(sortedCommon[`ranches`], 'ranches');
       f(sortedCommon);
@@ -201,21 +195,6 @@ export class CardManagementComponent implements OnInit {
       this.filterCommodity = '';
       localStorage.removeItem('managementQuery');
     }
-  }
-
-  public updateSortOrder(sort: string) {
-    console.log(sort);
-    if (this.filterSort === sort) {
-      if (this.filterOrder === 'asc') {
-        this.filterOrder = 'desc';
-      } else {
-        this.filterOrder = 'asc';
-      }
-    } else {
-      this.filterSort = sort;
-      this.filterOrder = 'asc';
-    }
-    this.loadCardDataFiltered(false);
   }
 
   public loadCardDataFiltered(pageSelect?: boolean) {
@@ -285,22 +264,20 @@ export class CardManagementComponent implements OnInit {
       const shipperID = (shipperRestricted) ? this.auth.getShipperID() : null;
 
       this.cardService.getCardsFiltered(filter, shipperRestricted, shipperID).subscribe(
-        e => {
+        (e) => {
           if (e.success) {
             const response: DbFilterResponse = e.data;
             // console.log(response);
-            this.cards = response.cards.map(c => (new Card()).copyConstructor(c));
+            this.cards = response.cards.map((c) => (new Card()).copyConstructor(c));
             this.cardSizeNonLimited = response.size;
 
             // For display purposes, change any common IDs to their values
-            this.cards.forEach(card => {
+            this.cards.forEach((card) => {
               card = this.cardIDsToValues(card);
               card.initCommodityString();
             });
             // Keep a raw copy of the data
-            this.cardsRaw = response.cards.map(c => (new Card()).copyConstructor(c));
-            this.tableService.setDataSource(this.cards);
-            this.previous = this.tableService.getDataSource();
+            this.cardsRaw = response.cards.map((c) => (new Card()).copyConstructor(c));
             this.updateNumPages();
             if (pageSelect) {
               this.setPage(previousPage, false);
@@ -311,7 +288,7 @@ export class CardManagementComponent implements OnInit {
             AlertService.newBasicAlert('Error: ' + e.error, true);
           }
         },
-        failure => {
+        (failure) => {
           AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
         }
       );
@@ -325,11 +302,11 @@ export class CardManagementComponent implements OnInit {
 
   public resetFieldIds(): void {
     const tempThis = this;
-    this.cards.forEach(card => {
+    this.cards.forEach((card) => {
       try {
-        card.fieldID = tempThis.cardsRaw.find(e => e.id === card.id).fieldID;
+        card.fieldID = tempThis.cardsRaw.find((e) => e.id === card.id).fieldID;
       } catch (e) {
-        console.log('Error resetting card fieldID');
+        // console.log('Error resetting card fieldID');
       }
     });
   }
@@ -340,16 +317,6 @@ export class CardManagementComponent implements OnInit {
     if (this.pageNum > this.numPages) { this.pageNum = this.numPages; }
     if (this.pageNum < 1) { this.pageNum = 1; }
     if (updateFilter) { this.loadCardDataFiltered(true); }
-  }
-
-  public showListing(index: number): boolean {
-    return true;
-    const low = (this.pageNum - 1) * this.viewSize;
-    const high = (this.pageNum * this.viewSize) - 1;
-    if ((index >= low) && (index <= high)) {
-      return true;
-    }
-    return false;
   }
 
   public updateFieldIds(): void {
@@ -363,14 +330,14 @@ export class CardManagementComponent implements OnInit {
       failure: 0
     };
     const modified = this.findModifiedCards();
-    modified.forEach(m => {
-      const card = tempThis.cardsRaw.find(c => c.id === m.id);
+    modified.forEach((m) => {
+      const card = tempThis.cardsRaw.find((c) => c.id === m.id);
       if (!card) {
         log.failure += 1;
         tempThis.updateMessage(log, modified.length);
       } else {
         card.fieldID = m.fieldID;
-        tempThis.cardEdit.updateCard(card).subscribe(data => {
+        tempThis.cardEdit.updateCard(card).subscribe((data) => {
           if (data.success) {
             log.success += 1;
           } else {
@@ -378,7 +345,7 @@ export class CardManagementComponent implements OnInit {
           }
           tempThis.updateMessage(log, modified.length);
         },
-        failure => {
+        (failure) => {
           log.failure += 1;
           tempThis.updateMessage(log, modified.length);
         });
@@ -398,5 +365,19 @@ export class CardManagementComponent implements OnInit {
     if (e) { this.viewSize = e; }
     this.numPages = Math.ceil(this.cardSizeNonLimited / this.viewSize);
     this.pages = Array(this.numPages).fill(0).map((x, i) => i + 1);
+  }
+
+  public updateSortOrder(sort: string) {
+    if (this.filterSort === sort) {
+      if (this.filterOrder === 'asc') {
+        this.filterOrder = 'desc';
+      } else {
+        this.filterOrder = 'asc';
+      }
+    } else {
+      this.filterSort = sort;
+      this.filterOrder = 'asc';
+    }
+    this.loadCardDataFiltered(false);
   }
 }

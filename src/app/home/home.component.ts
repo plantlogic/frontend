@@ -50,29 +50,19 @@ export class HomeComponent implements OnInit {
   permissions = {};
 
   ngOnInit() {
-
     /* ----------------
     Page Init
     ------------------- */
-
     this.titleService.setTitle('Home');
     this.setPermissions();
     if (this.hasAnyViewPermission()) {
       const tempThis = this;
-      this.initCommon(c => {
-        tempThis.commonKeys.forEach(key => tempThis[key] = c[key]);
-        if (tempThis.auth.permissionCount() === 0) {
-          tempThis.message = 'This account is disabled and has no permissions.';
-        }
-        // Init our date array
-        const recent = [];
-        for (let i = 5; i >= 0; i--) {
-          recent.push(tempThis.months[((new Date()).getMonth() - i + 12) % 12]);
-        }
-        tempThis.months = recent;
-
-        // Init our data array
-        tempThis.generateChartsAndCount();
+      this.initCommon((c) => {
+        tempThis.commonKeys.forEach((key) => tempThis[`${key}`] = c[`${key}`]);
+        tempThis.getCardCount();
+        tempThis.generateCardsHarvestedChart();
+        tempThis.generateCommodityAcresChart();
+        tempThis.generateOpenCommoditiesChart();
         tempThis.generateUserManagementElements();
       });
     } else {
@@ -82,7 +72,7 @@ export class HomeComponent implements OnInit {
   }
 
   /*
-    Searches common values in [key] list where value.id === targetID
+    Searches common values in [`${key}`] list where value.id === targetID
     returns value.valuePropertyArr where valuePropertyArr = array of nesting properties
     returns null in no targetID supplied
     returns targetID if key is not in commonKeys Array (don't need value)
@@ -91,256 +81,291 @@ export class HomeComponent implements OnInit {
   findCommonValue(key, valuePropertyArr, targetID?) {
     if (!targetID) { return null; }
     if (!this.commonKeys.includes(key) && key !== 'ranches') { return targetID; }
-    let commonValue = this.getCommon(key).find(e => {
+    let commonValue = this.getCommon(key).find((e) => {
       return e.id === targetID;
     });
     try {
-      valuePropertyArr.forEach(p => {
-        commonValue = commonValue[p];
+      valuePropertyArr.forEach((p) => {
+        commonValue = commonValue[`${p}`];
       });
     } catch (e) {
-      console.log(e);
+      // console.log(e);
     }
     return (commonValue) ? commonValue : targetID;
   }
 
-  private generateChartsAndCount() {
-    if (this.showDataEntryCountOrCharts()) {
-      this.cardEntry.getMyCards().subscribe(data => {
-        if (data.success) {
-          this.cardCount = data.data.length;
-          this.generateCardsHarvestedChart(data.data);
-          this.generateOpenCommoditiesChart(data.data);
-          this.generateCommoditieAcresChart(data.data);
-        } else if (!data.success) {
-          AlertService.newBasicAlert('Error: ' + data.error, true);
-        }
-      },
-      failure => {
-        AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
-      });
-    } else if (this.showDataViewCountOrCharts()) {
-      this.cardEntry.getDataViewCards().subscribe(data => {
-        if (data.success) {
-          this.cardCount = data.data.length;
-          this.generateCardsHarvestedChart(data.data);
-          this.generateOpenCommoditiesChart(data.data);
-          this.generateCommoditieAcresChart(data.data);
-        } else if (!data.success) {
-          AlertService.newBasicAlert('Error: ' + data.error, true);
-        }
-      },
-      failure => {
-        AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
-      });
-    } else if (this.showShipperCountOrCharts()) {
-      this.cardEntry.getShipperCards(this.auth.getShipperID()).subscribe(data => {
-        if (data.success) {
-          this.cardCount = data.data.length;
-          this.generateCardsHarvestedChart(data.data);
-          this.generateOpenCommoditiesChart(data.data);
-          this.generateCommoditieAcresChart(data.data);
-        } else if (!data.success) {
-          AlertService.newBasicAlert('Error: ' + data.error, true);
-        }
-      },
-      failure => {
-        AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
-      });
-    }
-  }
-
   private generateUserManagementElements(): void {
     if (this.showRegisteredUsers()) {
-      this.userManagement.getUserList().subscribe(data => {
+      this.userManagement.getUserList().subscribe((data) => {
           if (data.success) {
             this.userCount = data.data.length;
           } else if (!data.success) {
-            AlertService.newBasicAlert('Error: ' + data.error, true);
+            AlertService.newBasicAlert('Error when retrieving user information', true);
           }
         },
-        failure => {
-          AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
+        (failure) => {
+          AlertService.newBasicAlert('Connection Error', true);
         });
     }
   }
 
-  private generateCommoditieAcresChart(data: Array<Card>): void {
+  private generateCommodityAcresChart(): void {
     const tempThis = this;
-    const commodities = [];
-    const counts = [];
+    const orderedPairs = [];
+    let permission: string;
+    let shipperID: string;
 
-    data.map((c) => (new Card()).copyConstructor(c))
-      .filter((c) => !c.closed)
-      .forEach((c) => c.commodityArray.forEach((co) => {
-        const val = tempThis.findCommonValue('commodities', ['value', 'key'], co.commodity);
-        const indx = commodities.indexOf(val);
-        c.initTotalAcres();
-        tempThis.totalCommodityAcres += c.totalAcres;
-        if (indx < 0) {
-          commodities.push(val);
-          counts.push(c.totalAcres);
-        } else {
-          counts[indx] += c.totalAcres;
-        }
-      }));
-
-    // Round Total Acre Value
-    tempThis.totalCommodityAcres = Number(tempThis.totalCommodityAcres.toFixed(2));
-
-    // sort arrays
-    const sortedCommodities = Object.assign([], commodities).sort();
-    const sortedCounts = [];
-    for (const commodity of sortedCommodities) {
-      const originalIndex = commodities.indexOf(commodity);
-      const count = counts[originalIndex];
-      sortedCounts.push(count);
+    if (this.permissions[`DATA_ENTRY`] || this.permissions[`IRRIGATOR`]) {
+      permission = 'entry';
+    } else if (this.permissions[`DATA_VIEW`]) {
+      permission = 'view';
+    } else if (this.permissions[`SHIPPER`]) {
+      permission = 'shipper';
+      shipperID = this.auth.getShipperID();
+    } else {
+      return;
     }
-
-    this.commodityAcresChart = new Chart(this.commodityAcresChartRef.nativeElement, {
-      type: 'bar',
-      data: {
-        type: 'line',
-        labels: sortedCommodities,
-        datasets: [
-          {
-            data: sortedCounts,
-            borderColor: '#00AEFF',
-            backgroundColor: 'rgba(0,174,255,0.42)',
+    this.cardEntry.getCommodityAcres(permission, shipperID).subscribe(
+      (data) => {
+        if (data.success) {
+          const pairs: Map<string, number> = data.data;
+          for (const [k, v] of Object.entries(pairs)) {
+            orderedPairs.push({
+              key: tempThis.findCommonValue('commodities', ['value', 'key'], k),
+              value: v
+            });
+            tempThis.totalCommodityAcres += v;
           }
-        ]
-      },
-      options: {
-        legend: {
-          display: false
-        },
-        scales: {
-          xAxes: [{
-            display: true
-          }],
-          yAxes: [{
-            display: true,
-            ticks: {
-              precision: 0
+          orderedPairs.sort((a, b) => {
+            let comparison = 0;
+            const valA = a.key.toUpperCase();
+            const valB = b.key.toUpperCase();
+            if (valA > valB) {
+              comparison = 1;
+            } else if (valA < valB) {
+              comparison = -1;
             }
-          }],
-        }
-      }
-    });
-  }
-  private generateOpenCommoditiesChart(data: Array<Card>): void {
-    const tempThis = this;
-    const commodities = [];
-    const counts = [];
-
-    data.map(c => (new Card()).copyConstructor(c))
-      .filter(c => !c.closed)
-      .forEach(c => c.commodityArray.forEach(co => {
-        const val = tempThis.findCommonValue('commodities', ['value', 'key'], co.commodity);
-        const indx = commodities.indexOf(val);
-        if (indx < 0) {
-          commodities.push(val);
-          counts.push(1);
+            return comparison;
+          });
+          // Round Total Acre Value
+          tempThis.totalCommodityAcres = Number(tempThis.totalCommodityAcres.toFixed(2));
+          this.commodityAcresChart = new Chart(this.commodityAcresChartRef.nativeElement, {
+            type: 'bar',
+            data: {
+              type: 'line',
+              labels: orderedPairs.map((e) => e.key),
+              datasets: [
+                {
+                  data: orderedPairs.map((e) => e.value),
+                  borderColor: '#00AEFF',
+                  backgroundColor: 'rgba(0,174,255,0.42)',
+                }
+              ]
+            },
+            options: {
+              legend: {
+                display: false
+              },
+              scales: {
+                xAxes: [{
+                  display: true
+                }],
+                yAxes: [{
+                  display: true,
+                  ticks: {
+                    precision: 0
+                  }
+                }],
+              }
+            }
+          });
         } else {
-          counts[indx]++;
+          // console.log('Error');
+          AlertService.newBasicAlert('There was an error when retrieving commodity acres', true);
         }
-      }));
-
-    // sort arrays
-    const sortedCommodities = Object.assign([], commodities).sort();
-    const sortedCounts = [];
-    for (const commodity of sortedCommodities) {
-      const originalIndex = commodities.indexOf(commodity);
-      const count = counts[originalIndex];
-      sortedCounts.push(count);
-    }
-
-    this.openCommoditiesChart = new Chart(this.openCommoditiesChartRef.nativeElement, {
-      type: 'bar',
-      data: {
-        type: 'line',
-        labels: sortedCommodities,
-        datasets: [
-          {
-            data: sortedCounts,
-            borderColor: '#00AEFF',
-            backgroundColor: 'rgba(0,174,255,0.42)',
-          }
-        ]
       },
-      options: {
-        legend: {
-          display: false
-        },
-        scales: {
-          xAxes: [{
-            display: true
-          }],
-          yAxes: [{
-            display: true,
-            ticks: {
-              precision: 0
-            }
-          }],
-        }
-      }
-    });
+      (failure) => {}
+    );
   }
 
-  private generateCardsHarvestedChart(data: Array<Card>): void {
-    const result = [0, 0, 0, 0, 0, 0];
-    const sixMonthsAgo = new Date();
-    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+  private generateOpenCommoditiesChart(): void {
+    const tempThis = this;
+    const orderedPairs = [];
+    let permission: string;
+    let shipperID: string;
 
-    data.map(c => new Date(c.harvestDate))
-      .filter(d => sixMonthsAgo < d && d.valueOf() <= Date.now())
-      .forEach(d => {
-        result[5 - (((new Date()).getMonth() - d.getMonth() + 12) % 12)]++;
-      });
-
-    this.cardHarvestedChart = new Chart(this.cardHarvestedChartRef.nativeElement, {
-      type: 'line',
-      data: {
-        type: 'line',
-        labels: this.months,
-        datasets: [
-          {
-            data: result,
-            borderColor: '#00AEFF',
-            backgroundColor: 'rgba(0,174,255,0.42)',
-            fill: 'origin'
+    if (this.permissions[`DATA_ENTRY`] || this.permissions[`IRRIGATOR`]) {
+      permission = 'entry';
+    } else if (this.permissions[`DATA_VIEW`]) {
+      permission = 'view';
+    } else if (this.permissions[`SHIPPER`]) {
+      permission = 'shipper';
+      shipperID = this.auth.getShipperID();
+    } else {
+      return;
+    }
+    this.cardEntry.getCommodityCardCount(permission, shipperID).subscribe(
+      (data) => {
+        if (data.success) {
+          const pairs: Map<string, number> = data.data;
+          for (const [k, v] of Object.entries(pairs)) {
+            orderedPairs.push({
+              key: tempThis.findCommonValue('commodities', ['value', 'key'], k),
+              value: v
+            });
           }
-        ]
-      },
-      options: {
-        elements: {
-          line: {
-            tension: 0.000001
-          }
-        },
-        legend: {
-          display: false
-        },
-        scales: {
-          xAxes: [{
-            display: true
-          }],
-          yAxes: [{
-            display: true,
-            ticks: {
-              precision: 0
+          orderedPairs.sort((a, b) => {
+            let comparison = 0;
+            const valA = a.key.toUpperCase();
+            const valB = b.key.toUpperCase();
+            if (valA > valB) {
+              comparison = 1;
+            } else if (valA < valB) {
+              comparison = -1;
             }
-          }],
+            return comparison;
+          });
+          // Round Total Acre Value
+          tempThis.totalCommodityAcres = Number(tempThis.totalCommodityAcres.toFixed(2));
+          this.openCommoditiesChart = new Chart(this.openCommoditiesChartRef.nativeElement, {
+            type: 'bar',
+            data: {
+              type: 'line',
+              labels: orderedPairs.map((e) => e.key),
+              datasets: [
+                {
+                  data: orderedPairs.map((e) => e.value),
+                  borderColor: '#00AEFF',
+                  backgroundColor: 'rgba(0,174,255,0.42)',
+                }
+              ]
+            },
+            options: {
+              legend: {
+                display: false
+              },
+              scales: {
+                xAxes: [{
+                  display: true
+                }],
+                yAxes: [{
+                  display: true,
+                  ticks: {
+                    precision: 0
+                  }
+                }],
+              }
+            }
+          });
+        } else {
+          // console.log('Error');
         }
+      },
+      (failure) => {
+        // console.log('Error');
       }
+    );
+  }
+
+  private generateCardsHarvestedChart(): void {
+    // Init our date array
+    const recent = [];
+    for (let i = 5; i >= 0; i--) {
+      recent.push(this.months[((new Date()).getMonth() - i + 12) % 12]);
+    }
+    this.months = recent;
+    let permission: string;
+    let shipperID: string;
+
+    if (this.permissions[`DATA_ENTRY`] || this.permissions[`IRRIGATOR`]) {
+      permission = 'entry';
+    } else if (this.permissions[`DATA_VIEW`]) {
+      permission = 'view';
+    } else if (this.permissions[`SHIPPER`]) {
+      permission = 'shipper';
+      shipperID = this.auth.getShipperID();
+    } else {
+      return;
+    }
+    this.cardEntry.getRecentlyHarvested(permission, shipperID).subscribe(
+      (data) => {
+        if (data.success) {
+          this.cardHarvestedChart = new Chart(this.cardHarvestedChartRef.nativeElement, {
+            type: 'line',
+            data: {
+              type: 'line',
+              labels: this.months,
+              datasets: [
+                {
+                  data: data.data,
+                  borderColor: '#00AEFF',
+                  backgroundColor: 'rgba(0,174,255,0.42)',
+                  fill: 'origin'
+                }
+              ]
+            },
+            options: {
+              elements: {
+                line: {
+                  tension: 0.000001
+                }
+              },
+              legend: {
+                display: false
+              },
+              scales: {
+                xAxes: [{
+                  display: true
+                }],
+                yAxes: [{
+                  display: true,
+                  ticks: {
+                    precision: 0
+                  }
+                }],
+              }
+            }
+          });
+        } else {
+          // console.log('Error');
+        }
+      },
+      (failure) => {
+        // console.log('Error');
+      }
+    );
+  }
+
+  private getCardCount() {
+    let permission: string;
+    let shipperID: string;
+
+    if (this.permissions[`DATA_ENTRY`] || this.permissions[`IRRIGATOR`]) {
+      permission = 'entry';
+    } else if (this.permissions[`DATA_VIEW`]) {
+      permission = 'view';
+    } else if (this.permissions[`SHIPPER`]) {
+      permission = 'shipper';
+      shipperID = this.auth.getShipperID();
+    } else {
+      return;
+    }
+    this.cardEntry.getCardCount(permission, shipperID).subscribe( (data) => {
+      if (data.success) {
+        this.cardCount = data.data;
+      } else {
+        // console.log(data.error);
+      }
+    }, (failure) => {
+      // console.log('Connection Error');
     });
   }
 
   public getCommon(key) {
     if (this.commonKeys.includes(key) || key === 'ranches') {
-      return (this[key]) ? this[key] : [];
+      return (this[`${key}`]) ? this[`${key}`] : [];
     } else {
-      console.log('Key ' + key + ' is not in the commonKeys array.');
+      // console.log('Key ' + key + ' is not in the commonKeys array.');
       return [];
     }
   }
@@ -356,11 +381,11 @@ export class HomeComponent implements OnInit {
   public initCommon(f): void {
     const tempThis = this;
     const sortedCommon = {};
-    this.common.getAllValues(data => {
-      this.commonKeys.forEach(key => {
-        if (CommonLookup[key].type === 'hashTable') {
+    this.common.getAllValues((data) => {
+      this.commonKeys.forEach((key) => {
+        if (CommonLookup[`${key}`].type === 'hashTable') {
           const temp = [];
-          data[key].forEach(entry => {
+          data[`${key}`].forEach((entry) => {
             temp.push({
               id: entry.id,
               value : {
@@ -369,9 +394,9 @@ export class HomeComponent implements OnInit {
               }
             });
           });
-          sortedCommon[key] = tempThis.common.sortCommonArray(temp, key);
+          sortedCommon[`${key}`] = tempThis.common.sortCommonArray(temp, key);
         } else {
-          sortedCommon[key] = tempThis.common.sortCommonArray(data[key], key);
+          sortedCommon[`${key}`] = tempThis.common.sortCommonArray(data[`${key}`], key);
         }
       });
       f(sortedCommon);
@@ -382,9 +407,9 @@ export class HomeComponent implements OnInit {
   private setPermissions() {
     const keys = Object.keys(PlRole);
     const  roles = keys.slice(keys.length / 2);
-    roles.forEach(role => {
-      if (this.auth.hasPermission(PlRole[role])) {
-        this.permissions[role] = true;
+    roles.forEach((role) => {
+      if (this.auth.hasPermission(PlRole[`${role}`])) {
+        this.permissions[`${role}`] = true;
       }
     });
   }

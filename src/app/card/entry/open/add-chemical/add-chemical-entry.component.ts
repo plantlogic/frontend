@@ -31,9 +31,9 @@ export class AddChemicalEntryComponent implements OnInit {
   ngOnInit() {
     const tempThis = this;
     this.titleService.setTitle('Applied');
-    this.initCommon(c => {
-      this.commonKeys.forEach(key => tempThis[key] = c[key] );
-      this.route.params.subscribe(data => this.cardId = data.id);
+    this.initCommon((c) => {
+      this.commonKeys.forEach((key) => tempThis[`${key}`] = c[`${key}`] );
+      this.route.params.subscribe((data) => this.cardId = data.id);
     });
   }
 
@@ -48,9 +48,9 @@ export class AddChemicalEntryComponent implements OnInit {
 
   public getCommon(key) {
     if (this.commonKeys.includes(key)) {
-      return (this[key]) ? this[key] : [];
+      return (this[`${key}`]) ? this[`${key}`] : [];
     } else {
-      console.log('Key ' + key + ' is not in the commonKeys array.');
+      // console.log('Key ' + key + ' is not in the commonKeys array.');
       return [];
     }
   }
@@ -58,9 +58,9 @@ export class AddChemicalEntryComponent implements OnInit {
   public initCommon(f): void {
     const tempThis = this;
     const sortedCommon = {};
-    this.common.getAllValues(data => {
-      this.commonKeys.forEach(key => {
-        sortedCommon[key] = tempThis.common.sortCommonArray(data[key], key);
+    this.common.getAllValues((data) => {
+      this.commonKeys.forEach((key) => {
+        sortedCommon[`${key}`] = tempThis.common.sortCommonArray(data[`${key}`], key);
       });
       f(sortedCommon);
     });
@@ -76,21 +76,21 @@ export class AddChemicalEntryComponent implements OnInit {
     // Check Chemical / Fertilizer Info
     c.date = (new Date(c.date)).valueOf();
     if (c.chemical) {
-      if (!c.chemical.name || !this[`chemicals`].find(c2 => c2.id === c.chemical.name)) {
+      if (!c.chemical.name || !this[`chemicals`].find((c2) => c2.id === c.chemical.name)) {
         AlertService.newBasicAlert('Invalid Chemical Entered - please fix and try again.', true);
         return;
       }
-      if (!c.chemical.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === c.chemical.unit)) {
+      if (!c.chemical.unit || !this[`chemicalRateUnits`].find((c2) => c2.id === c.chemical.unit)) {
         AlertService.newBasicAlert('Invalid Chemical Rate Unit Entered - please fix and try again.', true);
         return;
       }
     }
     if (c.fertilizer) {
-      if (!c.fertilizer.name || !this[`fertilizers`].find(c2 => c2.id === c.fertilizer.name)) {
+      if (!c.fertilizer.name || !this[`fertilizers`].find((c2) => c2.id === c.fertilizer.name)) {
         AlertService.newBasicAlert('Invalid Fertilizer Entered - please fix and try again.', true);
         return;
       }
-      if (!c.fertilizer.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === c.fertilizer.unit)) {
+      if (!c.fertilizer.unit || !this[`chemicalRateUnits`].find((c2) => c2.id === c.fertilizer.unit)) {
         AlertService.newBasicAlert('Invalid Fertilizer Rate Unit Entered - please fix and try again.', true);
         return;
       }
@@ -101,7 +101,7 @@ export class AddChemicalEntryComponent implements OnInit {
     }
 
     this.cardEntryService.addChemicalData(this.cardId, c).subscribe(
-      data => {
+      (data) => {
         if (data.success) {
           AlertService.newBasicAlert('Saved successfully!', false);
           this.nav.goBack();
@@ -109,7 +109,7 @@ export class AddChemicalEntryComponent implements OnInit {
           AlertService.newBasicAlert('Error: ' + data.error, true);
         }
       },
-      failure => {
+      (failure) => {
         AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
       }
     );

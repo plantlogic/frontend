@@ -99,7 +99,7 @@ export class Card {
 
     if (card.irrigation) {
       const temp: Array<IrrigationEntry> = new Array<IrrigationEntry>();
-      card.irrigation.forEach(t => {
+      card.irrigation.forEach((t) => {
         const temp2 = Object.assign(new IrrigationEntry(), t);
         if (!temp2.chemicalArray) { temp2.chemicalArray = new Array<Chemical>(); }
         if (!temp2.fertilizerArray) { temp2.fertilizerArray = new Array<Chemical>(); }
@@ -110,7 +110,7 @@ export class Card {
 
     if (card.tractor) {
       const temp: Array<TractorEntry> = new Array<TractorEntry>();
-      card.tractor.forEach(t => {
+      card.tractor.forEach((t) => {
         const temp2 = Object.assign(new TractorEntry(), t);
         if (!temp2.chemicalArray) { temp2.chemicalArray = new Array<Chemical>(); }
         if (!temp2.fertilizerArray) { temp2.fertilizerArray = new Array<Chemical>(); }
@@ -252,7 +252,9 @@ export class Card {
       } else {
         this.commodityString = '';
       }
-    } catch { console.log('Error when initializing commodity string'); }
+    } catch {
+      // console.log('Error when initializing commodity string');
+    }
   }
 
   initShippersString(): void {

@@ -28,9 +28,9 @@ export class NavService {
       // Hack to fix relative paths
       if (NavService.parent.includes('..')) {
         const parentUrl: Array<string> = NavService.parent.split('/');
-        const newUrl: Array<string> = this.route.snapshot.firstChild.url.map(data => data.path);
+        const newUrl: Array<string> = this.route.snapshot.firstChild.url.map((data) => data.path);
 
-        parentUrl.forEach(data => {
+        parentUrl.forEach((data) => {
           if (data === '..') {
             newUrl.pop();
           } else if (data) {

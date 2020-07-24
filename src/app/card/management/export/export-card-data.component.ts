@@ -54,9 +54,9 @@ export class ExportCardDataComponent implements OnInit {
     const tempThis = this;
     this.titleService.setTitle('Export Data');
     this.initPresets();
-    this.initCommon(c => {
-      this.commonKeys.forEach(key => {
-        tempThis[key] = c[key];
+    this.initCommon((c) => {
+      this.commonKeys.forEach((key) => {
+        tempThis[`${key}`] = c[`${key}`];
       });
       this[`ranches`] = c[`ranches`];
       this.loadCardData();
@@ -111,8 +111,8 @@ export class ExportCardDataComponent implements OnInit {
     this.generating = true;
     this.fromDate = (new Date(this.fromDate)).valueOf();
     this.toDate = (new Date(this.toDate)).valueOf();
-    const ranchIDS = this.selectedRanches.map(e => e.id);
-    const commodityIDS = this.selectedCommodities.map(e => e.id);
+    const ranchIDS = this.selectedRanches.map((e) => e.id);
+    const commodityIDS = this.selectedCommodities.map((e) => e.id);
     this.cardExport.export(this.fromDate, this.toDate, ranchIDS, commodityIDS, this.includeUnharvested);
     this.generating = false;
   }
@@ -121,8 +121,8 @@ export class ExportCardDataComponent implements OnInit {
     this.generating = true;
     this.fromDate = (new Date(this.fromDate)).valueOf();
     this.toDate = (new Date(this.toDate)).valueOf();
-    const ranchIDS = this.selectedRanches.map(e => e.id);
-    const commodityIDS = this.selectedCommodities.map(e => e.id);
+    const ranchIDS = this.selectedRanches.map((e) => e.id);
+    const commodityIDS = this.selectedCommodities.map((e) => e.id);
     this.cardExport.exportAllApplied(this.fromDate, this.toDate, ranchIDS, commodityIDS, this.includeUnharvested);
     this.generating = false;
   }
@@ -130,13 +130,13 @@ export class ExportCardDataComponent implements OnInit {
   generateCustom(): void {
     // Get selected preset
     this.exportPresetService.getExportPresetById(this.selectedPresetId).subscribe(
-      data => {
+      (data) => {
         if (data.success) {
           this.generating = true;
           this.fromDate = (new Date(this.fromDate)).valueOf();
           this.toDate = (new Date(this.toDate)).valueOf();
-          const ranchIDS = this.selectedRanches.map(e => e.id);
-          const commodityIDS = this.selectedCommodities.map(e => e.id);
+          const ranchIDS = this.selectedRanches.map((e) => e.id);
+          const commodityIDS = this.selectedCommodities.map((e) => e.id);
           this.cardExport.exportCustom(this.fromDate, this.toDate, ranchIDS, commodityIDS, this.includeUnharvested, data.data);
           this.generating = false;
 
@@ -144,7 +144,7 @@ export class ExportCardDataComponent implements OnInit {
           AlertService.newBasicAlert('Error when retrieving preset: ' + data.error, true);
         }
       },
-      failure => {
+      (failure) => {
         AlertService.newBasicAlert('Error when retrieving preset: ' + failure.message, true);
       }
     );
@@ -154,17 +154,17 @@ export class ExportCardDataComponent implements OnInit {
     this.generating = true;
     this.fromDate = (new Date(this.fromDate)).valueOf();
     this.toDate = (new Date(this.toDate)).valueOf();
-    const ranchIDS = this.selectedRanches.map(e => e.id);
-    const commodityIDS = this.selectedCommodities.map(e => e.id);
+    const ranchIDS = this.selectedRanches.map((e) => e.id);
+    const commodityIDS = this.selectedCommodities.map((e) => e.id);
     this.cardExport.exportAllFertilizerApplied(this.fromDate, this.toDate, ranchIDS, commodityIDS, this.includeUnharvested);
     this.generating = false;
   }
 
   public getCommon(key) {
     if (this.commonKeys.includes(key) || key === 'ranches') {
-      return (this[key]) ? this[key] : [];
+      return (this[`${key}`]) ? this[`${key}`] : [];
     } else {
-      console.log('Key ' + key + ' is not in the commonKeys array.');
+      // console.log('Key ' + key + ' is not in the commonKeys array.');
       return [];
     }
   }
@@ -173,11 +173,11 @@ export class ExportCardDataComponent implements OnInit {
     const tempThis = this;
     const sortedCommon = {};
     const userRanchAccess = this.auth.getRanchAccess();
-    this.common.getAllValues(data => {
-      this.commonKeys.forEach(key => {
-        if (CommonLookup[key].type === 'hashTable') {
+    this.common.getAllValues((data) => {
+      this.commonKeys.forEach((key) => {
+        if (CommonLookup[`${key}`].type === 'hashTable') {
           const temp = [];
-          data[key].forEach(entry => {
+          data[`${key}`].forEach((entry) => {
             temp.push({
               id: entry.id,
               value : {
@@ -186,12 +186,12 @@ export class ExportCardDataComponent implements OnInit {
               }
             });
           });
-          sortedCommon[key] = tempThis.common.sortCommonArray(temp, key);
+          sortedCommon[`${key}`] = tempThis.common.sortCommonArray(temp, key);
         } else {
-          sortedCommon[key] = tempThis.common.sortCommonArray(data[key], key);
+          sortedCommon[`${key}`] = tempThis.common.sortCommonArray(data[`${key}`], key);
         }
       });
-      sortedCommon[`ranches`] = data[`ranches`].filter(e => userRanchAccess.includes(e.id));
+      sortedCommon[`ranches`] = data[`ranches`].filter((e) => userRanchAccess.includes(e.id));
       sortedCommon[`ranches`] = tempThis.common.sortCommonArray(sortedCommon[`ranches`], 'ranches');
       f(sortedCommon);
     });
@@ -199,7 +199,7 @@ export class ExportCardDataComponent implements OnInit {
 
   public initPresets() {
     this.exportPresetService.getExportPresets().subscribe(
-      data => {
+      (data) => {
         if (data.success) {
           this.presets = [];
           data.data.forEach((preset) => {
@@ -223,7 +223,7 @@ export class ExportCardDataComponent implements OnInit {
           AlertService.newBasicAlert('Error when retrieving presets: ' + data.error, true);
         }
       },
-      failure => {
+      (failure) => {
         AlertService.newBasicAlert('Error when retrieving presets: ' + failure.message, true);
       }
     );
@@ -251,37 +251,40 @@ export class ExportCardDataComponent implements OnInit {
     const tempThis = this;
     const ranchList = [];
     const commodityList = [];
-    this.cardService.getAllCards().subscribe(
-      data => {
-        if (data.success) {
-          data.data.map(c => (new Card()).copyConstructor(c)).forEach(c => {
 
-            // Get all ranch names
-            if (!ranchList.find(e => e.id === c.ranchName)) {
-              ranchList.push(tempThis[`ranches`].find(e => e.id === c.ranchName));
-            }
-            // Get all commodity names
-            c.commodityArray.forEach( v => {
-              if (!commodityList.find(e => e.id === v.commodity)) {
-                commodityList.push(tempThis[`commodities`].find(e => e.id === v.commodity));
-              }
-            });
-          });
-          // Reassign common values to values found in at least one card
-          this[`ranches`] = tempThis.common.sortCommonArray(ranchList, 'ranches');
-          // format commodities array for multi-select option, varieties aren't needed
-          this[`commodities`] = tempThis.common.sortCommonArray(commodityList, 'commodities').map(e => {
-            return {id: e.id, value: e.value.key};
-          });
-          this.loading = false;
-        } else if (!data.success) {
-          AlertService.newBasicAlert('Error: ' + data.error, true);
-          this.nav.goBack();
-        }
+    this.cardService.getUniqueRanches().subscribe(
+      (data) => {
+        data.data.forEach((ranchId) => {
+          if (!ranchList.find((e) => e.id === ranchId)) {
+            ranchList.push(tempThis[`ranches`].find((e) => e.id === ranchId));
+          }
+        });
+        // Reassign common values to values found in at least one card
+        this[`ranches`] = tempThis.common.sortCommonArray(ranchList, 'ranches');
+        this.loading = false;
       },
-      failure => {
+      (failure) => {
         AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
         this.nav.goBack();
-      });
+      }
+    );
+
+    this.cardService.getUniqueCommodities().subscribe(
+      (data) => {
+        data.data.forEach((commodityId) => {
+          if (!commodityList.find((e) => e.id === commodityId)) {
+            commodityList.push(tempThis[`commodities`].find((e) => e.id === commodityId));
+          }
+        });
+        this[`commodities`] = tempThis.common.sortCommonArray(commodityList, 'commodities').map((e) => {
+          return {id: e.id, value: e.value.key};
+        });
+        this.loading = false;
+      },
+      (failure) => {
+        AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
+        this.nav.goBack();
+      }
+    );
   }
 }

@@ -36,7 +36,7 @@ export class EditPresetComponent implements OnInit {
   ];
 
   ngOnInit() {
-    this.route.params.subscribe(data => this.initPreset(data.id));
+    this.route.params.subscribe((data) => this.initPreset(data.id));
   }
 
   public collapseToggle(htmlId: string): void {
@@ -57,14 +57,14 @@ export class EditPresetComponent implements OnInit {
 
   public initPreset(presetId: string) {
     this.exportPresetService.getExportPresetById(presetId).subscribe(
-      data => {
+      (data) => {
         if (data.success) {
           this.preset = Object.assign(new ExportPreset(), data.data);
         } else if (!data.success) {
           AlertService.newBasicAlert('Failed to open preset: ' + data.error, true);
         }
       },
-      failure => {
+      (failure) => {
         AlertService.newBasicAlert('Connection Error: ' + failure.message, true);
       }
     );
@@ -97,14 +97,14 @@ export class EditPresetComponent implements OnInit {
     copy.name += '_copy';
 
     this.exportPresetService.createExportPreset(copy).subscribe(
-      data => {
+      (data) => {
         if (data.success) {
           AlertService.newBasicAlert(`Export preset copied successfully as "${copy.name}"`, false, 30);
         } else if (!data.success) {
           AlertService.newBasicAlert('Error: ' + data.error, true);
         }
       },
-      failure => {
+      (failure) => {
         AlertService.newBasicAlert('Connection Error: ' + failure.message, true);
       }
     );
@@ -112,7 +112,7 @@ export class EditPresetComponent implements OnInit {
 
   public submit() {
     this.exportPresetService.updateExportPreset(this.preset.id, this.preset).subscribe(
-      data => {
+      (data) => {
         if (data.success) {
           AlertService.newBasicAlert('Export preset saved successfully!', false);
           this.nav.goBack();
@@ -120,7 +120,7 @@ export class EditPresetComponent implements OnInit {
           AlertService.newBasicAlert('Error: ' + data.error, true);
         }
       },
-      failure => {
+      (failure) => {
         AlertService.newBasicAlert('Connection Error: ' + failure.message, true);
       }
     );
@@ -138,7 +138,7 @@ export class EditPresetComponent implements OnInit {
     newAlert.action$ = new EventEmitter<null>();
     newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
       this.exportPresetService.deleteExportPreset(this.preset.id).subscribe(
-        data => {
+        (data) => {
           if (data.success) {
             AlertService.newBasicAlert('Export preset deleted!', false);
             this.nav.goBack();
@@ -146,7 +146,7 @@ export class EditPresetComponent implements OnInit {
             AlertService.newBasicAlert('Error: ' + data.error, true);
           }
         },
-        failure => {
+        (failure) => {
           AlertService.newBasicAlert('Connection Error: ' + failure.message, true);
         }
       );

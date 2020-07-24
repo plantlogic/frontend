@@ -40,7 +40,7 @@ export class ChangePasswordComponent implements OnInit {
       const val = this.form.value;
       this.form.disable();
       this.auth.changePassword(val.oldPassword, val.newPassword).subscribe(
-        data => {
+        (data) => {
           if (data.success) {
             const newAlert = new Alert();
             newAlert.title = 'Success';
@@ -59,7 +59,7 @@ export class ChangePasswordComponent implements OnInit {
             this.form.enable();
           }
         },
-        failure => {
+        (failure) => {
           AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
           this.form.enable();
         }

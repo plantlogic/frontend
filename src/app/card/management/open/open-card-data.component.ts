@@ -57,9 +57,9 @@ export class OpenCardDataComponent implements OnInit {
   ngOnInit() {
     const tempThis = this;
     this.titleService.setTitle('View Card');
-    this.initCommon(c => {
-      this.commonKeys.forEach(key => {
-        tempThis[key] = c[key];
+    this.initCommon((c) => {
+      this.commonKeys.forEach((key) => {
+        tempThis[`${key}`] = c[`${key}`];
       });
       this[`ranches`] = c[`ranches`];
       this.loadCardData();
@@ -99,26 +99,26 @@ export class OpenCardDataComponent implements OnInit {
   }
 
   public addTractorChemical(index: number): void {
-    if (this.card.tractorArray.length > 0 && !this.card.tractorArray[index].chemicalsFull()) {
-      this.card.tractorArray[index].chemicalArray.push(new Chemical());
+    if (this.card.tractorArray.length > 0 && !this.card.tractorArray[`${index}`].chemicalsFull()) {
+      this.card.tractorArray[`${index}`].chemicalArray.push(new Chemical());
     }
   }
 
   public addTractorFertilizer(index: number): void {
-    if (this.card.tractorArray.length > 0 && !this.card.tractorArray[index].fertilizersFull()) {
-      this.card.tractorArray[index].fertilizerArray.push(new Chemical());
+    if (this.card.tractorArray.length > 0 && !this.card.tractorArray[`${index}`].fertilizersFull()) {
+      this.card.tractorArray[`${index}`].fertilizerArray.push(new Chemical());
     }
   }
 
   public addIrrigationChemical(index: number): void {
-    if (this.card.irrigationArray.length > 0 && !this.card.irrigationArray[index].chemicalsFull()) {
-      this.card.irrigationArray[index].chemicalArray.push(new Chemical());
+    if (this.card.irrigationArray.length > 0 && !this.card.irrigationArray[`${index}`].chemicalsFull()) {
+      this.card.irrigationArray[`${index}`].chemicalArray.push(new Chemical());
     }
   }
 
   public addIrrigationFertilizer(index: number): void {
-    if (this.card.irrigationArray.length > 0 && !this.card.irrigationArray[index].fertilizersFull()) {
-      this.card.irrigationArray[index].fertilizerArray.push(new Chemical());
+    if (this.card.irrigationArray.length > 0 && !this.card.irrigationArray[`${index}`].fertilizersFull()) {
+      this.card.irrigationArray[`${index}`].fertilizerArray.push(new Chemical());
     }
   }
 
@@ -184,7 +184,7 @@ export class OpenCardDataComponent implements OnInit {
     newAlert.actionClosesAlert = true;
     newAlert.action$ = new EventEmitter<null>();
     newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
-      this.cardEdit.deleteCard(this.card.id).subscribe(data => {
+      this.cardEdit.deleteCard(this.card.id).subscribe((data) => {
           if (data.success) {
             AlertService.newBasicAlert('Card deleted successfully!', false);
             this.nav.goBack();
@@ -192,7 +192,7 @@ export class OpenCardDataComponent implements OnInit {
             AlertService.newBasicAlert('Error: ' + data.error, true);
           }
         },
-        failure => {
+        (failure) => {
           AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
         });
     });
@@ -208,7 +208,7 @@ export class OpenCardDataComponent implements OnInit {
       // Find index relative to all comments
       for (let i = 0; i < this.comments.length; i++) {
         if (fixedIndex === -1) {
-          if (this.comments[i].role === this.commentsFilter) {
+          if (this.comments[`${i}`].role === this.commentsFilter) {
             if (current === index) { fixedIndex = i; }
             current += 1;
           }
@@ -220,7 +220,7 @@ export class OpenCardDataComponent implements OnInit {
       }
       index = fixedIndex;
     }
-    const comment = this.comments[index];
+    const comment = this.comments[`${index}`];
     if (comment.userName !== this.auth.getUsername()) {
       if (!this.auth.hasPermission(PlRole.DATA_EDIT) && !this.auth.hasPermission(PlRole.CONTRACTOR_EDIT)) {
         AlertService.newBasicAlert('Edit permission is needed to delete comments which aren\'t your own', true);
@@ -236,13 +236,13 @@ export class OpenCardDataComponent implements OnInit {
         newAlert.actionClosesAlert = true;
         newAlert.action$ = new EventEmitter<null>();
         newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
-          this.comments[index].deleted = true;
+          this.comments[`${index}`].deleted = true;
           return true;
         });
         AlertService.newAlert(newAlert);
       }
     } else {
-      this.comments[index].deleted = true;
+      this.comments[`${index}`].deleted = true;
       return true;
     }
   }
@@ -258,9 +258,9 @@ export class OpenCardDataComponent implements OnInit {
 
   public getActiveComments(filter?: string): number {
     if (filter) {
-      return this.comments.filter(c => !c.deleted && (c.role === filter)).length;
+      return this.comments.filter((c) => !c.deleted && (c.role === filter)).length;
     }
-    return this.comments.filter(c => !c.deleted).length;
+    return this.comments.filter((c) => !c.deleted).length;
   }
 
   private getCommentRole(): string {
@@ -276,33 +276,33 @@ export class OpenCardDataComponent implements OnInit {
   public getComments(): Array<Comment> {
     const filter = this.commentsFilter;
     if (filter === 'grower') {
-      return this.comments.filter(comment => comment.role === 'grower');
+      return this.comments.filter((comment) => comment.role === 'grower');
     } else if (filter === 'shipper') {
-      return this.comments.filter(comment => comment.role === 'shipper');
+      return this.comments.filter((comment) => comment.role === 'shipper');
     } else if (filter === 'all') {
       return this.comments;
     } else {
-      console.log('Invalid comment filter');
+      // console.log('Invalid comment filter');
       return this.comments;
     }
   }
 
   public getCommon(key): Array<any> {
     if (this.commonKeys.includes(key) || key === 'ranches') {
-      return (this[key]) ? this[key] : [];
+      return (this[`${key}`]) ? this[`${key}`] : [];
     } else {
-      console.log('Key ' + key + ' is not in the commonKeys array.');
+      // console.log('Key ' + key + ' is not in the commonKeys array.');
       return [];
     }
   }
 
   public getRanchName(id: string): string {
-    return this[`ranches`].find(r => r.id === id).value;
+    return this[`ranches`].find((r) => r.id === id).value;
   }
 
   private getSelectedShippers(): Array<string> {
     try {
-      return (this.cardShippers) ? this.cardShippers.map(e => e.id) : [];
+      return (this.cardShippers) ? this.cardShippers.map((e) => e.id) : [];
     } catch (e) {
       AlertService.newBasicAlert('Error When Reading Shippers', true);
       return [];
@@ -312,7 +312,7 @@ export class OpenCardDataComponent implements OnInit {
   private getShipper(id: string): string {
     if (this.isShipper()) {
       try {
-        const shipper = this[`shippers`].find(e => e.id === id). value;
+        const shipper = this[`shippers`].find((e) => e.id === id). value;
         return shipper;
       } catch (e) {
         return null;
@@ -324,7 +324,7 @@ export class OpenCardDataComponent implements OnInit {
 
   public getVarieties(commodityID: string): Array<string> {
     try {
-      const searchResult = this[`commodities`].find(e => e.id === commodityID).value.value;
+      const searchResult = this[`commodities`].find((e) => e.id === commodityID).value.value;
       return searchResult;
     } catch (e) {
       return [];
@@ -334,8 +334,8 @@ export class OpenCardDataComponent implements OnInit {
   private iDToDataListOption(commonID: string, commonKey: string): string {
     const values = this.getCommon(commonKey);
     for (let i = 0; i < values.length; i++) {
-      if (values[i].id === commonID) {
-        return (i + 1) + ' - ' + values[i].value;
+      if (values[`${i}`].id === commonID) {
+        return (i + 1) + ' - ' + values[`${i}`].value;
       }
     }
   }
@@ -344,11 +344,11 @@ export class OpenCardDataComponent implements OnInit {
     const tempThis = this;
     const sortedCommon = {};
     const userRanchAccess = this.auth.getRanchAccess();
-    this.common.getAllValues(data => {
-      this.commonKeys.forEach(key => {
-        if (CommonLookup[key].type === 'hashTable') {
+    this.common.getAllValues((data) => {
+      this.commonKeys.forEach((key) => {
+        if (CommonLookup[`${key}`].type === 'hashTable') {
           const temp = [];
-          data[key].forEach(entry => {
+          data[`${key}`].forEach((entry) => {
             temp.push({
               id: entry.id,
               value : {
@@ -357,15 +357,15 @@ export class OpenCardDataComponent implements OnInit {
               }
             });
           });
-          sortedCommon[key] = tempThis.common.sortCommonArray(temp, key);
+          sortedCommon[`${key}`] = tempThis.common.sortCommonArray(temp, key);
         } else {
-          sortedCommon[key] = tempThis.common.sortCommonArray(data[key], key);
+          sortedCommon[`${key}`] = tempThis.common.sortCommonArray(data[`${key}`], key);
         }
       });
       if (this.isShipper()) {
         sortedCommon[`ranches`] = data[`ranches`];
       } else {
-        sortedCommon[`ranches`] = data[`ranches`].filter(e => userRanchAccess.includes(e.id));
+        sortedCommon[`ranches`] = data[`ranches`].filter((e) => userRanchAccess.includes(e.id));
         sortedCommon[`ranches`] = tempThis.common.sortCommonArray(sortedCommon[`ranches`], 'ranches');
       }
       f(sortedCommon);
@@ -392,16 +392,16 @@ export class OpenCardDataComponent implements OnInit {
 
   private loadCardData(): void {
     const tempThis = this;
-    this.route.params.subscribe(cr => {
+    this.route.params.subscribe((cr) => {
       this.cardView.getCardById(cr.id).subscribe(
-        data => {
+        (data) => {
           if (data.success) {
             tempThis.card = (new Card()).copyConstructor(data.data);
             tempThis.comments = (new Card()).copyConstructor(data.data).comments;
             tempThis.card.initTotalAcres();
             // Set up shippers multiselect
-            tempThis.common.getValues('shippers', shippers => {
-              tempThis.cardShippers = shippers.filter(e => {
+            tempThis.common.getValues('shippers', (shippers) => {
+              tempThis.cardShippers = shippers.filter((e) => {
                 return (tempThis.card.shippers) ? tempThis.card.shippers.includes(e.id) : false;
               });
             });
@@ -413,10 +413,10 @@ export class OpenCardDataComponent implements OnInit {
               tempThis.card.fieldID = null;
             } else {
               // Fix Datalist Display
-              tempThis.card.tractorArray.forEach(e => {
+              tempThis.card.tractorArray.forEach((e) => {
                 e.operator = tempThis.iDToDataListOption(e.operator, 'tractorOperators');
               });
-              tempThis.card.irrigationArray.forEach(e => {
+              tempThis.card.irrigationArray.forEach((e) => {
                 e.irrigator = tempThis.iDToDataListOption(e.irrigator, 'irrigators');
               });
             }
@@ -425,7 +425,7 @@ export class OpenCardDataComponent implements OnInit {
             tempThis.nav.goBack();
           }
         },
-        failure => {
+        (failure) => {
           AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
           tempThis.nav.goBack();
         }
@@ -456,7 +456,7 @@ export class OpenCardDataComponent implements OnInit {
     newAlert.action$ = new EventEmitter<null>();
 
     newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
-      this.cardEdit.updateCard(card).subscribe(data => {
+      this.cardEdit.updateCard(card).subscribe((data) => {
           if (data.success) {
             AlertService.newBasicAlert('Change saved successfully!', false);
             this.loadCardData();
@@ -466,7 +466,7 @@ export class OpenCardDataComponent implements OnInit {
             AlertService.newBasicAlert('Error: ' + data.error, true);
           }
         },
-        failure => {
+        (failure) => {
           AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
         });
     });
@@ -476,18 +476,18 @@ export class OpenCardDataComponent implements OnInit {
   public saveComments(): void {
     if (!this.setCardCommentsForUpdate()) { return; }
 
-    this.cardEdit.setCardComments(this.card.id, this.card.comments).subscribe(data => {
+    this.cardEdit.setCardComments(this.card.id, this.card.comments).subscribe((data) => {
       if (data.success) {
         AlertService.newBasicAlert('Change saved successfully!', false);
         this.loadCardData();
         if (this.editing) { this.toggleEditing(); }
         if (this.editingComment) { this.toggleEditingComment(); }
       } else {
-        console.log(data);
+        // console.log(data);
         AlertService.newBasicAlert('Error: ' + data.error, true);
       }
     },
-    failure => {
+    (failure) => {
       AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
     });
   }
@@ -496,8 +496,8 @@ export class OpenCardDataComponent implements OnInit {
     let invalid = 0;
     const elevatedPerms = this.auth.hasPermission(PlRole.DATA_EDIT) || this.auth.hasPermission(PlRole.CONTRACTOR_EDIT);
     for (let i = 0; i < this.card.comments.length; i++) {
-      const oldComment = this.card.comments[i];
-      const newComment = this.comments[i];
+      const oldComment = this.card.comments[`${i}`];
+      const newComment = this.comments[`${i}`];
       if (newComment.userName !== oldComment.userName) {
         AlertService.newBasicAlert('Error: The username of a comment was modified.', true);
         return false;
@@ -506,10 +506,10 @@ export class OpenCardDataComponent implements OnInit {
       if (newComment.deleted && !elevatedPerms) {
         // Only delete if it was their own comment
         if (newComment.userName !== this.auth.getUsername()) {
-          this.comments[i] = oldComment;
+          this.comments[`${i}`] = oldComment;
           invalid++;
         } else {
-          this.comments[i].lastModified = new Date().valueOf();
+          this.comments[`${i}`].lastModified = new Date().valueOf();
         }
       } else {
         // check if same data
@@ -522,10 +522,10 @@ export class OpenCardDataComponent implements OnInit {
         // if it has been modified, only accept if it is this user's comment
         if (!same) {
           if (newComment.userName !== this.auth.getUsername()) {
-            this.comments[i] = oldComment;
+            this.comments[`${i}`] = oldComment;
             invalid++;
           } else {
-            this.comments[i].lastModified = new Date().valueOf();
+            this.comments[`${i}`].lastModified = new Date().valueOf();
           }
         }
       }
@@ -533,7 +533,7 @@ export class OpenCardDataComponent implements OnInit {
     if (invalid > 0) {
       AlertService.newBasicAlert(`${invalid} comments will not be changed due to invalid modifications`, true);
     }
-    this.card.comments = this.comments.filter(c => !c.deleted);
+    this.card.comments = this.comments.filter((c) => !c.deleted);
     return true;
   }
 
@@ -577,7 +577,7 @@ export class OpenCardDataComponent implements OnInit {
     newAlert.closeName = 'Cancel';
     newAlert.action$ = new EventEmitter<null>();
     newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
-      this.cardEdit.setCardState(this.card.id, !this.card.closed).subscribe(data => {
+      this.cardEdit.setCardState(this.card.id, !this.card.closed).subscribe((data) => {
           if (data.success) {
             this.card.closed = !this.card.closed;
             AlertService.newBasicAlert('Change saved successfully!', false);
@@ -585,7 +585,7 @@ export class OpenCardDataComponent implements OnInit {
             AlertService.newBasicAlert('Error: ' + data.error, true);
           }
         },
-        failure => {
+        (failure) => {
           AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
         });
     });
@@ -605,19 +605,19 @@ export class OpenCardDataComponent implements OnInit {
     try {
       const card = (new Card()).copyConstructor(cardRaw);
       // Check Ranch Info
-      if (!card.ranchName || !(this[`ranches`].find(r => r.id === card.ranchName))) {
+      if (!card.ranchName || !(this[`ranches`].find((r) => r.id === card.ranchName))) {
         AlertService.newBasicAlert('Invalid Ranch - please fix and try again.', true);
         return;
       }
       // Check Commodity Info
       for (const c of card.commodityArray) {
-        if (!c.commodity || !this[`commodities`].find(c2 => {
+        if (!c.commodity || !this[`commodities`].find((c2) => {
           return c2.id === c.commodity && (c.variety) ? c2.value.value.includes(c.variety) : true;
         })) {
           AlertService.newBasicAlert('Invalid Commodity Information - please fix and try again.', true);
           return;
         }
-        if (!c.bedType || !this[`bedTypes`].find(c2 => c2.id === c.bedType)) {
+        if (!c.bedType || !this[`bedTypes`].find((c2) => c2.id === c.bedType)) {
           AlertService.newBasicAlert('Invalid Commodity Bed Type - please fix and try again.', true);
           return;
         }
@@ -626,7 +626,7 @@ export class OpenCardDataComponent implements OnInit {
       for (const c of card.preChemicalArray) {
         c.date = (new Date(c.date)).valueOf();
         if (c.chemical) {
-          if (!c.chemical.name || !this[`chemicals`].find(c2 => c2.id === c.chemical.name)) {
+          if (!c.chemical.name || !this[`chemicals`].find((c2) => c2.id === c.chemical.name)) {
             AlertService.newBasicAlert('Invalid Chemical Entered - please fix and try again.', true);
             return;
           }
@@ -634,13 +634,13 @@ export class OpenCardDataComponent implements OnInit {
             AlertService.newBasicAlert('Invalid Chemical Rate Entered - please fix and try again.', true);
             return;
           }
-          if (!c.chemical.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === c.chemical.unit)) {
+          if (!c.chemical.unit || !this[`chemicalRateUnits`].find((c2) => c2.id === c.chemical.unit)) {
             AlertService.newBasicAlert('Invalid Chemical Rate Unit Entered - please fix and try again.', true);
             return;
           }
         }
         if (c.fertilizer) {
-          if (!c.fertilizer.name || !this[`fertilizers`].find(c2 => c2.id === c.fertilizer.name)) {
+          if (!c.fertilizer.name || !this[`fertilizers`].find((c2) => c2.id === c.fertilizer.name)) {
             AlertService.newBasicAlert('Invalid Fertilizer Entered - please fix and try again.', true);
             return;
           }
@@ -648,7 +648,7 @@ export class OpenCardDataComponent implements OnInit {
             AlertService.newBasicAlert('Invalid Chemical Rate Entered - please fix and try again.', true);
             return;
           }
-          if (!c.fertilizer.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === c.fertilizer.unit)) {
+          if (!c.fertilizer.unit || !this[`chemicalRateUnits`].find((c2) => c2.id === c.fertilizer.unit)) {
             AlertService.newBasicAlert('Invalid Fertilizer Rate Unit Entered - please fix and try again.', true);
             return;
           }
@@ -669,14 +669,14 @@ export class OpenCardDataComponent implements OnInit {
         }
         t.operator = operatorID;
         // Check Tractor Work
-        if (!t.workDone || !this[`tractorWork`].find(tw => tw.id === t.workDone)) {
+        if (!t.workDone || !this[`tractorWork`].find((tw) => tw.id === t.workDone)) {
           AlertService.newBasicAlert('Invalid Tractor Work Entered - please fix and try again.', true);
           return;
         }
         // Check Chemical
         if (t.chemicalArray) {
           for (const c of t.chemicalArray) {
-            if (!c.name || !this[`chemicals`].find(c2 => c2.id === c.name)) {
+            if (!c.name || !this[`chemicals`].find((c2) => c2.id === c.name)) {
               AlertService.newBasicAlert('Invalid Chemical Entered - please fix and try again.', true);
               return;
             }
@@ -684,7 +684,7 @@ export class OpenCardDataComponent implements OnInit {
               AlertService.newBasicAlert('Invalid Chemical Rate Entered - please fix and try again.', true);
               return;
             }
-            if (!c.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === c.unit)) {
+            if (!c.unit || !this[`chemicalRateUnits`].find((c2) => c2.id === c.unit)) {
               AlertService.newBasicAlert('Invalid Chemical Rate Unit Entered - please fix and try again.', true);
               return;
             }
@@ -693,7 +693,7 @@ export class OpenCardDataComponent implements OnInit {
         // Check Fertilizer Info
         if (t.fertilizerArray) {
           for (const f of t.fertilizerArray) {
-            if (!f.name || !this[`fertilizers`].find(c2 => c2.id === f.name)) {
+            if (!f.name || !this[`fertilizers`].find((c2) => c2.id === f.name)) {
               AlertService.newBasicAlert('Invalid Fertilizer Entered - please fix and try again.', true);
               return;
             }
@@ -701,7 +701,7 @@ export class OpenCardDataComponent implements OnInit {
               AlertService.newBasicAlert('Invalid Fertilizer Rate Entered - please fix and try again.', true);
               return;
             }
-            if (!f.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === f.unit)) {
+            if (!f.unit || !this[`chemicalRateUnits`].find((c2) => c2.id === f.unit)) {
               AlertService.newBasicAlert('Invalid Fertilizer Rate Unit Entered - please fix and try again.', true);
               return;
             }
@@ -714,7 +714,7 @@ export class OpenCardDataComponent implements OnInit {
         // Check Chemical
         if (e.chemicalArray) {
           for (const c of e.chemicalArray) {
-            if (!c.name || !this[`chemicals`].find(c2 => c2.id === c.name)) {
+            if (!c.name || !this[`chemicals`].find((c2) => c2.id === c.name)) {
               AlertService.newBasicAlert('Invalid Chemical Entered - please fix and try again.', true);
               return;
             }
@@ -722,7 +722,7 @@ export class OpenCardDataComponent implements OnInit {
               AlertService.newBasicAlert('Invalid Chemical Rate Entered - please fix and try again.', true);
               return;
             }
-            if (!c.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === c.unit)) {
+            if (!c.unit || !this[`chemicalRateUnits`].find((c2) => c2.id === c.unit)) {
               AlertService.newBasicAlert('Invalid Chemical Rate Unit Entered - please fix and try again.', true);
               return;
             }
@@ -731,7 +731,7 @@ export class OpenCardDataComponent implements OnInit {
         // Check Fertilizer Info
         if (e.fertilizerArray) {
           for (const f of e.fertilizerArray) {
-            if (!f.name || !this[`fertilizers`].find(c2 => c2.id === f.name)) {
+            if (!f.name || !this[`fertilizers`].find((c2) => c2.id === f.name)) {
               AlertService.newBasicAlert('Invalid Fertilizer Entered - please fix and try again.', true);
               return;
             }
@@ -739,7 +739,7 @@ export class OpenCardDataComponent implements OnInit {
               AlertService.newBasicAlert('Invalid Fertilizer Rate Entered - please fix and try again.', true);
               return;
             }
-            if (!f.unit || !this[`chemicalRateUnits`].find(c2 => c2.id === f.unit)) {
+            if (!f.unit || !this[`chemicalRateUnits`].find((c2) => c2.id === f.unit)) {
               AlertService.newBasicAlert('Invalid Fertilizer Rate Unit Entered - please fix and try again.', true);
               return;
             }
@@ -747,13 +747,13 @@ export class OpenCardDataComponent implements OnInit {
         }
         if (e.irrigator) {
           const irrigatorID = this.dataListOptionValueToID(e.irrigator, 'irrigators');
-          if (irrigatorID && !this[`irrigators`].find(e2 => e2.id === irrigatorID)) {
+          if (irrigatorID && !this[`irrigators`].find((e2) => e2.id === irrigatorID)) {
             AlertService.newBasicAlert('Invalid Irrigator - please fix and try again.', true);
             return;
           }
           e.irrigator = irrigatorID;
         }
-        if (!e.method || !this[`irrigationMethod`].find(e2 => e2.id === e.method)) {
+        if (!e.method || !this[`irrigationMethod`].find((e2) => e2.id === e.method)) {
           AlertService.newBasicAlert('Invalid Irrigation Method Entered - please fix and try again.', true);
           return;
         }
@@ -768,7 +768,7 @@ export class OpenCardDataComponent implements OnInit {
       card.shippers = this.getSelectedShippers();
       return card;
     } catch (e) {
-      console.log(e);
+      // console.log(e);
       AlertService.newBasicAlert('Error When Validating Card Data', true);
       return;
     }

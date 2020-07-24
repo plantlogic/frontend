@@ -38,12 +38,12 @@ export class OpenCardEntryComponent implements OnInit {
   ngOnInit() {
     const tempThis = this;
     this.titleService.setTitle('View Card');
-    this.initCommon(c => {
-      this.commonKeys.forEach(key => {
-        tempThis[key] = c[key];
+    this.initCommon((c) => {
+      this.commonKeys.forEach((key) => {
+        tempThis[`${key}`] = c[`${key}`];
       });
       this[`ranches`] = c[`ranches`];
-      tempThis.route.params.subscribe(data => tempThis.loadCardData(data.id));
+      tempThis.route.params.subscribe((data) => tempThis.loadCardData(data.id));
     });
   }
 
@@ -74,19 +74,19 @@ export class OpenCardEntryComponent implements OnInit {
     const shippers = [];
     if (card.shippers) {
       try {
-        card.shippers.forEach(e => {
+        card.shippers.forEach((e) => {
           shippers.push(this.findCommonValue('shippers', ['value'], e));
         });
         card.shippers = shippers;
       } catch (e) {
-        console.log(e);
+        // console.log(e);
       }
     }
-    card.commodityArray.forEach(e => {
+    card.commodityArray.forEach((e) => {
       e.commodity = this.findCommonValue('commodities', ['value', 'key'], e.commodity);
       e.bedType = this.findCommonValue('bedTypes', ['value'], e.bedType);
     });
-    card.preChemicalArray.forEach(e => {
+    card.preChemicalArray.forEach((e) => {
       if (e.chemical) {
         e.chemical.name = this.findCommonValue('chemicals', ['value'], e.chemical.name);
         e.chemical.unit = this.findCommonValue('chemicalRateUnits', ['value'], e.chemical.unit);
@@ -96,7 +96,7 @@ export class OpenCardEntryComponent implements OnInit {
         e.fertilizer.unit = this.findCommonValue('chemicalRateUnits', ['value'], e.fertilizer.unit);
       }
     });
-    card.postChemicalArray.forEach(e => {
+    card.postChemicalArray.forEach((e) => {
       if (e.chemical) {
         e.chemical.name = this.findCommonValue('chemicals', ['value'], e.chemical.name);
         e.chemical.unit = this.findCommonValue('chemicalRateUnits', ['value'], e.chemical.unit);
@@ -106,7 +106,7 @@ export class OpenCardEntryComponent implements OnInit {
         e.fertilizer.unit = this.findCommonValue('chemicalRateUnits', ['value'], e.fertilizer.unit);
       }
     });
-    card.tractorArray.forEach(e => {
+    card.tractorArray.forEach((e) => {
       e.workDone = this.findCommonValue('tractorWork', ['value'], e.workDone);
       e.operator = this.findCommonValue('tractorOperators', ['value'], e.operator);
       if (e.chemicalArray) {
@@ -122,7 +122,7 @@ export class OpenCardEntryComponent implements OnInit {
         }
       }
     });
-    card.irrigationArray.forEach(e => {
+    card.irrigationArray.forEach((e) => {
       e.method = this.findCommonValue('irrigationMethod', ['value'], e.method);
       e.irrigator = this.findCommonValue('irrigators', ['value'], e.irrigator);
       if (e.chemicalArray) {
@@ -166,7 +166,7 @@ export class OpenCardEntryComponent implements OnInit {
       // Find index relative to all comments
       for (let i = 0; i < this.comments.length; i++) {
         if (fixedIndex === -1) {
-          if (this.comments[i].role === this.commentsFilter) {
+          if (this.comments[`${i}`].role === this.commentsFilter) {
             if (current === index) { fixedIndex = i; }
             current += 1;
           }
@@ -178,18 +178,18 @@ export class OpenCardEntryComponent implements OnInit {
       }
       index = fixedIndex;
     }
-    const comment = this.comments[index];
+    const comment = this.comments[`${index}`];
     if (comment.userName !== this.auth.getUsername()) {
       AlertService.newBasicAlert('Cannot delete comments which aren\'t your own on the entry side', true);
       return false;
     } else {
-      this.comments[index].deleted = true;
+      this.comments[`${index}`].deleted = true;
       return true;
     }
   }
 
   /*
-    Searches common values in [key] list where value.id === targetID
+    Searches common values in [`${key}`] list where value.id === targetID
     returns value.valuePropertyArr where valuePropertyArr = array of nesting properties
     returns null in no targetID supplied
     returns targetID if key is not in commonKeys Array (don't need value)
@@ -198,15 +198,15 @@ export class OpenCardEntryComponent implements OnInit {
   findCommonValue(key, valuePropertyArr, targetID?) {
     if (!targetID) { return null; }
     if (!this.commonKeys.includes(key) && key !== 'ranches') { return targetID; }
-    let commonValue = this.getCommon(key).find(e => {
+    let commonValue = this.getCommon(key).find((e) => {
       return e.id === targetID;
     });
     try {
-      valuePropertyArr.forEach(p => {
-        commonValue = commonValue[p];
+      valuePropertyArr.forEach((p) => {
+        commonValue = commonValue[`${p}`];
       });
     } catch (e) {
-      console.log(e);
+      // console.log(e);
     }
     return (commonValue) ? commonValue : 'Unknown ' + key + ' ID';
   }
@@ -222,9 +222,9 @@ export class OpenCardEntryComponent implements OnInit {
 
   public getActiveComments(filter?: string) {
     if (filter) {
-      return this.comments.filter(c => !c.deleted && (c.role === filter)).length;
+      return this.comments.filter((c) => !c.deleted && (c.role === filter)).length;
     }
-    return this.comments.filter(c => !c.deleted).length;
+    return this.comments.filter((c) => !c.deleted).length;
   }
 
   public getAllApplied() {
@@ -239,7 +239,7 @@ export class OpenCardEntryComponent implements OnInit {
     */
     const allApplied = [];
     // Add pre plant dates and chems/ferts
-    this.card.preChemicalArray.forEach(c => {
+    this.card.preChemicalArray.forEach((c) => {
       if (c.chemical || c.fertilizer) {
         allApplied.push({
           date: c.date,
@@ -250,7 +250,7 @@ export class OpenCardEntryComponent implements OnInit {
       }
     });
     // Add Tractor dates and chems/ferts
-    this.card.tractorArray.forEach(t => {
+    this.card.tractorArray.forEach((t) => {
       if (t.chemicalArray.length > 0 || t.fertilizerArray.length > 0) {
         allApplied.push({
           date: t.workDate,
@@ -261,7 +261,7 @@ export class OpenCardEntryComponent implements OnInit {
       }
     });
     // Add Irrigation dates and chems/ferts
-    this.card.irrigationArray.forEach(i => {
+    this.card.irrigationArray.forEach((i) => {
       if (i.chemicalArray.length > 0 || i.fertilizerArray.length > 0) {
         allApplied.push({
           date: i.workDate,
@@ -277,29 +277,29 @@ export class OpenCardEntryComponent implements OnInit {
   public getComments() {
     const filter = this.commentsFilter;
     if (filter === 'grower') {
-      return this.comments.filter(comment => comment.role === 'grower');
+      return this.comments.filter((comment) => comment.role === 'grower');
     } else if (filter === 'shipper') {
-      return this.comments.filter(comment => comment.role === 'shipper');
+      return this.comments.filter((comment) => comment.role === 'shipper');
     } else if (filter === 'all') {
       return this.comments;
     } else {
-      console.log('Invalid comment filter');
+      // console.log('Invalid comment filter');
       return this.comments;
     }
   }
 
   public getCommon(key) {
     if (this.commonKeys.includes(key) || key === 'ranches') {
-      return (this[key]) ? this[key] : [];
+      return (this[`${key}`]) ? this[`${key}`] : [];
     } else {
-      console.log('Key ' + key + ' is not in the commonKeys array.');
+      // console.log('Key ' + key + ' is not in the commonKeys array.');
       return [];
     }
   }
 
   public getVarieties(commodityID) {
     try {
-      const searchResult = this[`commodities`].find(e => e.id === commodityID).value.value;
+      const searchResult = this[`commodities`].find((e) => e.id === commodityID).value.value;
       return searchResult;
     } catch (e) {
       return [];
@@ -314,11 +314,11 @@ export class OpenCardEntryComponent implements OnInit {
     const tempThis = this;
     const sortedCommon = {};
     const userRanchAccess = this.auth.getRanchAccess();
-    this.common.getAllValues(data => {
-      this.commonKeys.forEach(key => {
-        if (CommonLookup[key].type === 'hashTable') {
+    this.common.getAllValues((data) => {
+      this.commonKeys.forEach((key) => {
+        if (CommonLookup[`${key}`].type === 'hashTable') {
           const temp = [];
-          data[key].forEach(entry => {
+          data[`${key}`].forEach((entry) => {
             temp.push({
               id: entry.id,
               value : {
@@ -327,12 +327,12 @@ export class OpenCardEntryComponent implements OnInit {
               }
             });
           });
-          sortedCommon[key] = tempThis.common.sortCommonArray(temp, key);
+          sortedCommon[`${key}`] = tempThis.common.sortCommonArray(temp, key);
         } else {
-          sortedCommon[key] = tempThis.common.sortCommonArray(data[key], key);
+          sortedCommon[`${key}`] = tempThis.common.sortCommonArray(data[`${key}`], key);
         }
       });
-      sortedCommon[`ranches`] = data[`ranches`].filter(e => userRanchAccess.includes(e.id));
+      sortedCommon[`ranches`] = data[`ranches`].filter((e) => userRanchAccess.includes(e.id));
       sortedCommon[`ranches`] = tempThis.common.sortCommonArray(sortedCommon[`ranches`], 'ranches');
       f(sortedCommon);
     });
@@ -349,7 +349,7 @@ export class OpenCardEntryComponent implements OnInit {
 
   private loadCardData(id: string) {
     this.cardService.getCardById(id).subscribe(
-      data => {
+      (data) => {
         if (data.success) {
           this.card = (new Card()).copyConstructor(data.data);
           this.comments = (new Card()).copyConstructor(data.data).comments;
@@ -364,7 +364,7 @@ export class OpenCardEntryComponent implements OnInit {
           this.nav.goBack();
         }
       },
-      failure => {
+      (failure) => {
         AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
         this.nav.goBack();
       }
@@ -408,16 +408,16 @@ export class OpenCardEntryComponent implements OnInit {
   public saveComments() {
     if (!this.setCardCommentsForUpdate()) { return; }
 
-    this.cardService.setCardComments(this.card.id, this.card.comments).subscribe(data => {
+    this.cardService.setCardComments(this.card.id, this.card.comments).subscribe((data) => {
       if (data.success) {
         AlertService.newBasicAlert('Change saved successfully!', false);
         this.loadCardData(this.card.id);
       } else {
-        console.log(data);
+        // console.log(data);
         AlertService.newBasicAlert('Error: ' + data.error, true);
       }
     },
-    failure => {
+    (failure) => {
       AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
     });
   }
@@ -425,8 +425,8 @@ export class OpenCardEntryComponent implements OnInit {
   public setCardCommentsForUpdate() {
     let invalid = 0;
     for (let i = 0; i < this.card.comments.length; i++) {
-      const oldComment = this.card.comments[i];
-      const newComment = this.comments[i];
+      const oldComment = this.card.comments[`${i}`];
+      const newComment = this.comments[`${i}`];
       if (newComment.userName !== oldComment.userName) {
         AlertService.newBasicAlert('Error: The username of a comment was modified.', true);
         return false;
@@ -435,10 +435,10 @@ export class OpenCardEntryComponent implements OnInit {
       if (newComment.deleted) {
         // Only delete if it was their own comment
         if (newComment.userName !== this.auth.getUsername()) {
-          this.comments[i] = oldComment;
+          this.comments[`${i}`] = oldComment;
           invalid++;
         } else {
-          this.comments[i].lastModified = new Date().valueOf();
+          this.comments[`${i}`].lastModified = new Date().valueOf();
         }
       } else {
         // check if same data
@@ -450,10 +450,10 @@ export class OpenCardEntryComponent implements OnInit {
         // if it has been modified, only accept if it is this user's comment
         if (!same) {
           if (newComment.userName !== this.auth.getUsername()) {
-            this.comments[i] = oldComment;
+            this.comments[`${i}`] = oldComment;
             invalid++;
           } else {
-            this.comments[i].lastModified = new Date().valueOf();
+            this.comments[`${i}`].lastModified = new Date().valueOf();
           }
         }
       }
@@ -461,7 +461,7 @@ export class OpenCardEntryComponent implements OnInit {
     if (invalid > 0) {
       AlertService.newBasicAlert(`${invalid} comments will not be changed due to invalid modifications`, true);
     }
-    this.card.comments = this.comments.filter(c => !c.deleted);
+    this.card.comments = this.comments.filter((c) => !c.deleted);
     return true;
   }
 

@@ -36,7 +36,7 @@ export class AuthService {
     if (!this.isLoggedIn()) {
       this.http.post<BasicDTO<string>>(environment.ApiUrl + '/user/auth/signIn', {username, password}, this.httpOptions)
         .subscribe(
-          data => {
+          (data) => {
             if (data.success) {
 
               this.resetCache();
@@ -48,11 +48,11 @@ export class AuthService {
 
               this.router.navigate(['/loginRedirect']);
             } else if (!data.success) {
-              console.log(data);
+              // console.log(data);
               AlertService.newBasicAlert('Login Failed: ' + data.error, true);
             }
           },
-          failure => {
+          (failure) => {
             AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
           }
         );
@@ -67,7 +67,7 @@ export class AuthService {
   public renewToken(): void {
     this.http.get<BasicDTO<string>>(environment.ApiUrl + '/user/me/renewToken', this.httpOptions)
       .subscribe(
-        data => {
+        (data) => {
           if (data.success) {
             this.resetCache();
             if (localStorage.hasOwnProperty('user_token')) {
@@ -91,7 +91,7 @@ export class AuthService {
             newAlert.subscribedOnClose$ = newAlert.onClose$.subscribe(() => this.logout());
           }
         },
-        failure => {
+        (failure) => {
           const newAlert = new Alert();
           newAlert.title = 'Connection Error';
           newAlert.message = 'There was a connection error and we were unable to renew your session - please log out and log back in.';
@@ -163,7 +163,7 @@ export class AuthService {
             environment.ApiUrl + '/user/me/tokenValid',
             {headers: new HttpHeaders({'Content-Type': 'application/json', ignoreLoadingBar: ''})}
           ).subscribe(
-            data => {
+            (data) => {
               if (data.success) {
                 AuthService.badTokenPing = 0;
               } else if (!data.success) {

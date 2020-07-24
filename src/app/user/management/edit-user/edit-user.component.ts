@@ -73,10 +73,10 @@ export class EditUserComponent implements OnInit {
     const tempThis = this;
     this.titleService.setTitle('Edit User');
     this.route.params.subscribe(
-      data => {
+      (data) => {
         this.user = (new User()).editConstruct(data.username);
         this.userService.getUser(this.user.initialUsername, true).subscribe(
-          apiData => {
+          (apiData) => {
             if (apiData.success) {
               this.user.importInfo(apiData.data);
               this.form.get('username').setValue(this.user.username);
@@ -85,8 +85,8 @@ export class EditUserComponent implements OnInit {
               this.form.get('shipperID').setValue(this.user.shipperID);
 
               // Set multiselect for user ranches
-              this.commonData.getValues('ranches', ranches => {
-                tempThis.userRanches = ranches.filter(e => {
+              this.commonData.getValues('ranches', (ranches) => {
+                tempThis.userRanches = ranches.filter((e) => {
                   tempThis.ranchList.push(e);
                   return tempThis.user.ranchAccess.includes(e.id);
                 });
@@ -110,7 +110,7 @@ export class EditUserComponent implements OnInit {
               this.router.navigate(['/userManagement']);
             }
           },
-          failure => {
+          (failure) => {
             AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
             this.router.navigate(['/userManagement']);
           }
@@ -138,7 +138,7 @@ export class EditUserComponent implements OnInit {
   getRanchAccess() {
     if (!this.hasPerms()) {return []; }
     try {
-      return (this.form.value.ranchAccess) ? this.form.value.ranchAccess.map(e => e.id) : [];
+      return (this.form.value.ranchAccess) ? this.form.value.ranchAccess.map((e) => e.id) : [];
     } catch (e) {
       AlertService.newBasicAlert('Error When Reading Ranch Access', true);
       return [];
@@ -150,7 +150,7 @@ export class EditUserComponent implements OnInit {
   }
 
   getSelectedRoles() {
-    return (this.userRolesFormatted) ? this.userRolesFormatted.map(role => role.id) : [];
+    return (this.userRolesFormatted) ? this.userRolesFormatted.map((role) => role.id) : [];
   }
 
   hasPerms(): boolean {
@@ -166,8 +166,8 @@ export class EditUserComponent implements OnInit {
   initRoles() {
     const keys = Object.keys(this.plRole);
     this.roleList = keys.slice(keys.length / 2).sort();
-    const userRoles = this.user.permissions.map(e => e.toString());
-    const selectedRoles = this.roleList.filter(role => userRoles.includes(role)).sort();
+    const userRoles = this.user.permissions.map((e) => e.toString());
+    const selectedRoles = this.roleList.filter((role) => userRoles.includes(role)).sort();
     this.userRolesFormatted = this.rolesToMultiSelectFormat(selectedRoles);
   }
 
@@ -188,7 +188,7 @@ export class EditUserComponent implements OnInit {
   resetPassword() {
     this.form.disable();
     this.userService.resetPassword(this.user.initialUsername).subscribe(
-      data => {
+      (data) => {
         if (data.success) {
           if (this.user.initialUsername === this.auth.getUsername()) {
             this.editSelfAlert('Reset successful! A temporary password has been emailed to you.');
@@ -201,7 +201,7 @@ export class EditUserComponent implements OnInit {
           this.form.enable();
         }
       },
-      failure => {
+      (failure) => {
         AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
         this.form.enable();
       }
@@ -211,10 +211,10 @@ export class EditUserComponent implements OnInit {
   rolesToMultiSelectFormat(roles) {
     try {
       const rolesFormatted = [];
-      roles.forEach(role => {
+      roles.forEach((role) => {
         rolesFormatted.push({
           id: role,
-          value: (this.PlRoleLookup[role].display) ? this.PlRoleLookup[role].display : 'Display Value Not Found'
+          value: (this.PlRoleLookup[`${role}`].display) ? this.PlRoleLookup[`${role}`].display : 'Display Value Not Found'
         });
       });
       return rolesFormatted;
@@ -252,7 +252,7 @@ export class EditUserComponent implements OnInit {
       this.user.permissions = this.getSelectedRoles();
       this.user.shipperID = (this.isShipper() && this.form.value.shipperID) ? this.form.value.shipperID : null;
       this.userService.editUser(this.user).subscribe(
-        data => {
+        (data) => {
           if (data.success) {
             if (this.user.initialUsername === this.auth.getUsername()) {
               this.editSelfAlert('Changes have been saved successfully!');
@@ -270,7 +270,7 @@ export class EditUserComponent implements OnInit {
             this.form.enable();
           }
         },
-        failure => {
+        (failure) => {
           AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
           this.form.enable();
         }

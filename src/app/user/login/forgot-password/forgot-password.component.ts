@@ -33,7 +33,7 @@ export class ForgotPasswordComponent implements OnInit {
       this.form.get('usernameFp').disable();
       this.auth.resetPassword(this.form.get('usernameFp').value)
         .subscribe(
-          data => {
+          (data) => {
             if (data.success) {
               this.fpModal.hide();
               AlertService.newBasicAlert('Success! If a user by that username exists, ' +
@@ -47,7 +47,7 @@ export class ForgotPasswordComponent implements OnInit {
               this.form.get('usernameFp').enable();
             }
           },
-          failure => {
+          (failure) => {
             this.error = 'Reset failed: ' + failure.message;
             this.isLoading = false;
             this.form.get('usernameFp').enable();

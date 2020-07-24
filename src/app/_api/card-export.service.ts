@@ -29,20 +29,20 @@ export class CardExportService {
     if (card.shippers) {
       const shippers = [];
       try {
-        card.shippers.forEach(e => {
+        card.shippers.forEach((e) => {
           shippers.push(this.findCommonValue(commonData, 'shippers', ['value'], e));
         });
         card.shippers = shippers;
       } catch (e) {
-        console.log(e);
+        // console.log(e);
       }
       card.initShippersString();
     }
-    card.commodityArray.forEach(e => {
+    card.commodityArray.forEach((e) => {
       e.commodity = this.findCommonValue(commonData, 'commodities', ['value', 'key'], e.commodity);
       e.bedType = this.findCommonValue(commonData, 'bedTypes', ['value'], e.bedType);
     });
-    card.preChemicalArray.forEach(e => {
+    card.preChemicalArray.forEach((e) => {
       if (e.chemical) {
         e.chemical.name = this.findCommonValue(commonData, 'chemicals', ['value'], e.chemical.name);
         e.chemical.unit = this.findCommonValue(commonData, 'chemicalRateUnits', ['value'], e.chemical.unit);
@@ -52,7 +52,7 @@ export class CardExportService {
         e.fertilizer.unit = this.findCommonValue(commonData, 'chemicalRateUnits', ['value'], e.fertilizer.unit);
       }
     });
-    card.tractorArray.forEach(e => {
+    card.tractorArray.forEach((e) => {
       e.workDone = this.findCommonValue(commonData, 'tractorWork', ['value'], e.workDone);
       e.operator = this.findCommonValue(commonData, 'tractorOperators', ['value'], e.operator);
       for (const c of e.chemicalArray) {
@@ -64,7 +64,7 @@ export class CardExportService {
         f.unit = this.findCommonValue(commonData, 'chemicalRateUnits', ['value'], f.unit);
       }
     });
-    card.irrigationArray.forEach(e => {
+    card.irrigationArray.forEach((e) => {
       e.method = this.findCommonValue(commonData, 'irrigationMethod', ['value'], e.method);
       e.irrigator = this.findCommonValue(commonData, 'irrigators', ['value'], e.irrigator);
       for (const c of e.chemicalArray) {
@@ -88,7 +88,7 @@ export class CardExportService {
   public commentsToDisplayString(comments: Array<Comment>): string {
     let displayString = '';
     for (let i = 0; i < comments.length; i++) {
-      const c = comments[i];
+      const c = comments[`${i}`];
       let cString = '';
       try {
         cString = `[${this.dateToDisplay(c.dateModified, true)}] ${c.author}: ${c.body}`;
@@ -162,7 +162,7 @@ export class CardExportService {
   }
 
   /*
-    Searches common values in [key] list where value.id === targetID
+    Searches common values in [`${key}`] list where value.id === targetID
     returns value.valuePropertyArr where valuePropertyArr = array of nesting properties
     returns null in no targetID supplied
     returns targetID if key is not in commonKeys Array (don't need value)
@@ -172,14 +172,14 @@ export class CardExportService {
     if (!targetID) { return ''; }
     let commonValue;
     try {
-      commonValue = commonData[key].find(e => {
+      commonValue = commonData[`${key}`].find((e) => {
         return e.id === targetID;
       });
-      valuePropertyArr.forEach(p => {
-        commonValue = commonValue[p];
+      valuePropertyArr.forEach((p) => {
+        commonValue = commonValue[`${p}`];
       });
     } catch (e) {
-     console.log(e);
+    //  console.log(e);
     }
     return (commonValue) ? commonValue : '';
   }
@@ -188,19 +188,19 @@ export class CardExportService {
     let numFerts = 0;
     let numChems = 0;
     let numCommodities = 0;
-    cards.forEach(card => {
+    cards.forEach((card) => {
       let tempNumFert = 0;
       let tempNumChem = 0;
       let tempNumCommodities = 0;
-      card.preChemicalArray.forEach(e => {
+      card.preChemicalArray.forEach((e) => {
         if (e.fertilizer) { tempNumFert++; }
         if (e.chemical) { tempNumChem++; }
       });
-      card.tractorArray.forEach(e => {
+      card.tractorArray.forEach((e) => {
         tempNumFert += e.fertilizerArray.length;
         tempNumChem += e.chemicalArray.length;
       });
-      card.irrigationArray.forEach(e => {
+      card.irrigationArray.forEach((e) => {
         tempNumFert += e.fertilizerArray.length;
         tempNumChem += e.chemicalArray.length;
       });
@@ -219,14 +219,14 @@ export class CardExportService {
   public generateAppliedExport(commonData, from: number, to: number, ranches: Array<string>,
                                commodities: Array<string>, includeUnharvested: boolean): void {
     this.http.get<BasicDTO<Card[]>>(environment.ApiUrl + '/data/view/ranches', this.httpOptions).subscribe(
-      data => {
+      (data) => {
         // If data is successful retrieved
         if (data.success) {
-          const cards = data.data.map(x => (new Card()).copyConstructor(x)).filter(x => {
+          const cards = data.data.map((x) => (new Card()).copyConstructor(x)).filter((x) => {
             // If card doesn't contain any of our selected ranches
             if (!x.ranchName || !ranches.includes(x.ranchName)) { return false; }
             // If card doesn't contain any of our selected commodities
-            if (!x.commodityArray.map(c => commodities.includes(c.commodity)).some(c => c)) { return false; }
+            if (!x.commodityArray.map((c) => commodities.includes(c.commodity)).some((c) => c)) { return false; }
             // If we're including open cards
             if (includeUnharvested && (!x.harvestDate || !x.closed)) { return true; }
             // If the harvest date is outside the requested date range
@@ -278,7 +278,7 @@ export class CardExportService {
           table.push(dataLine);
 
           // Add card information
-          cards.forEach(card => {
+          cards.forEach((card) => {
             // Wipe line and convert card ids to display values
             dataLine = [];
             card = this.cardIDsToValues(card, commonData);
@@ -295,7 +295,7 @@ export class CardExportService {
               if (i >= card.commodityArray.length) {
                 dataLine.push('');
               } else {
-                dataLine.push(card.commodityArray[i].commodity);
+                dataLine.push(card.commodityArray[`${i}`].commodity);
               }
             }
 
@@ -304,7 +304,7 @@ export class CardExportService {
               if (i >= applied[`fertilizers`].length) {
                 dataLine.push('', '', '', '', '', '');
               } else {
-                const temp = applied[`fertilizers`][i];
+                const temp = applied[`fertilizers`][`${i}`];
                 dataLine.push(temp[`date`], temp[`name`], temp[`method`], temp[`material`], temp[`rate`], temp[`unit`]);
               }
             }
@@ -314,7 +314,7 @@ export class CardExportService {
               if (i >= applied[`chemicals`].length) {
                 dataLine.push('', '', '', '', '', '');
               } else {
-                const temp = applied[`chemicals`][i];
+                const temp = applied[`chemicals`][`${i}`];
                 dataLine.push(temp[`date`], temp[`name`], temp[`method`], temp[`material`], temp[`rate`], temp[`unit`]);
               }
             }
@@ -331,7 +331,7 @@ export class CardExportService {
           AlertService.newBasicAlert('Error: ' + data.error, true);
         }
       },
-      failure => {
+      (failure) => {
         // Show connection error
         AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
       }
@@ -341,14 +341,14 @@ export class CardExportService {
   public generateAppliedFertilizerExport(commonData, from: number, to: number, ranches: Array<string>,
                                          commodities: Array<string>, includeUnharvested: boolean): void {
     this.http.get<BasicDTO<Card[]>>(environment.ApiUrl + '/data/view/ranches', this.httpOptions).subscribe(
-      data => {
+      (data) => {
         // If data is successful retrieved
         if (data.success) {
-          const cards = data.data.map(x => (new Card()).copyConstructor(x)).filter(x => {
+          const cards = data.data.map((x) => (new Card()).copyConstructor(x)).filter((x) => {
             // If card doesn't contain any of our selected ranches
             if (!x.ranchName || !ranches.includes(x.ranchName)) { return false; }
             // If card doesn't contain any of our selected commodities
-            if (!x.commodityArray.map(c => commodities.includes(c.commodity)).some(c => c)) { return false; }
+            if (!x.commodityArray.map((c) => commodities.includes(c.commodity)).some((c) => c)) { return false; }
             // If we're including open cards
             if (includeUnharvested && (!x.harvestDate || !x.closed)) { return true; }
             // If the harvest date is outside the requested date range
@@ -393,7 +393,7 @@ export class CardExportService {
           table.push(dataLine);
 
           // Add card information
-          cards.forEach(card => {
+          cards.forEach((card) => {
             // Wipe line and convert card ids to display values
             dataLine = [];
             card = this.cardIDsToValues(card, commonData);
@@ -410,7 +410,7 @@ export class CardExportService {
               if (i >= card.commodityArray.length) {
                 dataLine.push('');
               } else {
-                dataLine.push(card.commodityArray[i].commodity);
+                dataLine.push(card.commodityArray[`${i}`].commodity);
               }
             }
 
@@ -419,7 +419,7 @@ export class CardExportService {
             if (i >= applied[`fertilizers`].length) {
                 dataLine.push('', '', '', '');
               } else {
-                const temp = applied[`fertilizers`][i];
+                const temp = applied[`fertilizers`][`${i}`];
                 dataLine.push(temp[`date`], temp[`material`], temp[`rate`], temp[`unit`]);
               }
             }
@@ -436,7 +436,7 @@ export class CardExportService {
         AlertService.newBasicAlert('Error: ' + data.error, true);
         }
       },
-      failure => {
+      (failure) => {
         // Show connection error
         AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
       }
@@ -448,7 +448,7 @@ export class CardExportService {
       preset = Object.assign(new ExportPreset(), preset);
 
       this.http.get<BasicDTO<Card[]>>(environment.ApiUrl + '/data/view/ranches', this.httpOptions).subscribe(
-        data => {
+        (data) => {
           // If data is successful retrieved
           if (data.success) {
 
@@ -475,9 +475,9 @@ export class CardExportService {
               }
             };
 
-            const cards: Card[] = data.data.map(x => (new Card()).copyConstructor(x)).filter(x => {
+            const cards: Card[] = data.data.map((x) => (new Card()).copyConstructor(x)).filter((x) => {
               if (!x.ranchName || !ranches.includes(x.ranchName)) { return false; }
-              if (!x.commodityArray.map(c => commodities.includes(c.commodity)).some(c => c)) { return false; }
+              if (!x.commodityArray.map((c) => commodities.includes(c.commodity)).some((c) => c)) { return false; }
               if (includeUnharvested && (!x.harvestDate || !x.closed)) { return true; }
               if (!x.harvestDate || from > (new Date(x.harvestDate)).valueOf()
                   || to < (new Date(x.harvestDate)).valueOf()) { return false; }
@@ -542,7 +542,7 @@ export class CardExportService {
             AlertService.newBasicAlert('Error: ' + data.error, true);
           }
         },
-        failure => {
+        (failure) => {
           // Show connection error
           AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
         }
@@ -552,7 +552,7 @@ export class CardExportService {
   public generateExport(commonData, from: number, to: number, ranches: Array<string>, commodities: Array<string>,
                         includeUnharvested: boolean): void {
     this.http.get<BasicDTO<Card[]>>(environment.ApiUrl + '/data/view/ranches', this.httpOptions).subscribe(
-      data => {
+      (data) => {
         // If data is successful retrieved
         if (data.success) {
           // Format is [x][y]: [x] is a row and [y] is a column. Commas and newlines will automatically be added.
@@ -661,16 +661,16 @@ export class CardExportService {
           // Take our data
           data.data
             // Convert into real card
-            .map(x => (new Card()).copyConstructor(x))
+            .map((x) => (new Card()).copyConstructor(x))
             // Filter it to match user filters
-            .filter(x => {
+            .filter((x) => {
               // If card doesn't contain any of our selected ranches
               if (!x.ranchName || !ranches.includes(x.ranchName)) {
                 return false;
               }
 
               // If card doesn't contain any of our selected commodities
-              if (!x.commodityArray.map(c => commodities.includes(c.commodity)).some(c => c)) {
+              if (!x.commodityArray.map((c) => commodities.includes(c.commodity)).some((c) => c)) {
                 return false;
               }
 
@@ -687,7 +687,7 @@ export class CardExportService {
               return true;
             })
             // Put in the table
-            .forEach(x => {
+            .forEach((x) => {
               // Convert card common ids to their values
               x = this.cardIDsToValues(x, commonData);
               // Push simple data
@@ -711,17 +711,17 @@ export class CardExportService {
                   dataLine.push('', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '');
                 }
               } else {
-                x.irrigationArray.forEach(y => {
+                x.irrigationArray.forEach((y) => {
                   y = Object.assign(new IrrigationEntry(), y);
                   dataLine.push('', this.dateToDisplay(y.workDate), y.irrigator, y.method, String(y.duration));
                   if (y.chemicalArray.length) {
-                    y.chemicalArray.forEach(e => { dataLine.push(e.name, String(e.rate), String(e.unit)); });
+                    y.chemicalArray.forEach((e) => { dataLine.push(e.name, String(e.rate), String(e.unit)); });
                     for (let i = y.chemicalArray.length; i < 2; i++) { dataLine.push('', '', ''); }
                   } else {
                     for (let i = 0; i < 2; i++) { dataLine.push('', '', ''); }
                   }
                   if (y.fertilizerArray.length) {
-                    y.fertilizerArray.forEach(e => { dataLine.push(e.name, String(e.rate), String(e.unit)); });
+                    y.fertilizerArray.forEach((e) => { dataLine.push(e.name, String(e.rate), String(e.unit)); });
                     for (let i = y.fertilizerArray.length; i < 2; i++) { dataLine.push('', '', ''); }
                   } else {
                     for (let i = 0; i < 2; i++) { dataLine.push('', '', ''); }
@@ -747,13 +747,13 @@ export class CardExportService {
                   z = Object.assign(new TractorEntry(), z);
                   dataLine.push('', z.tractorNumber, this.dateToDisplay(z.workDate), z.workDone, z.operator);
                   if (z.chemicalArray.length) {
-                    z.chemicalArray.forEach(e => { dataLine.push(e.name, String(e.rate), String(e.unit)); });
+                    z.chemicalArray.forEach((e) => { dataLine.push(e.name, String(e.rate), String(e.unit)); });
                     for (let i = z.chemicalArray.length; i < 2; i++) { dataLine.push('', '', ''); }
                   } else {
                     for (let i = 0; i < 2; i++) { dataLine.push('', '', ''); }
                   }
                   if (z.fertilizerArray.length) {
-                    z.fertilizerArray.forEach(e => { dataLine.push(e.name, String(e.rate), String(e.unit)); });
+                    z.fertilizerArray.forEach((e) => { dataLine.push(e.name, String(e.rate), String(e.unit)); });
                     for (let i = z.fertilizerArray.length; i < 2; i++) { dataLine.push('', '', ''); }
                   } else {
                     for (let i = 0; i < 2; i++) { dataLine.push('', '', ''); }
@@ -777,7 +777,7 @@ export class CardExportService {
                 dataLine.push('', '', '', '', '', '', '');
                 dataLine.push('', '', '', '', '', '', '');
               } else {
-                x.commodityArray.forEach(c => {
+                x.commodityArray.forEach((c) => {
                   dataLine.push('', c.commodity, String(c.cropAcres), c.bedType,
                                 String(c.bedCount), c.seedLotNumber, c.variety);
                   pushCounter += 1;
@@ -795,7 +795,7 @@ export class CardExportService {
                 dataLine.push('', '', '', '', '', '', '', '');
                 dataLine.push('', '', '', '', '', '', '', '');
               } else {
-                x.preChemicalArray.forEach(preC => {
+                x.preChemicalArray.forEach((preC) => {
                   const dt = this.dateToDisplay(preC.date);
                   if (!preC.chemical) {
                     if (!preC.fertilizer) {
@@ -842,7 +842,7 @@ export class CardExportService {
           AlertService.newBasicAlert('Error: ' + data.error, true);
         }
       },
-      failure => {
+      (failure) => {
         // Show connection error
         AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
       }
@@ -853,7 +853,7 @@ export class CardExportService {
   private generateAndDownload(table: Array<Array<string>>, fileName: string): void {
     FileDownload(
       // Generate the CSV from the table
-      table.map(x => x.map(y => this.replaceBadCharacters(y)).join(',')).join('\n'),
+      table.map((x) => x.map((y) => this.replaceBadCharacters(y)).join(',')).join('\n'),
       // Filename
       fileName + '.csv'
     );
@@ -864,7 +864,7 @@ export class CardExportService {
     let fertilizers = [];
     let chemicals = [];
 
-    card.preChemicalArray.forEach(e => {
+    card.preChemicalArray.forEach((e) => {
       if (e.fertilizer) {
         fertilizers.push({
           date: e.date,
@@ -887,8 +887,8 @@ export class CardExportService {
       }
     });
 
-    card.tractorArray.forEach( e => {
-      e.fertilizerArray.forEach(x => {
+    card.tractorArray.forEach( (e) => {
+      e.fertilizerArray.forEach((x) => {
         fertilizers.push({
           date: e.workDate,
           name: e.operator,
@@ -898,7 +898,7 @@ export class CardExportService {
           unit: x.unit
         });
       });
-      e.chemicalArray.forEach(x => {
+      e.chemicalArray.forEach((x) => {
         chemicals.push({
           date: e.workDate,
           name: e.operator,
@@ -910,8 +910,8 @@ export class CardExportService {
       });
     });
 
-    card.irrigationArray.forEach( e => {
-      e.fertilizerArray.forEach(x => {
+    card.irrigationArray.forEach( (e) => {
+      e.fertilizerArray.forEach((x) => {
         fertilizers.push({
           date: e.workDate,
           name: e.irrigator,
@@ -921,7 +921,7 @@ export class CardExportService {
           unit: x.unit
         });
       });
-      e.chemicalArray.forEach(x => {
+      e.chemicalArray.forEach((x) => {
         chemicals.push({
           date: e.workDate,
           name: e.irrigator,
@@ -933,11 +933,11 @@ export class CardExportService {
       });
     });
 
-    fertilizers = fertilizers.sort(this.compareDates).map(e => {
+    fertilizers = fertilizers.sort(this.compareDates).map((e) => {
       e.date = this.dateToDisplay(e.date);
       return e;
     });
-    chemicals = chemicals.sort(this.compareDates).map(e => {
+    chemicals = chemicals.sort(this.compareDates).map((e) => {
       e.date = this.dateToDisplay(e.date);
       return e;
     });
@@ -948,7 +948,7 @@ export class CardExportService {
   getDripTape(card: Card): string {
     let driptape = false;
     let burriedDriptape = false;
-    card.tractorArray.forEach(e => {
+    card.tractorArray.forEach((e) => {
       const work = String(e.workDone).toLowerCase();
       if (work.includes('buried drip')) {
         burriedDriptape = true;
@@ -956,7 +956,7 @@ export class CardExportService {
         driptape = true;
       }
     });
-    card.irrigationArray.forEach(e => {
+    card.irrigationArray.forEach((e) => {
       const method = String(e.method).toLowerCase();
       if (method.includes('buried drip')) {
         burriedDriptape = true;
@@ -990,8 +990,8 @@ export class CardExportService {
           for (let i = 0; i < numEntries.card.commodities; i++) {
             preset.commodities.forEach((e2) => {
               if (e2.value === true ) {
-                if (card.commodityArray[i]) {
-                  const temp: Commodities = card.commodityArray[i];
+                if (card.commodityArray[`${i}`]) {
+                  const temp: Commodities = card.commodityArray[`${i}`];
                   switch (e2.key) {
                     case 'commodity':
                       dataLine.push( (temp.commodity) ? temp.commodity : '');
@@ -1034,8 +1034,8 @@ export class CardExportService {
                   for (let j = 0; j < numEntries.irrigationEntry.fertilizers; j++) {
                     preset.irrigationEntryFertilizers.forEach((e3) => {
                       if (e3.value === true) {
-                        if (card.irrigationArray[i] && card.irrigationArray[i].fertilizerArray[j]) {
-                          const temp: Chemical = card.irrigationArray[i].fertilizerArray[j];
+                        if (card.irrigationArray[`${i}`] && card.irrigationArray[`${i}`].fertilizerArray[`${j}`]) {
+                          const temp: Chemical = card.irrigationArray[`${i}`].fertilizerArray[`${j}`];
                           switch (e3.key) {
                             case 'name':
                               dataLine.push( (temp.name) ? temp.name : '');
@@ -1060,8 +1060,8 @@ export class CardExportService {
                   for (let j = 0; j < numEntries.irrigationEntry.chemicals; j++) {
                     preset.irrigationEntryChemicals.forEach((e3) => {
                       if (e3.value === true) {
-                        if (card.irrigationArray[i] && card.irrigationArray[i].chemicalArray[j]) {
-                          const temp: Chemical = card.irrigationArray[i].chemicalArray[j];
+                        if (card.irrigationArray[`${i}`] && card.irrigationArray[`${i}`].chemicalArray[`${j}`]) {
+                          const temp: Chemical = card.irrigationArray[`${i}`].chemicalArray[`${j}`];
                           switch (e3.key) {
                             case 'name':
                               dataLine.push( (temp.name) ? temp.name : '');
@@ -1083,8 +1083,8 @@ export class CardExportService {
                     });
                   }
                 } else {
-                  if (card.irrigationArray[i]) {
-                    const temp: IrrigationEntry = card.irrigationArray[i];
+                  if (card.irrigationArray[`${i}`]) {
+                    const temp: IrrigationEntry = card.irrigationArray[`${i}`];
                     switch (e2.key) {
                       case 'workDate':
                         dataLine.push((temp.workDate) ? tempThis.dateToDisplay(temp.workDate) : '');
@@ -1122,8 +1122,8 @@ export class CardExportService {
                   for (let j = 0; j < numEntries.tractorEntry.fertilizers; j++) {
                     preset.tractorEntryFertilizers.forEach((e3) => {
                       if (e3.value === true) {
-                        if (card.tractorArray[i] && card.tractorArray[i].fertilizerArray[j]) {
-                          const temp: Chemical = card.tractorArray[i].fertilizerArray[j];
+                        if (card.tractorArray[`${i}`] && card.tractorArray[`${i}`].fertilizerArray[`${j}`]) {
+                          const temp: Chemical = card.tractorArray[`${i}`].fertilizerArray[`${j}`];
                           switch (e3.key) {
                             case 'name':
                               dataLine.push( (temp.name) ? temp.name : '');
@@ -1148,8 +1148,8 @@ export class CardExportService {
                   for (let j = 0; j < numEntries.tractorEntry.chemicals; j++) {
                     preset.tractorEntryChemicals.forEach((e3) => {
                       if (e3.value === true) {
-                        if (card.tractorArray[i] && card.tractorArray[i].chemicalArray[j]) {
-                          const temp: Chemical = card.tractorArray[i].chemicalArray[j];
+                        if (card.tractorArray[`${i}`] && card.tractorArray[`${i}`].chemicalArray[`${j}`]) {
+                          const temp: Chemical = card.tractorArray[`${i}`].chemicalArray[`${j}`];
                           switch (e3.key) {
                             case 'name':
                               dataLine.push( (temp.name) ? temp.name : '');
@@ -1171,8 +1171,8 @@ export class CardExportService {
                     });
                   }
                 } else {
-                  if (card.tractorArray[i]) {
-                    const temp: TractorEntry = card.tractorArray[i];
+                  if (card.tractorArray[`${i}`]) {
+                    const temp: TractorEntry = card.tractorArray[`${i}`];
                     switch (e2.key) {
                       case 'workDate':
                         dataLine.push((temp.workDate) ? tempThis.dateToDisplay(temp.workDate) : '');
@@ -1209,8 +1209,8 @@ export class CardExportService {
                 if (e2.key === 'fertilizer') {
                   preset.preChemicalsFertilizer.forEach((e3) => {
                     if (e3.value === true) {
-                      if (card.preChemicalArray[i] && card.preChemicalArray[i].fertilizer) {
-                        const temp: Chemical = card.preChemicalArray[i].fertilizer;
+                      if (card.preChemicalArray[`${i}`] && card.preChemicalArray[`${i}`].fertilizer) {
+                        const temp: Chemical = card.preChemicalArray[`${i}`].fertilizer;
                         switch (e3.key) {
                           case 'name':
                             dataLine.push( (temp.name) ? temp.name : '');
@@ -1233,8 +1233,8 @@ export class CardExportService {
                 } else if (e2.key === 'chemical') {
                   preset.preChemicalsChemical.forEach((e3) => {
                     if (e3.value === true) {
-                      if (card.preChemicalArray[i] && card.preChemicalArray[i].chemical) {
-                        const temp: Chemical = card.preChemicalArray[i].chemical;
+                      if (card.preChemicalArray[`${i}`] && card.preChemicalArray[`${i}`].chemical) {
+                        const temp: Chemical = card.preChemicalArray[`${i}`].chemical;
                         switch (e3.key) {
                           case 'name':
                             dataLine.push( (temp.name) ? temp.name : '');
@@ -1255,8 +1255,8 @@ export class CardExportService {
                     }
                   });
                 } else {
-                  if (card.preChemicalArray[i]) {
-                    const temp: Chemicals = card.preChemicalArray[i];
+                  if (card.preChemicalArray[`${i}`]) {
+                    const temp: Chemicals = card.preChemicalArray[`${i}`];
                     switch (e2.key) {
                       case 'date':
                         dataLine.push((temp.date) ? tempThis.dateToDisplay(temp.date) : '');
@@ -1616,11 +1616,11 @@ export class CardExportService {
     const tempThis = this;
     const sortedCommon = {};
     const userRanchAccess = this.auth.getRanchAccess();
-    this.common.getAllValues(data => {
-      Object.keys(CommonLookup).forEach(key => {
-        if (CommonLookup[key].type === 'hashTable') {
+    this.common.getAllValues((data) => {
+      Object.keys(CommonLookup).forEach((key) => {
+        if (CommonLookup[`${key}`].type === 'hashTable') {
           const temp = [];
-          data[key].forEach(entry => {
+          data[`${key}`].forEach((entry) => {
             temp.push({
               id: entry.id,
               value : {
@@ -1629,9 +1629,9 @@ export class CardExportService {
               }
             });
           });
-          sortedCommon[key] = tempThis.common.sortCommonArray(temp, key);
+          sortedCommon[`${key}`] = tempThis.common.sortCommonArray(temp, key);
         } else {
-          sortedCommon[key] = tempThis.common.sortCommonArray(data[key], key);
+          sortedCommon[`${key}`] = tempThis.common.sortCommonArray(data[`${key}`], key);
         }
       });
       f(sortedCommon);
