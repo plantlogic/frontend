@@ -743,7 +743,7 @@ export class CardExportService {
                   dataLine.push('', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '');
                 }
               } else {
-                x.tractorArray.forEach(z => {
+                x.tractorArray.forEach((z) => {
                   z = Object.assign(new TractorEntry(), z);
                   dataLine.push('', z.tractorNumber, this.dateToDisplay(z.workDate), z.workDone, z.operator);
                   if (z.chemicalArray.length) {

@@ -369,9 +369,8 @@ export class AuthService {
     }
   }
 
-  public hasPermission(perm): boolean {
+  public hasPermission(perm: PlRole): boolean {
     const user: User = this.getParsedTokenUser();
-
     if (environment.disableAuth) {
       return true;
     } else if (user) {
@@ -414,10 +413,11 @@ export class AuthService {
       if (token) {
         try {
           AuthService.expCache = decode(token).exp * 1000;
-        } catch (error) {}
+        } catch (error) {
+          // Continue
+        }
       }
     }
-
     return AuthService.expCache;
   }
 

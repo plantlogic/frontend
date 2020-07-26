@@ -47,7 +47,7 @@ export class AppAdminComponent implements OnInit {
 
     const keyIndex = this.sortedCommonArray.findIndex((e) => e.key === key);
     if (keyIndex >= 0) {
-      this.sortedCommonArray[keyIndex].values.push(newCommon);
+      this.sortedCommonArray[`${keyIndex}`].values.push(newCommon);
     }
     this.updateCommon(key);
     (document.getElementById(key + 'NewValue') as HTMLInputElement).value = '';
@@ -56,8 +56,8 @@ export class AppAdminComponent implements OnInit {
   public addSubValue(key: string, c, displayIndex: number): void {
     const newValue = (document.getElementById(key + 'NewSubValue' + displayIndex) as HTMLInputElement).value;
     const keyIndex = this.sortedCommonArray.findIndex((e) => e.key === key);
-    const valueIndex = this.sortedCommonArray[keyIndex].values.findIndex(v => v.id === c.id);
-    this.sortedCommonArray[keyIndex].values[valueIndex].value.value.push(newValue);
+    const valueIndex = this.sortedCommonArray[`${keyIndex}`].values.findIndex((v) => v.id === c.id);
+    this.sortedCommonArray[`${keyIndex}`].values[`${valueIndex}`].value.value.push(newValue);
     this.updateCommon(key);
     (document.getElementById(key + 'NewSubValue' + displayIndex) as HTMLInputElement).value = '';
   }
@@ -161,7 +161,7 @@ export class AppAdminComponent implements OnInit {
   }
 
   public isHidden(s: string): boolean {
-    return this.displayToggles[s];
+    return this.displayToggles[`${s}`];
   }
 
   public removeCommon(key: string, value): void {
@@ -181,7 +181,7 @@ export class AppAdminComponent implements OnInit {
     newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
       const keyIndex = this.sortedCommonArray.findIndex((e) => e.key === key);
       if (keyIndex >= 0) {
-        this.sortedCommonArray[keyIndex].values = this.sortedCommonArray[keyIndex].values.filter(v => {
+        this.sortedCommonArray[`${keyIndex}`].values = this.sortedCommonArray[`${keyIndex}`].values.filter((v) => {
           return v.id !== value.id;
         });
       }
@@ -192,9 +192,9 @@ export class AppAdminComponent implements OnInit {
 
   public removeSubValue(key: string, c, valToDelete): void {
     const keyIndex = this.sortedCommonArray.findIndex((e) => e.key === key);
-    const valueIndex = this.sortedCommonArray[keyIndex].values.findIndex(v => v.id === c.id);
-    const oldValues = this.sortedCommonArray[keyIndex].values[valueIndex].value.value;
-    this.sortedCommonArray[keyIndex].values[valueIndex].value.value = oldValues.filter(v => {
+    const valueIndex = this.sortedCommonArray[`${keyIndex}`].values.findIndex((v) => v.id === c.id);
+    const oldValues = this.sortedCommonArray[`${keyIndex}`].values[`${valueIndex}`].value.value;
+    this.sortedCommonArray[`${keyIndex}`].values[`${valueIndex}`].value.value = oldValues.filter((v) => {
       return v !== valToDelete;
     });
     this.updateCommon(key);
@@ -202,24 +202,24 @@ export class AppAdminComponent implements OnInit {
 
   public shiftDown(key: string, value): void {
     const keyIndex = this.sortedCommonArray.findIndex((c) => c.key === key);
-    const keyValuesLength = this.sortedCommonArray[keyIndex].values.length;
-    const oldValueIndex = this.sortedCommonArray[keyIndex].values.findIndex(v => v.id === value.id);
+    const keyValuesLength = this.sortedCommonArray[`${keyIndex}`].values.length;
+    const oldValueIndex = this.sortedCommonArray[`${keyIndex}`].values.findIndex((v) => v.id === value.id);
     if (oldValueIndex >= keyValuesLength - 1) { return; }
     const desiredValueIndex = oldValueIndex + 1;
-    const copy = this.sortedCommonArray[keyIndex].values[desiredValueIndex];
-    this.sortedCommonArray[keyIndex].values[desiredValueIndex] = value;
-    this.sortedCommonArray[keyIndex].values[oldValueIndex] = copy;
+    const copy = this.sortedCommonArray[`${keyIndex}`].values[desiredValueIndex];
+    this.sortedCommonArray[`${keyIndex}`].values[desiredValueIndex] = value;
+    this.sortedCommonArray[`${keyIndex}`].values[oldValueIndex] = copy;
     this.updateCommon(key);
   }
 
   public shiftUp(key: string, value): void {
     const keyIndex = this.sortedCommonArray.findIndex((c) => c.key === key);
-    const oldValueIndex = this.sortedCommonArray[keyIndex].values.findIndex(v => v.id === value.id);
+    const oldValueIndex = this.sortedCommonArray[`${keyIndex}`].values.findIndex((v) => v.id === value.id);
     if (oldValueIndex <= 0) { return; }
     const desiredValueIndex = oldValueIndex - 1;
-    const copy = this.sortedCommonArray[keyIndex].values[desiredValueIndex];
-    this.sortedCommonArray[keyIndex].values[desiredValueIndex] = value;
-    this.sortedCommonArray[keyIndex].values[oldValueIndex] = copy;
+    const copy = this.sortedCommonArray[`${keyIndex}`].values[desiredValueIndex];
+    this.sortedCommonArray[`${keyIndex}`].values[desiredValueIndex] = value;
+    this.sortedCommonArray[`${keyIndex}`].values[oldValueIndex] = copy;
     this.updateCommon(key);
   }
 
@@ -238,7 +238,7 @@ export class AppAdminComponent implements OnInit {
   }
 
   public toggleDisplay(s: string): void {
-    this.displayToggles[s] = !this.displayToggles[s];
+    this.displayToggles[`${s}`] = !this.displayToggles[`${s}`];
   }
 
   public updateCommon(key: string): void {
@@ -265,7 +265,7 @@ export class AppAdminComponent implements OnInit {
         // Re-sort common display at specified key to reflect updated values
         const keyIndex = this.sortedCommonArray.findIndex((e) => e.key === key);
         if (keyIndex >= 0) {
-          this.sortedCommonArray[keyIndex].values = this.sortCommonArray(this.sortedCommonArray[keyIndex].values, key);
+          this.sortedCommonArray[`${keyIndex}`].values = this.sortCommonArray(this.sortedCommonArray[`${keyIndex}`].values, key);
         }
       }
     }, (failure) => {
