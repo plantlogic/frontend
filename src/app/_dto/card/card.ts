@@ -269,7 +269,7 @@ export class Card {
 
   initTotalAcres(): void {
     if (this.commodityArray) {
-      this.totalAcres = this.commodityArray.map(v => v.cropAcres).reduce((v, a) => v + a);
+      this.totalAcres = this.commodityArray.map((v) => v.cropAcres).reduce((v, a) => v + a);
     } else {
       this.totalAcres = 0;
     }

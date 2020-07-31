@@ -59,7 +59,7 @@ export class CommonFormDataService {
   }
 
   public getMapValues(key: string, mapKey: string): Array<string> {
-    return this.getValues(key)[mapKey];
+    return this.getValues(key)[`${mapKey}`];
   }
 
   // Compare function for sorting objects with hash tables as values

@@ -46,7 +46,7 @@ export const CommonLookup = {
   },
   chemicalRateUnits: {
     name: 'Chemical Rate Units',
-    sort: true,
+    sort: false,
     type: 'text'
   },
   chemicals: {
