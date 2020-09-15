@@ -155,6 +155,42 @@
     </div>
     <hr>
 
+    <!-- Hoe/Thin Dates -->
+    <div>
+      <a class="text-primary" (click)="collapseToggle('hoeThinDate')">
+        <h4>
+          <i class="fas mr-1" [ngClass]="{ 'fa-caret-right': isCollapsed('hoeThinDate'), 'fa-caret-down': !isCollapsed('hoeThinDate') }"></i>
+          <span class="ml-1">Dates</span>
+        </h4>
+      </a>
+      <br />
+      <div id="hoeThinDate" class="collapse">
+        <div class="row">
+          <div class="col col-auto mb-1">
+            <div class="row mb-1">
+              <div class="col col-auto"><b>Thin Date:</b></div>
+              <div class="col"><input class="date" [ngModel]="card.thinDate | date:'yyyy-MM-dd'" (ngModelChange)="card.thinDate = fixDate($event);" type="date"/></div>
+            </div>
+            <div class="row mb-1">
+              <div class="col col-auto"><b>Hoe Date:</b></div>
+              <div class="col"><input class="date" [ngModel]="card.hoeDate | date:'yyyy-MM-dd'" (ngModelChange)="card.hoeDate = fixDate($event);" type="date"/></div>
+            </div>
+            <div class="row">
+              <div class="col col-auto"><b>Wet Date:</b></div>
+              <div class="col"><input class="date" [ngModel]="card.wetDate | date:'yyyy-MM-dd'" (ngModelChange)="card.wetDate = fixDate($event);" type="date"/></div>
+            </div>
+          </div>
+          <div class="col-sm">
+            <button type="button" class="btn btn-primary float-right ml-1" (click)="saveDates()">
+            <span class="d-none d-md-inline-block">Confirm Dates</span>
+            <span class="d-md-none"><i class="fas fa-check"></i></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr>
+
     <!-- Commodities -->
     <div *ngIf="hasDateEntry()">
       <a class="text-primary" (click)="collapseToggle('commoditites')">
@@ -198,6 +234,8 @@
       <div id="moreInfo" class="collapse">
         <div class="row">
           <div class="col-sm">
+            <b>Date Created:</b> {{card.dateCreated | date:'shortDate'}}
+            <br />
             <b>Ranch Name:</b> {{card.ranchName}}
             <br />
             <b>Ranch Manager:</b> {{card.ranchManagerName}}
@@ -212,27 +250,6 @@
             <b>Shippers:</b> {{card.shippersString}}
             <br />
             <b>Planter Number:</b> {{card.planterNumber}}
-          </div>
-          <div class="col-sm">
-            <b>Wet Date: </b>
-            <span *ngIf="datesSet">{{card.wetDate | date:'shortDate'}}</span>
-            <input *ngIf="!datesSet" class="date" [ngModel]="card.wetDate | date:'yyyy-MM-dd'" (ngModelChange)="card.wetDate = fixDate($event);" type="date"/>
-            <br />
-            <b>Thin Date:</b>
-            <span *ngIf="datesSet">{{card.thinDate | date:'shortDate'}}</span>
-            <input *ngIf="!datesSet" class="date" [ngModel]="card.thinDate | date:'yyyy-MM-dd'" (ngModelChange)="card.thinDate = fixDate($event);" type="date"/>
-            <br />
-            <b>Hoe Date:</b>
-            <span *ngIf="datesSet">{{card.hoeDate | date:'shortDate'}}</span>
-            <input *ngIf="!datesSet" class="date" [ngModel]="card.hoeDate | date:'yyyy-MM-dd'" (ngModelChange)="card.hoeDate = fixDate($event);" type="date"/>
-            <br />
-            <b>Date Created:</b> {{card.dateCreated | date:'shortDate'}}
-          </div>
-          <div class="col-sm">
-            <button *ngIf="!datesSet" type="button" class="btn btn-primary float-right ml-1" (click)="saveDates()">
-            <span class="d-none d-md-inline-block">Confirm Dates</span>
-            <span class="d-md-none"><i class="fas fa-check"></i></span>
-            </button>
           </div>
         </div>
       </div>
