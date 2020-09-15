@@ -29,7 +29,7 @@ export class OpenCardEntryComponent implements OnInit {
   // Additional values will be attached to comments, so use a separate variable
   comments = [];
   commentsFilter = 'all';
-  datesSet: boolean;
+  // datesSet: boolean;
 
   // create array of common keys, whose data is needed. Omit restricted options.
   commonKeys = ['bedTypes', 'chemicals', 'chemicalRateUnits', 'commodities',
@@ -358,7 +358,7 @@ export class OpenCardEntryComponent implements OnInit {
           this.card.initShippersString();
           this.card.initCommodityString();
           this.card.initTotalAcres();
-          this.datesSet = (this.card.wetDate || this.card.thinDate || this.card.hoeDate) ? true : false;
+          // this.datesSet = (this.card.wetDate || this.card.thinDate || this.card.hoeDate) ? true : false;
         } else if (!data.success) {
           AlertService.newBasicAlert('Error: ' + data.error, true);
           this.nav.goBack();
@@ -375,7 +375,7 @@ export class OpenCardEntryComponent implements OnInit {
     const newAlert = new Alert();
     newAlert.color = 'warning';
     newAlert.title = 'Confirm Dates';
-    newAlert.message = 'This will save the hoe, thin, and wet dates. This can only be done once on the entry side. Continue?';
+    newAlert.message = 'This will save the hoe, thin, and wet dates. Continue?';
     newAlert.actionName = 'Confirm';
     newAlert.actionClosesAlert = true;
     newAlert.timeLeft = undefined;
@@ -397,7 +397,7 @@ export class OpenCardEntryComponent implements OnInit {
         this.card.hoeDate = (new Date(this.card.hoeDate)).valueOf();
         changed++;
       }
-      this.datesSet = true;
+      // this.datesSet = true;
       if (changed > 0) {
         this.cardService.addWetThinHoeData(this.card.id, this.card).subscribe();
       }
