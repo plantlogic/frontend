@@ -29,6 +29,10 @@ export class ExportCardDataComponent implements OnInit {
 
   fromDate: number = Date.now();
   toDate: number = Date.now();
+
+  fromCropYear = 2020;
+  toCropYear = 2020;
+
   includeUnharvested = false;
 
   selectedRanches = [];
@@ -113,7 +117,8 @@ export class ExportCardDataComponent implements OnInit {
     this.toDate = (new Date(this.toDate)).valueOf();
     const ranchIDS = this.selectedRanches.map((e) => e.id);
     const commodityIDS = this.selectedCommodities.map((e) => e.id);
-    this.cardExport.export(this.fromDate, this.toDate, ranchIDS, commodityIDS, this.includeUnharvested);
+    this.cardExport.export(this.fromDate, this.toDate, this.fromCropYear, this.toCropYear,
+                            ranchIDS, commodityIDS, this.includeUnharvested);
     this.generating = false;
   }
 
@@ -123,7 +128,8 @@ export class ExportCardDataComponent implements OnInit {
     this.toDate = (new Date(this.toDate)).valueOf();
     const ranchIDS = this.selectedRanches.map((e) => e.id);
     const commodityIDS = this.selectedCommodities.map((e) => e.id);
-    this.cardExport.exportAllApplied(this.fromDate, this.toDate, ranchIDS, commodityIDS, this.includeUnharvested);
+    this.cardExport.exportAllApplied(this.fromDate, this.toDate, this.fromCropYear, this.toCropYear,
+                                     ranchIDS, commodityIDS, this.includeUnharvested);
     this.generating = false;
   }
 
@@ -137,7 +143,8 @@ export class ExportCardDataComponent implements OnInit {
           this.toDate = (new Date(this.toDate)).valueOf();
           const ranchIDS = this.selectedRanches.map((e) => e.id);
           const commodityIDS = this.selectedCommodities.map((e) => e.id);
-          this.cardExport.exportCustom(this.fromDate, this.toDate, ranchIDS, commodityIDS, this.includeUnharvested, data.data);
+          this.cardExport.exportCustom(this.fromDate, this.toDate, this.fromCropYear, this.toCropYear,
+                                      ranchIDS, commodityIDS, this.includeUnharvested, data.data);
           this.generating = false;
 
         } else if (!data.success) {
@@ -156,7 +163,8 @@ export class ExportCardDataComponent implements OnInit {
     this.toDate = (new Date(this.toDate)).valueOf();
     const ranchIDS = this.selectedRanches.map((e) => e.id);
     const commodityIDS = this.selectedCommodities.map((e) => e.id);
-    this.cardExport.exportAllFertilizerApplied(this.fromDate, this.toDate, ranchIDS, commodityIDS, this.includeUnharvested);
+    this.cardExport.exportAllFertilizerApplied(this.fromDate, this.toDate, this.fromCropYear, this.toCropYear,
+                                               ranchIDS, commodityIDS, this.includeUnharvested);
     this.generating = false;
   }
 
