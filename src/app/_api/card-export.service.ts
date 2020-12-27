@@ -135,29 +135,32 @@ export class CardExportService {
     }
   }
 
-  public export(from: number, to: number, ranches: Array<string>, commodities: Array<string>, includeUnharvested: boolean): void {
+  public export(from: number, to: number, fromCropYear: number, toCropYear: number,
+                ranches: Array<string>, commodities: Array<string>, includeUnharvested: boolean): void {
     this.initCommon(commonData => {
-      this.generateExport(commonData, from, to, ranches, commodities, includeUnharvested);
+      this.generateExport(commonData, from, to, fromCropYear, toCropYear, ranches, commodities, includeUnharvested);
     });
   }
 
-  public exportAllApplied(from: number, to: number, ranches: Array<string>, commodities: Array<string>, includeUnharvested: boolean): void {
+  public exportAllApplied(from: number, to: number, fromCropYear: number, toCropYear: number,
+                          ranches: Array<string>, commodities: Array<string>, includeUnharvested: boolean): void {
     this.initCommon(commonData => {
-      this.generateAppliedExport(commonData, from, to, ranches, commodities, includeUnharvested);
+      this.generateAppliedExport(commonData, from, to, fromCropYear, toCropYear, ranches, commodities, includeUnharvested);
     });
   }
 
-  public exportAllFertilizerApplied(from: number, to: number, ranches: Array<string>,
+  public exportAllFertilizerApplied(from: number, to: number, fromCropYear: number, toCropYear: number, ranches: Array<string>,
                                     commodities: Array<string>, includeUnharvested: boolean): void {
     this.initCommon(commonData => {
-      this.generateAppliedFertilizerExport(commonData, from, to, ranches, commodities, includeUnharvested);
+      this.generateAppliedFertilizerExport(commonData, from, to, fromCropYear, toCropYear, ranches, commodities, includeUnharvested);
     });
   }
 
-  public exportCustom(from: number, to: number, ranches: Array<string>,
+  public exportCustom(from: number, to: number, fromCropYear: number, toCropYear: number, ranches: Array<string>,
                       commodities: Array<string>, includeUnharvested: boolean, exportPreset: ExportPreset): void {
     this.initCommon(commonData => {
-      this.generateCustomExport(commonData, from, to, ranches, commodities, includeUnharvested, exportPreset);
+      this.generateCustomExport(commonData, from, to, fromCropYear, toCropYear,
+                                ranches, commodities, includeUnharvested, exportPreset);
     });
   }
 
@@ -216,8 +219,8 @@ export class CardExportService {
     };
   }
 
-  public generateAppliedExport(commonData, from: number, to: number, ranches: Array<string>,
-                               commodities: Array<string>, includeUnharvested: boolean): void {
+  public generateAppliedExport(commonData, from: number, to: number, fromCropYear: number, toCropYear: number,
+                               ranches: Array<string>, commodities: Array<string>, includeUnharvested: boolean): void {
     this.http.get<BasicDTO<Card[]>>(environment.ApiUrl + '/data/view/ranches', this.httpOptions).subscribe(
       (data) => {
         // If data is successful retrieved
@@ -227,8 +230,8 @@ export class CardExportService {
             if (!x.ranchName || !ranches.includes(x.ranchName)) { return false; }
             // If card doesn't contain any of our selected commodities
             if (!x.commodityArray.map((c) => commodities.includes(c.commodity)).some((c) => c)) { return false; }
-            // If we're including open cards
-            if (includeUnharvested && (!x.harvestDate || !x.closed)) { return true; }
+            if (!x.cropYear || x.cropYear < fromCropYear  || x.cropYear > toCropYear) { return false; }
+            if (!includeUnharvested && (!x.harvestDate || !x.closed)) { return false; }
             // If the harvest date is outside the requested date range
             if (!x.harvestDate || from > (new Date(x.harvestDate)).valueOf() || to < (new Date(x.harvestDate)).valueOf()) {
               return false;
@@ -338,8 +341,8 @@ export class CardExportService {
     );
   }
 
-  public generateAppliedFertilizerExport(commonData, from: number, to: number, ranches: Array<string>,
-                                         commodities: Array<string>, includeUnharvested: boolean): void {
+  public generateAppliedFertilizerExport(commonData, from: number, to: number, fromCropYear: number, toCropYear: number,
+                                         ranches: Array<string>, commodities: Array<string>, includeUnharvested: boolean): void {
     this.http.get<BasicDTO<Card[]>>(environment.ApiUrl + '/data/view/ranches', this.httpOptions).subscribe(
       (data) => {
         // If data is successful retrieved
@@ -349,8 +352,8 @@ export class CardExportService {
             if (!x.ranchName || !ranches.includes(x.ranchName)) { return false; }
             // If card doesn't contain any of our selected commodities
             if (!x.commodityArray.map((c) => commodities.includes(c.commodity)).some((c) => c)) { return false; }
-            // If we're including open cards
-            if (includeUnharvested && (!x.harvestDate || !x.closed)) { return true; }
+            if (!x.cropYear || x.cropYear < fromCropYear  || x.cropYear > toCropYear) { return false; }
+            if (!includeUnharvested && (!x.harvestDate || !x.closed)) { return false; }
             // If the harvest date is outside the requested date range
             if (!x.harvestDate || from > (new Date(x.harvestDate)).valueOf() || to < (new Date(x.harvestDate)).valueOf()) {
               return false;
@@ -443,7 +446,8 @@ export class CardExportService {
     );
   }
 
-  public generateCustomExport(commonData, from: number, to: number, ranches: Array<string>, commodities: Array<string>,
+  public generateCustomExport(commonData, from: number, to: number, fromCropYear: number, toCropYear: number,
+                              ranches: Array<string>, commodities: Array<string>,
                               includeUnharvested: boolean, preset: ExportPreset) {
       preset = Object.assign(new ExportPreset(), preset);
 
@@ -478,9 +482,10 @@ export class CardExportService {
             const cards: Card[] = data.data.map((x) => (new Card()).copyConstructor(x)).filter((x) => {
               if (!x.ranchName || !ranches.includes(x.ranchName)) { return false; }
               if (!x.commodityArray.map((c) => commodities.includes(c.commodity)).some((c) => c)) { return false; }
-              if (includeUnharvested && (!x.harvestDate || !x.closed)) { return true; }
               if (!x.harvestDate || from > (new Date(x.harvestDate)).valueOf()
                   || to < (new Date(x.harvestDate)).valueOf()) { return false; }
+              if (!x.cropYear || x.cropYear < fromCropYear  || x.cropYear > toCropYear) { return false; }
+              if (!includeUnharvested && (!x.harvestDate || !x.closed)) { return false; }
               return true;
             });
 
@@ -549,8 +554,8 @@ export class CardExportService {
       );
   }
 
-  public generateExport(commonData, from: number, to: number, ranches: Array<string>, commodities: Array<string>,
-                        includeUnharvested: boolean): void {
+  public generateExport(commonData, from: number, to: number, fromCropYear: number, toCropYear: number,
+                        ranches: Array<string>, commodities: Array<string>, includeUnharvested: boolean): void {
     this.http.get<BasicDTO<Card[]>>(environment.ApiUrl + '/data/view/ranches', this.httpOptions).subscribe(
       (data) => {
         // If data is successful retrieved
@@ -674,13 +679,18 @@ export class CardExportService {
                 return false;
               }
 
-              // If we're including open cards
-              if (includeUnharvested && (!x.harvestDate || !x.closed)) {
-                return true;
-              }
-
               // If the harvest date is outside the requested date range
               if (!x.harvestDate || from > (new Date(x.harvestDate)).valueOf() || to < (new Date(x.harvestDate)).valueOf()) {
+                return false;
+              }
+
+              // If the crop year is outside the requested range
+              if (!x.cropYear || x.cropYear < fromCropYear  || x.cropYear > toCropYear) {
+                return false;
+              }
+
+              // If we're not including open cards
+              if (!includeUnharvested && (!x.harvestDate || !x.closed)) {
                 return false;
               }
 

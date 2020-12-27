@@ -1,55 +1,80 @@
 <div class="jumbotron p-3">
   <h5 *ngIf="loading">Scanning all cards for ranch names and commodities... Should be done in a moment.</h5>
   <h5 *ngIf="generating">Generating the CSV... Should be done in a moment.</h5>
-  <div class="row" *ngIf="!(loading || generating)">
-    <div class="col col-3">
-      <div class="row">
-        <div class="col">
-          <label for="harvestFromDate" class="control-label">From Harvest Date</label>
-        </div>
-        <div class="col">
-          <input id="harvestFromDate" class="date" [ngModel]=" fromDate | date:'yyyy-MM-dd'" (ngModelChange)="fromDate = fixDate($event)" type="date"/>
-        </div>
-      </div>
-    </div>
-    <div class="col col-3">
-      <div class="row">
-        <div class="col">
-          <label for="harvestToDate" class="control-label">To Harvest Date</label>
-        </div>
-        <div class="col">
-          <input id="harvestToDate" class="date" [ngModel]=" toDate | date:'yyyy-MM-dd'" (ngModelChange)="toDate = fixDate($event)" type="date"/>
+
+  <ng-container *ngIf="!(loading || generating)">
+    
+    <div class="row">
+      <div class="col col-3">
+        <div class="row">
+          <div class="col">
+            <label for="harvestFromDate" class="control-label">From Harvest Date</label>
+          </div>
+          <div class="col">
+            <input id="harvestFromDate" class="date" [ngModel]=" fromDate | date:'yyyy-MM-dd'" (ngModelChange)="fromDate = fixDate($event)" type="date"/>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="col-3 mt-4">
-      <ng-multiselect-dropdown *ngIf="!loading"
-          [placeholder]="'Select Ranch'"
-          [data]="getCommon('ranches')"
-          [(ngModel)]="selectedRanches"
+      <div class="col col-3">
+        <div class="row">
+          <div class="col">
+            <label for="harvestToDate" class="control-label">To Harvest Date</label>
+          </div>
+          <div class="col">
+            <input id="harvestToDate" class="date" [ngModel]=" toDate | date:'yyyy-MM-dd'" (ngModelChange)="toDate = fixDate($event)" type="date"/>
+          </div>
+        </div>
+      </div>
+      <div class="col-3 mt-4">
+        <ng-multiselect-dropdown *ngIf="!loading"
+            [placeholder]="'Select Ranch'"
+            [data]="getCommon('ranches')"
+            [(ngModel)]="selectedRanches"
+            [settings]="multiselectSettings">
+        </ng-multiselect-dropdown>
+      </div>
+      <div class="col-3 mt-4">
+        <ng-multiselect-dropdown *ngIf="!loading"
+          [placeholder]="'Select Commodities'"
+          [data]="getCommon('commodities')"
+          [(ngModel)]="selectedCommodities"
           [settings]="multiselectSettings">
-      </ng-multiselect-dropdown>
+        </ng-multiselect-dropdown>
+      </div>
     </div>
-    <div class="col-3 mt-4">
-      <ng-multiselect-dropdown *ngIf="!loading"
-        [placeholder]="'Select Commodities'"
-        [data]="getCommon('commodities')"
-        [(ngModel)]="selectedCommodities"
-        [settings]="multiselectSettings">
-      </ng-multiselect-dropdown>
-    </div>
-    <div class="col mt-4">
-      <div class="form-inline">
-        <div class="form-group">
-          <input type="checkbox" class="form-check" [(ngModel)]="includeUnharvested" id="includeUnharvested" />
+
+    <div class="row ml-2 mt-4">
+      <div class="col">
+        <div class="row">
+          <label for="fromCropYear" class="control-label">From Crop Year</label>
         </div>
-        <div class="form-group">
-          <label class="ml-2" for="includeUnharvested">Include Open Cards (Not Yet Harvested)</label>
+        <div class="row">
+          <input id="fromCropYear" class="date" [(ngModel)]="fromCropYear" type="number" min="1" max="9999"/>
+        </div>
+      </div>
+      <div class="col">
+        <div class="row">
+          <label for="toCropYear" class="control-label">To Crop Year</label>
+        </div>
+        <div class="row">
+          <input id="toCropYear" class="date" [(ngModel)]="toCropYear" type="number" min="1" max="9999"/>
+        </div>
+      </div>
+      <div class="col mt-3">
+        <div class="form-inline">
+          <div class="form-group">
+            <input type="checkbox" class="form-check" [(ngModel)]="includeUnharvested" id="includeUnharvested" />
+          </div>
+          <div class="form-group">
+            <label class="ml-2" for="includeUnharvested">Include Open Cards (Not Yet Harvested)</label>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="row mt-5 justify-content-end">
+
+  </ng-container>
+
+  <div class="row mt-4 justify-content-end">
     <div class="col col-auto">
       <h4>Export Presets</h4>
     </div>
