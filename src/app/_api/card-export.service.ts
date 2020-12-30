@@ -231,10 +231,11 @@ export class CardExportService {
             // If card doesn't contain any of our selected commodities
             if (!x.commodityArray.map((c) => commodities.includes(c.commodity)).some((c) => c)) { return false; }
             if (!x.cropYear || x.cropYear < fromCropYear  || x.cropYear > toCropYear) { return false; }
-            if (!includeUnharvested && (!x.harvestDate || !x.closed)) { return false; }
             // If the harvest date is outside the requested date range
-            if (!x.harvestDate || from > (new Date(x.harvestDate)).valueOf() || to < (new Date(x.harvestDate)).valueOf()) {
-              return false;
+            if (!includeUnharvested) {
+              if (!x.harvestDate || !x.closed || from > (new Date(x.harvestDate)).valueOf() || to < (new Date(x.harvestDate)).valueOf()) {
+                return false;
+              }
             }
             return true;
           });
@@ -353,10 +354,11 @@ export class CardExportService {
             // If card doesn't contain any of our selected commodities
             if (!x.commodityArray.map((c) => commodities.includes(c.commodity)).some((c) => c)) { return false; }
             if (!x.cropYear || x.cropYear < fromCropYear  || x.cropYear > toCropYear) { return false; }
-            if (!includeUnharvested && (!x.harvestDate || !x.closed)) { return false; }
             // If the harvest date is outside the requested date range
-            if (!x.harvestDate || from > (new Date(x.harvestDate)).valueOf() || to < (new Date(x.harvestDate)).valueOf()) {
-              return false;
+            if (!includeUnharvested) {
+              if (!x.harvestDate || !x.closed || from > (new Date(x.harvestDate)).valueOf() || to < (new Date(x.harvestDate)).valueOf()) {
+                return false;
+              }
             }
             return true;
           });
@@ -482,10 +484,13 @@ export class CardExportService {
             const cards: Card[] = data.data.map((x) => (new Card()).copyConstructor(x)).filter((x) => {
               if (!x.ranchName || !ranches.includes(x.ranchName)) { return false; }
               if (!x.commodityArray.map((c) => commodities.includes(c.commodity)).some((c) => c)) { return false; }
-              if (!x.harvestDate || from > (new Date(x.harvestDate)).valueOf()
-                  || to < (new Date(x.harvestDate)).valueOf()) { return false; }
+              // If the harvest date is outside the requested date range
+              if (!includeUnharvested) {
+                if (!x.harvestDate || !x.closed || from > (new Date(x.harvestDate)).valueOf() || to < (new Date(x.harvestDate)).valueOf()) {
+                  return false;
+                }
+              }
               if (!x.cropYear || x.cropYear < fromCropYear  || x.cropYear > toCropYear) { return false; }
-              if (!includeUnharvested && (!x.harvestDate || !x.closed)) { return false; }
               return true;
             });
 
@@ -679,19 +684,16 @@ export class CardExportService {
                 return false;
               }
 
-              // If the harvest date is outside the requested date range
-              if (!x.harvestDate || from > (new Date(x.harvestDate)).valueOf() || to < (new Date(x.harvestDate)).valueOf()) {
-                return false;
-              }
-
               // If the crop year is outside the requested range
               if (!x.cropYear || x.cropYear < fromCropYear  || x.cropYear > toCropYear) {
                 return false;
               }
 
-              // If we're not including open cards
-              if (!includeUnharvested && (!x.harvestDate || !x.closed)) {
-                return false;
+              // If the harvest date is outside the requested date range
+              if (!includeUnharvested) {
+                if (!x.harvestDate || !x.closed || from > (new Date(x.harvestDate)).valueOf() || to < (new Date(x.harvestDate)).valueOf()) {
+                  return false;
+                }
               }
 
               return true;
