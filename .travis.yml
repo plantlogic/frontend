@@ -8,8 +8,8 @@ services:
 env:
   - DOCKER_REPO_SLUG=plantlogic/frontend
 before_script:
-  # - npm install -g @angular/cli
-  - npm install -g @angular/cli@7.3.8
+  - npm install -g @angular/cli
+  # - npm install -g @angular/cli@7.3.8
 script:
   - ng lint
   - ng build --prod
