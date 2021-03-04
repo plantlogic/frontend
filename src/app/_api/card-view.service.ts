@@ -35,6 +35,10 @@ export class CardViewService {
     }
   }
 
+  public getTHCardsFiltered(filter: DbFilter): Observable<BasicDTO<DbFilterResponse>> {
+    return this.http.post<BasicDTO<DbFilterResponse>>(environment.ApiUrl + '/data/view/ranchesFilteredTH', filter, this.httpOptions);
+  }
+
   public getCardById(id: string): Observable<BasicDTO<Card>> {
     return this.http.get<BasicDTO<Card>>(environment.ApiUrl + '/data/view/ranches/' + id, this.httpOptions);
   }

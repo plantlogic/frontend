@@ -24,6 +24,8 @@ export class EditPresetComponent implements OnInit {
   displayOrder = [
     'card',
     'commodities',
+    'thinCrews',
+    'hoeCrews',
     'irrigationEntry',
     'irrigationEntryFertilizers',
     'irrigationEntryChemicals',
@@ -32,7 +34,7 @@ export class EditPresetComponent implements OnInit {
     'tractorEntryChemicals',
     'preChemicals',
     'preChemicalsChemical',
-    'preChemicalsFertilizer'
+    'preChemicalsFertilizer',
   ];
 
   ngOnInit() {
@@ -111,6 +113,10 @@ export class EditPresetComponent implements OnInit {
   }
 
   public submit() {
+    if (!this.preset.name) {
+      AlertService.newBasicAlert('Error: Please Set Preset Name', true);
+      return;
+    }
     this.exportPresetService.updateExportPreset(this.preset.id, this.preset).subscribe(
       (data) => {
         if (data.success) {

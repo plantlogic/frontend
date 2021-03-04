@@ -32,10 +32,10 @@
         <legend>Card</legend>
         <div class="row m-2" *ngFor="let e of preset['card']; let i = index">
           <div class="col col-auto">
-            <button type="button" color="light" mdbBtn class="float-right" (click)="shiftDown('card', e.key)" size="sm" floating="true" mdbWavesEffect [disabled]="i >= preset['card'].length - 1">
+            <button type="button" mdbBtn class="float-right btn-info ml-1" (click)="shiftDown('card', e.key)" size="sm" floating="true" mdbWavesEffect [disabled]="i >= preset['card'].length - 1">
               <i class="fa fa-chevron-down" aria-hidden="true"></i>
             </button>
-            <button type="button" color="light" mdbBtn class="float-right" (click)="shiftUp('card', e.key)" size="sm" floating="true" mdbWavesEffect [disabled]="i <= 0" >
+            <button type="button" mdbBtn class="float-right btn-info" (click)="shiftUp('card', e.key)" size="sm" floating="true" mdbWavesEffect [disabled]="i <= 0" >
               <i class="fa fa-chevron-up" aria-hidden="true"></i>
             </button>
           </div>
@@ -64,11 +64,11 @@
           <div id="{{'card-' + e.key + '-nested'}}" class="col m-4 nested-1 collapse" *ngIf="e.value && preset.hasNestedObject('card', e.key)">                
               <div class="row m-2" *ngFor="let f of preset[preset.getDynamicAccessor('card', e.key)]; let j = index">
                 <div class="col col-auto">
-                  <button type="button" color="light" mdbBtn class="float-right" (click)="shiftDown(preset.getDynamicAccessor('card', e.key), f.key)" size="sm" floating="true" 
+                  <button type="button" mdbBtn class="float-right btn-info ml-1" (click)="shiftDown(preset.getDynamicAccessor('card', e.key), f.key)" size="sm" floating="true" 
                     mdbWavesEffect [disabled]="j >= preset[preset.getDynamicAccessor('card', e.key)].length - 1">
                     <i class="fa fa-chevron-down" aria-hidden="true"></i>
                   </button>
-                  <button type="button" color="light" mdbBtn class="float-right" (click)="shiftUp(preset.getDynamicAccessor('card', e.key), f.key)" size="sm" floating="true" mdbWavesEffect [disabled]="j <= 0" >
+                  <button type="button" mdbBtn class="float-right btn-info" (click)="shiftUp(preset.getDynamicAccessor('card', e.key), f.key)" size="sm" floating="true" mdbWavesEffect [disabled]="j <= 0" >
                     <i class="fa fa-chevron-up" aria-hidden="true"></i>
                   </button>
                 </div>
@@ -97,11 +97,11 @@
                 <div id="{{preset.getDynamicAccessor('card', e.key) + '-' + f.key + '-nested'}}" class="col m-4 nested-1 collapse" *ngIf="f.value && preset.hasNestedObject(preset.getDynamicAccessor('card', e.key), f.key)">                
                   <div class="row m-2" *ngFor="let g of preset[preset.getDynamicAccessor(preset.getDynamicAccessor('card', e.key), f.key)]; let k = index">
                     <div class="col col-auto">
-                      <button type="button" color="light" mdbBtn class="float-right" (click)="shiftDown(preset.getDynamicAccessor(preset.getDynamicAccessor('card', e.key), f.key), g.key)" size="sm" floating="true" 
+                      <button type="button" mdbBtn class="float-right btn-info ml-1" (click)="shiftDown(preset.getDynamicAccessor(preset.getDynamicAccessor('card', e.key), f.key), g.key)" size="sm" floating="true" 
                         mdbWavesEffect [disabled]="k >= preset[preset.getDynamicAccessor(preset.getDynamicAccessor('card', e.key), f.key)].length - 1">
                         <i class="fa fa-chevron-down" aria-hidden="true"></i>
                       </button>
-                      <button type="button" color="light" mdbBtn class="float-right" (click)="shiftUp(preset.getDynamicAccessor(preset.getDynamicAccessor('card', e.key), f.key), g.key)" size="sm" floating="true" mdbWavesEffect [disabled]="k <= 0" >
+                      <button type="button" mdbBtn class="float-right btn-info" (click)="shiftUp(preset.getDynamicAccessor(preset.getDynamicAccessor('card', e.key), f.key), g.key)" size="sm" floating="true" mdbWavesEffect [disabled]="k <= 0" >
                         <i class="fa fa-chevron-up" aria-hidden="true"></i>
                       </button>
                     </div>

@@ -26,6 +26,8 @@ import {AppAdminComponent} from './card/admin/app-admin.component';
 import {AddChemicalEntryComponent} from './card/entry/open/add-chemical/add-chemical-entry.component';
 import { AddPresetComponent } from './card/management/export/add-preset/add-preset.component';
 import { EditPresetComponent } from './card/management/export/edit-preset/edit-preset.component';
+import { CardThinHoeComponent } from './card/thinHoe/thinHoe.component';
+import { OpenCardThinHoeComponent } from './card/thinHoe/open/open-card-thinHoe.component';
 
 
 const routes: Routes = [
@@ -243,6 +245,27 @@ const routes: Routes = [
     data: {
       parent: '/contractor',
       role: [PlRole.CONTRACTOR_VIEW, PlRole.CONTRACTOR_EDIT]
+    }
+  },
+
+  // Thin & Hoe Card Management
+  {
+    path: 'thinHoe',
+    component: CardThinHoeComponent,
+    canActivate: [RoleGuard],
+    data: {
+      // Only view is required to access page
+      // Enforce TH_EDIT check when modifying any data
+      role: [PlRole.TH_VIEW]
+    }
+  },
+  {
+    path: 'thinHoe/o/:id',
+    component: OpenCardThinHoeComponent,
+    canActivate: [RoleGuard],
+    data: {
+      parent: '/thinHoe',
+      role: [PlRole.TH_VIEW, PlRole.TH_EDIT]
     }
   },
 

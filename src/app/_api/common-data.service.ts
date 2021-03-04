@@ -84,6 +84,11 @@ export const CommonLookup = {
     sort: true,
     type: 'text'
   },
+  thinHoeCrew: {
+    name: 'Thin & Hoe Crews',
+    sort: true,
+    type: 'custom'
+  },
   tractorOperators: {
     name: 'Tractor Operators',
     sort: true,

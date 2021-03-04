@@ -109,7 +109,7 @@ export class CommonFormDataService {
       return arr.sort(this.compareSimpleText);
     } else if (type === 'number') {
       return arr.sort(this.compareSimpleNumber);
-    } else if (type === 'hashTable') {
+    } else if (type === 'hashTable' || type === 'custom') {
       return arr.sort(this.compareHashTableText);
     }
     return arr;

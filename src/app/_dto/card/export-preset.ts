@@ -10,6 +10,8 @@ export class ExportPreset {
             tractor : false,
             commodities: false,
             preChemicals: false,
+            thinCrews: false,
+            hoeCrews: false
         },
         irrigationEntry : {
             fertilizers: false,
@@ -31,14 +33,16 @@ export class ExportPreset {
         {key: 'fieldID', value : true, display: 'Field Id'},
         {key: 'closed', value : true, display: 'Closed'},
         {key: 'commodities', value : true, display: 'Commodities'},
+        {key: 'thinCrews', value : true, display: 'Thin Crews'},
+        {key: 'hoeCrews', value : true, display: 'Hoe Crews'},
         {key: 'ranchManagerName', value : true, display: 'Ranch Manager Name'},
         {key: 'shippers', value : true, display: 'Shippers'},
         {key: 'planterNumber', value : true, display: 'Planter Number'},
         {key: 'wetDate', value : true, display: 'Wet Date'},
-        {key: 'thinDate', value : true, display: 'Thin Date'},
-        {key: 'thinType', value : true, display: 'Thin Type'},
-        {key: 'hoeDate', value : true, display: 'Hoe Date'},
-        {key: 'hoeType', value : true, display: 'Hoe Type'},
+        // {key: 'thinDate', value : true, display: 'Thin Date [Legacy]'},
+        // {key: 'thinType', value : true, display: 'Thin Type [Legacy]'},
+        // {key: 'hoeDate', value : true, display: 'Hoe Date [Legacy]'},
+        // {key: 'hoeType', value : true, display: 'Hoe Type [Legacy]'},
         {key: 'harvestDate', value : true, display: 'Harvest Date'},
         {key: 'cropYear', value : true, display: 'Crop Year'},
         {key: 'totalAcres', value : true, display: 'Total Acres'},
@@ -81,6 +85,24 @@ export class ExportPreset {
         {key: 'date', value: true, display: 'Date'},
         {key: 'chemical', value: true, display: 'Chemical'},
         {key: 'fertilizer', value: true, display: 'Fertilizer'}
+    ];
+
+    thinCrews = [
+        {key: 'date', value: true, display: 'Date'},
+        {key: 'crew', value: true, display: 'Crew'},
+        {key: 'numEmployees', value: true, display: '# Employees'},
+        {key: 'hoursWorked', value: true, display: 'Hours Worked'},
+        {key: 'comment', value: true, display: 'Comment'},
+        {key: 'cpa', value: true, display: '$/Acre'}
+    ];
+
+    hoeCrews = [
+        {key: 'date', value: true, display: 'Date'},
+        {key: 'crew', value: true, display: 'Crew'},
+        {key: 'numEmployees', value: true, display: '# Employees'},
+        {key: 'hoursWorked', value: true, display: 'Hours Worked'},
+        {key: 'comment', value: true, display: 'Comment'},
+        {key: 'cpa', value: true, display: '$/Acre'}
     ];
 
     // 3rd Level Depth
@@ -172,6 +194,10 @@ export class ExportPreset {
                         return 'tractorEntry';
                     case 'preChemicals':
                         return 'preChemicals';
+                    case 'thinCrews':
+                        return 'thinCrews';
+                    case 'hoeCrews':
+                        return 'hoeCrews';
                     default:
                         return null;
                 }
@@ -215,6 +241,8 @@ export class ExportPreset {
                     case 'irrigation':
                     case 'tractor':
                     case 'preChemicals':
+                    case 'thinCrews':
+                    case 'hoeCrews':
                         return true;
                     default:
                         return false;

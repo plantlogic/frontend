@@ -5,6 +5,7 @@ import {Observable} from 'rxjs';
 import {BasicDTO} from '../_dto/basicDTO';
 import {environment} from '../../environments/environment';
 import { Comment } from '../_dto/card/comment';
+import { ThinHoeCrew } from '../_dto/card/thinHoeCrew';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +23,14 @@ export class CardEditService {
     return this.http.put<BasicDTO<null>>(environment.ApiUrl + '/data/edit/ranches/' + id + '/setComments', comments, this.httpOptions);
   }
 
+  public setCardThinning(id: string, thinCrews: ThinHoeCrew[]): Observable<BasicDTO<null>> {
+    return this.http.put<BasicDTO<null>>(environment.ApiUrl + '/data/edit/ranches/' + id + '/setThinning', thinCrews, this.httpOptions);
+  }
+
+  public setCardHoeing(id: string, hoeCrews: ThinHoeCrew[]): Observable<BasicDTO<null>> {
+    return this.http.put<BasicDTO<null>>(environment.ApiUrl + '/data/edit/ranches/' + id + '/setHoeing', hoeCrews, this.httpOptions);
+  }
+
   public setCardState(id: string, closed: boolean): Observable<BasicDTO<null>> {
     return this.http.put<BasicDTO<null>>(environment.ApiUrl + '/data/edit/ranches/' + id + '/state?closed=' + closed,
       null, this.httpOptions);
@@ -29,5 +38,9 @@ export class CardEditService {
 
   public deleteCard(id: string): Observable<BasicDTO<null>> {
     return this.http.delete<BasicDTO<null>>(environment.ApiUrl + '/data/edit/ranches/' + id, this.httpOptions);
+  }
+
+  public updateAllCardsToThinHoeCrews(): Observable<BasicDTO<null>> {
+    return this.http.put<BasicDTO<null>>(environment.ApiUrl + '/data/edit/updateCardsToThinHoeCrews', this.httpOptions);
   }
 }

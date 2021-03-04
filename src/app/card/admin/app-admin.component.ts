@@ -41,6 +41,10 @@ export class AppAdminComponent implements OnInit {
     const newCommon = {id: (new ObjectID()).toHexString()};
     if (CommonLookup[`${key}`].type === 'hashTable') {
       newCommon[`value`] = {key: newValue, value: []};
+    } else if (CommonLookup[`${key}`].type === 'custom') {
+      const newWage = (document.getElementById(key + 'NewValueWage') as HTMLInputElement).value;
+      const newOverhead = (document.getElementById(key + 'NewValueOverhead') as HTMLInputElement).value;
+      newCommon[`value`] = {key: newValue, value: {wage: newWage, overhead: newOverhead}};
     } else {
       newCommon[`value`] = newValue;
     }
@@ -51,6 +55,8 @@ export class AppAdminComponent implements OnInit {
     }
     this.updateCommon(key);
     (document.getElementById(key + 'NewValue') as HTMLInputElement).value = '';
+    (document.getElementById(key + 'NewValueWage') as HTMLInputElement).value = '';
+    (document.getElementById(key + 'NewValueOverhead') as HTMLInputElement).value = '';
   }
 
   public addSubValue(key: string, c, displayIndex: number): void {
@@ -119,6 +125,18 @@ export class AppAdminComponent implements OnInit {
           });
         });
         return arr;
+      } else if (this.getLookupType(key) === 'custom') {
+        const arr = [];
+        commonValues.forEach((entry) => {
+          arr.push({
+            id: entry.id, // thinHoeCrew
+            value : {
+              key : Object.keys(entry.value)[0], // "name"
+              value: entry.value[Object.keys(entry.value)[0]] // {wage, overhead}
+            }
+          });
+        });
+        return arr;
       }
       return commonValues;
     } catch (e) {
@@ -130,8 +148,14 @@ export class AppAdminComponent implements OnInit {
   // Gets sorted data whose CommonLookup data match parameters
   public getData(isHashTable: boolean, sort: boolean): Array<any> {
     return this.sortedCommonArray.filter((e) => {
-      return (CommonLookup[e.key].sort === sort) && ((CommonLookup[e.key].type === 'hashTable') === isHashTable);
+      return (CommonLookup[e.key].sort === sort)
+          && (((CommonLookup[e.key].type === 'hashTable')) === isHashTable)
+          && (CommonLookup[e.key].type !== 'custom');
     });
+  }
+
+  public getDataManualType(type: string): Array<any> {
+    return this.sortedCommonArray.filter((e) => CommonLookup[e.key].type === type);
   }
 
   // Retrieves the lookup name for a key (better for display)
@@ -169,7 +193,8 @@ export class AppAdminComponent implements OnInit {
     newAlert.color = 'warning';
     newAlert.title = 'Delete Common Data';
     newAlert.message = `This will permanently remove: ` +
-                       `${(CommonLookup[`${key}`].type === 'hashTable') ? value.value[Object.keys(value.value)[0]] : value.value}` +
+                       `${(CommonLookup[`${key}`].type === 'hashTable' || CommonLookup[`${key}`].type === 'custom')
+                        ? value.value[Object.keys(value.value)[0]] : value.value}` +
                        ` from ${CommonLookup[`${key}`].name}. Are you sure?`;
     newAlert.actionName = 'Delete';
     newAlert.actionClosesAlert = true;
@@ -231,7 +256,7 @@ export class AppAdminComponent implements OnInit {
       return arr.sort(this.compareSimpleText);
     } else if (type === 'number') {
       return arr.sort(this.compareSimpleNumber);
-    } else if (type === 'hashTable') {
+    } else if (type === 'hashTable' || type === 'custom') {
       return arr.sort(this.compareHashTableText);
     }
     return arr;
@@ -245,6 +270,14 @@ export class AppAdminComponent implements OnInit {
     const arr = this.sortedCommonArray.filter((e) => e.key === key)[0].values;
     let valuesToSend = [];
     if (CommonLookup[`${key}`].type === 'hashTable') {
+      arr.forEach((e) => {
+        const copy = { ...e};
+        const temp = {};
+        temp[copy[`value`][`key`]] = copy[`value`][`value`];
+        copy[`value`] = temp;
+        valuesToSend.push(copy);
+      });
+    } else if (CommonLookup[`${key}`].type === 'custom') { // Same process as normal hashtable?
       arr.forEach((e) => {
         const copy = { ...e};
         const temp = {};
