@@ -380,18 +380,4 @@ export class CardManagementComponent implements OnInit {
     }
     this.loadCardDataFiltered(false);
   }
-
-  // TEMP FUNCTION TO UPDATE HOE/THIN CARD STRUCTURE. DELETE LATER
-  public updateAllHoeThinEntries() {
-    this.cardEdit.updateAllCardsToThinHoeCrews().subscribe((e) => {
-      if (e.success) {
-        AlertService.newBasicAlert('Cards Updated Successfully', false);
-      } else {
-        AlertService.newBasicAlert('Error: ' + e.error, true);
-      }
-    },
-    (failure) => {
-      AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
-    });
-  }
 }
