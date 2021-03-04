@@ -41,6 +41,8 @@ import {AddChemicalEntryComponent} from './card/entry/open/add-chemical/add-chem
 import { NoCacheHeadersInterceptor } from './_auth/NoCacheHeadersInterceptor';
 import { AddPresetComponent } from './card/management/export/add-preset/add-preset.component';
 import { EditPresetComponent } from './card/management/export/edit-preset/edit-preset.component';
+import { CardThinHoeComponent } from './card/thinHoe/thinHoe.component';
+import { OpenCardThinHoeComponent } from './card/thinHoe/open/open-card-thinHoe.component';
 
 
 @NgModule({
@@ -72,6 +74,8 @@ import { EditPresetComponent } from './card/management/export/edit-preset/edit-p
     BackButtonComponent,
     AddChemicalEntryComponent,
     CardContractorComponent,
+    CardThinHoeComponent,
+    OpenCardThinHoeComponent,
     AddPresetComponent,
     EditPresetComponent
   ],

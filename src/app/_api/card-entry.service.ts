@@ -41,10 +41,10 @@ export class CardEntryService {
     );
   }
 
-  public addWetThinHoeData(id: string, card: Card): Observable<BasicDTO<null>> {
+  public addWetDate(id: string, wetDate: Date): Observable<BasicDTO<null>> {
     return this.http.post<BasicDTO<null>>(
-      environment.ApiUrl + '/data/entry/ranches/' + id + '/wet.thin.hoe',
-      card, this.httpOptions
+      environment.ApiUrl + '/data/entry/ranches/' + id + '/wetDate',
+      wetDate, this.httpOptions
     );
   }
 

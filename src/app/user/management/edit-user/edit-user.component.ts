@@ -160,6 +160,8 @@ export class EditUserComponent implements OnInit {
     || roles.includes(PlRole[PlRole.DATA_EDIT.toString()])
     || roles.includes(PlRole[PlRole.CONTRACTOR_VIEW.toString()])
     || roles.includes(PlRole[PlRole.CONTRACTOR_EDIT.toString()])
+    || roles.includes(PlRole[PlRole.TH_VIEW.toString()])
+    || roles.includes(PlRole[PlRole.TH_EDIT.toString()])
     || roles.includes(PlRole[PlRole.IRRIGATOR.toString()]);
   }
 

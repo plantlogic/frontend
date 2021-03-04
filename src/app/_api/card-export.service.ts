@@ -16,6 +16,7 @@ import { IrrigationEntry } from '../_dto/card/irrigation-entry';
 import { ExportPreset } from '../_dto/card/export-preset';
 import { Commodities } from '../_dto/card/commodities';
 import { Chemicals } from '../_dto/card/chemicals';
+import { ThinHoeCrew } from '../_dto/card/thinHoeCrew';
 
 @Injectable({
   providedIn: 'root'
@@ -76,12 +77,25 @@ export class CardExportService {
         f.unit = this.findCommonValue(commonData, 'chemicalRateUnits', ['value'], f.unit);
       }
     });
-    if (!card.hoeDate) {
-      card.hoeType = null;
-    }
-    if (!card.thinDate) {
-      card.thinType = null;
-    }
+    // if (!card.hoeDate) {
+    //   card.hoeType = null;
+    // }
+    // if (!card.thinDate) {
+    //   card.thinType = null;
+    // }
+    card.thinDate = null;
+    card.thinType = null;
+    card.hoeDate = null;
+    card.hoeType = null;
+
+    card.initThinHoeCostPerAcre(commonData.thinHoeCrew);
+    card.thinCrewsArray.forEach((e) => {
+      e.crew = this.findCommonValue(commonData, 'thinHoeCrew', ['value', 'key'], e.crew);
+    });
+    card.hoeCrewsArray.forEach((e) => {
+      e.crew = this.findCommonValue(commonData, 'thinHoeCrew', ['value', 'key'], e.crew);
+    });
+
     return card;
   }
 
@@ -452,7 +466,19 @@ export class CardExportService {
                               ranches: Array<string>, commodities: Array<string>,
                               includeUnharvested: boolean, preset: ExportPreset) {
       preset = Object.assign(new ExportPreset(), preset);
-
+      // Set old (legacy) preset values to false
+      preset.card.forEach((e) => {
+        switch (e.key) {
+          case 'thinDate':
+          case 'thinType':
+          case 'hoeDate':
+          case 'hoeType':
+            e.value = false;
+            break;
+          default:
+            break;
+        }
+      });
       this.http.get<BasicDTO<Card[]>>(environment.ApiUrl + '/data/view/ranches', this.httpOptions).subscribe(
         (data) => {
           // If data is successful retrieved
@@ -469,7 +495,9 @@ export class CardExportService {
                 irrigation: (preset.dynamic.card.irrigation) ? 0 : 12,
                 tractor: (preset.dynamic.card.tractor) ? 0 : 12,
                 commodities: (preset.dynamic.card.commodities) ? 0 : 3,
-                preChemicals: (preset.dynamic.card.preChemicals) ? 0 : 3
+                preChemicals: (preset.dynamic.card.preChemicals) ? 0 : 3,
+                thinCrews: (preset.dynamic.card.thinCrews) ? 0 : 1,
+                hoeCrews: (preset.dynamic.card.hoeCrews) ? 0 : 3
               },
               irrigationEntry: {
                 fertilizers: (preset.dynamic.irrigationEntry.fertilizers) ? 0 : 2,
@@ -506,6 +534,12 @@ export class CardExportService {
               }
               if (preset.dynamic.card.preChemicals) {
                 numEntries.card.preChemicals = Math.max(numEntries.card.preChemicals, card.preChemicalArray.length);
+              }
+              if (preset.dynamic.card.thinCrews) {
+                numEntries.card.thinCrews = Math.max(numEntries.card.thinCrews, card.thinCrewsArray.length);
+              }
+              if (preset.dynamic.card.hoeCrews) {
+                numEntries.card.hoeCrews = Math.max(numEntries.card.hoeCrews, card.hoeCrewsArray.length);
               }
               if (preset.dynamic.irrigationEntry.fertilizers) {
                 numEntries.irrigationEntry.fertilizers = Math.max(
@@ -568,7 +602,7 @@ export class CardExportService {
           // Format is [x][y]: [x] is a row and [y] is a column. Commas and newlines will automatically be added.
           const table: Array<Array<string>> = [];
           // Add column labels
-          table.push(['', '', '', '', '', '', '', '', '', '', '', '',
+          table.push(['', '', '', '', '', '', '', '',
                       '1st', 'Irrigation', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
                       '2nd', 'Irrigation', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
                       '3rd', 'Irrigation', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
@@ -601,7 +635,7 @@ export class CardExportService {
                       '3rd', 'Pre Plant', '', '', '', '', '', '',
           ]);
           table.push(['Field ID', 'Ranch Name', 'Ranch Manager', 'Lot Number', 'Shippers',
-                      'Wet Date', 'Thin Date', 'Thin Type', 'Hoe Date', 'Hoe Type', 'Harvest Date', '',
+                      'Wet Date', 'Harvest Date', '',
                       // Irrigation Data, 12 total
                       'Date', 'Irrigator', 'Method', 'Duration (Hours)', 'Chemical 1', 'Rate /ac', 'Unit', 'Chemical 2', 'Rate /ac', 'Unit',
                                                                  'Fertilizer 1', 'Rate /ac', 'Unit', 'Fertilizer 2', 'Rate /ac', 'Unit', '',
@@ -710,10 +744,6 @@ export class CardExportService {
                 (x.lotNumber) ? x.lotNumber : '',
                 (x.shippersString) ? x.shippersString : '',
                 this.dateToDisplay(x.wetDate),
-                this.dateToDisplay(x.thinDate),
-                (x.thinType) ? String(x.thinType) : '',
-                this.dateToDisplay(x.hoeDate),
-                (x.hoeType) ? String(x.hoeType) : '',
                 this.dateToDisplay(x.harvestDate)
               );
 
@@ -1285,6 +1315,84 @@ export class CardExportService {
             });
             dataLine.push(''); // Add Spacer
           }
+        } else if (e.key === 'thinCrews') {
+          if (lastEntryWasSingleValue) {
+            dataLine.push('');
+            lastEntryWasSingleValue = false;
+          }
+          for (let i = 0; i < numEntries.card.thinCrews; i++) {
+            preset.thinCrews.forEach((e2) => {
+              if (e2.value === true) {
+                if (card.thinCrewsArray[`${i}`]) {
+                  const temp: ThinHoeCrew = card.thinCrewsArray[`${i}`];
+                  switch (e2.key) {
+                    case 'date':
+                      dataLine.push( (temp.date) ? tempThis.dateToDisplay(temp.date) : '');
+                      break;
+                    case 'crew':
+                      dataLine.push( (temp.crew) ? temp.crew : '');
+                      break;
+                    case 'numEmployees':
+                      dataLine.push( (temp.numEmployees != null) ? String(temp.numEmployees) : '');
+                      break;
+                    case 'hoursWorked':
+                      dataLine.push( (temp.hoursWorked != null) ? String(temp.hoursWorked) : '');
+                      break;
+                    case 'comment':
+                      dataLine.push( (temp.comment) ? temp.comment : '');
+                      break;
+                    case 'cpa':
+                      dataLine.push( (temp.cpa != null) ? String((Math.round(temp.cpa * 100) / 100).toFixed(2)) : '');
+                      break;
+                    default:
+                      break;
+                  }
+                } else {
+                  dataLine.push('');
+                }
+              }
+            });
+            dataLine.push('');
+          }
+        } else if (e.key === 'hoeCrews') {
+          if (lastEntryWasSingleValue) {
+            dataLine.push('');
+            lastEntryWasSingleValue = false;
+          }
+          for (let i = 0; i < numEntries.card.hoeCrews; i++) {
+            preset.hoeCrews.forEach((e2) => {
+              if (e2.value === true) {
+                if (card.hoeCrewsArray[`${i}`]) {
+                  const temp: ThinHoeCrew = card.hoeCrewsArray[`${i}`];
+                  switch (e2.key) {
+                    case 'date':
+                      dataLine.push( (temp.date) ? tempThis.dateToDisplay(temp.date) : '');
+                      break;
+                    case 'crew':
+                      dataLine.push( (temp.crew) ? temp.crew : '');
+                      break;
+                    case 'numEmployees':
+                      dataLine.push( (temp.numEmployees != null) ? String(temp.numEmployees) : '');
+                      break;
+                    case 'hoursWorked':
+                      dataLine.push( (temp.hoursWorked != null) ? String(temp.hoursWorked) : '');
+                      break;
+                    case 'comment':
+                      dataLine.push( (temp.comment) ? temp.comment : '');
+                      break;
+                    case 'cpa':
+                      dataLine.push( (temp.cpa != null) ? String((Math.round(temp.cpa * 100) / 100).toFixed(2)) : '');
+                      break;
+                    default:
+                      break;
+                  }
+                } else {
+                  dataLine.push('');
+                }
+              }
+            });
+            dataLine.push('');
+          }
         } else {
           lastEntryWasSingleValue = true;
           switch (e.key) {
@@ -1323,16 +1431,20 @@ export class CardExportService {
               dataLine.push( (card.wetDate) ? tempThis.dateToDisplay(card.wetDate) : '');
               break;
             case 'thinDate':
-              dataLine.push( (card.thinDate) ? tempThis.dateToDisplay(card.thinDate) : '');
+              // dataLine.push( (card.thinDate) ? tempThis.dateToDisplay(card.thinDate) : '');
+              dataLine.push('');
               break;
             case 'thinType':
-              dataLine.push( (card.thinType) ? String(card.thinType) : '');
+              // dataLine.push( (card.thinType) ? String(card.thinType) : '');
+              dataLine.push('');
               break;
             case 'hoeDate':
-              dataLine.push( (card.hoeDate) ? tempThis.dateToDisplay(card.hoeDate) : '');
+              // dataLine.push( (card.hoeDate) ? tempThis.dateToDisplay(card.hoeDate) : '');
+              dataLine.push('');
               break;
             case 'hoeType':
-              dataLine.push( (card.hoeType) ? String(card.hoeType) : '');
+              // dataLine.push( (card.hoeType) ? String(card.hoeType) : '');
+              dataLine.push('');
               break;
             case 'harvestDate':
               dataLine.push( (card.harvestDate) ? tempThis.dateToDisplay(card.harvestDate) : '');
@@ -1467,6 +1579,32 @@ export class CardExportService {
             });
             dataLine.push(''); // Add Spacer
           }
+        } else if (e.key === 'thinCrews') {
+          if (lastEntryWasSingleValue) {
+            dataLine.push('');
+            lastEntryWasSingleValue = false;
+          }
+          for (let i = 0; i < numEntries.card.thinCrews; i++) {
+            preset.thinCrews.forEach((e2) => {
+              if (e2.value === true) {
+                dataLine.push(e2.display);
+              }
+            });
+            dataLine.push(''); // Add Spacer
+          }
+        } else if (e.key === 'hoeCrews') {
+          if (lastEntryWasSingleValue) {
+            dataLine.push('');
+            lastEntryWasSingleValue = false;
+          }
+          for (let i = 0; i < numEntries.card.hoeCrews; i++) {
+            preset.hoeCrews.forEach((e2) => {
+              if (e2.value === true) {
+                dataLine.push(e2.display);
+              }
+            });
+            dataLine.push(''); // Add Spacer
+          }
         } else {
           lastEntryWasSingleValue = true;
           dataLine.push(e.display);
@@ -1503,7 +1641,7 @@ export class CardExportService {
                 dataLine.push(this.indexToDisplay(i) + ' Commodity');
               } else {
                 // If there is at least 2 columns, display "index", "Commodity"
-                dataLine.push(this.indexToDisplay(i), 'Commodity');
+                dataLine.push(this.indexToDisplay(i), ' Commodity');
                 // Followed by whitespaces * the number of remaining columns for this entry
                 for (let j = 2; j < colCount; j++) { dataLine.push(''); }
               }
@@ -1597,6 +1735,56 @@ export class CardExportService {
               dataLine.push(''); // Add Spacer
             }
           }
+        } else if (e.key === 'thinCrews') {
+          if (lastEntryWasSingleValue) {
+            dataLine.push('');
+            lastEntryWasSingleValue = false;
+          }
+          // Get the number of entries to be displayed (dynamic or static)
+          const entryCount: number = numEntries.card.thinCrews;
+          // Get the number of columns needed for each entry (how many properties are enabled for display)
+          const colCount: number = preset.thinCrews.filter((e2) => e2.value === true).length;
+          // If there is atleast 1 column needed and one entry to show, display something
+          if (colCount > 0) {
+            // For each entry
+            for (let i = 1; i <= entryCount; i++) {
+              if (colCount === 1) {
+                // If there is 1 column, display "1st Commodity"
+                dataLine.push(this.indexToDisplay(i) + ' Thin Crew Entry');
+              } else {
+                // If there is at least 2 columns, display "index", "Commodity"
+                dataLine.push(this.indexToDisplay(i), ' Thin Crew Entry');
+                // Followed by whitespaces * the number of remaining columns for this entry
+                for (let j = 2; j < colCount; j++) { dataLine.push(''); }
+              }
+              dataLine.push(''); // Add Spacer
+            }
+          }
+        } else if (e.key === 'hoeCrews') {
+          if (lastEntryWasSingleValue) {
+            dataLine.push('');
+            lastEntryWasSingleValue = false;
+          }
+          // Get the number of entries to be displayed (dynamic or static)
+          const entryCount: number = numEntries.card.hoeCrews;
+          // Get the number of columns needed for each entry (how many properties are enabled for display)
+          const colCount: number = preset.hoeCrews.filter((e2) => e2.value === true).length;
+          // If there is atleast 1 column needed and one entry to show, display something
+          if (colCount > 0) {
+            // For each entry
+            for (let i = 1; i <= entryCount; i++) {
+              if (colCount === 1) {
+                // If there is 1 column, display "1st Commodity"
+                dataLine.push(this.indexToDisplay(i) + ' Hoe Crew Entry');
+              } else {
+                // If there is at least 2 columns, display "index", "Commodity"
+                dataLine.push(this.indexToDisplay(i), ' Hoe Crew Entry');
+                // Followed by whitespaces * the number of remaining columns for this entry
+                for (let j = 2; j < colCount; j++) { dataLine.push(''); }
+              }
+              dataLine.push(''); // Add Spacer
+            }
+          }
         } else {
           lastEntryWasSingleValue = true;
           // If the key represents a single point of data
@@ -1630,7 +1818,7 @@ export class CardExportService {
     const userRanchAccess = this.auth.getRanchAccess();
     this.common.getAllValues((data) => {
       Object.keys(CommonLookup).forEach((key) => {
-        if (CommonLookup[`${key}`].type === 'hashTable') {
+        if ((CommonLookup[`${key}`].type === 'hashTable') || (CommonLookup[`${key}`].type === 'custom')) {
           const temp = [];
           data[`${key}`].forEach((entry) => {
             temp.push({

@@ -1,0 +1,69 @@
+th,
+td {
+  padding: 2px 6px 2px 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+table {
+  table-layout: fixed;
+}
+
+tfoot {
+  text-align: center;
+}
+
+select {
+  width: 90%;
+}
+
+.date {
+  width: 90%;
+}
+
+.page-btn {
+  border: solid 1px lightblue;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 2px;
+  padding: 4px;
+  display: inline-block;
+}
+
+.select-sm {
+  width: 80px;
+  float: right;
+  margin-right: 10px;
+}
+
+.hover .hover-text {
+  visibility: hidden;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+}
+
+.hover:hover .hover-text {
+  visibility: visible;
+}
+
+.noPerm {
+  cursor: help;
+}
+
+.selected {
+  background-color: lightblue;
+  font-weight: bold;
+}
+
+.no-display {
+  display: none;
+}
+
+.search-form input {
+  margin: 5px;
+}

@@ -12,6 +12,7 @@ import { AuthService } from 'src/app/_auth/auth.service';
 import { Alert } from 'src/app/_interact/alert/alert';
 import { Comment } from 'src/app/_dto/card/comment';
 import { PlRole } from 'src/app/_dto/user/pl-role.enum';
+import { from } from 'rxjs';
 
 @Component({
   selector: 'app-open-card-entry',
@@ -33,7 +34,7 @@ export class OpenCardEntryComponent implements OnInit {
 
   // create array of common keys, whose data is needed. Omit restricted options.
   commonKeys = ['bedTypes', 'chemicals', 'chemicalRateUnits', 'commodities',
-  'fertilizers', 'irrigators', 'irrigationMethod', 'shippers', 'tractorOperators', 'tractorWork'];
+  'fertilizers', 'irrigators', 'irrigationMethod', 'shippers', 'thinHoeCrew', 'tractorOperators', 'tractorWork'];
 
   ngOnInit() {
     const tempThis = this;
@@ -137,6 +138,12 @@ export class OpenCardEntryComponent implements OnInit {
           f.unit = this.findCommonValue('chemicalRateUnits', ['value'], f.unit);
         }
       }
+    });
+    card.thinCrewsArray.forEach((e) => {
+      e.crew = this.findCommonValue('thinHoeCrew', ['value', 'key'], e.crew);
+    });
+    card.hoeCrewsArray.forEach((e) => {
+      e.crew = this.findCommonValue('thinHoeCrew', ['value', 'key'], e.crew);
     });
     return card;
   }
@@ -316,7 +323,7 @@ export class OpenCardEntryComponent implements OnInit {
     const userRanchAccess = this.auth.getRanchAccess();
     this.common.getAllValues((data) => {
       this.commonKeys.forEach((key) => {
-        if (CommonLookup[`${key}`].type === 'hashTable') {
+        if ((CommonLookup[`${key}`].type === 'hashTable') || (CommonLookup[`${key}`].type === 'custom')) {
           const temp = [];
           data[`${key}`].forEach((entry) => {
             temp.push({
@@ -353,6 +360,7 @@ export class OpenCardEntryComponent implements OnInit {
         if (data.success) {
           this.card = (new Card()).copyConstructor(data.data);
           this.comments = (new Card()).copyConstructor(data.data).comments;
+          this.card.initThinHoeCostPerAcre(this.getCommon('thinHoeCrew'));
           // For display purposes, change any common IDs to their values
           this.card = this.cardIDsToValues(this.card);
           this.card.initShippersString();
@@ -372,37 +380,20 @@ export class OpenCardEntryComponent implements OnInit {
   }
 
   private saveDates(): void {
-    const newAlert = new Alert();
-    newAlert.color = 'warning';
-    newAlert.title = 'Confirm Dates';
-    newAlert.message = 'This will save the hoe, thin, and wet dates. Continue?';
-    newAlert.actionName = 'Confirm';
-    newAlert.actionClosesAlert = true;
-    newAlert.timeLeft = undefined;
-    newAlert.blockPageInteraction = true;
-    newAlert.closeName = 'Cancel';
-    newAlert.action$ = new EventEmitter<null>();
-
-    newAlert.subscribedAction$ = newAlert.action$.subscribe(() => {
-      let changed = 0;
-      if (this.card.wetDate) {
-        this.card.wetDate = (new Date(this.card.wetDate)).valueOf();
-        changed++;
-      }
-      if (this.card.thinDate) {
-        this.card.thinDate = (new Date(this.card.thinDate)).valueOf();
-        changed++;
-      }
-      if (this.card.hoeDate) {
-        this.card.hoeDate = (new Date(this.card.hoeDate)).valueOf();
-        changed++;
-      }
-      // this.datesSet = true;
-      if (changed > 0) {
-        this.cardService.addWetThinHoeData(this.card.id, this.card).subscribe();
-      }
-    });
-    AlertService.newAlert(newAlert);
+    if (this.card.wetDate) {
+      const wetDate: Date = (new Date(this.card.wetDate));
+      this.cardService.addWetDate(this.card.id, wetDate).subscribe((data) => {
+        if (data.success) {
+          AlertService.newBasicAlert('Change saved successfully!', false);
+          this.loadCardData(this.card.id);
+        } else {
+          AlertService.newBasicAlert('Error: ' + data.error, true);
+        }
+      },
+      (failure) => {
+        AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
+      });
+    }
   }
 
   public saveComments() {

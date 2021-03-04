@@ -18,6 +18,7 @@ import {Commodities} from '../../../_dto/card/commodities';
 import {CommonFormDataService} from 'src/app/_api/common-form-data.service';
 import { CommonLookup } from 'src/app/_api/common-data.service';
 import { Comment } from 'src/app/_dto/card/comment';
+import { ThinHoeCrew } from 'src/app/_dto/card/thinHoeCrew';
 
 @Component({
   selector: 'app-open-card',
@@ -51,7 +52,7 @@ export class OpenCardDataComponent implements OnInit {
   // create array of common keys, whose data is needed for card entry. Omit restricted options.
   commonKeys = (this.isShipper()) ? ['bedTypes', 'commodities', 'shippers'] :
                 ['bedTypes', 'chemicals', 'chemicalRateUnits', 'commodities',
-                'fertilizers', 'irrigationMethod', 'irrigators', 'shippers', 'tractorOperators',
+                'fertilizers', 'irrigationMethod', 'irrigators', 'shippers', 'thinHoeCrew', 'tractorOperators',
                 'tractorWork'];
 
   ngOnInit() {
@@ -84,6 +85,14 @@ export class OpenCardDataComponent implements OnInit {
 
   public addCommodities(): void {
     this.card.commodityArray.push(new Commodities());
+  }
+
+  public addHoeCrewEntry() {
+    this.card.hoeCrewsArray.push(new ThinHoeCrew());
+  }
+
+  public addThinCrewEntry() {
+    this.card.thinCrewsArray.push(new ThinHoeCrew());
   }
 
   public addTractorData(): void {
@@ -346,7 +355,7 @@ export class OpenCardDataComponent implements OnInit {
     const userRanchAccess = this.auth.getRanchAccess();
     this.common.getAllValues((data) => {
       this.commonKeys.forEach((key) => {
-        if (CommonLookup[`${key}`].type === 'hashTable') {
+        if ((CommonLookup[`${key}`].type === 'hashTable') || (CommonLookup[`${key}`].type === 'custom')) {
           const temp = [];
           data[`${key}`].forEach((entry) => {
             temp.push({
@@ -398,6 +407,7 @@ export class OpenCardDataComponent implements OnInit {
           if (data.success) {
             tempThis.card = (new Card()).copyConstructor(data.data);
             tempThis.comments = (new Card()).copyConstructor(data.data).comments;
+            tempThis.card.initThinHoeCostPerAcre(tempThis.getCommon('thinHoeCrew'));
             tempThis.card.initTotalAcres();
             // Set up shippers multiselect
             tempThis.common.getValues('shippers', (shippers) => {
@@ -442,7 +452,6 @@ export class OpenCardDataComponent implements OnInit {
     if (!this.setCardCommentsForUpdate()) { return; }
     const card = this.validateAndFix((new Card()).copyConstructor(this.card));
     if (!card) { return; }
-
     // If Valid, continue
     const newAlert = new Alert();
     newAlert.color = 'warning';
@@ -599,6 +608,14 @@ export class OpenCardDataComponent implements OnInit {
 
   public toggleEditingComment(): void {
     this.editingComment = !this.editingComment;
+  }
+
+  public updateHoeCrewCPA(index: number): void {
+    this.card.updateHoeCrewCPA(index, this.getCommon('thinHoeCrew'));
+  }
+
+  public updateThinCrewCPA(index: number): void {
+    this.card.updateThinCrewCPA(index, this.getCommon('thinHoeCrew'));
   }
 
   private validateAndFix(cardRaw: Card): Card {

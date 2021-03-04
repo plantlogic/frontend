@@ -65,6 +65,11 @@ export class HomeComponent implements OnInit {
         tempThis.generateOpenCommoditiesChart();
         tempThis.generateUserManagementElements();
       });
+    } else if (this.permissions[`TH_VIEW`]) {
+      // Redirect to thin/hoe page
+      this.message = 'Redirecting...';
+      this.redirecting = true;
+      setTimeout( () => { this.router.navigate(['/thinHoe']); }, 1000);
     } else {
       this.message = 'No view permission found, contact an administrator to be given access to view cards.'
                     + 'This can happen if a user has no permissions or has only edit permissions (e.g. Contractor Edit or Data Edit).';

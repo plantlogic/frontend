@@ -5,12 +5,15 @@ import {Chemicals} from './chemicals';
 import {Comment} from './comment';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Chemical } from './chemical';
+import { ThinHoeCrew } from './thinHoeCrew';
 
 export class Card {
   // Limits
   readonly MAX_LIST_SIZE_BIG: number = 12;
   readonly MAX_LIST_SIZE_SMALL: number = 3;
 
+  readonly thinCrewsMax: number = 1;
+  readonly hoeCrewsMax: number = 3;
 
   // Card ID (used by database to identify specific card)
   id: string;
@@ -65,6 +68,10 @@ export class Card {
   //
   hoeDate: number;
   //
+  thinCrews: Array<ThinHoeCrew> = new Array<ThinHoeCrew>();
+  //
+  hoeCrews: Array<ThinHoeCrew> = new Array<ThinHoeCrew>();
+  //
   harvestDate: number;
   //
   cropYear: number = new Date().getFullYear();
@@ -117,6 +124,24 @@ export class Card {
         temp.push(temp2);
       });
       this.tractor = temp;
+    }
+
+    if (card.thinCrews) {
+      const temp: Array<ThinHoeCrew> = new Array<ThinHoeCrew>();
+      card.thinCrews.forEach((c) => {
+        const temp2 = Object.assign(new ThinHoeCrew(), c);
+        temp.push(temp2);
+      });
+      this.thinCrews = temp;
+    }
+
+    if (card.hoeCrews) {
+      const temp: Array<ThinHoeCrew> = new Array<ThinHoeCrew>();
+      card.hoeCrews.forEach((c) => {
+        const temp2 = Object.assign(new ThinHoeCrew(), c);
+        temp.push(temp2);
+      });
+      this.hoeCrews = temp;
     }
 
     if (card.commodities) {
@@ -245,6 +270,46 @@ export class Card {
     return this.postChemicals.length >= this.postChemicalsMax;
   }
 
+  get thinCrewsArray(): Array<ThinHoeCrew> {
+    if (!this.thinCrews) { this.thinCrews = new Array<ThinHoeCrew>(); }
+    if (this.thinCrews.length > this.thinCrewsMax) {
+      this.thinCrews = this.thinCrews.slice(0, this.thinCrewsMax);
+    }
+    return this.thinCrews;
+  }
+
+  set thinCrewsArray(value: Array<ThinHoeCrew>) {
+    if (value.length > 1) {
+      this.thinCrews = value.slice(0, this.thinCrewsMax);
+    } else {
+      this.thinCrews = value;
+    }
+  }
+
+  thinCrewsFull(): boolean {
+    return this.thinCrews.length >= this.thinCrewsMax;
+  }
+
+  get hoeCrewsArray(): Array<ThinHoeCrew> {
+    if (!this.hoeCrews) { this.hoeCrews = new Array<ThinHoeCrew>(); }
+    if (this.hoeCrews.length > this.hoeCrewsMax) {
+      this.hoeCrews = this.hoeCrews.slice(0, this.hoeCrewsMax);
+    }
+    return this.hoeCrews;
+  }
+
+  set hoeCrewsArray(value: Array<ThinHoeCrew>) {
+    if (value.length > this.hoeCrewsMax) {
+      this.hoeCrews = value.slice(0, this.hoeCrewsMax);
+    } else {
+      this.hoeCrews = value;
+    }
+  }
+
+  hoeCrewsFull(): boolean {
+    return this.hoeCrews.length >= this.hoeCrewsMax;
+  }
+
   initCommodityString(): void {
     try {
       if (this.commodityArray) {
@@ -265,6 +330,73 @@ export class Card {
         this.shippersString = '';
       }
     } catch { console.log('Error when initializing shippers string'); }
+  }
+
+  initThinHoeCostPerAcre(thinHoeCommonData): void {
+    const that = this;
+    if (!this.totalAcres) { this.initTotalAcres(); }
+    // Init Thin Crews
+    this.thinCrewsArray.forEach((crew: ThinHoeCrew) => {
+      if (!that.totalAcres || that.totalAcres === 0) {
+        crew.cpa = 0;
+      } else {
+        let crewInfo = thinHoeCommonData.find((entry) => entry.id === crew.crew);
+        crewInfo = (crewInfo) ? crewInfo.value.value : { wage: 0, overhead: 100};
+        const numEmployees = (crew.numEmployees != null) ? crew.numEmployees : 1;
+        const hoursWorked = (crew.hoursWorked != null) ? crew.hoursWorked : 1;
+        crew.cpa = (numEmployees * hoursWorked * crewInfo.wage * (crewInfo.overhead / 100)) / that.totalAcres;
+      }
+    });
+    // Init Hoe Crews
+    this.hoeCrewsArray.forEach((crew: ThinHoeCrew) => {
+      if (!that.totalAcres || that.totalAcres === 0) {
+        crew.cpa = 0;
+      } else {
+        let crewInfo = thinHoeCommonData.find((entry) => entry.id === crew.crew);
+        crewInfo = (crewInfo) ? crewInfo.value.value : { wage: 0, overhead: 100};
+        const numEmployees = (crew.numEmployees != null) ? crew.numEmployees : 1;
+        const hoursWorked = (crew.hoursWorked != null) ? crew.hoursWorked : 1;
+        crew.cpa = (numEmployees * hoursWorked * crewInfo.wage * (crewInfo.overhead / 100)) / that.totalAcres;
+      }
+    });
+  }
+
+  updateHoeCrewCPA(hoeCrewsIndex: number, thinHoeCommonData): void {
+    if (!this.totalAcres) { this.initTotalAcres(); }
+    if (!this.totalAcres || this.totalAcres === 0) {
+      this.hoeCrewsArray[hoeCrewsIndex].cpa = 0;
+    } else {
+      const that = this;
+      const crew = that.hoeCrewsArray[hoeCrewsIndex];
+      let crewInfo = thinHoeCommonData.find((entry) => entry.id === crew.crew);
+      if (crewInfo) {
+        crewInfo = crewInfo.value.value;
+      } else {
+        crewInfo = {wage: 0, overhead: 0};
+      }
+      const numEmployees = (crew.numEmployees != null) ? crew.numEmployees : 1;
+      const hoursWorked = (crew.hoursWorked != null) ? crew.hoursWorked : 1;
+      crew.cpa = (numEmployees * hoursWorked * crewInfo.wage * (crewInfo.overhead / 100)) / that.totalAcres;
+    }
+  }
+
+  updateThinCrewCPA(thinCrewsIndex: number, thinHoeCommonData): void {
+    if (!this.totalAcres) { this.initTotalAcres(); }
+    if (!this.totalAcres || this.totalAcres === 0) {
+      this.thinCrewsArray[thinCrewsIndex].cpa = 0;
+    } else {
+      const that = this;
+      const crew = that.thinCrewsArray[thinCrewsIndex];
+      let crewInfo = thinHoeCommonData.find((entry) => entry.id === crew.crew);
+      if (crewInfo) {
+        crewInfo = crewInfo.value.value;
+      } else {
+        crewInfo = {wage: 0, overhead: 0};
+      }
+      const numEmployees = (crew.numEmployees != null) ? crew.numEmployees : 1;
+      const hoursWorked = (crew.hoursWorked != null) ? crew.hoursWorked : 1;
+      crew.cpa = (numEmployees * hoursWorked * crewInfo.wage * (crewInfo.overhead / 100)) / that.totalAcres;
+    }
   }
 
   initTotalAcres(): void {

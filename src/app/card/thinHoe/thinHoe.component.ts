@@ -1,9 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {Card} from '../../_dto/card/card';
+import {Card, WorkType} from '../../_dto/card/card';
 import {AlertService} from '../../_interact/alert/alert.service';
 import {TitleService} from '../../_interact/title.service';
 import {CardViewService} from '../../_api/card-view.service';
-import {CardEditService} from '../../_api/card-edit.service';
 import {MdbTableService} from 'angular-bootstrap-md';
 import {NavService} from '../../_interact/nav.service';
 import {AuthService} from '../../_auth/auth.service';
@@ -11,24 +10,23 @@ import {PlRole} from '../../_dto/user/pl-role.enum';
 import {CommonFormDataService} from 'src/app/_api/common-form-data.service';
 import {ActivatedRoute} from '@angular/router';
 import { CommonLookup } from 'src/app/_api/common-data.service';
-import { DbFilterResponse } from 'src/app/_dto/card/dbFilterResponse';
 import { DbFilter } from 'src/app/_dto/card/dbFilter';
+import { DbFilterResponse } from 'src/app/_dto/card/dbFilterResponse';
 
 @Component({
-  selector: 'app-management',
-  templateUrl: './card-management.component.html',
-  styleUrls: ['./card-management.component.scss']
-})
-export class CardManagementComponent implements OnInit {
-  constructor(private titleService: TitleService, private cardService: CardViewService, private cardEdit: CardEditService,
+    selector: 'app-thin-hoe',
+    templateUrl: './thinHoe.component.html',
+    styleUrls: ['./thinHoe.component.scss']
+  })
+  export class CardThinHoeComponent implements OnInit {
+  constructor(private titleService: TitleService, private cardService: CardViewService,
               private tableService: MdbTableService, private nav: NavService, public common: CommonFormDataService,
               private route: ActivatedRoute, private auth: AuthService) { }
 
-  cards: Card[] = [];
+  cards: any[] = [];
   cardsRaw: Card[] = [];
   cardSizeNonLimited: number;
   filterRanchName: string;
-  filterFieldID: string;
   filterLotNumber: string;
   filterCommodity: string;
   previous: string;
@@ -38,7 +36,6 @@ export class CardManagementComponent implements OnInit {
   pages: number[];
   hiddenPages: false;
 
-  // Alternative sorting for mobile
   filterSort: string;
   filterOrder: string;
 
@@ -47,7 +44,7 @@ export class CardManagementComponent implements OnInit {
 
   ngOnInit() {
     const tempThis = this;
-    this.titleService.setTitle('All Cards');
+    this.titleService.setTitle('Thin & Hoe Cards');
     this.initCommon((c) => {
       this.commonKeys.forEach((key) => {
         tempThis[`${key}`] = c[`${key}`];
@@ -59,7 +56,6 @@ export class CardManagementComponent implements OnInit {
   }
 
   private cardIDsToValues(card: Card): Card {
-    // Only convert what is needed on this page
     card.ranchName = this.findCommonValue('ranches', ['value'], card.ranchName);
     card.commodityArray.forEach((e) => {
       e.commodity = this.findCommonValue('commodities', ['value', 'key'], e.commodity);
@@ -69,18 +65,16 @@ export class CardManagementComponent implements OnInit {
 
   public clearFilter() {
     this.filterRanchName = '';
-    this.filterFieldID = '';
     this.filterLotNumber = '';
     this.filterCommodity = '';
-    localStorage.removeItem('managementQuery');
+    localStorage.removeItem('thinHoeQuery');
     this.loadCardDataFiltered();
   }
 
   public filterItems() {
     // Update local storage to save query
-    localStorage.setItem('managementQuery', JSON.stringify({
+    localStorage.setItem('thinHoeQuery', JSON.stringify({
       ranchName: this.filterRanchName,
-      fieldID: this.filterFieldID,
       lotNumber: this.filterLotNumber,
       commodity: this.filterCommodity
     }));
@@ -92,9 +86,9 @@ export class CardManagementComponent implements OnInit {
     returns value.valuePropertyArr where valuePropertyArr = array of nesting properties
     returns null in no targetID supplied
     returns targetID if key is not in commonKeys Array (don't need value)
-    returns generic message if targetID not found
+    returns generic message of targetID not found
   */
-  private findCommonValue(key, valuePropertyArr, targetID?) {
+  findCommonValue(key, valuePropertyArr, targetID?) {
     if (!targetID) { return null; }
     if (!this.commonKeys.includes(key) && key !== 'ranches') { return targetID; }
     let commonValue = this.getCommon(key).find((e) => {
@@ -110,43 +104,33 @@ export class CardManagementComponent implements OnInit {
     return (commonValue) ? commonValue : 'Unknown ' + key + ' ID';
   }
 
-  private findModifiedCards() {
-    const modifiedCards = [];
-    try {
-      // Cycle through the cards being currently displayed, check if fieldID is different from raw
-      for (const c of this.cards) {
-        if (this.cardsRaw.find((c2) => c2.id === c.id).fieldID !== c.fieldID) {
-          modifiedCards.push(c);
-        }
-      }
-      return modifiedCards;
-    } catch (e) {
-      return [];
-    }
+  fixDate(d): Date {
+    if (!d) { return; }
+    const parts = d.split('-');
+    const day = parts[2];
+    const month = parts[1] - 1; // 0 based
+    const year = parts[0];
+    return new Date(year, month, day);
   }
 
   public getCommon(key) {
     if (this.commonKeys.includes(key) || key === 'ranches') {
       return (this[`${key}`]) ? this[`${key}`] : [];
     } else {
-      // console.log('Key ' + key + ' is not in the commonKeys array.');
+      console.log('Key ' + key + ' is not in the commonKeys array.');
       return [];
     }
   }
 
-  public hasEditPermission(): boolean {
-    return this.auth.hasPermission(PlRole.DATA_EDIT);
+  hasViewPermission(): boolean {
+    return this.auth.hasPermission(PlRole.TH_VIEW);
   }
 
-  public hasShipperPermission(): boolean {
-    return this.auth.hasPermission(PlRole.SHIPPER) && !this.hasViewPermission() && !this.hasEditPermission();
+  hasEditPermission(): boolean {
+    return this.auth.hasPermission(PlRole.TH_EDIT);
   }
 
-  public hasViewPermission(): boolean {
-    return this.auth.hasPermission(PlRole.DATA_VIEW);
-  }
-
-  private initCommon(f): void {
+  public initCommon(f): void {
     const tempThis = this;
     const sortedCommon = {};
     const userRanchAccess = this.auth.getRanchAccess();
@@ -168,32 +152,31 @@ export class CardManagementComponent implements OnInit {
           sortedCommon[`${key}`] = tempThis.common.sortCommonArray(data[`${key}`], key);
         }
       });
-      if (this.hasShipperPermission()) {
-        sortedCommon[`ranches`] = data[`ranches`];
-      } else {
-        sortedCommon[`ranches`] = data[`ranches`].filter((e) => userRanchAccess.includes(e.id));
-      }
+      sortedCommon[`ranches`] = data[`ranches`].filter((e) => userRanchAccess.includes(e.id));
       sortedCommon[`ranches`] = tempThis.common.sortCommonArray(sortedCommon[`ranches`], 'ranches');
       f(sortedCommon);
     });
   }
 
+  initWorkTypes(): Array<string> {
+    const keys = Object.keys(WorkType);
+    return keys.slice(keys.length / 2);
+  }
+
   private loadCachedFilters(): void {
     if (this.route.snapshot.queryParams.saveFilter) {
-      let previousQuery: any = localStorage.getItem('managementQuery');
+      let previousQuery: any = localStorage.getItem('thinHoeQuery');
       if (previousQuery) {
         previousQuery = JSON.parse(previousQuery);
         this.filterRanchName = previousQuery.ranchName;
-        this.filterFieldID = previousQuery.fieldID;
         this.filterLotNumber = previousQuery.lotNumber;
         this.filterCommodity = previousQuery.commodity;
       }
     } else {
       this.filterRanchName = '';
-      this.filterFieldID = '';
       this.filterLotNumber = '';
       this.filterCommodity = '';
-      localStorage.removeItem('managementQuery');
+      localStorage.removeItem('thinHoeQuery');
     }
   }
 
@@ -203,7 +186,7 @@ export class CardManagementComponent implements OnInit {
 
     // Create the db filter
     const filter: DbFilter = new DbFilter();
-    filter.fieldID = (this.filterFieldID) ? this.filterFieldID : '';
+    filter.fieldID =  '';
     filter.lotNumber = (this.filterLotNumber) ? this.filterLotNumber : '';
     filter.sort = (this.filterSort) ? this.filterSort : 'lastUpdated';
     this.filterSort = filter.sort;
@@ -259,15 +242,11 @@ export class CardManagementComponent implements OnInit {
       // console.log(commodityPairs);
       filter.allCommoditiesOrdered = commodityPairs.map((e) => e.id);
 
-      // Permission Filters
-      const shipperRestricted: boolean = this.hasShipperPermission();
-      const shipperID = (shipperRestricted) ? this.auth.getShipperID() : null;
-
-      this.cardService.getCardsFiltered(filter, shipperRestricted, shipperID).subscribe(
+      this.cardService.getTHCardsFiltered(filter).subscribe(
         (e) => {
           if (e.success) {
             const response: DbFilterResponse = e.data;
-            // console.log(response);
+            // Get cards and filter out closed (Prefer to do this on backend)
             this.cards = response.cards.map((c) => (new Card()).copyConstructor(c));
             this.cardSizeNonLimited = response.size;
 
@@ -300,64 +279,12 @@ export class CardManagementComponent implements OnInit {
     return Math.min(x, y);
   }
 
-  public resetFieldIds(): void {
-    const tempThis = this;
-    this.cards.forEach((card) => {
-      try {
-        card.fieldID = tempThis.cardsRaw.find((e) => e.id === card.id).fieldID;
-      } catch (e) {
-        // console.log('Error resetting card fieldID');
-      }
-    });
-  }
-
   public setPage(n: number, updateFilter?: boolean): void {
     if (this.pageNum === n) { return; }
     this.pageNum = n;
     if (this.pageNum > this.numPages) { this.pageNum = this.numPages; }
     if (this.pageNum < 1) { this.pageNum = 1; }
     if (updateFilter) { this.loadCardDataFiltered(true); }
-  }
-
-  public updateFieldIds(): void {
-    if (!this.hasEditPermission()) {
-      AlertService.newBasicAlert('Failed to Edit: DATA EDIT Permission Required', true);
-      return;
-    }
-    const tempThis = this;
-    const log = {
-      success: 0,
-      failure: 0
-    };
-    const modified = this.findModifiedCards();
-    modified.forEach((m) => {
-      const card = tempThis.cardsRaw.find((c) => c.id === m.id);
-      if (!card) {
-        log.failure += 1;
-        tempThis.updateMessage(log, modified.length);
-      } else {
-        card.fieldID = m.fieldID;
-        tempThis.cardEdit.updateCard(card).subscribe((data) => {
-          if (data.success) {
-            log.success += 1;
-          } else {
-            log.failure += 1;
-          }
-          tempThis.updateMessage(log, modified.length);
-        },
-        (failure) => {
-          log.failure += 1;
-          tempThis.updateMessage(log, modified.length);
-        });
-      }
-    });
-  }
-
-  private updateMessage(log, expected) {
-    const total = log.success + log.failure;
-    if (total >= expected) {
-      AlertService.newBasicAlert(`Cards updated: ${log.success} successfully, ${log.failure} unsuccessfully`, false);
-    }
   }
 
   public updateNumPages(e?: number): void {
@@ -379,19 +306,5 @@ export class CardManagementComponent implements OnInit {
       this.filterOrder = 'asc';
     }
     this.loadCardDataFiltered(false);
-  }
-
-  // TEMP FUNCTION TO UPDATE HOE/THIN CARD STRUCTURE. DELETE LATER
-  public updateAllHoeThinEntries() {
-    this.cardEdit.updateAllCardsToThinHoeCrews().subscribe((e) => {
-      if (e.success) {
-        AlertService.newBasicAlert('Cards Updated Successfully', false);
-      } else {
-        AlertService.newBasicAlert('Error: ' + e.error, true);
-      }
-    },
-    (failure) => {
-      AlertService.newBasicAlert('Connection Error: ' + failure.message + ' (Try Again)', true);
-    });
   }
 }

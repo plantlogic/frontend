@@ -85,6 +85,69 @@
       </table>
     </div>
     
+    <div class="col-lg-12 border p-3" *ngFor="let k of getDataManualType('custom')">
+      <a (click)="toggleDisplay(k.key)" class="text-primary">
+        <h4><i class="fas mr-1" [ngClass]="{ 'fa-caret-right': isHidden(k.key), 'fa-caret-down': !isHidden(k.key) }"></i> {{getLookupName(k.key)}}</h4>
+      </a>
+      <table mdbTable class="table table-sm" [class.collapse]="isHidden(k.key)" small="true">
+        <thead>
+        <tr>
+          <th scope="col" class="small" width="30%">Name</th>
+          <th scope="col" class="small" width="30%">Wage USD/hr</th>
+          <th scope="col" class="small" width="30%">Overhead %</th>
+          <th scope="col" class="small" width="10%">Options</th>
+        </tr>
+        </thead>
+        <tbody>
+          <tr mdbTableCol *ngFor="let c of k.values; let i = index; ">
+            <td>
+                <input type="text" [(ngModel)]="c.value.key" (keyup.enter)="updateCommon(k.key)" class="form-control form-control-sm" style="width: 10em; display:inline-block"/>
+            </td>
+            <td>
+              <div class="form-group row">
+                <input type="number" [(ngModel)]="c.value.value.wage" placeholder="0"/>
+              </div>
+            </td>
+            <td>
+              <div class="form-group row">
+                <input type="number" [(ngModel)]="c.value.value.overhead" placeholder="0"/>
+              </div>
+            </td>
+            <td>
+              <div class="form-group row">
+                <button type="button" color="success" (click)="updateCommon(k.key)" class="mr-3" mdbBtn floating="true" size="sm" style="display: inline-block;">
+                  <i class="fas fa-check"></i>
+                </button>
+                <button type="button" color="danger"  (click)="removeCommon(k.key, c)" mdbBtn class="float-right" size="sm" floating="true" mdbWavesEffect>
+                  <i class="fa fa-trash" aria-hidden="true"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr mdbTableCol>
+            <td>
+              <input type="text" id="{{k.key + 'NewValue'}}" class="form-control form-control-sm" style="width: 10em; display:inline-block"/>
+            </td>
+            <td>
+              <div class="form-group row">
+                <input type="number" id="{{k.key + 'NewValueWage'}}"/>
+              </div>
+            </td>
+            <td>
+              <div class="form-group row">
+                <input type="number" id="{{k.key + 'NewValueOverhead'}}"/>
+              </div>
+            </td>
+            <td>
+              <button type="button" color="primary" (click)="addCommonFromInput(k.key)" mdbBtn
+                      size="sm" floating="true" mdbWavesEffect><i class="fa fa-plus" aria-hidden="true"></i></button>
+            </td>
+            <td colspan="2"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
     <div class="col-lg-12 border p-3" *ngFor="let k of getData(true, true)">
       <a (click)="toggleDisplay(k.key)" class="text-primary">
         <h4><i class="fas mr-1" [ngClass]="{ 'fa-caret-right': isHidden(k.key), 'fa-caret-down': !isHidden(k.key) }"></i> {{getLookupName(k.key)}}</h4>

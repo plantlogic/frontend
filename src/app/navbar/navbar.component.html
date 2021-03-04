@@ -25,6 +25,10 @@
             *ngIf="hasRole(role.CONTRACTOR_VIEW)">
           <a class="nav-link waves-light" mdbWavesEffect>Contractor</a>
         </li>
+        <li class="nav-item p-2" routerLinkActive="active" routerLink="/thinHoe"
+            *ngIf="hasRole(role.TH_VIEW)">
+          <a class="nav-link waves-light" mdbWavesEffect>Thin/Hoe</a>
+        </li>
         <li class="nav-item p-2" routerLinkActive="active" routerLink="/userManagement" *ngIf="hasRole(role.USER_MANAGEMENT)">
           <a class="nav-link waves-light" mdbWavesEffect>Users</a>
         </li>

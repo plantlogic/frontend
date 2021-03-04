@@ -7,6 +7,8 @@ export enum PlRole {
   DATA_VIEW,
   IRRIGATOR,
   SHIPPER,
+  TH_EDIT,
+  TH_VIEW,
   USER_MANAGEMENT
 }
 
@@ -49,6 +51,16 @@ export const PlRoleLookup = {
     description: 'Allows the user to view the entry page. This doesn\'t allow the user to create cards, but they can open a restricted ' +
       'view of cards. This restricted view shows basic card information (Ranch name, Lot #, Acres, and the commodities), the irrigation ' +
       'section, and the comments section.'
+  },
+  TH_EDIT: {
+    display: 'Thin & Hoe Edit',
+    description: 'Allows the user to open and edit any card they have access to via the Thin & Hoe page. Allows opening a restricted' +
+      ' view of cards. This restricted view shows only the Ranch, Lot Number, date created, and Thin & Hoe Sections.'
+  },
+  TH_VIEW: {
+    display: 'Thin & Hoe View',
+    description: 'Allows the user to view the Thin & Hoe page which shows all open cards belonging to their assigned ranches. If the user' +
+      'also has the "Thin & Hoe Edit" role, they will be able to open and edit these cards.'
   },
   SHIPPER: {
     display: 'Shipper',

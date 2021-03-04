@@ -96,7 +96,7 @@
           <br />
         </div>
         <br />
-        <b>Thin Date:</b>
+        <!-- <b>Thin Date:</b>
         <br />
         <div *ngIf="!editing">
           {{card.thinDate | date:'shortDate'}}
@@ -141,7 +141,7 @@
           <input class="date" [ngModel]="card.harvestDate | date:'yyyy-MM-dd'" (ngModelChange)="card.harvestDate = fixDate($event);" type="date"/>
           <br />
         </div>
-        <br />
+        <br /> -->
         <b>Date Created:</b> {{card.dateCreated | date:'shortDate'}}
       </div>
     </div>
@@ -451,6 +451,280 @@
       <div class="w-100 my-2"><hr /></div>
     </div>
 
+    <!-- Thinning Crew Entries -->
+    <div class="row mt-4" *ngIf="!isShipper()">
+      <!-- Desktope / Large Devices -->
+      <div class="col-md d-none d-md-inline-block">
+        <span class="float-right">
+          <span class="mr-2">{{card.thinCrewsArray.length}}/{{card.thinCrewsMax}}</span>
+          <button type="button" color="primary" (click)="addThinCrewEntry()" mdbBtn floating="true" *ngIf="editing && !card.thinCrewsFull()" size="sm" mdbWavesEffect>
+            <i class="fa fa-plus" aria-hidden="true"></i>
+          </button>
+        </span>
+
+        <div class="d-inline-flex">
+          <a class="text-primary" (click)="collapseToggle('thinCrewsDesktop')">
+            <h4>
+              <i class="fas mr-1" [ngClass]="{ 'fa-caret-right': isCollapsed('thinCrewsDesktop'), 'fa-caret-down': !isCollapsed('thinCrewsDesktop') }"></i>
+              <span style="color: black"><i class="fas fa-cut ml-1"></i> Thinning </span>
+            </h4>
+          </a>
+        </div>        
+
+        <div id="thinCrewsDesktop">
+          <table mdbTable *ngIf="card" class="table">
+            <thead>
+              <tr>
+                <th scope="col" class="small">Date</th>
+                <th scope="col" class="small" style="width: 20%;">Crew</th>
+                <th scope="col" class="small" style="width: 10%;"># Employees</th>
+                <th scope="col" class="small" style="width: 10%;">Hours Worked</th>
+                <th scope="col" class="small">$/Acre</th>
+                <th scope="col" class="small">Comments</th>
+                <th scope="col" class="small" *ngIf="editing"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr mdbTableCol *ngFor="let t of card.thinCrewsArray; let i = index">
+                <td>
+                  <div *ngIf="!editing"> {{t.date | date:'shortDate'}} </div>
+                  <input *ngIf="editing" class="date" [ngModel]="t.date | date:'yyyy-MM-dd'" (ngModelChange)="t.date = fixDate($event)" type="date"/>
+                </td>
+                <td>
+                  <select class="form-control" [ngModel]="t.crew" (ngModelChange)="t.crew = $event; updateThinCrewCPA(i)" [disabled]="!editing" id="crewInput">
+                  <option *ngIf="!t.crew" [value]="undefined" disabled selected>Select Crew</option>
+                  <option *ngFor="let v of getCommon('thinHoeCrew')" [value]="v.id">{{v.value.key}}</option>
+                  </select>
+                </td>
+                <td>
+                  <input type="number" [ngModel]="t.numEmployees" (ngModelChange)="t.numEmployees=$event; updateThinCrewCPA(i)" [disabled]="!editing" class="form-control" [placeholder]="editing ? '# Employees' : ''" />
+                </td>
+                <td>
+                  <input type="number" [ngModel]="t.hoursWorked" (ngModelChange)="t.hoursWorked=$event; updateThinCrewCPA(i)" [disabled]="!editing" class="form-control" [placeholder]="editing ? 'Hours Worked' : ''" />
+                </td>
+                <td>
+                  <span>{{t.cpa | number: '1.2-2'}}</span>
+                </td>
+                <td>
+                  <textarea type="text" [(ngModel)]="t.comment" [disabled]="!editing" class="form-control" autosize></textarea>
+                </td>
+                <td *ngIf="editing">
+                  <button type="button" color="danger" (click)="card.thinCrewsArray.splice(i, 1)" mdbBtn floating="true"
+                    size="sm" mdbWavesEffect>Delete <i class="ml-1 fa fa-trash" aria-hidden="true"></i></button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Mobile / Small Devices -->
+      <div class="col-sm d-md-none">
+        <span class="float-right">
+          <span class="mr-2">{{card.thinCrewsArray.length}}/{{card.thinCrewsMax}}</span>
+          <button type="button" color="primary" (click)="addThinCrewEntry()" mdbBtn floating="true" *ngIf="editing && !card.thinCrewsFull()" size="sm" mdbWavesEffect>
+            <i class="fa fa-plus" aria-hidden="true"></i>
+          </button>
+        </span>
+        <div class="d-inline-flex">
+          <a class="text-primary" (click)="collapseToggle('thinCrewsMobile')">
+            <h4>
+              <i class="fas mr-1" [ngClass]="{ 'fa-caret-right': isCollapsed('thinCrewsMobile'), 'fa-caret-down': !isCollapsed('thinCrewsMobile') }"></i>
+              <span style="color: black"><i class="fas fa-cut ml-1"></i> Thinning </span>
+            </h4>
+          </a>
+        </div>
+        <ng-container *ngIf="card">
+          <div id="thinCrewsMobile">
+            <div class="row" *ngFor="let t of card.thinCrewsArray; let i = index">
+              <div class="col-sm-12 mt-1 mb-1"><div class="w-100"><hr /></div></div>
+              <div class="col mt-1 mb-1">
+                <div class="row">
+                  <div class="col">Date</div>
+                  <div class="col">
+                    <div *ngIf="!editing"> {{t.date | date:'shortDate'}} </div>
+                    <input *ngIf="editing" class="date" [ngModel]="t.date | date:'yyyy-MM-dd'" (ngModelChange)="t.date = fixDate($event)" type="date"/>
+                  </div>
+                </div>
+              </div>
+              <div class="w-100"></div>
+              <div class="col">
+                <div class="row no-gutters">
+                  <div class="col">
+                    <span class="m-2">Thinning Crew:</span>
+                    <select class="form-control" [ngModel]="t.crew" (ngModelChange)="t.crew = $event; updateThinCrewCPA(i)" [disabled]="!editing" class="form-control">
+                      <option *ngIf="!t.crew" [value]="undefined" disabled selected>Select Crew</option>
+                      <option *ngFor="let v of getCommon('thinHoeCrew')" [value]="v.id">{{v.value.key}}</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="w-100"></div>
+              <div class="col">
+                <span class="m-2"># Employees:</span>
+                <input type="number" [ngModel]="t.numEmployees" (ngModelChange)="t.numEmployees=$event; updateThinCrewCPA(i)" [disabled]="!editing" class="form-control" [placeholder]="editing ? '# Employees' : ''" />
+              </div>
+              <div class="w-100"></div>
+              <div class="col">
+                <span class="m-2">Hours Worked:</span>
+                <input type="number" [ngModel]="t.hoursWorked" (ngModelChange)="t.hoursWorked=$event; updateThinCrewCPA(i)" [disabled]="!editing" class="form-control" [placeholder]="editing ? 'Hours Worked' : ''" />
+              </div>
+              <div class="w-100"></div>
+              <div class="col mt-2 mb-2">
+                <span class="m-2">$/Acre: {{t.cpa | number: '1.2-2'}}</span>
+              </div>
+              <div class="w-100"></div>
+              <div class="col">
+                <span class="m-2">Comments:</span>
+                <textarea type="text" [(ngModel)]="t.comment" [disabled]="!editing" class="form-control" autosize></textarea>
+              </div>
+              <div class="w-100"></div>
+              <div class="col mt-3">
+                <button *ngIf="editing"  type="button" color="danger" (click)="card.thinCrewsArray.splice(i, 1)" mdbBtn floating="true"
+                    size="sm" mdbWavesEffect>Delete <i class="ml-1 fa fa-trash" aria-hidden="true"></i></button>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <div class="w-100 my-2"><hr /></div>
+    </div>
+
+    <!-- Hoeing Crew Entries -->
+    <div class="row mt-4" *ngIf="!isShipper()">
+      <!-- Desktope / Large Devices -->
+      <div class="col-md d-none d-md-inline-block">
+        <span class="float-right">
+          <span class="mr-2">{{card.hoeCrewsArray.length}}/{{card.hoeCrewsMax}}</span>
+          <button type="button" color="primary" (click)="addHoeCrewEntry()" mdbBtn floating="true" *ngIf="editing && !card.hoeCrewsFull()" size="sm" mdbWavesEffect>
+            <i class="fa fa-plus" aria-hidden="true"></i>
+          </button>
+        </span>
+        <div class="d-inline-flex">
+          <a class="text-primary" (click)="collapseToggle('hoeCrewsDesktop')">
+            <h4>
+              <i class="fas mr-1" [ngClass]="{ 'fa-caret-right': isCollapsed('hoeCrewsDesktop'), 'fa-caret-down': !isCollapsed('hoeCrewsDesktop') }"></i>
+              <span style="color: black"><i class="fas fa-layer-group ml-1"></i> Hoeing </span>
+            </h4>
+          </a>
+        </div>
+        <div id="hoeCrewsDesktop">
+          <table mdbTable *ngIf="card" class="table">
+            <thead>
+              <tr>
+                <th scope="col" class="small">Date</th>
+                <th scope="col" class="small" style="width: 20%;">Crew</th>
+                <th scope="col" class="small" style="width: 10%;"># Employees</th>
+                <th scope="col" class="small" style="width: 10%;">Hours Worked</th>
+                <th scope="col" class="small">$/Acre</th>
+                <th scope="col" class="small">Comments</th>
+                <th scope="col" class="small" *ngIf="editing"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr mdbTableCol *ngFor="let t of card.hoeCrewsArray; let i = index">
+                <td>
+                  <div *ngIf="!editing"> {{t.date | date:'shortDate'}} </div>
+                  <input *ngIf="editing" class="date" [ngModel]="t.date | date:'yyyy-MM-dd'" (ngModelChange)="t.date = fixDate($event)" type="date"/>
+                </td>
+                <td>
+                  <select class="form-control" [ngModel]="t.crew" (ngModelChange)="t.crew = $event; updateHoeCrewCPA(i)" [disabled]="!editing" id="crewInput">
+                  <option *ngIf="!t.crew" [value]="undefined" disabled selected>Select Crew</option>
+                  <option *ngFor="let v of getCommon('thinHoeCrew')" [value]="v.id">{{v.value.key}}</option>
+                  </select>
+                </td>
+                <td>
+                  <input type="number" [ngModel]="t.numEmployees" (ngModelChange)="t.numEmployees=$event; updateHoeCrewCPA(i)" [disabled]="!editing" class="form-control" [placeholder]="editing ? '# Employees' : ''" />
+                </td>
+                <td>
+                  <input type="number" [ngModel]="t.hoursWorked" (ngModelChange)="t.hoursWorked=$event; updateHoeCrewCPA(i)" [disabled]="!editing" class="form-control" [placeholder]="editing ? 'Hours Worked' : ''" />
+                </td>
+                <td>
+                  <span>{{t.cpa | number: '1.2-2'}}</span>
+                </td>
+                <td>
+                  <textarea type="text" [(ngModel)]="t.comment" [disabled]="!editing" class="form-control" autosize></textarea>
+                </td>
+                <td *ngIf="editing">
+                  <button type="button" color="danger" (click)="card.hoeCrewsArray.splice(i, 1)" mdbBtn floating="true"
+                    size="sm" mdbWavesEffect>Delete <i class="ml-1 fa fa-trash" aria-hidden="true"></i></button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- Mobile / Small Devices -->
+      <div class="col-sm d-md-none">
+        <span class="float-right">
+          <span class="mr-2">{{card.hoeCrewsArray.length}}/{{card.hoeCrewsMax}}</span>
+          <button type="button" color="primary" (click)="addHoeCrewEntry()" mdbBtn floating="true" *ngIf="editing && !card.hoeCrewsFull()" size="sm" mdbWavesEffect>
+            <i class="fa fa-plus" aria-hidden="true"></i>
+          </button>
+        </span>
+        <div class="d-inline-flex">
+          <a class="text-primary" (click)="collapseToggle('hoeCrewsMobile')">
+            <h4>
+              <i class="fas mr-1" [ngClass]="{ 'fa-caret-right': isCollapsed('hoeCrewsMobile'), 'fa-caret-down': !isCollapsed('hoeCrewsMobile') }"></i>
+              <span style="color: black"><i class="fas fa-layer-group ml-1"></i> Hoeing </span>
+            </h4>
+          </a>
+        </div>
+        <ng-container *ngIf="card">
+          <div id="hoeCrewsMobile">
+            <div class="row" *ngFor="let t of card.hoeCrewsArray; let i = index">
+              <div class="col-sm-12 mt-1 mb-1"><div class="w-100"><hr /></div></div>
+              <div class="col mt-1 mb-1">
+                <div class="row">
+                  <div class="col">Date</div>
+                  <div class="col">
+                    <div *ngIf="!editing"> {{t.date | date:'shortDate'}} </div>
+                    <input *ngIf="editing" class="date" [ngModel]="t.date | date:'yyyy-MM-dd'" (ngModelChange)="t.date = fixDate($event)" type="date"/>
+                  </div>
+                </div>
+              </div>
+              <div class="w-100"></div>
+              <div class="col">
+                <div class="row no-gutters">
+                  <div class="col">
+                    <span class="m-2">Hoeing Crew:</span>
+                    <select class="form-control" [ngModel]="t.crew" (ngModelChange)="t.crew = $event; updateHoeCrewCPA(i)" [disabled]="!editing" class="form-control">
+                      <option *ngIf="!t.crew" [value]="undefined" disabled selected>Select Crew</option>
+                      <option *ngFor="let v of getCommon('thinHoeCrew')" [value]="v.id">{{v.value.key}}</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="w-100"></div>
+              <div class="col">
+                <span class="m-2"># Employees:</span>
+                <input type="number" [ngModel]="t.numEmployees" (ngModelChange)="t.numEmployees=$event; updateHoeCrewCPA(i)" [disabled]="!editing" class="form-control" [placeholder]="editing ? '# Employees' : ''" />
+              </div>
+              <div class="w-100"></div>
+              <div class="col">
+                <span class="m-2">Hours Worked:</span>
+                <input type="number" [ngModel]="t.hoursWorked" (ngModelChange)="t.hoursWorked=$event; updateHoeCrewCPA(i)" [disabled]="!editing" class="form-control" [placeholder]="editing ? 'Hours Worked' : ''" />
+              </div>
+              <div class="w-100"></div>
+              <div class="col mt-2 mb-2">
+                <span class="m-2">$/Acre: {{t.cpa | number: '1.2-2'}}</span>
+              </div>
+              <div class="w-100"></div>
+              <div class="col">
+                <span class="m-2">Comments:</span>
+                <textarea type="text" [(ngModel)]="t.comment" [disabled]="!editing" class="form-control" autosize></textarea>
+              </div>
+              <div class="w-100"></div>
+              <div class="col mt-3">
+                <button *ngIf="editing"  type="button" color="danger" (click)="card.hoeCrewsArray.splice(i, 1)" mdbBtn floating="true"
+                    size="sm" mdbWavesEffect>Delete <i class="ml-1 fa fa-trash" aria-hidden="true"></i></button>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <div class="w-100 my-2"><hr /></div>
+    </div>
 
     <!-- Pre Chemical Array -->
     <div class="row mt-4" *ngIf="!isShipper()">

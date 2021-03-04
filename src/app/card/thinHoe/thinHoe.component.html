@@ -1,0 +1,171 @@
+<div class="jumbotron p-3">
+  <div class="container">
+    <div class="row">
+      <div class="col text-center">
+        <button type="button"color="primary" name="cardCount" outline="true" disabled mdbBtn floating="true" size="sm">
+        <span>Cards: </span>
+        <b>{{cardSizeNonLimited}}</b>
+        </button>
+      </div>
+    </div>
+    <hr class="my-4">
+    <form class="form-inline search-form">
+      <input class="form-control form-control-sm" type="search" name="ranchName" list="ranches" placeholder="Ranch Name" aria-label="Ranch Name" [(ngModel)]="filterRanchName" mdbInput>
+      <input class="form-control form-control-sm" type="search" name="lotNumber" placeholder="Lot Number" aria-label="Lot Number" [(ngModel)]="filterLotNumber" mdbInput>
+      <input class="form-control form-control-sm" type="search" name="commodity" list="commodities" placeholder="Commodity" aria-label="Commodity" [(ngModel)]="filterCommodity" mdbInput>
+      <button class="mr-1 mb-1" type="button" color="info" (click)="filterItems()"  mdbBtn size="sm"><i class="fas fa-search ml-1"></i></button>
+      <button class="mr-1 mb-1" type="button" color="danger" (click)="clearFilter()"  mdbBtn size="sm"><i class="fas fa-times m1-1"></i></button>
+    </form>
+    <hr class="my-4">
+    <!-- On Mobile -->
+    <div class="d-md-none" id="mobileSorter">
+      <div class="row" style="text-align: center;">
+        <div class="col col-sm">
+          <div>Sort By</div>
+          <div>
+            <select class="form-control form-control-sm select-sm" [(ngModel)]="filterSort" (ngModelChange)="loadCardDataFiltered()" >
+            <option value="undefined" disabled selected>None</option>
+            <option value="ranchName">Ranch Name</option>
+            <option value="lotNumber">Lot Number</option>
+            <option value="commodity">Commodity</option>
+            <option value="lastUpdated">Last Updated</option>
+            </select>
+          </div>
+        </div>
+        <div class="col col-sm">
+          <div>Order</div>
+          <div>
+            <select class="form-control form-control-sm select-sm" [(ngModel)]="filterOrder" (ngModelChange)="loadCardDataFiltered()">
+            <option value="undefined" disabled selected>None</option>
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+            </select>
+          </div>
+        </div>
+        <div class="col col-sm">
+          <div>Limit</div>
+          <div>
+            <select class="form-control form-control-sm select-sm"  [(ngModel)]="viewSize" (ngModelChange)="loadCardDataFiltered(false)">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- On Desktop -->
+    <div class="d-none d-md-inline-block" style="width:100%">
+      <span style="float: right; vertical-align: middle;">
+        Listings: &nbsp;
+        <select class="form-control form-control-sm select-sm"  [(ngModel)]="viewSize" (ngModelChange)="loadCardDataFiltered(false)">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="50">50</option>
+        </select>
+      </span>
+    </div>
+    <!-- Desktop / Large Devices -->
+    <div class="d-none d-md-inline-block">
+      <h2 *ngIf="!cards">Loading data...</h2>
+      <table mdbTable *ngIf="cards" class="table table-responsive">
+        <thead class="text-nowrap">
+          <tr>
+              <th class="small" style="width:30%;" (click)="updateSortOrder('ranchName')">
+                <span>Ranch<span class="d-none d-md-inline-block"></span> <i class="fa fa-sort ml-1"></i></span>
+              </th>
+              <th class="small" style="width:30%;" (click)="updateSortOrder('lotNumber')">
+                <span>Lot # <i class="fa fa-sort ml-1"></i></span>
+              </th>
+              <th class="small" style="width:30%;" (click)="updateSortOrder('commodities')">
+                <span>Commodities <i class="fa fa-sort ml-1"></i></span>
+              </th>
+              <th class="small" style="width:10%;">Options</th>
+            </tr>
+        </thead>
+        <tbody>
+          <tr mdbTableCol *ngFor="let p of cards; let i = index" class="animated fadeIn" [style.animation-delay]="this.min((30*i), 1000)+ 'ms'">
+            <td class="hover">{{p.ranchName}}<span class="hover-text">{{p.ranchName}}</span></td>
+            <td class="hover">{{p.lotNumber}}<span class="hover-text">{{p.lotNumber}}</span></td>
+            <td class="hover">{{p.commodityString}} <span class="hover-text">{{p.commodityString}}</span></td>
+            <td>
+              <button type="button" color="success" [routerLink]="['/thinHoe/o/', p.id]"
+                      alt="View Card" class="mr-1 mb-1" mdbBtn floating="true" size="sm">
+                Open <i class="ml-1 fa fa-external-link-alt" aria-hidden="true"></i>
+              </button>
+            </td>          
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+              <th scope="row" colspan="9">
+                <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(1, true)"><i class="fas fa-angle-double-left"></i></span>
+                <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(pageNum-1, true)"><i class="fas fa-angle-left"></i></span>
+                <span *ngFor="let p of pages"><span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(p, true)">{{p}}</span></span>
+                <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(pageNum+1, true)"><i class="fas fa-angle-right"></i></span>
+                <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(numPages, true)"><i class="fas fa-angle-double-right"></i></span>
+              </th>
+          </tr>
+         </tfoot>
+      </table>
+    </div>
+    <!-- Mobile Devices -->
+    <div class="row d-md-none">
+      <h2 *ngIf="!cards">Loading data...</h2>
+      <table mdbTable *ngIf="cards">
+        <thead>
+          <tr>
+            <th style="width:100%;">
+              <div class="row">
+                <div class="col col-sm-10">Ranch - Lot Number - Commodity</div>
+                <div class="col col-sm-2">Open</div>
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr mdbTableCol *ngFor="let p of cards; let i = index" class="animated fadeIn" [style.animation-delay]="this.min((30*i), 1000)+ 'ms'">
+            <td>
+              <div class="row">
+                <div class="col col-sm-10 hover">
+                  <div class="row">
+                    <div class="col col-sm">
+                      {{'' + p.ranchName + ' - ' + p.lotNumber + ' - ' + p.commodityString}}
+                      <span class="hover-text">{{'' + p.ranchName + ' - ' + p.lotNumber + ' - ' + p.commodityString}}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col col-sm-2">
+                  <button type="button" color="success" [routerLink]="['/thinHoe/o/', p.id]"
+                        alt="View Card" class="mr-1 mb-1" mdbBtn floating="true" size="sm">
+                  <i class="ml-1 fa fa-external-link-alt" aria-hidden="true"></i>
+                </button>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <th scope="row" colspan="9">
+              <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(1, true)"><i class="fas fa-angle-double-left"></i></span>
+              <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(pageNum-1, true)"><i class="fas fa-angle-left"></i></span>
+              <span *ngFor="let p of pages"><span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(p, true)">{{p}}</span></span>
+              <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(pageNum+1, true)"><i class="fas fa-angle-right"></i></span>
+              <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(numPages, true)"><i class="fas fa-angle-double-right"></i></span>
+            </th>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+  </div>
+</div>
+<datalist id="ranches">
+  <option *ngFor="let r of getCommon('ranches')" [value]="r.value">
+</datalist>
+<datalist id="commodities">
+  <option *ngFor="let r of getCommon('commodities')" [value]="r.value.key">
+</datalist>
