@@ -96,52 +96,6 @@
           <br />
         </div>
         <br />
-        <!-- <b>Thin Date:</b>
-        <br />
-        <div *ngIf="!editing">
-          {{card.thinDate | date:'shortDate'}}
-        </div>
-        <div *ngIf="editing">
-          <input class="date" [ngModel]="card.thinDate | date:'yyyy-MM-dd'" (ngModelChange)="card.thinDate = fixDate($event); card.thinType = null;" type="date"/>
-          <br />
-        </div>
-        <br />
-        <div>
-          <b>Thin Type:</b>
-          <select class="form-control" [(ngModel)]="card.thinType" [disabled]="!editing || !card.thinDate">
-          <option *ngIf="!card.thinType" [value]="undefined" disabled selected>Select Thin Type</option>
-          <option *ngFor="let r of initWorkTypes()" [value]="r">{{r}}</option>
-          </select>
-        </div>
-        <br />
-        <b>Hoe Date:</b>
-        <br />
-        <div *ngIf="!editing">
-          {{card.hoeDate | date:'shortDate'}}
-        </div>
-        <div *ngIf="editing">
-          <input class="date" [ngModel]="card.hoeDate | date:'yyyy-MM-dd'" (ngModelChange)="card.hoeDate = fixDate($event); card.hoeType = null;" type="date"/>
-          <br />
-        </div>
-        <br />
-        <div>
-          <b>Hoe Type:</b>
-          <select class="form-control" [(ngModel)]="card.hoeType" [disabled]="!editing || !card.hoeDate">
-          <option *ngIf="!card.hoeType" [value]="undefined" disabled selected>Select Hoe Type</option>
-          <option *ngFor="let r of initWorkTypes()" [value]="r">{{r}}</option>
-          </select>
-        </div>
-        <br />
-        <b>Harvest Date:</b>
-        <br />
-        <div *ngIf="!editing">
-          {{card.harvestDate | date:'shortDate'}}
-        </div>
-        <div *ngIf="editing">
-          <input class="date" [ngModel]="card.harvestDate | date:'yyyy-MM-dd'" (ngModelChange)="card.harvestDate = fixDate($event);" type="date"/>
-          <br />
-        </div>
-        <br /> -->
         <b>Date Created:</b> {{card.dateCreated | date:'shortDate'}}
       </div>
     </div>
@@ -500,7 +454,7 @@
                   <input type="number" [ngModel]="t.numEmployees" (ngModelChange)="t.numEmployees=$event; updateThinCrewCPA(i)" [disabled]="!editing" class="form-control" [placeholder]="editing ? '# Employees' : ''" />
                 </td>
                 <td>
-                  <input type="number" [ngModel]="t.hoursWorked" (ngModelChange)="t.hoursWorked=$event; updateThinCrewCPA(i)" [disabled]="!editing" class="form-control" [placeholder]="editing ? 'Hours Worked' : ''" />
+                  <input type="number" [ngModel]="t.hoursWorked" (ngModelChange)="t.hoursWorked=$event; updateThinCrewCPA(i)" [disabled]="!editing" class="form-control" step="0.5" [placeholder]="editing ? 'Hours Worked' : ''" />
                 </td>
                 <td>
                   <span>{{t.cpa | number: '1.2-2'}}</span>
@@ -567,7 +521,7 @@
               <div class="w-100"></div>
               <div class="col">
                 <span class="m-2">Hours Worked:</span>
-                <input type="number" [ngModel]="t.hoursWorked" (ngModelChange)="t.hoursWorked=$event; updateThinCrewCPA(i)" [disabled]="!editing" class="form-control" [placeholder]="editing ? 'Hours Worked' : ''" />
+                <input type="number" [ngModel]="t.hoursWorked" (ngModelChange)="t.hoursWorked=$event; updateThinCrewCPA(i)" [disabled]="!editing" class="form-control" step="0.5" [placeholder]="editing ? 'Hours Worked' : ''" />
               </div>
               <div class="w-100"></div>
               <div class="col mt-2 mb-2">
@@ -637,7 +591,7 @@
                   <input type="number" [ngModel]="t.numEmployees" (ngModelChange)="t.numEmployees=$event; updateHoeCrewCPA(i)" [disabled]="!editing" class="form-control" [placeholder]="editing ? '# Employees' : ''" />
                 </td>
                 <td>
-                  <input type="number" [ngModel]="t.hoursWorked" (ngModelChange)="t.hoursWorked=$event; updateHoeCrewCPA(i)" [disabled]="!editing" class="form-control" [placeholder]="editing ? 'Hours Worked' : ''" />
+                  <input type="number" [ngModel]="t.hoursWorked" (ngModelChange)="t.hoursWorked=$event; updateHoeCrewCPA(i)" [disabled]="!editing" class="form-control" step="0.5" [placeholder]="editing ? 'Hours Worked' : ''" />
                 </td>
                 <td>
                   <span>{{t.cpa | number: '1.2-2'}}</span>
@@ -703,7 +657,7 @@
               <div class="w-100"></div>
               <div class="col">
                 <span class="m-2">Hours Worked:</span>
-                <input type="number" [ngModel]="t.hoursWorked" (ngModelChange)="t.hoursWorked=$event; updateHoeCrewCPA(i)" [disabled]="!editing" class="form-control" [placeholder]="editing ? 'Hours Worked' : ''" />
+                <input type="number" [ngModel]="t.hoursWorked" (ngModelChange)="t.hoursWorked=$event; updateHoeCrewCPA(i)" [disabled]="!editing" class="form-control" step="0.5" [placeholder]="editing ? 'Hours Worked' : ''" />
               </div>
               <div class="w-100"></div>
               <div class="col mt-2 mb-2">

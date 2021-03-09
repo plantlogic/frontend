@@ -149,6 +149,7 @@ export class OpenCardThinHoeComponent implements OnInit {
           if (data.success) {
             tempThis.card = (new Card()).copyConstructor(data.data);
             tempThis.card.initTotalAcres();
+            tempThis.card.initThinHoeCostPerAcre(tempThis.getCommon('thinHoeCrew'));
           } else if (!data.success) {
             AlertService.newBasicAlert('Error: ' + data.error, true);
             tempThis.nav.goBack();
@@ -201,5 +202,13 @@ export class OpenCardThinHoeComponent implements OnInit {
 
   public toggleEditing(): void {
     this.editing = !this.editing;
+  }
+
+  public updateHoeCrewCPA(index: number): void {
+    this.card.updateHoeCrewCPA(index, this.getCommon('thinHoeCrew'));
+  }
+
+  public updateThinCrewCPA(index: number): void {
+    this.card.updateThinCrewCPA(index, this.getCommon('thinHoeCrew'));
   }
 }
