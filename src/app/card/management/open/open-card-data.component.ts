@@ -407,8 +407,8 @@ export class OpenCardDataComponent implements OnInit {
           if (data.success) {
             tempThis.card = (new Card()).copyConstructor(data.data);
             tempThis.comments = (new Card()).copyConstructor(data.data).comments;
-            tempThis.card.initThinHoeCostPerAcre(tempThis.getCommon('thinHoeCrew'));
             tempThis.card.initTotalAcres();
+            tempThis.card.initThinHoeCostPerAcre(tempThis.getCommon('thinHoeCrew'));
             // Set up shippers multiselect
             tempThis.common.getValues('shippers', (shippers) => {
               tempThis.cardShippers = shippers.filter((e) => {
