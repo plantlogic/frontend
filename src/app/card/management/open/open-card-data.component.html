@@ -96,6 +96,16 @@
           <br />
         </div>
         <br />
+        <b>Harvest Date:</b>
+        <br />
+        <div *ngIf="!editing">
+          {{card.harvestDate | date:'shortDate'}}
+        </div>
+        <div *ngIf="editing">
+          <input class="date" [ngModel]="card.harvestDate | date:'yyyy-MM-dd'" (ngModelChange)="card.harvestDate = fixDate($event);" type="date"/>
+          <br />
+        </div>
+        <br />
         <b>Date Created:</b> {{card.dateCreated | date:'shortDate'}}
       </div>
     </div>
