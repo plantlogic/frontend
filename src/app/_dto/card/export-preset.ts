@@ -101,6 +101,7 @@ export class ExportPreset {
         {key: 'crew', value: true, display: 'Crew'},
         {key: 'numEmployees', value: true, display: '# Employees'},
         {key: 'hoursWorked', value: true, display: 'Hours Worked'},
+        {key: 'rehoe', value: true, display: 'Rehoe'},
         {key: 'comment', value: true, display: 'Comment'},
         {key: 'cpa', value: true, display: '$/Acre'}
     ];
