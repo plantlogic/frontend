@@ -496,8 +496,8 @@ export class CardExportService {
                 tractor: (preset.dynamic.card.tractor) ? 0 : 12,
                 commodities: (preset.dynamic.card.commodities) ? 0 : 3,
                 preChemicals: (preset.dynamic.card.preChemicals) ? 0 : 3,
-                thinCrews: (preset.dynamic.card.thinCrews) ? 0 : 1,
-                hoeCrews: (preset.dynamic.card.hoeCrews) ? 0 : 3
+                thinCrews: (preset.dynamic.card.thinCrews) ? 0 : 3,
+                hoeCrews: (preset.dynamic.card.hoeCrews) ? 0 : 6
               },
               irrigationEntry: {
                 fertilizers: (preset.dynamic.irrigationEntry.fertilizers) ? 0 : 2,
@@ -1379,6 +1379,9 @@ export class CardExportService {
                       break;
                     case 'comment':
                       dataLine.push( (temp.comment) ? temp.comment : '');
+                      break;
+                    case 'rehoe':
+                      dataLine.push( (temp.rehoe) ? 'Yes' : 'No');
                       break;
                     case 'cpa':
                       dataLine.push( (temp.cpa != null) ? String((Math.round(temp.cpa * 100) / 100).toFixed(2)) : '');

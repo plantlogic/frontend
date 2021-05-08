@@ -222,6 +222,9 @@
                   <span>{{t.cpa | number: '1.2-2'}}</span>
                 </td>
                 <td>
+                  <input type="checkbox" [(ngModel)]="t.rehoe" [disabled]="!editing" class="form-control"/>
+                </td>
+                <td>
                   <textarea type="text" [(ngModel)]="t.comment" [disabled]="!editing" class="form-control" autosize></textarea>
                 </td>
                 <td *ngIf="editing">
@@ -287,6 +290,11 @@
               <div class="w-100"></div>
               <div class="col">
                 <span class="m-2">$/Acre: {{t.cpa | number: '1.2-2'}}</span>
+              </div>
+              <div class="w-100"></div>
+              <div class="col mt-2 mb-2">
+                <span class="m-2">Rehoe:</span>
+                <input type="checkbox" [(ngModel)]="t.rehoe" [disabled]="!editing" class="form-control"/>
               </div>
               <div class="w-100"></div>
               <div class="col">

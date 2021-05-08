@@ -12,8 +12,8 @@ export class Card {
   readonly MAX_LIST_SIZE_BIG: number = 12;
   readonly MAX_LIST_SIZE_SMALL: number = 3;
 
-  readonly thinCrewsMax: number = 1;
-  readonly hoeCrewsMax: number = 3;
+  readonly thinCrewsMax: number = 3;
+  readonly hoeCrewsMax: number = 6;
 
   // Card ID (used by database to identify specific card)
   id: string;
@@ -401,7 +401,13 @@ export class Card {
 
   initTotalAcres(): void {
     if (this.commodityArray) {
-      this.totalAcres = this.commodityArray.map((v) => v.cropAcres).reduce((v, a) => v + a);
+      let totalAcres = 0;
+      this.commodityArray.forEach((c) => {
+        if (c.cropAcres != null) {
+          totalAcres += c.cropAcres;
+        }
+      });
+      this.totalAcres = totalAcres;
     } else {
       this.totalAcres = 0;
     }
