@@ -6,7 +6,7 @@ import {Component, OnInit, ViewChild, Input} from '@angular/core';
 import {AuthService} from 'src/app/_auth/auth.service';
 import {NavService} from '../../../_interact/nav.service';
 import {CommonFormDataService} from '../../../_api/common-form-data.service';
-import {componentNeedsResolution} from '@angular/core/src/metadata/resource_loading';
+// import {componentNeedsResolution} from '@angular/core/src/metadata/resource_loading';
 
 // Models
 import {Card} from '../../../_dto/card/card';
@@ -15,7 +15,7 @@ import {Chemicals} from '../../../_dto/card/chemicals';
 import {Commodities} from '../../../_dto/card/commodities';
 import {TractorEntry} from 'src/app/_dto/card/tractor-entry';
 import { CommonLookup } from 'src/app/_api/common-data.service';
-import { SSL_OP_PKCS1_CHECK_2 } from 'constants';
+// import { SSL_OP_PKCS1_CHECK_2 } from 'constants';
 
 @Component({
   selector: 'app-create-card',

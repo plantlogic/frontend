@@ -9,7 +9,7 @@ import {Alert} from './alert';
   styleUrls: ['./alert.component.scss']
 })
 export class AlertComponent implements OnInit {
-  @ViewChild('alertModal') public alertModal: ModalDirective;
+  @ViewChild('alertModal', {static: true}) public alertModal: ModalDirective;
   public alertService = AlertService;
   public value: Alert;
 
