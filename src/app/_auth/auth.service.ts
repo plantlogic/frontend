@@ -412,7 +412,7 @@ export class AuthService {
       const token = this.getToken();
       if (token) {
         try {
-          AuthService.expCache = decode(token).exp * 1000;
+          AuthService.expCache = decode(token)["exp"] * 1000;
         } catch (error) {
           // Continue
         }
@@ -426,7 +426,7 @@ export class AuthService {
       const token = this.getToken();
       if (token) {
         try {
-          AuthService.userCache = decode(token).auth;
+          AuthService.userCache = decode(token)["auth"];
         } catch (error) {}
       }
     }
