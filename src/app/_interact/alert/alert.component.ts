@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {AlertService} from './alert.service';
 import {ModalDirective} from 'angular-bootstrap-md';
 import {Alert} from './alert';
@@ -8,14 +8,14 @@ import {Alert} from './alert';
   templateUrl: './alert.component.html',
   styleUrls: ['./alert.component.scss']
 })
-export class AlertComponent implements OnInit {
+export class AlertComponent {
   @ViewChild('alertModal', {static: true}) public alertModal: ModalDirective;
   public alertService = AlertService;
   public value: Alert;
 
-  constructor() { }
-
-  ngOnInit() {}
+  constructor() {
+    // do nothing.
+  }
 
   isAlertShown(): boolean {
     if (this.alertService.getAlert()) {

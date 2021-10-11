@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {NavService} from '../../_interact/nav.service';
 
 @Component({
@@ -6,12 +6,9 @@ import {NavService} from '../../_interact/nav.service';
   templateUrl: './back-button.component.html',
   styleUrls: ['./back-button.component.scss']
 })
-export class BackButtonComponent implements OnInit {
+export class BackButtonComponent{
 
   constructor(private navService: NavService) { }
-
-  ngOnInit() {
-  }
 
   goBack(): void {
     this.navService.goBack();

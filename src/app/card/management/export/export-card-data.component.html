@@ -28,17 +28,17 @@
       <div class="col-3 mt-4">
         <ng-multiselect-dropdown *ngIf="!loading"
             [placeholder]="'Select Ranch'"
-            [data]="getCommon('ranches')"
+            [settings]="multiselectSettings"
             [(ngModel)]="selectedRanches"
-            [settings]="multiselectSettings">
+            [data]="getCommon('ranches')">
         </ng-multiselect-dropdown>
       </div>
       <div class="col-3 mt-4">
         <ng-multiselect-dropdown *ngIf="!loading"
           [placeholder]="'Select Commodities'"
-          [data]="getCommon('commodities')"
+          [settings]="multiselectSettings"
           [(ngModel)]="selectedCommodities"
-          [settings]="multiselectSettings">
+          [data]="getCommon('commodities')">
         </ng-multiselect-dropdown>
       </div>
     </div>

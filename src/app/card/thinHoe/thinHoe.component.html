@@ -70,7 +70,7 @@
     <!-- Desktop / Large Devices -->
     <div class="d-none d-md-inline-block">
       <h2 *ngIf="!cards">Loading data...</h2>
-      <table mdbTable *ngIf="cards" class="table table-responsive">
+      <table mdbTable *ngIf="cards" class="table">
         <thead class="text-nowrap">
           <tr>
               <th class="small" style="width:30%;" (click)="updateSortOrder('ranchName')">
@@ -101,11 +101,11 @@
         <tfoot>
           <tr>
               <th scope="row" colspan="9">
-                <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(1, true)"><i class="fas fa-angle-double-left"></i></span>
-                <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(pageNum-1, true)"><i class="fas fa-angle-left"></i></span>
-                <span *ngFor="let p of pages"><span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(p, true)">{{p}}</span></span>
-                <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(pageNum+1, true)"><i class="fas fa-angle-right"></i></span>
-                <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(numPages, true)"><i class="fas fa-angle-double-right"></i></span>
+                <span class="page-btn" [ngClass]="{'selected': p === pageNum}" (click)="setPage(1, true)"><i class="fas fa-angle-double-left"></i></span>
+                <span class="page-btn" [ngClass]="{'selected': p === pageNum}" (click)="setPage(pageNum-1, true)"><i class="fas fa-angle-left"></i></span>
+                <span *ngFor="let p of pages"><span class="page-btn" [ngClass]="{'selected': p === pageNum}" (click)="setPage(p, true)">{{p}}</span></span>
+                <span class="page-btn" [ngClass]="{'selected': p === pageNum}" (click)="setPage(pageNum+1, true)"><i class="fas fa-angle-right"></i></span>
+                <span class="page-btn" [ngClass]="{'selected': p === pageNum}" (click)="setPage(numPages, true)"><i class="fas fa-angle-double-right"></i></span>
               </th>
           </tr>
          </tfoot>
@@ -119,8 +119,8 @@
           <tr>
             <th style="width:100%;">
               <div class="row">
-                <div class="col col-sm-10">Ranch - Lot Number - Commodity</div>
-                <div class="col col-sm-2">Open</div>
+                <div class="col col-10">Ranch - Lot Number - Commodity</div>
+                <div class="col col-2">Open</div>
               </div>
             </th>
           </tr>
@@ -129,7 +129,7 @@
           <tr mdbTableCol *ngFor="let p of cards; let i = index" class="animated fadeIn" [style.animation-delay]="this.min((30*i), 1000)+ 'ms'">
             <td>
               <div class="row">
-                <div class="col col-sm-10 hover">
+                <div class="col col-10 hover">
                   <div class="row">
                     <div class="col col-sm">
                       {{'' + p.ranchName + ' - ' + p.lotNumber + ' - ' + p.commodityString}}
@@ -137,7 +137,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="col col-sm-2">
+                <div class="col col-2">
                   <button type="button" color="success" [routerLink]="['/thinHoe/o/', p.id]"
                         alt="View Card" class="mr-1 mb-1" mdbBtn floating="true" size="sm">
                   <i class="ml-1 fa fa-external-link-alt" aria-hidden="true"></i>
@@ -150,11 +150,11 @@
         <tfoot>
           <tr>
             <th scope="row" colspan="9">
-              <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(1, true)"><i class="fas fa-angle-double-left"></i></span>
-              <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(pageNum-1, true)"><i class="fas fa-angle-left"></i></span>
-              <span *ngFor="let p of pages"><span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(p, true)">{{p}}</span></span>
-              <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(pageNum+1, true)"><i class="fas fa-angle-right"></i></span>
-              <span class="page-btn" [ngClass]="{'selected': p == pageNum}" (click)="setPage(numPages, true)"><i class="fas fa-angle-double-right"></i></span>
+              <span class="page-btn" [ngClass]="{'selected': p === pageNum}" (click)="setPage(1, true)"><i class="fas fa-angle-double-left"></i></span>
+              <span class="page-btn" [ngClass]="{'selected': p === pageNum}" (click)="setPage(pageNum-1, true)"><i class="fas fa-angle-left"></i></span>
+              <span *ngFor="let p of pages"><span class="page-btn" [ngClass]="{'selected': p === pageNum}" (click)="setPage(p, true)">{{p}}</span></span>
+              <span class="page-btn" [ngClass]="{'selected': p === pageNum}" (click)="setPage(pageNum+1, true)"><i class="fas fa-angle-right"></i></span>
+              <span class="page-btn" [ngClass]="{'selected': p === pageNum}" (click)="setPage(numPages, true)"><i class="fas fa-angle-double-right"></i></span>
             </th>
           </tr>
         </tfoot>

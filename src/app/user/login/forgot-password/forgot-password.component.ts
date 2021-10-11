@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AlertService} from '../../../_interact/alert/alert.service';
 import {AuthService} from '../../../_auth/auth.service';
@@ -9,19 +9,16 @@ import {ModalDirective} from 'angular-bootstrap-md';
   templateUrl: './forgot-password.component.html',
   styleUrls: ['./forgot-password.component.scss']
 })
-export class ForgotPasswordComponent implements OnInit {
+export class ForgotPasswordComponent {
   form: FormGroup;
   error: string;
   isLoading = false;
-  @ViewChild('fpModal', {static: true}) fpModal: ModalDirective;
+  @ViewChild('fpModal', {static: false}) fpModal: ModalDirective;
 
   constructor(private fb: FormBuilder, private auth: AuthService) {
     this.form = this.fb.group({
       usernameFp: ['', Validators.required]
     });
-  }
-
-  ngOnInit() {
   }
 
   public submit() {

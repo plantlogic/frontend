@@ -32,11 +32,11 @@ export class HomeComponent implements OnInit {
 
   dataViewElements = false;
   cardHarvestedChart: Chart;
-  @ViewChild('cardHarvestedChartRef', {static: true}) private cardHarvestedChartRef;
+  @ViewChild('cardHarvestedChartRef', {static: false}) private cardHarvestedChartRef;
   openCommoditiesChart: Chart;
-  @ViewChild('openCommoditiesChartRef', {static: true}) private openCommoditiesChartRef;
+  @ViewChild('openCommoditiesChartRef', {static: false}) private openCommoditiesChartRef;
   commodityAcresChart: Chart;
-  @ViewChild('commodityAcresChartRef', {static: true}) private commodityAcresChartRef;
+  @ViewChild('commodityAcresChartRef', {static: false}) private commodityAcresChartRef;
   totalCommodityAcres = 0;
 
   userManagementElements = false;
