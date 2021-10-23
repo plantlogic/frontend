@@ -74,8 +74,8 @@
           id="shipperSelector"
           [(ngModel)]="cardShippers"
           [placeholder]="'Select Shipper Access'"
-          [data]="common.getValues('shippers')"
           [settings]="multiSelectSettings"
+          [data]="common.getValues('shippers')"
           [disabled]="!editing">
           </ng-multiselect-dropdown>
         </div>
@@ -113,7 +113,7 @@
     <!-- Comments -->
     <div class="row mt-4">
     
-      <!-- Desktope / Large Devices -->
+      <!-- Desktop / Large Devices -->
       <div class="col-md d-none d-md-inline-block">
         <span class="float-right">
         <button type="button" color="primary" (click)="addComment()" mdbBtn floating="true" *ngIf="editing || editingComment" size="sm" mdbWavesEffect>
@@ -147,7 +147,7 @@
   
           <div class="tab-content" id="commentsTabContent">
             <div class="tab-pane fade show active" role="tabpanel" aria-labelledby="all-comments-tab">
-              <table mdbTable *ngIf="card" class="table table-responsive">
+              <table mdbTable *ngIf="card" class="table">
                 <thead>
                   <tr>
                     <th scope="col" class="small" style="width:15%;">Last Modified</th>
@@ -721,7 +721,7 @@
         </div>
         
         <div id="prePlantDesktop">
-          <table mdbTable *ngIf="card" class="table table-responsive">
+          <table mdbTable *ngIf="card" class="table">
             <thead>
               <tr>
                 <th scope="col" class="small" style="width:10%">Date</th>
@@ -948,7 +948,7 @@
         </div>
 
         <div id="irrigationDesktop">
-          <table mdbTable *ngIf="card" class="table table-responsive">
+          <table mdbTable *ngIf="card" class="table">
             <thead>
               <tr>
                 <th scope="col" class="small" style="width:5%">Date</th>
@@ -1262,7 +1262,7 @@
         </div>
 
         <div id="tractorDesktop">
-          <table mdbTable *ngIf="card" class="table table-responsive">
+          <table mdbTable *ngIf="card" class="table">
             <thead>
               <tr>
                 <th scope="col" class="small" style="width:5%">Date</th>

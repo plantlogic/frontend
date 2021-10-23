@@ -1,6 +1,6 @@
 th,
 td {
-  padding: 2px 6px 2px 0;
+  // padding: 2px 6px 2px 0;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -15,6 +15,10 @@ tfoot {
 
 select {
   width: 90%;
+}
+
+.clip {
+  text-overflow: clip !important;
 }
 
 .date {
@@ -38,10 +42,11 @@ select {
 
 .hover .hover-text {
   visibility: hidden;
-  background-color: black;
+  background-color: #777;
   color: #fff;
   text-align: center;
-  padding: 5px 0;
+  padding: 4px 4px;
+  margin-left: 3px;
   border-radius: 6px;
   position: absolute;
   z-index: 1;

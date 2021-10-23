@@ -32,8 +32,8 @@
             id="shipperSelector"
             [(ngModel)]="cardShippers"
             [placeholder]="'Select Shipper Access'"
-            [data]="common.getValues('shippers')"
-            [settings]="multiSelectSettings">
+            [settings]="multiSelectSettings"
+            [data]="common.getValues('shippers')">
           </ng-multiselect-dropdown>
       </div>
     </div>

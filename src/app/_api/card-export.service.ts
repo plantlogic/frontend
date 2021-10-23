@@ -11,7 +11,7 @@ import { AuthService } from '../_auth/auth.service';
 import { Comment } from '../_dto/card/comment';
 import { Chemical } from '../_dto/card/chemical';
 import { TractorEntry } from '../_dto/card/tractor-entry';
-import { setTimeout } from 'timers';
+// import { setTimeout } from 'timers';
 import { IrrigationEntry } from '../_dto/card/irrigation-entry';
 import { ExportPreset } from '../_dto/card/export-preset';
 import { Commodities } from '../_dto/card/commodities';

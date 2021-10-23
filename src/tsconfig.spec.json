@@ -1,6 +1,7 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
+    "emitDecoratorMetadata": true,
     "outDir": "../out-tsc/spec",
     "types": [
       "jasmine",
@@ -14,5 +15,16 @@
   "include": [
     "**/*.spec.ts",
     "**/*.d.ts"
-  ]
+  ],
+  "paths": {
+    "assert": [
+      "node_modules/assert"
+    ],
+    "path": [
+      "node_modules/path-browserify"
+    ],
+    "util": [
+      "node_modules/util"
+    ]
+  },
 }

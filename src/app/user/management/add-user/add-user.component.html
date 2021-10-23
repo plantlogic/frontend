@@ -64,9 +64,9 @@
                     id="permissionSelector"
                     formControlName="permissions"
                     [placeholder]="'Select Permissions'"
-                    [data]="roleListFormatted"
+                    [settings]="roleMultiSelectSettings"
                     [(ngModel)]="userRolesFormatted"
-                    [settings]="roleMultiSelectSettings">
+                    [data]="roleListFormatted">
                   </ng-multiselect-dropdown>
                 </div>
 
@@ -79,8 +79,8 @@
                   id="ranchAccessSelector"
                   formControlName="ranchAccess"
                   [placeholder]="'Select Ranches'"
-                  [data]="commonData.getValues('ranches')"
-                  [settings]="multiselectSettings">
+                  [settings]="multiselectSettings"
+                  [data]="commonData.getValues('ranches')">
                 </ng-multiselect-dropdown>
               </div>
             </div>

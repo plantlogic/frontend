@@ -1,5 +1,5 @@
 /* Font Awesome fonts */
-$fa-font-path: "../node_modules/@fortawesome/fontawesome-free/webfonts";
+// $fa-font-path: "../node_modules/@fortawesome/fontawesome-free/webfonts";
 
 @import "~@fortawesome/fontawesome-free/scss/fontawesome";
 @import "~@fortawesome/fontawesome-free/scss/brands";
@@ -19,7 +19,7 @@ $fa-font-path: "../node_modules/@fortawesome/fontawesome-free/webfonts";
 
 /* Change the default tooltip size to fit big, important tooltips */
 .tooltip {
-  min-width: 300px;
+  min-width: 200px;
 }
 
 .tooltip .tooltip-inner {
@@ -33,4 +33,16 @@ $fa-font-path: "../node_modules/@fortawesome/fontawesome-free/webfonts";
 input[type=date] {
   background-color: white;
   border: 0.5px solid black;
+}
+
+body {
+  min-width: 350px !important;
+}
+
+table.table th, table.table td {
+  padding: 1.1rem 6px 1rem !important;
+}
+
+.multiselect-dropdown .selected-item {
+  margin: 2px !important;
 }

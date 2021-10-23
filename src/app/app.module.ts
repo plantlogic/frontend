@@ -7,7 +7,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 
-import {MDBBootstrapModule} from 'angular-bootstrap-md';
+import {MDBBootstrapModule, ModalDirective} from 'angular-bootstrap-md';
 import {LoadingBarHttpClientModule} from '@ngx-loading-bar/http-client';
 import {AutosizeModule} from 'ngx-autosize';
 import {NgMultiSelectDropDownModule} from 'ng-multiselect-dropdown';
@@ -83,6 +83,7 @@ import { OpenCardThinHoeComponent } from './card/thinHoe/open/open-card-thinHoe.
     BrowserModule,
     AppRoutingModule,
     FormsModule,
+    NgMultiSelectDropDownModule,
     HttpClientModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,

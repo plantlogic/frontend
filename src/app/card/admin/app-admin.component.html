@@ -21,7 +21,7 @@
                 </button>
             </td>
             <td class="minOptWidth">
-              <button type="button" color="danger" (click)="removeCommon(k.key, c)" mdbBtn class="float-right" size="sm" floating="true" mdbWavesEffect>
+              <button type="button" color="danger" (click)="removeCommon(k.key, c)" mdbBtn  size="sm" floating="true" mdbWavesEffect>
                 <i class="fa fa-trash" aria-hidden="true"></i>
               </button>
             </td>
@@ -59,14 +59,14 @@
                 </button>
             </td>
             <td class="minOptWidth">
-              <button type="button" color="danger" (click)="removeCommon(k.key, c)" mdbBtn class="float-right" size="sm" floating="true" mdbWavesEffect>
+              <button type="button" color="danger" (click)="removeCommon(k.key, c)" mdbBtn  size="sm" floating="true" mdbWavesEffect>
                 <i class="fa fa-trash" aria-hidden="true"></i>
               </button>
-              <button type="button" color="light" mdbBtn class="float-right" (click)="shiftDown(k.key, c)"
+              <button type="button" color="light" mdbBtn  (click)="shiftDown(k.key, c)"
                       size="sm" floating="true" mdbWavesEffect [disabled]="i >= k.values.length - 1">
                 <i class="fa fa-chevron-down" aria-hidden="true"></i>
               </button>
-              <button type="button" color="light" mdbBtn class="float-right" (click)="shiftUp(k.key, c)"
+              <button type="button" color="light" mdbBtn  (click)="shiftUp(k.key, c)"
                       size="sm" floating="true" mdbWavesEffect [disabled]="i <= 0" >
                 <i class="fa fa-chevron-up" aria-hidden="true"></i>
               </button>
@@ -118,7 +118,7 @@
                 <button type="button" color="success" (click)="updateCommon(k.key)" class="mr-3" mdbBtn floating="true" size="sm" style="display: inline-block;">
                   <i class="fas fa-check"></i>
                 </button>
-                <button type="button" color="danger"  (click)="removeCommon(k.key, c)" mdbBtn class="float-right" size="sm" floating="true" mdbWavesEffect>
+                <button type="button" color="danger"  (click)="removeCommon(k.key, c)" mdbBtn  size="sm" floating="true" mdbWavesEffect>
                   <i class="fa fa-trash" aria-hidden="true"></i>
                 </button>
               </div>
@@ -185,7 +185,7 @@
               </h6>
             </td>
             <td>
-              <button type="button" color="danger"  (click)="removeCommon(k.key, c)" mdbBtn class="float-right" size="sm" floating="true" mdbWavesEffect>
+              <button type="button" color="danger"  (click)="removeCommon(k.key, c)" mdbBtn  size="sm" floating="true" mdbWavesEffect>
                 <i class="fa fa-trash" aria-hidden="true"></i>
               </button>
             </td>
