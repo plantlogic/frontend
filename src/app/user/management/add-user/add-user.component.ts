@@ -3,7 +3,7 @@ import {AlertService} from '../../../_interact/alert/alert.service';
 import {UserService} from '../../../_api/user.service';
 import {Component, OnInit} from '@angular/core';
 import {TitleService} from '../../../_interact/title.service';
-import {AbstractControl, FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {User} from '../../../_dto/user/user';
 import {Router} from '@angular/router';
 import {CommonFormDataService} from '../../../_api/common-form-data.service';

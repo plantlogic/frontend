@@ -1,14 +1,16 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-
+import { ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {AppAdminComponent} from './app-admin.component';
+import {HttpClientModule} from '@angular/common/http';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('AppAdminComponent', () => {
   let component: AppAdminComponent;
   let fixture: ComponentFixture<AppAdminComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ AppAdminComponent ]
+      declarations: [ AppAdminComponent ],
+      imports: [ HttpClientModule,  RouterTestingModule]
     })
     .compileComponents();
   }));
